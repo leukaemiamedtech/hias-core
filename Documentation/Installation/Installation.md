@@ -1,11 +1,11 @@
 # Peter Moss Leukemia AI Research
 ##  Hospital Intelligent Automation System
-[![GeniSysAI Server](../../Media/Images/HIAS-Hospital-Intelligent-Automation-System.png)](https://github.com/LeukemiaAiResearch/HIAS-Hospital-Intelligent-Automation-System)
+[![GeniSysAI Server](../../Media/Images/HIAS.png)](https://github.com/LeukemiaAiResearch/HIAS)
 
 &nbsp;
 
 # Installation & Setup
-The following guide will take you through setting up and installing the  [ Hospital Intelligent Automation System](https://github.com/LeukemiaAiResearch/HIAS-Hospital-Intelligent-Automation-System " Hospital Intelligent Automation System").
+The following guide will take you through setting up and installing the  [ Hospital Intelligent Automation System](https://github.com/LeukemiaAiResearch/HIAS " Hospital Intelligent Automation System").
 
 &nbsp;
 
@@ -224,25 +224,25 @@ UUID=YourUUID /fserver auto nosuid,nodev,nofail,x-gvfs-show 0 0
 &nbsp;
 
 # Clone the repository
-Clone the [HIAS-Hospital-Intelligent-Automation-System](https://github.com/LeukemiaAiResearch/HIAS-Hospital-Intelligent-Automation-System "HIAS-Hospital-Intelligent-Automation-System") repository from the [Peter Moss Acute Myeloid & Lymphoblastic Leukemia AI Research](https://github.com/COVID-19-AI-Research-Project "Peter Moss Leukemia AI Research") Github Organization.
+Clone the [HIAS](https://github.com/LeukemiaAiResearch/HIAS "HIAS") repository from the [Peter Moss Acute Myeloid & Lymphoblastic Leukemia AI Research](https://github.com/COVID-19-AI-Research-Project "Peter Moss Leukemia AI Research") Github Organization.
 
 To clone the repository and install the Hospital Intelligent Automation System, make sure you have Git installed. Now to the home directory on your server device using terminal/commandline, and then use the following command.
 
 ```
-  $ git clone -b "0.1.0" https://github.com/LeukemiaAiResearch/HIAS-Hospital-Intelligent-Automation-System.git
+  $ git clone -b "0.1.0" https://github.com/LeukemiaAiResearch/HIAS.git
 ```
 
 The **-b "0.1.0"** parameter ensures you get the code from the latest development branch. Before using the below command please check our latest development branch in the button at the top of the project README.
 
-Once you have used the command above you will see a directory called **HIAS-Hospital-Intelligent-Automation-System** in your home directory. 
+Once you have used the command above you will see a directory called **HIAS** in your home directory. 
 ```
 ls
 ```
 Using the ls command in your home directory should show you the following.
 ```
-COVID19-Medical-Support-System-Server
+HIAS
 ```
-The COVID19-Medical-Support-System-Server directory is your project root directory for this tutorial.
+The HIAS directory is your project root directory for this tutorial.
 
 ## Developer Forks
 Developers from the Github community that would like to contribute to the development of this project should first create a fork, and clone that repository. For detailed information please view the [CONTRIBUTING](../../CONTRIBUTING.md "CONTRIBUTING") guide.
@@ -801,9 +801,9 @@ php Scripts/Installation/PHP/Finalize.php YourServerURL RecaptchaSiteKey Recaptc
 
 Congratulations, you have the basics of the server installed!! Now you can login and visit the landing page. This will become your control panel for your encrypted intelligent and IoT connected  Hospital Intelligent Automation System.
 
-Visit your domain name and you should see the above page. You can then login with your username and password you created earlier.
-
 ![GeniSys AI Server PHP config](../../Media/Images/dashboard.png)
+
+Visit your domain name and you should see the above page. You can then login with your username and password you created earlier.
 
 &nbsp;
 

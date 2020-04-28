@@ -2,7 +2,7 @@
 ## HIAS - Hospital Intelligent Automation System
 
 # iotJumpWay Installation Guide
-[![GeniSysAI Server](../../Media/Images/HIAS-Hospital-Intelligent-Automation-System.png)](https://github.com/LeukemiaAiResearch/HIAS-Hospital-Intelligent-Automation-System)
+[![GeniSysAI Server](../../Media/Images/HIAS.png)](https://github.com/LeukemiaAiResearch/HIAS)
 
 Now you need to install the iotJumpWay and setup some appications and devices. The following part of the tutorial will guide you through this.
 
