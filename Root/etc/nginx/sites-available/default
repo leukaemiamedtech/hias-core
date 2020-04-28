@@ -1,0 +1,52 @@
+
+server {
+
+        root /fserver/var/www/html;
+        server_name YourSubdomain.YourDomain.TLD;
+
+        location / {
+                try_files $uri $uri.html $uri/ @extensionless-php;
+                index index.php index.html index.htm index.nginx-debian.html;
+        }
+
+        location ~ \.php$ {
+                include fastcgi_params;
+                include snippets/fastcgi-php.conf;
+                fastcgi_pass unix:/run/php/php7.2-fpm.sock;
+        }
+
+
+        location @extensionless-php {
+                rewrite ^(.*)$ $1.php last;
+        }
+
+        location ~ /\.ht {
+                deny all;
+        }
+
+        listen [::]:443 ssl ipv6only=on; # managed by Certbot
+        listen 443 ssl; # managed by Certbot
+        ssl_certificate /etc/letsencrypt/live/YourSubdomain.YourDomain.TLD/fullchain.pem; # managed by Certbot
+        ssl_certificate_key /etc/letsencrypt/live/YourSubdomain.YourDomain.TLD/privkey.pem; # managed by Certbot
+        include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+        ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+}
+server {
+        listen      80;
+        server_name "YourPublicNetworkIP";
+        return      444;
+}
+server {
+
+        if ($host = YourSubdomain.YourDomain.TLD){
+                return 301 https://$host$request_uri;
+        } # managed by Certbot
+
+
+        listen 80 default_server;
+        listen [::]:80 default_server;
+
+        server_name YourSubdomain.YourDomain.TLD;
+        return 404; # managed by Certbot
+
+}
