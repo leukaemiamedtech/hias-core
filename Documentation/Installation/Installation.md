@@ -4,14 +4,53 @@
 
 &nbsp;
 
-# Installation & Setup
+# Table Of Contents
+
+- [Introduction](#introduction)
+- [Required Hardware](#required-hardware)
+- [Prerequisites](#prerequisites)
+  - [Ubuntu Server 18.04.4 LTS](#ubuntu-server-18.04.4-LTS)
+  - [Domain Name](#domain-name)
+  - [Port Forwarding](#port-forwarding)
+- [Security](#security)
+  - [Remote User](#remote-user)
+  - [SSH Access](#ssh-access)
+    - [Tips](#tips)
+- [Attach Hard-Drive](#attach-hard-drive) 
+- [Clone The Repository](#clone-the-repository) 
+  - [Developer Forks](#developer-forks) 
+- [Installation](#installation)  
+  - [Easy Install (Recommended)](#easy-install-recommended) 
+  - [Manual Install](#manual-install) 
+    - [UFW Firewall](#ufw-firewall) 
+    - [Fail2Ban](#fail2ban) 
+    - [NGINX](#nginx)  
+    - [Let's Encrypt](#lets-encrypt)  
+    - [PHP](#php) 
+    - [MySql](#mysql) 
+    - [phpMyAdmin](#phpmyadmin) 
+    - [SSL Security](#ssl-security)  
+    - [File Server](#file-server)  
+    - [iotJumpWay Broker (IoT)](#iotjumpway-broker)
+    - [iotJumpWay Location and Application](#iotjumpway-location-and-application)
+    - [Create Admin User](#create-admin-user)
+    - [Login To Your Server UI](#login-to-server-ui) 
+- [Contributing](#contributing)
+- [Versioning](#versioning)
+- [License](#license)
+- [Bugs/Issues](#bugs-issues)
+
+&nbsp;
+
+# Introduction
 The following guide will take you through setting up and installing the  [ Hospital Intelligent Automation System](https://github.com/LeukemiaAiResearch/HIAS " Hospital Intelligent Automation System").
 
 &nbsp;
 
 # Required Hardware
-![GeniSys AI Server Hardware](../../Media/Images/GeniSysAiHardware.jpg)
 For this tutorial I am using a [UP2 AI Vision Devkit](https://up-board.org/upkits/up-squared-ai-vision-kit/ "UP2 AI Vision Devkit") and a 1.5TB hard-drive for the core server hardware, but you can use any linux machine and hard-drive.
+
+![GeniSys AI Server Hardware](../../Media/Images/GeniSysAiHardware.jpg)
 
 - 1 x Linux machine (Server)
 - 1 x 1TB (Or more) HDD
@@ -508,6 +547,9 @@ sudo nano /var/www/Classes/Core/confs.json
 **Shell Script**  [MySQL.sh](../../Scripts/Installation/Shell/MySQL.sh "MySQL.sh")
 
 ### phpMyAdmin
+
+![GeniSys AI Server PHP config](../../Media/Images/phpMyAdmin.png)
+
 Now you should install phpMyAdmin.
 
 ```
@@ -528,11 +570,12 @@ sudo sed -i "s/|\s*\((count(\$analyzed_sql_results\['select_expr'\]\)/| (\1)/g" 
 
 Now you should be able to visit phpMyAdmin by accessing the relevant directory on your website. IE: https://www.YourDomain.com/phpmyadmin/
 
-![GeniSys AI Server PHP config](../../Media/Images/phpMyAdmin.png)
-
 **Shell Script**  [phpMyAdmin.sh](../../Scripts/Installation/Shell/phpMyAdmin.sh "phpMyAdmin.sh")
 
 #### SSL Security
+
+![GeniSys HIAS - Hospital Intelligent Automation System Security](../../Media/Images/SSL.png)
+
 You need to remove vulnerable versions TLS 1/TLS 1.1, and enable TLS 1.3. To do so, do the following:
 ```
 sudo cp /etc/nginx/nginx.conf /etc/nginx/nginx.tls-old
@@ -757,7 +800,7 @@ To finish up here, edit the **/fserver/var/www/html/Dashboard.php** file, replac
 
 **Shell Script**  [iotJumpWayTass.sh](../../Scripts/Installation/Shell/iotJumpWayTass.sh "iotJumpWayTass.sh")
 
-# Create Admin User
+### Create Admin User
 Finally you should create your admin user that you will use to access the network. The following command executes a PHP script to add your chosen username as an admin user in the system. You can use this command at any time to create an admin account. 
 
 The script will create an admin account and provide your with the password, make sure to copy and save the password and your username somewhere safe. Replace **YourUsername** with the username of your choice, no special characters or spaces.

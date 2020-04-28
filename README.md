@@ -2,7 +2,7 @@
 ## HIAS - Hospital Intelligent Automation System
 [![HIAS - Hospital Intelligent Automation System](Media/Images/HIAS-Hospital-Intelligent-Automation-System.png)](https://github.com/LeukemiaAiResearch/HIAS)
 
-[![CURRENT VERSION](https://img.shields.io/badge/CURRENT%20VERSION-0.0.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.0.0) [![CURRENT DEV BRANCH](https://img.shields.io/badge/CURRENT%20DEV%20BRANCH-0.1.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.1.0) [![Issues Welcome!](https://img.shields.io/badge/Contributions-Welcome-lightgrey.svg)](CONTRIBUTING.md)  [![Issues](https://img.shields.io/badge/Issues-Welcome-lightgrey.svg)](issues) [![LICENSE](https://img.shields.io/badge/Issues-MIT-blue.svg)](LICENSE)
+[![VERSION](https://img.shields.io/badge/VERSION-0.0.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.0.0) [![DEV BRANCH](https://img.shields.io/badge/DEV%20BRANCH-0.1.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.1.0) [![Issues Welcome!](https://img.shields.io/badge/Contributions-Welcome-lightgrey.svg)](CONTRIBUTING.md)  [![Issues](https://img.shields.io/badge/Issues-Welcome-lightgrey.svg)](issues) [![LICENSE](https://img.shields.io/badge/LICENSE-MIT-blue.svg)](LICENSE)
 
 &nbsp;
 
@@ -10,6 +10,14 @@
 
 - [Introduction](#introduction)
 - [Key Features](#key-features)
+- [HIAS Network Map](#hias-network-map)
+- [HIAS UI](#hias-ui)
+- [Installation](#installation)
+- [Acknowledgement](#acknowledgement)
+- [Contributing](#contributing)
+- [Versioning](#versioning)
+- [License](#license)
+- [Bugs/Issues](#bugs-issues)
 
 &nbsp;
 
@@ -34,7 +42,7 @@ __This project is a proof of concept, and is still a work in progress, however o
 - **Server UI:** 
     - A control panel to monitor and manage your HIAS network.
 - **Local IoT Broker** 
-    - Local and private MQTT/Websockets broker based on the  [iotJupmWay Broker](https://github.com/iotJumpway/Broker "iotJupmWay Broker").
+    - Local and private MQTT/Websockets broker based on the  [iotJumpway Broker](https://github.com/iotJumpway/Broker "iotJumpway Broker").
 - **Facial Identification Server:** 
     - Facial identification systems based on [tassAI](https://github.com/TASS-AI/Tass-History "tassAI").
 - **Natural Language Understanding (NLU) Server:** 
@@ -42,7 +50,7 @@ __This project is a proof of concept, and is still a work in progress, however o
 
 &nbsp;
 
-# HIAS Network
+# HIAS Network Map
 ![GeniSys HIAS - Hospital Intelligent Automation System](Media/Images/HIAS-Network.png) 
 
 &nbsp;
