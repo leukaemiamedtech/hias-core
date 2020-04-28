@@ -9,7 +9,7 @@
 - [Introduction](#introduction)
 - [Required Hardware](#required-hardware)
 - [Prerequisites](#prerequisites)
-  - [Ubuntu Server 18.04.4 LTS](#ubuntu-server-18.04.4-LTS)
+  - [Ubuntu Server 18.04.4 LTS](#ubuntu-server-18044-lts)
   - [Domain Name](#domain-name)
   - [Port Forwarding](#port-forwarding)
 - [Security](#security)
