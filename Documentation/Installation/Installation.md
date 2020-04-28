@@ -36,6 +36,7 @@
     - [Create Admin User](#create-admin-user)
     - [Login To Your Server UI](#login-to-server-ui) 
 - [Contributing](#contributing)
+    - [Contributors](#contributors)
 - [Versioning](#versioning)
 - [License](#license)
 - [Bugs/Issues](#bugs-issues)

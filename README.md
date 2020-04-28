@@ -15,6 +15,7 @@
 - [Installation](#installation)
 - [Acknowledgement](#acknowledgement)
 - [Contributing](#contributing)
+    - [Contributors](#contributors)
 - [Versioning](#versioning)
 - [License](#license)
 - [Bugs/Issues](#bugs-issues)
