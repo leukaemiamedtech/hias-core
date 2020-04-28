@@ -1,6 +1,6 @@
 # Peter Moss Leukemia AI Research
 ##  Hospital Intelligent Automation System
-[![GeniSysAI Server](../../Media/Images/HIAS.png)](https://github.com/LeukemiaAiResearch/HIAS)
+[![GeniSysAI Server](../../Media/Images/HIAS-Hospital-Intelligent-Automation-System.png)](https://github.com/LeukemiaAiResearch/HIAS)
 
 &nbsp;
 
