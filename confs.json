@@ -1,0 +1,34 @@
+{
+    "iotJumpWay": {
+        "channels": {
+            "commands": "Commands"
+        },
+        "host": "",
+        "port": 8883,
+        "lid": 0,
+        "aid": 0,
+        "an": "",
+        "un": "",
+        "pw": ""
+    },
+    "tass": {
+        "core": {
+            "allowed": [".jpg", ".JPG", ".png", ".PNG"]
+        },
+        "ip": "",
+        "data": "Data/Security/",
+        "dlib": "/fserver/models/TASS/shape_predictor_68_face_landmarks.dat",
+        "dlibr": "/fserver/models/TASS/dlib_face_recognition_resnet_model_v1.dat",
+        "lid": 0,
+        "zid": 0,
+        "did": 0,
+        "sid": 0,
+        "port": 8080,
+        "socket": {
+            "ip": "",
+            "port": 8181
+        },
+        "threshold": 0.6,
+        "vid": 0
+    }
+}
