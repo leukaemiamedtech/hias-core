@@ -1,17 +1,57 @@
 # Peter Moss Leukemia AI Research
 ##  Hospital Intelligent Automation System
-[![GeniSysAI Server](../../Media/Images/HIAS-Hospital-Intelligent-Automation-System.png)](https://github.com/LeukemiaAiResearch/HIAS-Hospital-Intelligent-Automation-System)
+[![GeniSysAI Server](../../Media/Images/HIAS-Hospital-Intelligent-Automation-System.png)](https://github.com/LeukemiaAiResearch/HIAS)
 
 &nbsp;
 
-# Installation & Setup
-The following guide will take you through setting up and installing the  [ Hospital Intelligent Automation System](https://github.com/LeukemiaAiResearch/HIAS-Hospital-Intelligent-Automation-System " Hospital Intelligent Automation System").
+# Table Of Contents
+
+- [Introduction](#introduction)
+- [Required Hardware](#required-hardware)
+- [Prerequisites](#prerequisites)
+  - [Ubuntu Server 18.04.4 LTS](#ubuntu-server-18044-lts)
+  - [Domain Name](#domain-name)
+  - [Port Forwarding](#port-forwarding)
+- [Security](#security)
+  - [Remote User](#remote-user)
+  - [SSH Access](#ssh-access)
+    - [Tips](#tips)
+- [Attach Hard-Drive](#attach-hard-drive) 
+- [Clone The Repository](#clone-the-repository) 
+  - [Developer Forks](#developer-forks) 
+- [Installation](#installation)  
+  - [Easy Install (Recommended)](#easy-install-recommended) 
+  - [Manual Install](#manual-install) 
+    - [UFW Firewall](#ufw-firewall) 
+    - [Fail2Ban](#fail2ban) 
+    - [NGINX](#nginx)  
+    - [Let's Encrypt](#lets-encrypt)  
+    - [PHP](#php) 
+    - [MySql](#mysql) 
+    - [phpMyAdmin](#phpmyadmin) 
+    - [SSL Security](#ssl-security)  
+    - [File Server](#file-server)  
+    - [iotJumpWay Broker (IoT)](#iotjumpway-broker)
+    - [iotJumpWay Location and Application](#iotjumpway-location-and-application)
+    - [Create Admin User](#create-admin-user)
+    - [Login To Your Server UI](#login-to-server-ui) 
+- [Contributing](#contributing)
+    - [Contributors](#contributors)
+- [Versioning](#versioning)
+- [License](#license)
+- [Bugs/Issues](#bugs-issues)
+
+&nbsp;
+
+# Introduction
+The following guide will take you through setting up and installing the  [ Hospital Intelligent Automation System](https://github.com/LeukemiaAiResearch/HIAS " Hospital Intelligent Automation System").
 
 &nbsp;
 
 # Required Hardware
-![GeniSys AI Server Hardware](../../Media/Images/GeniSysAiHardware.jpg)
 For this tutorial I am using a [UP2 AI Vision Devkit](https://up-board.org/upkits/up-squared-ai-vision-kit/ "UP2 AI Vision Devkit") and a 1.5TB hard-drive for the core server hardware, but you can use any linux machine and hard-drive.
+
+![GeniSys AI Server Hardware](../../Media/Images/GeniSysAiHardware.jpg)
 
 - 1 x Linux machine (Server)
 - 1 x 1TB (Or more) HDD
@@ -224,25 +264,25 @@ UUID=YourUUID /fserver auto nosuid,nodev,nofail,x-gvfs-show 0 0
 &nbsp;
 
 # Clone the repository
-Clone the [HIAS-Hospital-Intelligent-Automation-System](https://github.com/LeukemiaAiResearch/HIAS-Hospital-Intelligent-Automation-System "HIAS-Hospital-Intelligent-Automation-System") repository from the [Peter Moss Acute Myeloid & Lymphoblastic Leukemia AI Research](https://github.com/COVID-19-AI-Research-Project "Peter Moss Leukemia AI Research") Github Organization.
+Clone the [HIAS](https://github.com/LeukemiaAiResearch/HIAS "HIAS") repository from the [Peter Moss Acute Myeloid & Lymphoblastic Leukemia AI Research](https://github.com/COVID-19-AI-Research-Project "Peter Moss Leukemia AI Research") Github Organization.
 
 To clone the repository and install the Hospital Intelligent Automation System, make sure you have Git installed. Now to the home directory on your server device using terminal/commandline, and then use the following command.
 
 ```
-  $ git clone -b "0.1.0" https://github.com/LeukemiaAiResearch/HIAS-Hospital-Intelligent-Automation-System.git
+  $ git clone -b "0.1.0" https://github.com/LeukemiaAiResearch/HIAS.git
 ```
 
 The **-b "0.1.0"** parameter ensures you get the code from the latest development branch. Before using the below command please check our latest development branch in the button at the top of the project README.
 
-Once you have used the command above you will see a directory called **HIAS-Hospital-Intelligent-Automation-System** in your home directory. 
+Once you have used the command above you will see a directory called **HIAS** in your home directory. 
 ```
 ls
 ```
 Using the ls command in your home directory should show you the following.
 ```
-COVID19-Medical-Support-System-Server
+HIAS
 ```
-The COVID19-Medical-Support-System-Server directory is your project root directory for this tutorial.
+The HIAS directory is your project root directory for this tutorial.
 
 ## Developer Forks
 Developers from the Github community that would like to contribute to the development of this project should first create a fork, and clone that repository. For detailed information please view the [CONTRIBUTING](../../CONTRIBUTING.md "CONTRIBUTING") guide.
@@ -508,6 +548,9 @@ sudo nano /var/www/Classes/Core/confs.json
 **Shell Script**  [MySQL.sh](../../Scripts/Installation/Shell/MySQL.sh "MySQL.sh")
 
 ### phpMyAdmin
+
+![GeniSys AI Server PHP config](../../Media/Images/phpMyAdmin.png)
+
 Now you should install phpMyAdmin.
 
 ```
@@ -528,11 +571,12 @@ sudo sed -i "s/|\s*\((count(\$analyzed_sql_results\['select_expr'\]\)/| (\1)/g" 
 
 Now you should be able to visit phpMyAdmin by accessing the relevant directory on your website. IE: https://www.YourDomain.com/phpmyadmin/
 
-![GeniSys AI Server PHP config](../../Media/Images/phpMyAdmin.png)
-
 **Shell Script**  [phpMyAdmin.sh](../../Scripts/Installation/Shell/phpMyAdmin.sh "phpMyAdmin.sh")
 
 #### SSL Security
+
+![GeniSys HIAS - Hospital Intelligent Automation System Security](../../Media/Images/SSL.png)
+
 You need to remove vulnerable versions TLS 1/TLS 1.1, and enable TLS 1.3. To do so, do the following:
 ```
 sudo cp /etc/nginx/nginx.conf /etc/nginx/nginx.tls-old
@@ -757,7 +801,7 @@ To finish up here, edit the **/fserver/var/www/html/Dashboard.php** file, replac
 
 **Shell Script**  [iotJumpWayTass.sh](../../Scripts/Installation/Shell/iotJumpWayTass.sh "iotJumpWayTass.sh")
 
-# Create Admin User
+### Create Admin User
 Finally you should create your admin user that you will use to access the network. The following command executes a PHP script to add your chosen username as an admin user in the system. You can use this command at any time to create an admin account. 
 
 The script will create an admin account and provide your with the password, make sure to copy and save the password and your username somewhere safe. Replace **YourUsername** with the username of your choice, no special characters or spaces.
@@ -801,9 +845,9 @@ php Scripts/Installation/PHP/Finalize.php YourServerURL RecaptchaSiteKey Recaptc
 
 Congratulations, you have the basics of the server installed!! Now you can login and visit the landing page. This will become your control panel for your encrypted intelligent and IoT connected  Hospital Intelligent Automation System.
 
-Visit your domain name and you should see the above page. You can then login with your username and password you created earlier.
-
 ![GeniSys AI Server PHP config](../../Media/Images/dashboard.png)
+
+Visit your domain name and you should see the above page. You can then login with your username and password you created earlier.
 
 &nbsp;
 

@@ -1,51 +1,64 @@
 # Peter Moss Leukemia AI Research
 ## HIAS - Hospital Intelligent Automation System
-[![HIAS - Hospital Intelligent Automation System](Media/Images/HIAS-Hospital-Intelligent-Automation-System.png)](https://github.com/LeukemiaAiResearch/HIAS-Hospital-Intelligent-Automation-System)
+[![HIAS - Hospital Intelligent Automation System](Media/Images/HIAS-Hospital-Intelligent-Automation-System.png)](https://github.com/LeukemiaAiResearch/HIAS)
 
-[![CURRENT VERSION](https://img.shields.io/badge/CURRENT%20VERSION-0.0.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS-Hospital-Intelligent-Automation-System/tree/0.0.0) [![CURRENT DEV BRANCH](https://img.shields.io/badge/CURRENT%20DEV%20BRANCH-0.1.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS-Hospital-Intelligent-Automation-System/tree/0.1.0)
-
-# Introduction
-
-The **Peter Moss Leukemia AI Research HIAS - Hospital Intelligent Automation System** is an open-source HIAS, a Hospital Intelligent Automation System. The system's server powers an intelligent network using a locally hosted, encrypted IoT server and proxy. The server UI provides the capabalities of managing a network of open-soruce intelligent AI/Robotics/VR/AR/Quantum & IoT devices and applications.These devices/applications and databases all run and communicate on the local network. This means that premises have more control and security when it comes to their hardware, data and storage.   
-
-This project will be a proof of concept, and is still a work in progress, however our plan is to work with a local medical/health center or hospital to do a pilot project. 
-
-![GeniSys HIAS - Hospital Intelligent Automation System](Media/Images/HIAS-Network.png)
-
-- **IoT Connectivity:** Local and private MQTT/Websockets broker based on the  [iotJupmWay Broker](https://github.com/iotJumpway/Broker "iotJupmWay Broker").Secure IoT connection to the outside world is is provided via APIs hosted on your server and the [iotJumpWay PaaS](https://www.iotJumpWay.com "iotJumpWay PaaS"), our free Platform as a Service. Visit our Facebook page for more info: [www.facebook.com/iotJumpWay](https://www.facebook.com/iotJumpWay "www.facebook.com/iotJumpWay").
-- **Secure Proxy:** The server acts a proxy to servers running on the local network, allowing devices and applications to connect securely to API's that provide access to AI models and other software.
-- **Facial Identification Server:** This system provides a facial identification systems based on [tassAI](https://github.com/TASS-AI/Tass-History "tassAI"), an open source project that has evolved since around 2014/2015. The system connects to the server's local camera, process the frames to identify known users and unknown people, and streams the processed frames to a local server that can be accessed to monitor the environment around the server. For more information on tassAI you can check out the [tassAI history repo](https://github.com/TASS-AI/Tass-History "tassAI history repo").  Visit our Facebook page for more info: [www.facebook.com/tassAI](https://www.facebook.com/tassAI "www.facebook.com/tassAI").
-- **Natural Language Understanding (NLU) Server:** This system provides a locally hosted Natural Language Understanding server based on [GeniSysAI](https://github.com/GeniSysAI/ "GeniSysAI"). This NLU server allows devices on the network to request intent and entity recognition. The NLU is also accessible to the outside world via the server's proxy which allows API traffic to be routed to the NLU API endpoint. Visit our Facebook page for more info: [www.facebook.com/GeniSysAI](https://www.facebook.com/GeniSysAI "www.facebook.com/GeniSysAI").
-
-![GeniSys HIAS - Hospital Intelligent Automation System Security](Media/Images/SSL.png)
-
-- **High grade SSL Encryption:** You will use Let's Encrypt to provide high grade, free encryption for public access to your server. You will also remove insecure TLSv1 & TLSv1.1, your server will have an A+ [Qualys](https://www.ssllabs.com/ssltest/ "Qualys") encryption rating helping to ensure privacy and security when using the HIAS - Hospital Intelligent Automation System.
-- **Internet Access:** You will redirect a domain or subdomain to your public IP (Must be static IP). This will be the public access point to your secure network.
-- **Server UI:** The server UI provides a control panel to monitor and manage your HIAS network including the [Emergency Assistance Robot](https://github.com/COVID-19-AI-Research-Project/COVID19-Emegency-Assistance-Robot "Emergency Assistance Robot"), the [IoT Devices](https://github.com/COVID-19-AI-Research-Project/COVID19-IoT-Devices "IoT Devices") & AI projects.
+[![VERSION](https://img.shields.io/badge/VERSION-0.0.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.0.0) [![DEV BRANCH](https://img.shields.io/badge/DEV%20BRANCH-0.1.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.1.0) [![Issues Welcome!](https://img.shields.io/badge/Contributions-Welcome-lightgrey.svg)](CONTRIBUTING.md)  [![Issues](https://img.shields.io/badge/Issues-Welcome-lightgrey.svg)](issues) [![LICENSE](https://img.shields.io/badge/LICENSE-MIT-blue.svg)](LICENSE)
 
 &nbsp;
 
-# The HIAS Network
-![GeniSys AI Server Hardware](Media/Images/GeniSysAiHardware.jpg)
+# Table Of Contents
 
-An open-source network of modular intelligent/smart devices, robotics/drones and Artificial Intelligence applications. 
+- [Introduction](#introduction)
+- [Key Features](#key-features)
+- [HIAS Network Map](#hias-network-map)
+- [HIAS UI](#hias-ui)
+- [Installation](#installation)
+- [Acknowledgement](#acknowledgement)
+- [Contributing](#contributing)
+    - [Contributors](#contributors)
+- [Versioning](#versioning)
+- [License](#license)
+- [Bugs/Issues](#bugs-issues)
 
-Provides a local IoT broker allowing device to device/device to application communication for data transfer, device management and automation. 
+&nbsp;
 
-Full Hospital Information System (HIS) / Hospital Management System (HMS).
+# Introduction
 
-The core of the network, providing the systems and services required to manage a Hospital Intelligent Automation System. 
+The **Peter Moss Leukemia AI Research HIAS** is an open-source Hospital Intelligent Automation System. The system's server powers an intelligent network using a locally hosted, encrypted IoT server and proxy. 
 
-## The HIAS UI
+The server UI provides the capabalities of managing a network of open-soruce intelligent devices and applications. These devices/applications and databases all run and communicate on the local network. This means that premises have more control and security when it comes to their hardware, data and storage.   
+
+__This project is a proof of concept, and is still a work in progress, however our plan is to work with a local medical/health center or hospital to do a pilot project.__
+
+&nbsp;
+
+# Key Features
+
+- **Local Web Server** 
+    - Locally hosted webserver using NGINX.
+- **Proxy**
+    - Secure access to local devices from the outside world.
+- **High Grade SSL Encryption:** 
+    - High grade (A+) encryption for the web server, proxy and network.
+- **Server UI:** 
+    - A control panel to monitor and manage your HIAS network.
+- **Local IoT Broker** 
+    - Local and private MQTT/Websockets broker based on the  [iotJumpway Broker](https://github.com/iotJumpway/Broker "iotJumpway Broker").
+- **Facial Identification Server:** 
+    - Facial identification systems based on [tassAI](https://github.com/TASS-AI/Tass-History "tassAI").
+- **Natural Language Understanding (NLU) Server:** 
+    - Natural Language Understanding server based on [GeniSysAI](https://github.com/GeniSysAI/ "GeniSysAI").
+
+&nbsp;
+
+# HIAS Network Map
+![GeniSys HIAS - Hospital Intelligent Automation System](Media/Images/HIAS-Network.png) 
+
+&nbsp;
+
+# HIAS UI
 ![HIAS UI](Media/Images/dashboard.png)
-The HIAS UI is the central control panel for the server, and all of the modular devices and applications that can be installed on it. The main features of the UI are as follows:
-
-- Manage/monitor the server.
-- Manage/monitor IoT devices and applications.
-- Manage/monitor the robots.
-- Manage/monitor the AI models.
-- Manage/monitor the HIS (Hospital Information System) / HMS (Hospital Management System).
-- Manage/monitor hospital security.
+The HIAS UI is the central control panel for the server, and all of the modular devices and applications that can be installed on it.
 
 &nbsp;
 
