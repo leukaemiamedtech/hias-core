@@ -10,12 +10,12 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
     sudo sed -i -- 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php/7.2/fpm/php.ini
     sudo systemctl restart php7.2-fpm
     read -p "? Please provide the full domain name of your server, including subdomain: " domain
-    read -p "? Please provide the public IP of your network: " ip
+    read -p "? Please provide the IP of your server, including subdomain: " ip
     if [ "$domain" != "" ]; then
         sudo cp Root/etc/nginx/sites-available/default /etc/nginx/sites-available/default
         sudo sed -i -- "s#root /var/www/html;#root /fserver/var/www/html;#g" /etc/nginx/sites-available/default
         sudo sed -i -- "s/YourSubdomain.YourDomain.TLD/$domain/g" /etc/nginx/sites-available/default
-        sudo sed -i -- "s/YourPublicNetworkIP/$ip/g" /etc/nginx/sites-available/default
+        sudo sed -i -- "s/proxy_pass http://###.###.#.##:8080/$1;/proxy_pass http://$ip:8080/g" /etc/nginx/sites-available/default
         sudo cp /etc/nginx/nginx.conf /etc/nginx/nginx.tls-old
         sudo sed -i -- "s/ssl_protocols TLSv1 TLSv1.1 TLSv1.2;/ssl_protocols TLSv1.2 TLSv1.3;/g" /etc/nginx/nginx.conf
         sudo sed -i -- "s/ssl_protocols TLSv1 TLSv1.1 TLSv1.2;/ssl_protocols TLSv1.2 TLSv1.3;/g" /etc/letsencrypt/options-ssl-nginx.conf

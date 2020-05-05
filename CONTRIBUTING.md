@@ -1,33 +1,31 @@
 # Peter Moss COVID-19 AI Research Project
-## Contributing to the HIAS - Hospital Intelligent Automation System project
+## Contributing to the COVID-19 Medical Support System Server project
 
 We encourage bug fixes and enhancements submitted by the community and there are a number of ways you can contribute towards this repository.
-
-# Repository Issues
 
 The first step is to head to our repository issues tab and decide how you would like to contribute.
 
 ![Repository Issues](Media/Images/repo-issues.png)
 
-## Bug reports
+# Bug reports
 ![Bug Reports](Media/Images/bug-report.png)
 
-If you would like to contribute bug fixes or make the team aware of bugs you have identified in the project, please raise a **Bug report** issue in the [issues section](issues/new/choose) section. A template is provided that will allow you to provide your suggestions for your bug report / bug fix(es) which will be reviewed by the team who will communicate with you through your issue.
+If you would like to contribute bug fixes or make the team aware of bugs you have identified in the project, please raise a **Bug report** issue in the [COVID19-Medical-Support-System-Server](https://github.com/COVID-19-AI-Research-Project/COVID19-Medical-Support-System-Server/issues/new/choose) section. A template is provided that will allow you to provide your suggestions for your bug report / bug fix(es) which will be reviewed by the team who will communicate with you through your issue.
 
 Bug fix issues are the first step to creating a pull request for bug fixes, once you have created your issue and it has been approved you can proceed with your bug fixes.
 
 &nbsp; 
 
-## Feature requests
+# Feature requests
 ![Bug Reports](Media/Images/feature-request.png)
 
-If you would like to suggest a new feature/ new features for this project, please raise a **Feature request** issue in the [issues section](issues/new/choose) section. A template is provided that will allow you to provide your suggestions for your feature request which will be reviewed by the team who will communicate through your issue.
+If you would like to suggest a new feature/ new features for this project, please raise a **Feature request** issue in the [COVID19-Medical-Support-System-Server](https://github.com/AMLResearchProject/ALL-Detection-System-2020/issues/new) section. A template is provided that will allow you to provide your suggestions for your feature request which will be reviewed by the team who will communicate through your issue.
 
 &nbsp;
 
-## Feature proposals
+# Feature proposals
 
-If you would like to contribute new features to the project, please raise a **Feature proposal** issue in the [issues section](issues/new/choose) section. A template is provided that will allow you to provide your suggestions for your feature proposal which will be reviewed by the team who will communicate through your issue.
+If you would like to contribute new features to the project, please raise a **Feature proposal** issue in the [COVID19-Medical-Support-System-Server](https://github.com/AMLResearchProject/ALL-Detection-System-2020/issues/new) section. A template is provided that will allow you to provide your suggestions for your feature proposal which will be reviewed by the team who will communicate through your issue.
 
 Feature proposals are the first step to creating a pull request for new features, once you have created your issue and it has been approved you can proceed with your feature proposal. 
 
@@ -39,137 +37,6 @@ Feature proposals are the first step to creating a pull request for new features
 If you are going to be contributing code or documentation to the repository you will need to make a fork of the current development branch. The current development branch will always be the highest branch or master. Once you have created a fork of the repository, you will be able to clone the repository to a location on your development machine using terminal and Git or Github Desktop if using Windows.
 
 &nbsp;
-
-# Repository Structures
-
-We have two main types of repository layouts: single projects and multiple project repositories.
-
-In a multiple project repository the file structure for AI projects is as follows:
-
-```
-- Project Root (Directory)
-    - Project README (File)
-    - Projects (Directory) 
-        - Project 1 (Directory)
-            - Classes (Directory) 
-                - Helpers (File)
-                - Data (File)
-                - Model (File)
-            - Documentation (Directory)
-                - Installation
-            - Logs (Directory)
-                - Logfiles
-            - Media
-                - Images (Directory) 
-                - Videos (Directory) 
-            - Model
-                - Model (File)
-                - Weights (File)
-            - Scripts
-                - Installation (File)
-            - Project README (File) 
-        - Project 2 (Directory)
-            - Classes (Directory) 
-                - Helpers (File)
-                - Data (File)
-                - Model (File)
-            - Documentation (Directory)
-                - Installation
-            - Logs (Directory)
-                - Logfiles
-            - Media
-                - Images (Directory) 
-                - Videos (Directory) 
-            - Model
-                - Model (File)
-                - Weights (File)
-            - Scripts
-                - Installation (File)
-            - Project README (File)
-```
-
-In a single project repository the file structure for AI projects is as follows:
-
-```
-- Project Root (Directory)
-    - Classes (Directory) 
-        - Helpers (File)
-        - Data (File)
-        - Model (File)
-    - Documentation (Directory)
-        - Installation
-    - Logs (Directory)
-        - Logfiles
-    - Media
-        - Images (Directory) 
-        - Videos (Directory) 
-    - Model
-        - Model (File)
-        - Weights (File)
-    - Scripts
-        - Installation (File)
-    - Project README (File) 
-```
-
-# Documentation
-All projects should have documentation, changes you make to the code in the repository or new projects that you make should also have documentation. In the structures above you can see the **Documentation** directories, and the **Installation** file. This installation file should contain a step by step guide to how to install your project, while directions of use will be a high level tutorial in your project README.  If you are contributing an existing repository you will ensure that these documents are updated to reflect your changes. 
-
-# Installation Scripts
-You will notice the **Scripts** directory above, this is home to any scripts that make it easier for the end use to set up and / or use your project. By default every project must have an installation script when installations are required. If you are contributing an existing repository you will ensure that these scripts are updated to reflect your changes. 
-
-# Naming
-We use capital letters for our directory and file names (except images), we would like this to stay uniform across all of our projects. Please use descriptive but short names where possible, and make sure you do not use spaces in directory and file names. 
-
-# Attribution
-Whenever relevant you should add yourself to the contributors section of the READMEs. If you have a public profile on the Peter Moss Leukemia AI Research website, you should use this in your link. Please see the contributing section of any of our READMEs for examples.
-
-# .md Files
-Each .md file in the repository should use the same header. An example of this is as follows:
-
-```
-# Peter Moss COVID-19 AI Research Project
-## COVID-19 HIAS - Hospital Intelligent Automation System
-### Sub project
-[![COVID-19 HIAS - Hospital Intelligent Automation System Sub Project](Media/Images/HIAS-Hospital-Intelligent-Automation-System.png)](https://github.com/COVID-19-AI-Research-Project/HIAS-Hospital-Intelligent-Automation-System)
-```
-
-Each .md file in the repository should also use the same footer, with the excpetions of the contributors. If you contribute directly to the code or documentation you should update this area with your details.
-
-```
-&nbsp;
-
-# Contributing
-
-The Peter Moss Acute Myeloid & Lymphoblastic Leukemia AI Research project encourages and welcomes code contributions, bug fixes and enhancements from the Github.
-
-Please read the [CONTRIBUTING](../CONTRIBUTING.md "CONTRIBUTING") document for a full guide to forking our repositories and submitting your pull requests. You will also find information about our code of conduct on this page.
-
-## Contributors
-
-- **PROJECT AUTHOR:** [Adam Milton-Barker](https://www.leukemiaresearchassociation.ai.com/team/adam-milton-barker "Adam Milton-Barker") - [Peter Moss Leukemia AI Research](https://www.leukemiaresearchassociation.ai "Peter Moss Leukemia AI Research") Founder & Intel Software Innovator, Sabadell, Spain
-
-- **PROJECT AUTHOR:** [Aniruddh Sharma](https://www.leukemiaresearchassociation.ai.com/team/AniruddhSharma "Aniruddh Sharma") - [Peter Moss Leukemia AI Research](https://www.leukemiaresearchassociation.ai "Peter Moss Leukemia AI Research") R&D, Ahmedabad, India
-
-&nbsp;
-
-# Versioning
-
-We use SemVer for versioning. For the versions available, see [Releases](../releases "Releases").
-
-&nbsp;
-
-# License
-
-This project is licensed under the **MIT License** - see the [LICENSE](../LICENSE "LICENSE") file for details.
-
-&nbsp;
-
-# Bugs/Issues
-
-We use the [repo issues](issues "repo issues") to track bugs and general requests related to using this project. See [CONTRIBUTING](../CONTRIBUTING.md "CONTRIBUTING") for more info on how to submit bugs, feature requests and proposals.
-```
-
-The project README contributors should contain a list of all contributors in the entire repository. 
 
 # Push changes to forked repository
 
@@ -220,12 +87,12 @@ When you are satisfied with your changes you can submit a pull request that will
 ## Pull Request Process
 
 1. Ensure all documentation has been updated and matches the style of our repository layouts, including repository directory structures etc.
-2. Add new README.md files for new directories / __ init __.py files for empty directories.
-3. Ensure that your READMEs, documentation and code match the format/design of the rest of the repoistory.
-4. Include the project header banner on all documentation pages / READMEs.
-5. Incude the Contributing, Versioning, Licensing, Bugs/Issues information in all READMEs and documentation.
-6. Do not ever upload licensed software or images that you do not own the rights to.
-7. Submit your Pull Request with an accurate description of the changes you have made.
+2. Ensure any install or build dependencies are removed before the end of the layer when doing a build.
+3. Add new README.md files for new directories / __ init __.py files for empty directories.
+4. Ensure that your READMEs, documentation and code match the format/design of the rest of the repoistory.
+5. Include the project header banner on all documentation pages / READMEs.
+6. Incude the Contributing, Versioning, Licensing, Bugs/Issues information in all READMEs and documentation.
+7. Submit your Pull Request with an accurate descrription of the changes you have made.
 8. Your Pull Request will be reviewed by the team.
 
 &nbsp;

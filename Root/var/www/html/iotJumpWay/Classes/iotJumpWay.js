@@ -1,7 +1,7 @@
 var iotJumpWayWebSoc = {
     client: null,
     connected: false,
-    host: "",
+    host: "genisysai.iotjumpway.com",
     port: 9001,
     useTLS: true,
     cleansession: true,

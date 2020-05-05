@@ -3,6 +3,7 @@ header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT
 header("strict-transport-security: max-age=15768000");ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+include dirname(__FILE__) . '/../../Classes/Htpasswd.php';
     class Core
     {
         private $dbname, $dbusername, $dbpassword;
@@ -10,7 +11,7 @@ error_reporting(E_ALL);
 
         public function __construct()
         {
-            $config = json_decode(file_get_contents("/var/www/Classes/Core/confs.json", true));
+            $config = json_decode(file_get_contents("/fserver/var/www/Classes/Core/confs.json", true));
 
             $this->config = $config;
             $this->dbname = $config->dbname;
@@ -48,13 +49,12 @@ error_reporting(E_ALL);
     class aiInit
     {
         private $_user = null;
-        public $_secCon, $_emarcam, $_confs, $_auth, $_helpers, $_pageDetails;
+        public $_secCon, $_confs, $_auth, $_helpers, $_pageDetails;
 
         function __construct(Core $_secCon, $_pageDetails)
         {
             $this->setCookie();
 
-            $this->_emarcam = $_secCon->config->emar;
             $this->_secCon = $_secCon->dbcon;
             $this->_key = $_secCon->config->key;
 
