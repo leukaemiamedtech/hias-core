@@ -7,7 +7,7 @@ read -p "? This script will install MySQL on your device. Are you ready (y/n)? "
 if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
     echo "- Installing MySQL"
     echo "! Make sure you keep note of all passwords etc you create."
-    sudo apt-get install mysql-server
+    sudo apt install mysql-server
     sudo mysql_secure_installation
     read -p "! Enter your mysql root password specified during set up: " rpassword
     read -p "! Enter a new phpMyAdmin database user: " dbusername

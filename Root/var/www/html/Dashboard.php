@@ -6,9 +6,14 @@ $pageDetails = [
 
 include dirname(__FILE__) . '/../Classes/Core/init.php';
 include dirname(__FILE__) . '/../Classes/Core/GeniSys.php';
+include dirname(__FILE__) . '/TASS/Classes/TASS.php';
 
 $_GeniSysAi->checkSession();
 $stats = $_GeniSysAi->getStats();
+$TDevice = $TASS->getDevice(1);
+
+$host = $_SERVER['HTTP_HOST'];
+preg_match("/[^\.\/]+\.[^\.\/]+$/", $host, $matches);
 
 ?>
 
@@ -199,24 +204,16 @@ $stats = $_GeniSysAi->getStats();
 						<div class="panel panel-default card-view">
 							<div class="panel-wrapper collapse in">
 								<div class="panel-body">
-									<img src="http://YourStreamIP:YourStreamPort/stream.mjpg" style="width: 100%;" />
+									<img src="<?=$domain; ?>/TASS/Live/<?=$_GeniSys->_helpers->oDecrypt($TDevice["sportf"]); ?>" style="width: 100%;" />
 								</div>
 							</div>
 						</div>	
 					</div>
 				</div>
-				<!-- /Row -->
+				
 			</div>
 			
-			<!-- Footer -->
-			<footer class="footer container-fluid pl-30 pr-30">
-				<div class="row">
-					<div class="col-sm-12">
-						<p>2020 &copy; Peter Moss Leukemia AI Research. Powered by HIAS.</p>
-					</div>
-				</div>
-			</footer>
-			<!-- /Footer -->
+			<?php include dirname(__FILE__) . '/Includes/Footer.php'; ?>
 			
 		</div>
 

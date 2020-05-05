@@ -54,13 +54,15 @@ class Application():
         self.mqttTLS = "/etc/ssl/certs/DST_Root_CA_X3.pem"
         self.mqttHost = self.confs['host']
         self.mqttPort = self.confs['port']
-
-        self.appStatusCallback = None
-        self.deviceStatusCallback = None    
-        self.deviceSensorCallback = None
+        
+        self.appCommandsCallback = None
+        self.appSensorCallback = None
+        self.appStatusCallback = None 
+        self.appTriggerCallback = None
         self.deviceCommandsCallback = None
-        self.deviceNotificationsCallback = None
-        self.deviceNotificationsCallback = None
+        self.deviceSensorCallback = None
+        self.deviceStatusCallback = None
+        self.deviceTriggerCallback = None
 
         self.Helpers.logger.info("JumpWayMQTT Application Initiated.")
     
@@ -153,15 +155,15 @@ class Application():
         self.mqttClient.publish(applicationChannel,json.dumps(data))
         print("Published to Application "+channel+" Channel")
     
-    def appChannelSub(self, channelID, qos=0):
+    def appChannelSub(self, application, channelID, qos=0):
                 
-        if self.confs['aid'] == "All":
+        if application == "#":
             applicationChannel = '%s/Applications/#' % (self.confs['lid'])
             self.mqttClient.subscribe(applicationChannel, qos=qos)
             self.Helpers.logger.info("-- Subscribed to all Application Channels")
             return True
         else:
-            applicationChannel = '%s/Applications/%s/%s' % (self.confs['lid'], self.confs['aid'], channelID)
+            applicationChannel = '%s/Applications/%s/%s' % (self.confs['lid'], application, channelID)
             self.mqttClient.subscribe(applicationChannel, qos=qos)
             self.Helpers.logger.info("-- Subscribed to Application " + channelID + " Channel")
             return True
@@ -170,7 +172,7 @@ class Application():
                 
         deviceChannel = '%s/Devices/%s/%s/%s' % (self.confs['lid'], zone, device, channel)
         self.mqttClient.publish(deviceChannel, json.dumps(data))
-        print("Published to Device "+channel+" Channel")
+        self.Helpers.logger.info("-- Published to Device "+channel+" Channel")
     
     def appDeviceChannelSub(self, zone, device, channel, qos=0):
     
@@ -181,12 +183,18 @@ class Application():
             print("** Device ID (device) is required!")
             return False
         elif channel == None:
-                print("** Channel ID (channel) is required!")
-                return False
+            print("** Channel ID (channel) is required!")
+            return False
         else:   
-            deviceChannel = '%s/Devices/%s/%s/%s' % (self.confs['lid'], zone, device, channel)
-            self.mqttClient.subscribe(deviceChannel, qos=qos)
-            print("Subscribed to Device "+channel+" Channel")
+            if device == "#":
+                deviceChannel = '%s/Devices/#' % (self.confs['lid'])
+                self.mqttClient.subscribe(deviceChannel, qos=qos)
+                self.Helpers.logger.info("-- Subscribed to all devices")
+            else:
+                deviceChannel = '%s/Devices/%s/%s/%s' % (self.confs['lid'], zone, device, channel)
+                self.mqttClient.subscribe(deviceChannel, qos=qos)
+                self.Helpers.logger.info("-- Subscribed to Device "+channel+" Channel")
+            
             return True
 
     def on_publish(self, client, obj, mid):

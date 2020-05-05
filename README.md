@@ -24,7 +24,7 @@
 
 # Introduction
 
-The **Peter Moss Leukemia AI Research HIAS** is an open-source Hospital Intelligent Automation System. The system's server powers an intelligent network using a locally hosted, encrypted IoT server and proxy. 
+The **Peter Moss Leukemia AI Research HIAS Network** is an open-source Hospital Intelligent Automation System. The system's server powers an intelligent network using a locally hosted, encrypted IoT server and proxy. 
 
 The server UI provides the capabalities of managing a network of open-soruce intelligent devices and applications. These devices/applications and databases all run and communicate on the local network. This means that premises have more control and security when it comes to their hardware, data and storage.   
 
@@ -34,31 +34,51 @@ __This project is a proof of concept, and is still a work in progress, however o
 
 # Key Features
 
-- **Local Web Server** 
+- **Local Web Server (Complete)** 
     - Locally hosted webserver using NGINX.
-- **Proxy**
+- **Proxy (Complete)**
     - Secure access to local devices from the outside world.
-- **High Grade SSL Encryption:** 
+- **High Grade SSL Encryption (Complete)** 
     - High grade (A+) encryption for the web server, proxy and network.
-- **Server UI:** 
+- **Server UI (Work In Progress)** 
     - A control panel to monitor and manage your HIAS network.
-- **Local IoT Broker** 
+- **Local IoT Broker (Complete)** 
     - Local and private MQTT/Websockets broker based on the  [iotJumpway Broker](https://github.com/iotJumpway/Broker "iotJumpway Broker").
-- **Facial Identification Server:** 
+- **Facial Identification Server (Complete)** 
     - Facial identification systems based on [tassAI](https://github.com/TASS-AI/Tass-History "tassAI").
-- **Natural Language Understanding (NLU) Server:** 
+- **Natural Language Understanding (NLU) Server (In Redevelopment)** 
     - Natural Language Understanding server based on [GeniSysAI](https://github.com/GeniSysAI/ "GeniSysAI").
 
 &nbsp;
 
 # HIAS Network Map
-![GeniSys HIAS - Hospital Intelligent Automation System](Media/Images/HIAS-Network.png) 
+![HIAS Network Map](Media/Images/HIAS-Network.png) 
 
 &nbsp;
 
 # HIAS UI
 ![HIAS UI](Media/Images/dashboard.png)
-The HIAS UI is the central control panel for the server, and all of the modular devices and applications that can be installed on it.
+The HIAS UI is the central control panel for the server, and all of the modular devices and applications that can be installed on it. 
+
+**COVID-19 data in the screen shot is currently dummy data. One of the HIAS modules will be a data-analysis system which will power this plugin.**
+
+&nbsp;
+
+# HIAS IoT Network
+![HIAS IoT Network](Media/Images/HIAS-IoT-Dashboard.png)
+The HIAS IoT network is powered by a new, fully open-source version of the [iotJumpWay](https://www.iotJumpWay.com "iotJumpWay"). The HIAS iotJumpway dashboard is your control panel for managing all of your network iotJumpWay zones, devices, sensors/actuators and applications. The modular systems that we build to be compatible with this network will all create their own iotJumpWay applications etc during installation, you will be able to manage all of these applications and devices through the iotJumpWay dashboard. 
+
+&nbsp;
+
+# HIAS Facial Recognition
+![HIAS Facial Recognition](Media/Images/HIAS-TASS.png)
+The HIAS facial recognition system is based on [tassAI](https://www.facebook.com/TASSNetwork/ "tassAI"). The facial recognition system uses cameras attached to devices on the network and processes frames from the cameras in real-time, before streaming the processed framed to a local server endpoint. Multiple TASS devices can be configured and there will soon be integration with popular IP cameras like Foscam etc.  
+
+&nbsp;
+
+#  HIAS Users
+![GeniSys AI Server PHP config](Media/Images/HIAS-Users.png)
+HIAS users can be created using the HIS Staff system. Users can be granted admin privileges allowing them access to further restricted areas of the UI. Each user has a connected iotJumpWay application which will later be used in our HIAS Android application.
 
 &nbsp;
 

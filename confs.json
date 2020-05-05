@@ -5,18 +5,29 @@
         },
         "host": "",
         "port": 8883,
+        "ip": "localhost",
         "lid": 0,
         "aid": 0,
         "an": "",
         "un": "",
-        "pw": ""
+        "pw": "",
+        "paid": 0,
+        "pan": "",
+        "pun": "",
+        "ppw": "",
+        "mdb": "",
+        "mdbu": "",
+        "mdbp": "",
+        "dbname": "",
+        "dbuser": "",
+        "dbpass": ""
     },
     "tass": {
         "core": {
             "allowed": [".jpg", ".JPG", ".png", ".PNG"]
         },
         "ip": "",
-        "data": "Data/Security/",
+        "data": "/fserver/models/TASS/Data/Security/",
         "dlib": "/fserver/models/TASS/shape_predictor_68_face_landmarks.dat",
         "dlibr": "/fserver/models/TASS/dlib_face_recognition_resnet_model_v1.dat",
         "lid": 0,

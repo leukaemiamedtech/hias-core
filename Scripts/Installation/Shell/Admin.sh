@@ -6,6 +6,8 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
     echo "- Creating GeniSysAI admin user"
     read -p "! Enter your desired username (No spaces or special characters): " username
     read -p "! Enter your location ID: " lid
+    sudo apt install apache2-utils
+    sudo touch /etc/nginx/tass/htpasswd
     php Scripts/Installation/PHP/Admin.php "$username" "$lid"
     #python Scripts/Installation/Python/Admin.py "$username"
 else

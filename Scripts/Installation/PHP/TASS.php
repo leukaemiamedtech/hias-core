@@ -45,13 +45,15 @@ class Core
 
 class TASS{
 
-    public function __construct(Core $core, $location, $zone)
+    public function __construct(Core $core, $location, $zone, $ip, $mac)
     {
         $this->confs = $core->confs;
         $this->key = $core->key;
         $this->conn = $core->dbcon;
         $this->lid = $location;
         $this->zn = $zone;
+        $this->ip = $ip;
+        $this->mac = $mac;
     }  
 		
     public function zone(){  
@@ -114,7 +116,7 @@ class TASS{
             ':zid' => $this->zid,
             ':name' => "TASS",
             ':mqttu' =>$this->encrypt($mqttUser),
-            ':mqttp' =>$this->encrypt($mqttHash),
+            ':mqttp' =>$this->encrypt($mqttPass),
             ':apub' => $this->encrypt($apiKey),
             ':aprv' => $this->encrypt($apiSecretKey),
             ':time' => time()
@@ -179,13 +181,48 @@ class TASS{
             ':id'=>$this->lid
         ));
 
+        $pdoQuery = $this->conn->prepare("
+            INSERT INTO  tass  (
+                `name`,
+                `lid`,
+                `zid`,
+                `did`,
+                `ip`,
+                `mac`,
+                `sport`,
+                `sportf`,
+                `sckport`
+            )  VALUES (
+                :name,
+                :lid,
+                :zid,
+                :did,
+                :ip,
+                :mac,
+                :sport,
+                :sportf,
+                :sckport
+            )
+        ");
+        $pdoQuery->execute([
+            ":name" => "TASS",
+            ":lid" => $this->lid,
+            ":zid" => $this->zid,
+            ":did" => $this->did,
+            ":ip" => $this->encrypt($this->ip),
+            ":mac" => $this->encrypt($this->mac),
+            ":sport" => $this->encrypt("8080"),
+            ":sportf" => $this->encrypt("stream.mjpg"),
+            ":sckport" => $this->encrypt("8181")
+        ]);
+
         echo "";
         echo "!! NOTE THESE CREDENTIALS AND KEEP THEM IN A SAFE PLACE !!\n";
         echo "! Device, " . $this->zn . " has been created with ID " . $this->zid . "!\n";
-        echo "!! Your device public key is: " . $apiKey . "!\n";
-        echo "!! Your device private key is: " . $apiSecretKey . "\n";
-        echo "!! Your device MQTT username is: " . $mqttUser . "\n";
-        echo "!! Your device MQTT password is: " . $mqttPass . "\n";
+        echo "!! Your device public key is: " . $apiKey . " !!\n";
+        echo "!! Your device private key is: " . $apiSecretKey . " !!\n";
+        echo "!! Your device MQTT username is: " . $mqttUser . " !!\n";
+        echo "!! Your device MQTT password is: " . $mqttPass . " !!\n";
         echo "";
         return True;
     }   
@@ -267,7 +304,7 @@ class TASS{
 
 
 $Core  = new Core();
-$TASS = new TASS($Core, $argv[1], $argv[2]);
+$TASS = new TASS($Core, $argv[1], $argv[2], $argv[3], $argv[4]);
 $TASS->zone();
 $TASS->device();
 
