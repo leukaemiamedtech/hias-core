@@ -54,10 +54,34 @@ var GeniSys = {
             Logging.logMessage("Core", "Forms", msg);
             GeniSys.ShowModel("GeniSysAi", "Failed", msg);
         }
+    },
+    ResetPass: function() {
+        $.post(window.location.href, $("#form").serialize(),
+            function(resp) {
+                console.log(resp)
+                var resp = jQuery.parseJSON(resp);
+                switch (resp.Response) {
+                    case "OK":
+                        Logging.logMessage("Core", "Forms", "Reset OK");
+                        var modal = $(this)
+                        modal.find('.modal-title').text('New Password')
+                        modal.find('.modal-body input').val(resp.pw)
+                        break;
+                    default:
+                        msg = "Reset failed: " + resp.Message
+                        Logging.logMessage("Core", "Forms", msg);
+                        break;
+                }
+            });
     }
 };
 
 $("#GeniSysAI").on("click", "#loginsub", function(e) {
     e.preventDefault();
     GeniSys.Login();
+});
+
+$("#GeniSysAI").on("click", "#resetpass", function(e) {
+    e.preventDefault();
+    GeniSys.ResetPass();
 });

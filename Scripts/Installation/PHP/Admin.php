@@ -1,5 +1,8 @@
 <?php
 
+include 'pbkdf2.php';
+include 'Htpasswd.php';
+
 class Core
 {
     private $dbname, $dbusername, $dbpassword;
@@ -61,6 +64,9 @@ class Admin{
             $pass=$this->password(12);
             $passhash=$this->passwordHash($pass);
 
+            $htpasswd = new Htpasswd('/etc/nginx/tass/htpasswd');
+            $htpasswd->addUser($user, $pass, Htpasswd::ENCTYPE_APR_MD5);
+
             $pdoQuery = $this->conn->prepare("
                 INSERT INTO users (
                     `username`,
@@ -90,6 +96,7 @@ class Admin{
             echo "! Admin user, " . $this->user . " has been created with ID " . $this->uid . " !!\n";
             echo "!! Your username is: " . $this->user . " !!\n";
             echo "!! Your password is: " . $pass . " !!\n";
+            echo "!! THESE CREDENTIALS ARE ALSO USED FOR THE TASS STREAM AUTHENTICATION POP UP YOU WILL FACE WHEN YOU FIRST LOGIN !!\n";
             $this->application();
 
             return True;
@@ -103,8 +110,6 @@ class Admin{
 
         $apiKey = $this->apiKey(30);
         $apiSecretKey = $this->apiKey(35);
-
-        include 'pbkdf2.php';
 
         $mqttUser = $this->apiKey(12);
         $mqttPass = $this->password();
@@ -136,7 +141,7 @@ class Admin{
             ':lid' => $this->lid,
             ':uid' => $this->uid,
             ':mqttu' =>$this->encrypt($mqttUser),
-            ':mqttp' =>$this->encrypt($mqttHash),
+            ':mqttp' =>$this->encrypt($mqttPass),
             ':apub' => $this->encrypt($apiKey),
             ':aprv' => $this->encrypt($apiSecretKey),
             ':time' => time()
@@ -229,7 +234,7 @@ class Admin{
 
         echo "";
         echo "!! Application, " . $this->user . " has been created with ID " . $this->aid . " !!\n";
-        echo "!! Your application public key is: " . $apiKey . "!\n";
+        echo "!! Your application public key is: " . $apiKey . " !!\n";
         echo "!! Your application private key is: " . $apiSecretKey . " !!\n";
         echo "!! Your application MQTT username is: " . $mqttUser . " !!\n";
         echo "!! Your application MQTT password is: " . $mqttPass . " !!\n";
@@ -337,7 +342,6 @@ class Admin{
     }
 
 }
-
 
 $Core  = new Core();
 $Admin = new Admin($Core, $argv[1], $argv[2]);

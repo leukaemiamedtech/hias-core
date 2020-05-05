@@ -1,6 +1,6 @@
 # Peter Moss Leukemia AI Research
 ##  Hospital Intelligent Automation System
-[![GeniSysAI Server](../../Media/Images/HIAS-Hospital-Intelligent-Automation-System.png)](https://github.com/LeukemiaAiResearch/HIAS)
+[![Hospital Intelligent Automation System](../../Media/Images/HIAS-Hospital-Intelligent-Automation-System.png)](https://github.com/LeukemiaAiResearch/HIAS)
 
 &nbsp;
 
@@ -12,18 +12,19 @@
   - [Ubuntu Server 18.04.4 LTS](#ubuntu-server-18044-lts)
   - [Domain Name](#domain-name)
   - [Port Forwarding](#port-forwarding)
-- [Security](#security)
-  - [Remote User](#remote-user)
-  - [SSH Access](#ssh-access)
-    - [Tips](#tips)
-- [Attach Hard-Drive](#attach-hard-drive) 
-- [Clone The Repository](#clone-the-repository) 
-  - [Developer Forks](#developer-forks) 
+  - [Security](#security)
+    - [Remote User](#remote-user)
+    - [SSH Access](#ssh-access)
+      - [Tips](#tips)
+    - [UFW Firewall](#ufw-firewall) 
+    - [Fail2Ban](#fail2ban) 
+  - [Attach Hard-Drive](#attach-hard-drive) 
+  - [Clone The Repository](#clone-the-repository) 
+    - [Developer Forks](#developer-forks) 
+  - [Mongo Database](#mongo-database)
 - [Installation](#installation)  
   - [Easy Install (Recommended)](#easy-install-recommended) 
   - [Manual Install](#manual-install) 
-    - [UFW Firewall](#ufw-firewall) 
-    - [Fail2Ban](#fail2ban) 
     - [NGINX](#nginx)  
     - [Let's Encrypt](#lets-encrypt)  
     - [PHP](#php) 
@@ -31,10 +32,11 @@
     - [phpMyAdmin](#phpmyadmin) 
     - [SSL Security](#ssl-security)  
     - [File Server](#file-server)  
-    - [iotJumpWay Broker (IoT)](#iotjumpway-broker)
+    - [iotJumpWay Broker](#iotjumpway-broker)
     - [iotJumpWay Location and Application](#iotjumpway-location-and-application)
     - [Create Admin User](#create-admin-user)
-    - [Login To Your Server UI](#login-to-server-ui) 
+- [Login To Your Server UI](#login-to-server-ui) 
+- [Final iotJumpWay Setup](#final-iotjumpway-setup)
 - [Contributing](#contributing)
     - [Contributors](#contributors)
 - [Versioning](#versioning)
@@ -51,7 +53,7 @@ The following guide will take you through setting up and installing the  [ Hospi
 # Required Hardware
 For this tutorial I am using a [UP2 AI Vision Devkit](https://up-board.org/upkits/up-squared-ai-vision-kit/ "UP2 AI Vision Devkit") and a 1.5TB hard-drive for the core server hardware, but you can use any linux machine and hard-drive.
 
-![GeniSys AI Server Hardware](../../Media/Images/GeniSysAiHardware.jpg)
+![Required Hardware](../../Media/Images/GeniSysAiHardware.jpg)
 
 - 1 x Linux machine (Server)
 - 1 x 1TB (Or more) HDD
@@ -76,12 +78,10 @@ How you will do this will vary, but you need to find the area of your router tha
 
 This will open the HTTP/HTTPS ports on your router and forward the traffic to your server. In the case someone tries to access using insecure protocol (http - port 80) they will be automatically be sent to the secure port of the server (https - 443)
 
-&nbsp;
-
-# Server Security
+## Server Security
 First you will harden your server security. 
 
-## Remote User
+### Remote User
 You will create a new user for accessing your server remotely. Use the following commands to set up a new user for your machine. Follow the instructions provided and make sure you use a secure password.
 ```
 sudo adduser YourUsername 
@@ -95,10 +95,10 @@ Now open a new terminal and login to your server using the new credentials you s
 ssh YourNewUser@YourServerIP
 ```
 
-## SSH Access
+### SSH Access
 Now let's beef up server secuirty. Use the following command to set up your public and private keys. Make sure you carry out this step on your development machine, **not** on your server.
 
-### Tips
+#### Tips
 - Hit enter to confirm the default file. 
 - Hit enter twice to skip the password (Optionalm, you can use a password if you like).
 ```
@@ -159,9 +159,86 @@ The remainder of this tutorial assumes you are logged into your server. From you
 ssh YourUser@YourServerIP
 ```
 
-&nbsp;
+### UFW Firewall
+Now you will set up your firewall:
 
-# Attach Hard-Drive
+```
+sudo ufw enable
+sudo ufw disable
+```
+Now open the required ports, these ports will be open on your server, but are not open to the outside world:
+```
+sudo ufw allow 22
+sudo ufw allow 80
+sudo ufw allow 443
+sudo ufw allow 1883
+sudo ufw allow 9001
+sudo ufw allow OpenSSH
+sudo ufw allow Samba
+```
+Finally start and check the status:
+```
+sudo ufw enable
+sudo ufw status
+```
+You should see the following:
+```
+Status: active
+
+To                         Action      From
+--                         ------      ----
+OpenSSH                    ALLOW       Anywhere
+22                         ALLOW       Anywhere
+80                         ALLOW       Anywhere
+443                        ALLOW       Anywhere
+Samba                      ALLOW       Anywhere
+8883                       ALLOW       Anywhere
+9001                       ALLOW       Anywhere
+OpenSSH (v6)               ALLOW       Anywhere (v6)
+22 (v6)                    ALLOW       Anywhere (v6)
+80 (v6)                    ALLOW       Anywhere (v6)
+443 (v6)                   ALLOW       Anywhere (v6)
+Samba (v6)                 ALLOW       Anywhere (v6)
+8883 (v6)                  ALLOW       Anywhere (v6)
+9001 (v6)                  ALLOW       Anywhere (v6)
+```
+**Shell Script**  [UFW.sh](../../Scripts/Installation/Shell/UFW.sh "UFW.sh")
+
+### Fail2Ban
+Fail2Ban adds an additional layer of security, by scanning server logs and looking for unusal activity. Fail2Ban is configured to work with IPTables by default, so we will do some reconfiguration to make it work with our firewall, UFW.
+
+```
+sudo apt install fail2ban
+sudo mv /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+sudo rm /etc/fail2ban/action.d/ufw.conf
+sudo touch /etc/fail2ban/action.d/ufw.conf
+echo "[Definition]" | sudo tee -a /etc/fail2ban/action.d/ufw.conf
+echo "  enabled  = true" | sudo tee -a /etc/fail2ban/action.d/ufw.conf
+echo "  actionstart =" | sudo tee -a /etc/fail2ban/action.d/ufw.conf
+echo "  actionstop =" | sudo tee -a /etc/fail2ban/action.d/ufw.conf
+echo "  actioncheck =" | sudo tee -a /etc/fail2ban/action.d/ufw.conf
+echo "  actionban = ufw insert 1 deny from <ip> to any" | sudo tee -a /etc/fail2ban/action.d/ufw.conf
+echo "  actionunban = ufw delete deny from <ip> to any" | sudo tee -a /etc/fail2ban/action.d/ufw.conf
+sudo nano /etc/fail2ban/action.d/ufw.conf
+sudo sed -i -- "s#banaction = iptables-multiport#banaction = ufw#g" /etc/fail2ban/jail.local
+sudo nano /etc/fail2ban/jail.local
+sudo fail2ban-client restart
+sudo fail2ban-client status
+```
+You should see the following:
+```
+Shutdown successful
+Server ready
+```
+```
+Status
+|- Number of jail:      1
+`- Jail list:   sshd
+```
+
+**Shell Script**  [Fail2Ban.sh](../../Scripts/Installation/Shell/Fail2Ban.sh "Fail2Ban.sh")
+
+## Attach Hard-Drive
 Now you will attach the hard-drive to your server so that you can use it for the database and file system for your server.
 
 First off, make sure you have plugged your hard-drive into the server machine, then use the following commands:
@@ -261,9 +338,8 @@ And add the following line, make sure your use your own UUID.
 ```
 UUID=YourUUID /fserver auto nosuid,nodev,nofail,x-gvfs-show 0 0
 ```
-&nbsp;
 
-# Clone the repository
+## Clone the repository
 Clone the [HIAS](https://github.com/LeukemiaAiResearch/HIAS "HIAS") repository from the [Peter Moss Acute Myeloid & Lymphoblastic Leukemia AI Research](https://github.com/COVID-19-AI-Research-Project "Peter Moss Leukemia AI Research") Github Organization.
 
 To clone the repository and install the Hospital Intelligent Automation System, make sure you have Git installed. Now to the home directory on your server device using terminal/commandline, and then use the following command.
@@ -284,8 +360,125 @@ HIAS
 ```
 The HIAS directory is your project root directory for this tutorial.
 
-## Developer Forks
+### Developer Forks
 Developers from the Github community that would like to contribute to the development of this project should first create a fork, and clone that repository. For detailed information please view the [CONTRIBUTING](../../CONTRIBUTING.md "CONTRIBUTING") guide.
+
+## Mongo Database
+We will use [Mongo DB](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/ "Mongo DB") to store the data from our sensors.
+
+```
+sudo mkdir /fserver/libraries/mongo
+wget -P /fserver/libraries/mongo -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -
+sudo apt-get install gnupg
+echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list
+sudo apt-get update
+sudo apt-get install -y mongodb-org
+sudo systemctl start mongod
+sudo systemctl status mongod
+sudo apt-get install python-dev libmysqlclient-dev
+sudo install mysqlclient
+```
+You should see the following:
+```
+● mongod.service - MongoDB Database Server
+   Loaded: loaded (/lib/systemd/system/mongod.service; disabled; vendor preset: enabled)
+   Active: active (running) since Sat 2020-05-02 05:11:02 CEST; 23s ago
+     Docs: https://docs.mongodb.org/manual
+ Main PID: 16833 (mongod)
+   CGroup: /system.slice/mongod.service
+           └─16833 /usr/bin/mongod --config /etc/mongod.conf
+
+May 02 05:11:02 genisysai systemd[1]: Started MongoDB Database Server.
+```
+Now make sure it starts on reboot:
+```
+sudo systemctl enable mongod
+```
+You now need to start the Mongo client:
+```
+mongo
+```
+And create an admin database and user, replacing **username** and **password** with your desired username and password.
+
+```
+use admin
+db.createUser(
+      {
+          user: "username",
+          pwd: "password",
+          roles: [ "root" ]
+      }
+  )
+```
+You should see:
+```
+Successfully added user: { "user" : "username", "roles" : [ "root" ] }
+```
+Now create a iotJumpWay database and user, change **YourMongoDatabaseName** to the name you want to use for the database:
+```
+use YourMongoDatabaseName
+db.createUser(
+    {
+        user: "YourMongoDatabaseUser",
+        pwd: "YourMongoDatabasePass",
+        roles: [
+            { role: "readWrite", db: "YourMongoDatabaseName" }
+        ]
+    }
+)
+```
+Now you need to update the related settings in the Python configuration. Assuming you are in the project root:
+```
+sudo nano confs.json
+```
+And update the mongo related settings:
+```
+{
+    "iotJumpWay": {
+        "channels": {
+            "commands": "Commands"
+        },
+        "host": "",
+        "port": 8883,
+        "ip": "localhost",
+        "lid": 0,
+        "aid": 0,
+        "an": "",
+        "un": "",
+        "pw": "",
+        "paid": 0,
+        "pan": "",
+        "pun": "",
+        "ppw": "",
+        "mdb": "YourMongoDatabaseName",
+        "mdbu": "YourMongoDatabaseUser",
+        "mdbp": "YourMongoDatabasePass",
+        "dbname": "",
+        "dbuser": "",
+        "dbpass": ""
+    },
+    "tass": {
+        "core": {
+            "allowed": [".jpg", ".JPG", ".png", ".PNG"]
+        },
+        "ip": "",
+        "data": "/fserver/models/TASS/Data/Security/",
+        "dlib": "/fserver/models/TASS/shape_predictor_68_face_landmarks.dat",
+        "dlibr": "/fserver/models/TASS/dlib_face_recognition_resnet_model_v1.dat",
+        "lid": 0,
+        "zid": 0,
+        "did": 0,
+        "sid": 0,
+        "port": 8080,
+        "socket": {
+            "ip": "",
+            "port": 8181
+        },
+        "threshold": 0.6,
+        "vid": 0
+    }
+}
+```
 
 &nbsp;
 
@@ -305,10 +498,12 @@ The easiest way to install the Medcial Support Server is to use the installation
 - [phpMyAdmin.sh](../../Scripts/Installation/Shell/phpMyAdmin.sh "phpMyAdmin.sh"): Installs phpMyAdmin.
 - [SSL.sh](../../Scripts/Installation/Shell/Finalize.sh "SSL.sh"): Removes insecure SSL libraries.
 - [Samba.sh](../../Scripts/Installation/Shell/Finalize.sh "Samba.sh"): Sets up a Samba server.
-- [iotJumpWayLocation.sh](../../Scripts/Installation/Shell/iotJumpWay.sh "iotJumpWayLocation.sh"): Sets up the iotJumpWay Location.
 - [iotJumpWay.sh](../../Scripts/Installation/Shell/iotJumpWay.sh "iotJumpWay.sh"): installs iotJumpWay.
-- [Finalize.sh](../../Scripts/Installation/Shell/Finalize.sh "Finalize.sh"): Finalizes server setup.
+- [iotJumpWayLocation.sh](../../Scripts/Installation/Shell/iotJumpWay.sh "iotJumpWayLocation.sh"): Sets up the iotJumpWay Location.
+- [TASS.sh](../../Scripts/Installation/Shell/TASS.sh "TASS.sh"): installs TASS dependencies.
+- [TASSIoT.sh](../../Scripts/Installation/Shell/iotJumpWay.sh "TASSIoT.sh"): Sets up the TASS iotJumpWay device.
 - [Admin.sh](../../Scripts/Installation/Shell/Admin.sh "Admin.sh"): creates your admin account.
+- [Finalize.sh](../../Scripts/Installation/Shell/Finalize.sh "Finalize.sh"): Finalizes server setup.
 
 To do a continuous install, use the following command from the project root:
 
@@ -318,89 +513,14 @@ sh Scripts/Installation/Shell/Install.sh
 
 **Shell Script** [Install.sh](../../Scripts/Installation/Shell/Install.sh "Install.sh")
 
-You may find additional debug information in the Manual Install guide below.
+**PLEASE NOTE** Once you have completed an easy install, you have to take the following steps:
+
+- Update all of the configuration files with the credentials created during the installation. You will find the configuration files mentioned in the manual installation guide below.
+- You will find information that will help you debug and/or understand the auto installation process below in the manual installation guide.
+- Continue to [Login To Your Server UI](#login-to-server-ui) to continue the tutorial.
 
 ## Manual Install
 If you would like to manually install everything for more understanding, you can use the following guides.
-
-### UFW Firewall
-Now you will set up your firewall:
-
-```
-sudo ufw enable
-sudo ufw disable
-```
-Now open the required ports, these ports will be open on your server, but are not open to the outside world:
-```
-sudo ufw allow 22
-sudo ufw allow 80
-sudo ufw allow 443
-sudo ufw allow 1883
-sudo ufw allow 9001
-sudo ufw allow OpenSSH
-sudo ufw allow Samba
-```
-Finally start and check the status:
-```
-sudo ufw enable
-sudo ufw status
-```
-You should see the following:
-```
-Status: active
-
-To                         Action      From
---                         ------      ----
-OpenSSH                    ALLOW       Anywhere
-22                         ALLOW       Anywhere
-80                         ALLOW       Anywhere
-443                        ALLOW       Anywhere
-Samba                      ALLOW       Anywhere
-8883                       ALLOW       Anywhere
-9001                       ALLOW       Anywhere
-OpenSSH (v6)               ALLOW       Anywhere (v6)
-22 (v6)                    ALLOW       Anywhere (v6)
-80 (v6)                    ALLOW       Anywhere (v6)
-443 (v6)                   ALLOW       Anywhere (v6)
-Samba (v6)                 ALLOW       Anywhere (v6)
-8883 (v6)                  ALLOW       Anywhere (v6)
-9001 (v6)                  ALLOW       Anywhere (v6)
-```
-**Shell Script**  [UFW.sh](../../Scripts/Installation/Shell/UFW.sh "UFW.sh")
-
-### Fail2Ban
-Fail2Ban adds an additional layer of security, by scanning server logs and looking for unusal activity. Fail2Ban is configured to work with IPTables by default, so we will do some reconfiguration to make it work with our firewall, UFW.
-
-```
-sudo apt install fail2ban
-sudo mv /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
-sudo rm /etc/fail2ban/action.d/ufw.conf
-sudo touch /etc/fail2ban/action.d/ufw.conf
-echo "[Definition]" | sudo tee -a /etc/fail2ban/action.d/ufw.conf
-echo "  enabled  = true" | sudo tee -a /etc/fail2ban/action.d/ufw.conf
-echo "  actionstart =" | sudo tee -a /etc/fail2ban/action.d/ufw.conf
-echo "  actionstop =" | sudo tee -a /etc/fail2ban/action.d/ufw.conf
-echo "  actioncheck =" | sudo tee -a /etc/fail2ban/action.d/ufw.conf
-echo "  actionban = ufw insert 1 deny from <ip> to any" | sudo tee -a /etc/fail2ban/action.d/ufw.conf
-echo "  actionunban = ufw delete deny from <ip> to any" | sudo tee -a /etc/fail2ban/action.d/ufw.conf
-sudo nano /etc/fail2ban/action.d/ufw.conf
-sudo sed -i -- "s#banaction = iptables-multiport#banaction = ufw#g" /etc/fail2ban/jail.local
-sudo nano /etc/fail2ban/jail.local
-sudo fail2ban-client restart
-sudo fail2ban-client status
-```
-You should see the following:
-```
-Shutdown successful
-Server ready
-```
-```
-Status
-|- Number of jail:      1
-`- Jail list:   sshd
-```
-
-**Shell Script**  [Fail2Ban.sh](../../Scripts/Installation/Shell/Fail2Ban.sh "Fail2Ban.sh")
 
 ### NGINX
 
@@ -449,7 +569,7 @@ If you have followed above correctly you should now be able to access your websi
 **Shell Script**  [letsEncrypt.sh](../../Scripts/Installation/Shell/letsEncrypt.sh "letsEncrypt.sh")
 
 ### PHP
-Now you will install PHP on your server. Follow the commands below and complete any required steps for the installation to accomplish this. You may need to swap 7.2 in the second command depending on what version of php-fpm is installed. Remember to change $YourDomain to your server domain before executing these commands.
+Now you will install PHP on your server. Follow the commands below and complete any required steps for the installation to accomplish this. You may need to swap 7.2 in the second command depending on what version of php-fpm is installed. Remember to change $YourDomain to your server domain, and $YourServer to your server IP before executing these commands.
 
 ```
 sudo apt-get install php-fpm php-mysql
@@ -457,13 +577,14 @@ sudo sed -i -- 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php/7.2/fpm/php
 sudo systemctl restart php7.2-fpm
 sudo cp Root/etc/nginx/sites-available/default /etc/nginx/sites-available/default
 sudo sed -i -- "s#root /var/www/html;#root /fserver/var/www/html;#g" /etc/nginx/sites-available/default
+sudo sed -i -- "s/proxy_pass http://###.###.#.##:8080/$1;/proxy_pass http://$YourServerIP:8080/g" /etc/nginx/sites-available/default
 sudo sed -i -- "s/YourSubdomain.YourDomain.TLD/$YourDomain/g" /etc/nginx/sites-available/default
 sudo nginx -t
 sudo systemctl reload nginx
 ```
 If you now visit the info page your website ie: https://www.YourDomain.com/info you should see the PHP configuration of your server.
 
-![GeniSys AI Server PHP config](../../Media/Images/php.png)
+![PHP config](../../Media/Images/php.png)
 
 **Shell Script**  [PHP.sh](../../Scripts/Installation/Shell/PHP.sh "PHP.sh")
 
@@ -538,10 +659,62 @@ sudo nano /var/www/Classes/Core/confs.json
 
 ```
 {
-  "dbname": "",
-  "dbusername": "",
-  "dbpassword": "",
-  "key": ""
+  "dbname": "YourMySqlDatabaseName",
+  "dbusername": "YourMySqlDatabaseUser",
+  "dbpassword": "YourMySqlDatabasePass",
+  "key": "YourEncryptionKey"
+}
+```
+Now you need to update the related settings in the Python configuration. Assuming you are in the project root:
+```
+sudo nano confs.json
+```
+And update the MySQL database related settings:
+```
+{
+    "iotJumpWay": {
+        "channels": {
+            "commands": "Commands"
+        },
+        "host": "",
+        "port": 8883,
+        "ip": "localhost",
+        "lid": 0,
+        "aid": 0,
+        "an": "",
+        "un": "",
+        "pw": "",
+        "paid": 0,
+        "pan": "",
+        "pun": "",
+        "ppw": "",
+        "mdb": "YourMongoDatabaseName",
+        "mdbu": "YourMongoDatabaseUser",
+        "mdbp": "YourMongoDatabasePass",
+        "dbname": "YourMySqlDatabaseName",
+        "dbuser": "YourMySqlDatabaseUser",
+        "dbpass": "YourMySqlDatabasePass"
+    },
+    "tass": {
+        "core": {
+            "allowed": [".jpg", ".JPG", ".png", ".PNG"]
+        },
+        "ip": "YourServerIP",
+        "data": "/fserver/models/TASS/Data/Security/",
+        "dlib": "/fserver/models/TASS/shape_predictor_68_face_landmarks.dat",
+        "dlibr": "/fserver/models/TASS/dlib_face_recognition_resnet_model_v1.dat",
+        "lid": TassLocationID,
+        "zid": TassZoneID,
+        "did": TassDeviceID,
+        "sid": TassSensorID,
+        "port": 8080,
+        "socket": {
+            "ip": "TassSocketIP",
+            "port": 8181
+        },
+        "threshold": 0.6,
+        "vid": 0
+    }
 }
 ```
 
@@ -549,7 +722,7 @@ sudo nano /var/www/Classes/Core/confs.json
 
 ### phpMyAdmin
 
-![GeniSys AI Server PHP config](../../Media/Images/phpMyAdmin.png)
+![phpMyAdmin](../../Media/Images/phpMyAdmin.png)
 
 Now you should install phpMyAdmin.
 
@@ -573,9 +746,9 @@ Now you should be able to visit phpMyAdmin by accessing the relevant directory o
 
 **Shell Script**  [phpMyAdmin.sh](../../Scripts/Installation/Shell/phpMyAdmin.sh "phpMyAdmin.sh")
 
-#### SSL Security
+### SSL Security
 
-![GeniSys HIAS - Hospital Intelligent Automation System Security](../../Media/Images/SSL.png)
+![SSL Security](../../Media/Images/SSL.png)
 
 You need to remove vulnerable versions TLS 1/TLS 1.1, and enable TLS 1.3. To do so, do the following:
 ```
@@ -656,7 +829,7 @@ sudo systemctl status smbd
 
 **Shell Script**  [Samba.sh](../../Scripts/Installation/Shell/Samba.sh "Samba.sh")
 
-### iotJumpWay Broker (IoT)
+### iotJumpWay Broker
 We will use the [iotJumpWay](https://www.iotjumpway.com/developers/getting-started "iotJumpWay") open source broker for this project. Originally the iotJumpWay was a device built on a Rapsberry Pi that powered my home IoT network locally. In 2015/16 I turned the device into an a Platform as a Service, PaaS, and in 2016 I made the platform free to developers.
 
 For this project I am including a system based on the iotJumpWay PaaS that includes the iotJumpWay locations, zones, devices and applications functionality. This means that all of the machine to machine communication happens locally, and all data is stored locally, never leaving the server. 
@@ -735,11 +908,11 @@ php Scripts/Installation/PHP/Location.php YourLocationName YourApplicationName
 You should see similar to the following:
 ```
 ! Location, HQ has been created with ID 1!!! NOTE THESE CREDENTIALS AND KEEP THEM IN A SAFE PLACE !!
-! Application, WebSockets has been created with ID 1!
-!! Your application public key is: AppPublicKey!
-!! Your application private key is: AppPrivateKey
-!! Your application MQTT username is: MqttUsername
-!! Your application MQTT password is: MqttPassword
+! Application, WebSockets has been created with ID 1 !
+!! Your application public key is: AppPublicKey !!
+!! Your application private key is: AppPrivateKey !!
+!! Your application MQTT username is: MqttUsername !!
+!! Your application MQTT password is: MqttPassword !!
 - Installed iotJumpWay location, application and devices!
 ```
 
@@ -750,17 +923,15 @@ sudo nano /var/www/html/iotJumpWay/Classes/iotJumpWay.js
 ```
 ```
 mqttOptions: {
-  locationID: 0,
-  applicationID: 0,
-  applicationName: "",
-  userName: "",
-  passwd: ""
+  locationID: YourLocationID,
+  applicationID: YourApplicationID,
+  applicationName: "YourApplicationName",
+  userName: "YourMqttUser",
+  passwd: "YourMqttPassword"
 }
 ```
 
 **Shell Script**  [iotJumpWayLocation.sh](../../Scripts/Installation/Shell/iotJumpWayLocation.sh "iotJumpWayLocation.sh")
-
-Finally, complete the [iotJumpWay Installation Guide](iotJumpWay.md "iotJumpWay Installation Guide") to create your extenal iotJumpWay location and application.
 
 ### tassAI (Computer Vision)
 We will use [tassAI](https://www.facebook.com/tassAI "tassAI") open source computer vision system for the facial recognition and identification.
@@ -784,7 +955,7 @@ sudo bzip2 /fserver/models/TASS/dlib_face_recognition_resnet_model_v1.dat.bz2 --
 Now you will create the iotJumpWay device on your local broker. 
 
 ```
-php Scripts/Installation/PHP/TASS.php YourLocationID YourZoneName
+php Scripts/Installation/PHP/TASS.php YourLocationID YourZoneName YourServerIP YourServerMacAddress
 ```
 You should see similar to the following:
 
@@ -796,20 +967,72 @@ You should see similar to the following:
 !! Your device MQTT password is: MqttPassword !!
 ! Installed iotJumpWay device !
 ```
+Now you need to update the related settings in the Python configuration. Assuming you are in the project root:
+```
+sudo nano confs.json
+```
+And update the TASS related settings:
+```
+{
+    "iotJumpWay": {
+        "channels": {
+            "commands": "Commands"
+        },
+        "host": "",
+        "port": 8883,
+        "ip": "localhost",
+        "lid": 0,
+        "aid": 0,
+        "an": "",
+        "un": "",
+        "pw": "",
+        "paid": 0,
+        "pan": "",
+        "pun": "",
+        "ppw": "",
+        "mdb": "YourMongoDatabaseName",
+        "mdbu": "YourMongoDatabaseUser",
+        "mdbp": "YourMongoDatabasePass",
+        "dbname": "YourMySqlDatabaseName",
+        "dbuser": "YourMySqlDatabaseUser",
+        "dbpass": "YourMySqlDatabasePass"
+    },
+    "tass": {
+        "core": {
+            "allowed": [".jpg", ".JPG", ".png", ".PNG"]
+        },
+        "ip": "YourServerIP",
+        "data": "/fserver/models/TASS/Data/Security/",
+        "dlib": "/fserver/models/TASS/shape_predictor_68_face_landmarks.dat",
+        "dlibr": "/fserver/models/TASS/dlib_face_recognition_resnet_model_v1.dat",
+        "lid": TassLocationID,
+        "zid": TassZoneID,
+        "did": TassDeviceID,
+        "sid": TassSensorID,
+        "port": 8080,
+        "socket": {
+            "ip": "YourServerIP",
+            "port": 8181
+        },
+        "threshold": 0.6,
+        "vid": 0
+    }
+}
+```
 
-To finish up here, edit the **/fserver/var/www/html/Dashboard.php** file, replacing the word YourStreamIP:YourStreamPort with the IP and port of your camera stream. For now the camera stream is not secure as the camera is streamed using HTTP, but the UI uses HTTPS. In the next version we will secure the stream with user authentication.
-
-**Shell Script**  [iotJumpWayTass.sh](../../Scripts/Installation/Shell/iotJumpWayTass.sh "iotJumpWayTass.sh")
+**Shell Script**  [TASSIoT.sh](../../Scripts/Installation/Shell/TASSIoT.sh "TASSIoT.sh")
 
 ### Create Admin User
-Finally you should create your admin user that you will use to access the network. The following command executes a PHP script to add your chosen username as an admin user in the system. You can use this command at any time to create an admin account. 
+Finally you should create your admin user that you will use to access the network, UI and the network TASS streams. The following command executes a PHP script to add your chosen username as an admin user in the system.
 
 The script will create an admin account and provide your with the password, make sure to copy and save the password and your username somewhere safe. Replace **YourUsername** with the username of your choice, no special characters or spaces.
+
+The script will also use your password the with Apache HTPassword system that protects the camera streams. When you create a new user through this script or the UI, credentials are added or updated for the camera stream authentication system.
 
 The script will also create a local iotJumpWay application, allowing you to authenticate to the broker as your self. This can be useful for personal applications such as smart phone applications etc.
 
 ```
-php Scripts/Installation/PHP/Admin.php YourUsername
+php Scripts/Installation/PHP/Admin.php YourUsername YourLocationId
 ```
 You should see something similar to the following:
 ```
@@ -839,15 +1062,112 @@ php Scripts/Installation/PHP/Finalize.php YourServerURL RecaptchaSiteKey Recaptc
 
 &nbsp;
 
-#  Login To Your Server UI
+# Login To Your Server UI
+![Login To Your Server UI](../../Media/Images/UI.png)
 
-![GeniSys AI Server PHP config](../../Media/Images/UI.png)
+Congratulations, you have the basics of the server installed!! Visit your domain name and you should see the above page. You can then login with your username and password you created earlier.
 
-Congratulations, you have the basics of the server installed!! Now you can login and visit the landing page. This will become your control panel for your encrypted intelligent and IoT connected  Hospital Intelligent Automation System.
+![HIAS Dashboard](../../Media/Images/dashboard.png)
+The HIAS dashboard is your control panel for your encrypted intelligent and IoT connected  Hospital Intelligent Automation System.
 
-![GeniSys AI Server PHP config](../../Media/Images/dashboard.png)
+&nbsp;
 
-Visit your domain name and you should see the above page. You can then login with your username and password you created earlier.
+# HIAS IoT Network
+![HIAS IoT Network](../../Media/Images/HIAS-IoT-Dashboard.png)
+The HIAS IoT network is powered by a new, fully open-source version of the [iotJumpWay](https://www.iotJumpWay.com "iotJumpWay"). The HIAS iotJumpway dashboard is your control panel for managing all of your network iotJumpWay zones, devices, sensors/actuators and applications. The modular systems that we build to be compatible with this network will all create their own iotJumpWay applications etc during installation, you will be able to manage all of these applications and devices through the iotJumpWay dashboard. 
+
+## iotJumpWay Finalization
+There are a couple of things we need to do before we can boot up the intelligent server software. To finish up we need two additional iotJumpWay applications. 
+
+In the UI, navigate to **Server->Location** and click on the **+** icon in the **iotJumpWay Location Applications** section, this will bring you to the page that allows you to create iotJumpWay applications. 
+
+![Create iotJumpWay application](../../Media/Images/HIAS-IoT-Application.png)
+
+Fill out the information and submit the form, you will be taken to the newly created application. Note the location ID and the MQTT credentials provided to the right of the page. These credentials will be used for your core GeniSysAI Python program.
+
+Now repeat the step above and create an application for the core iotJumpWay Python application. 
+
+You also need your server domain name for the iotJumpWay broker host. You should supply the domain name without the protocol. IE: **YourSubdomain.YourDomain.YourTLD** not **https://YourSubdomain.YourDomain.YourTLD**.
+
+Now you need to update the related settings in the Python configuration. Assuming you are in the project root:
+```
+sudo nano confs.json
+```
+And update the TASS related settings:
+```
+{
+    "iotJumpWay": {
+        "channels": {
+            "commands": "Commands"
+        },
+        "host": "YourSubdomain.YourDomain.YourTLD",
+        "port": 8883,
+        "ip": "localhost",
+        "lid": YourGeniSysAiLocationID,
+        "aid": YourGeniSysAiApplicationID,
+        "an": "YourGeniSysAiApplicationName",
+        "un": "YourGeniSysAiMqttUser",
+        "pw": "YourGeniSysAiMqttPass",
+        "paid": YourIotJumpWayApplicationID,
+        "pan": "YourIotJumpWayApplicationName",
+        "pun": "YourIotJumpWayMqttUser",
+        "ppw": "YourIotJumpWayMqttPass",
+        "mdb": "YourMongoDatabaseName",
+        "mdbu": "YourMongoDatabaseUser",
+        "mdbp": "YourMongoDatabasePass",
+        "dbname": "YourMySqlDatabaseName",
+        "dbuser": "YourMySqlDatabaseUser",
+        "dbpass": "YourMySqlDatabasePass"
+    },
+    "tass": {
+        "core": {
+            "allowed": [".jpg", ".JPG", ".png", ".PNG"]
+        },
+        "ip": "YourServerIP",
+        "data": "/fserver/models/TASS/Data/Security/",
+        "dlib": "/fserver/models/TASS/shape_predictor_68_face_landmarks.dat",
+        "dlibr": "/fserver/models/TASS/dlib_face_recognition_resnet_model_v1.dat",
+        "lid": TassLocationID,
+        "zid": TassZoneID,
+        "did": TassDeviceID,
+        "sid": TassSensorID,
+        "port": 8080,
+        "socket": {
+            "ip": "YourServerIP",
+            "port": 8181
+        },
+        "threshold": 0.6,
+        "vid": 0
+    }
+}
+```
+
+&nbsp;
+
+#  HIAS Users
+![GeniSys AI Server PHP config](../../Media/Images/HIAS-Users.png)
+HIAS users can be created using the HIS Staff system. Users can be granted admin privileges allowing them access to further restricted areas of the UI. Each user has a connected iotJumpWay application which will later be used in our HIAS Android application.
+
+&nbsp;
+
+# HIAS Facial Recognition
+![HIAS Facial Recognition](../../Media/Images/HIAS-TASS.png)
+The HIAS facial recognition system is based on [tassAI](https://www.facebook.com/TASSNetwork/ "tassAI"). The facial recognition system uses cameras attached to devices on the network and processes frames from the cameras in real-time, before streaming the processed framed to a local server endpoint. Multiple TASS devices can be configured and there will soon be integration with popular IP cameras like Foscam etc.  
+
+&nbsp;
+
+# BOOT HER UP!! 
+Now it is time to boot up your GeniSysAI & iotJumpWay software. These two programs start the facial recognition server, the NLU (Once integrated), and the core iotJumpWay functions that monitor the broker for messages and store the data in the MongoDB. 
+
+Assuming you are in the project, use the following commands in two separate terminals. 
+
+```
+python3 GeniSysAI.py
+```
+
+```
+python3 iotJumpWay.py
+``` 
 
 &nbsp;
 

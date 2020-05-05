@@ -70,7 +70,7 @@ include dirname(__FILE__) . '/../Classes/Core/GeniSys.php';
 												</div>
 												<div class="form-group">
 													<label class="pull-left control-label mb-10" for="password">Password</label>
-													<a class="capitalize-font txt-primary block mb-10 pull-right font-12" href="<?=$domain; ?>/forgot-password">forgot password ?</a>
+													<a class="capitalize-font txt-primary block mb-10 pull-right font-12" href="<?=$domain; ?>/Password">forgot password ?</a>
 													<div class="clearfix"></div>
 													<input type="password" class="form-control" required="" id="password" name="password" placeholder="Enter password">
 												</div>
@@ -92,6 +92,20 @@ include dirname(__FILE__) . '/../Classes/Core/GeniSys.php';
 					
 				</div>
 				
+			</div>
+			<div id="responsive-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+							<h5 class="modal-title">Modal Content is Responsive</h5>
+						</div>
+						<div class="modal-body"></div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
 			</div>
 			
 		</div>
