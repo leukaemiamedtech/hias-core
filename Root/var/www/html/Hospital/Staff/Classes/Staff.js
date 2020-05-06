@@ -47,16 +47,16 @@ var Staff = {
             });
     },
     ResetPass: function() {
-        $.post(window.location.href, { "reset_pass": 1, "id": $("#id").val(), "user": $("#username").val() },
+        $.post(window.location.href, { "reset_u_pass": 1, "id": $("#id").val(), "user": $("#username").val() },
             function(resp) {
                 console.log(resp)
                 var resp = jQuery.parseJSON(resp);
                 switch (resp.Response) {
                     case "OK":
                         Logging.logMessage("Core", "Forms", "Reset OK");
-                        var modal = $(this)
-                        modal.find('.modal-title').text('New Password')
-                        modal.find('.modal-body input').val(resp.pw)
+                        $('.modal-title').text('New Password');
+                        $('.modal-body').text(resp.pw);
+                        $('#responsive-modal').modal('show');
                         break;
                     default:
                         msg = "Reset failed: " + resp.Message

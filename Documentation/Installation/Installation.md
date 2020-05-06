@@ -37,6 +37,7 @@
     - [Create Admin User](#create-admin-user)
 - [Login To Your Server UI](#login-to-server-ui) 
 - [Final iotJumpWay Setup](#final-iotjumpway-setup)
+- [BOOT HER UP](#boot-her-up)
 - [Contributing](#contributing)
     - [Contributors](#contributors)
 - [Versioning](#versioning)
@@ -345,10 +346,7 @@ Clone the [HIAS](https://github.com/LeukemiaAiResearch/HIAS "HIAS") repository f
 To clone the repository and install the Hospital Intelligent Automation System, make sure you have Git installed. Now to the home directory on your server device using terminal/commandline, and then use the following command.
 
 ```
-  $ git clone -b "0.1.0" https://github.com/LeukemiaAiResearch/HIAS.git
-```
-
-The **-b "0.1.0"** parameter ensures you get the code from the latest development branch. Before using the below command please check our latest development branch in the button at the top of the project README.
+  $ git clone https://github.com/LeukemiaAiResearch/HIAS.git
 
 Once you have used the command above you will see a directory called **HIAS** in your home directory. 
 ```
@@ -361,7 +359,13 @@ HIAS
 The HIAS directory is your project root directory for this tutorial.
 
 ### Developer Forks
-Developers from the Github community that would like to contribute to the development of this project should first create a fork, and clone that repository. For detailed information please view the [CONTRIBUTING](../../CONTRIBUTING.md "CONTRIBUTING") guide.
+Developers from the Github community that would like to contribute to the development of this project should first create a fork, and clone that repository. For detailed information please view the [CONTRIBUTING](../../CONTRIBUTING.md "CONTRIBUTING") guide. You should pull the latest code from the development branch.
+
+```
+  $ git clone -b "0.2.0" https://github.com/LeukemiaAiResearch/HIAS.git
+```
+
+The **-b "0.2.0"** parameter ensures you get the code from the latest master branch. Before using the below command please check our latest master branch in the button at the top of the project README.
 
 ## Mongo Database
 We will use [Mongo DB](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/ "Mongo DB") to store the data from our sensors.
