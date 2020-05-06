@@ -12,7 +12,7 @@
   - [Ubuntu Server 18.04.4 LTS](#ubuntu-server-18044-lts)
   - [Domain Name](#domain-name)
   - [Port Forwarding](#port-forwarding)
-  - [Security](#security)
+  - [Server Security](#server-security)
     - [Remote User](#remote-user)
     - [SSH Access](#ssh-access)
       - [Tips](#tips)
@@ -35,8 +35,12 @@
     - [iotJumpWay Broker](#iotjumpway-broker)
     - [iotJumpWay Location and Application](#iotjumpway-location-and-application)
     - [Create Admin User](#create-admin-user)
-- [Login To Your Server UI](#login-to-server-ui) 
-- [Final iotJumpWay Setup](#final-iotjumpway-setup)
+- [Login To Your Server UI](#login-to-your-server-ui) 
+- [HIAS IoT Network](#hias-iot-network)
+- [HIAS Users](#hias-users)
+- [HIAS Facial Recognition](#hias-facial-recognition)
+- [Final iotJumpWay Setup](#iotjumpway-finalization)
+- [BOOT HER UP](#boot-her-up)
 - [Contributing](#contributing)
     - [Contributors](#contributors)
 - [Versioning](#versioning)
@@ -345,10 +349,8 @@ Clone the [HIAS](https://github.com/LeukemiaAiResearch/HIAS "HIAS") repository f
 To clone the repository and install the Hospital Intelligent Automation System, make sure you have Git installed. Now to the home directory on your server device using terminal/commandline, and then use the following command.
 
 ```
-  $ git clone -b "0.1.0" https://github.com/LeukemiaAiResearch/HIAS.git
+  $ git clone https://github.com/LeukemiaAiResearch/HIAS.git
 ```
-
-The **-b "0.1.0"** parameter ensures you get the code from the latest development branch. Before using the below command please check our latest development branch in the button at the top of the project README.
 
 Once you have used the command above you will see a directory called **HIAS** in your home directory. 
 ```
@@ -361,7 +363,13 @@ HIAS
 The HIAS directory is your project root directory for this tutorial.
 
 ### Developer Forks
-Developers from the Github community that would like to contribute to the development of this project should first create a fork, and clone that repository. For detailed information please view the [CONTRIBUTING](../../CONTRIBUTING.md "CONTRIBUTING") guide.
+Developers from the Github community that would like to contribute to the development of this project should first create a fork, and clone that repository. For detailed information please view the [CONTRIBUTING](../../CONTRIBUTING.md "CONTRIBUTING") guide. You should pull the latest code from the development branch.
+
+```
+  $ git clone -b "0.2.0" https://github.com/LeukemiaAiResearch/HIAS.git
+```
+
+The **-b "0.2.0"** parameter ensures you get the code from the latest master branch. Before using the below command please check our latest master branch in the button at the top of the project README.
 
 ## Mongo Database
 We will use [Mongo DB](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/ "Mongo DB") to store the data from our sensors.
@@ -1074,9 +1082,23 @@ The HIAS dashboard is your control panel for your encrypted intelligent and IoT 
 
 # HIAS IoT Network
 ![HIAS IoT Network](../../Media/Images/HIAS-IoT-Dashboard.png)
-The HIAS IoT network is powered by a new, fully open-source version of the [iotJumpWay](https://www.iotJumpWay.com "iotJumpWay"). The HIAS iotJumpway dashboard is your control panel for managing all of your network iotJumpWay zones, devices, sensors/actuators and applications. The modular systems that we build to be compatible with this network will all create their own iotJumpWay applications etc during installation, you will be able to manage all of these applications and devices through the iotJumpWay dashboard. 
+The HIAS IoT network is powered by a new, fully open-source version of the [iotJumpWay](https://www.iotJumpWay.com "iotJumpWay"). The HIAS iotJumpway dashboard is your control panel for managing all of your network iotJumpWay zones, devices, sensors/actuators and applications. The modular systems that we build to be compatible with this network will all create their own iotJumpWay applications etc during installation, you will be able to manage all of these applications and devices through the iotJumpWay dashboard.   
 
-## iotJumpWay Finalization
+&nbsp;
+
+#  HIAS Users
+![GeniSys AI Server PHP config](../../Media/Images/HIAS-Users.png)
+HIAS users can be created using the HIS Staff system. Users can be granted admin privileges allowing them access to further restricted areas of the UI. Each user has a connected iotJumpWay application which will later be used in our HIAS Android application.
+
+&nbsp;
+
+# HIAS Facial Recognition
+![HIAS Facial Recognition](../../Media/Images/HIAS-TASS.png)
+The HIAS facial recognition system is based on [tassAI](https://www.facebook.com/TASSNetwork/ "tassAI"). The facial recognition system uses cameras attached to devices on the network and processes frames from the cameras in real-time, before streaming the processed framed to a local server endpoint. Multiple TASS devices can be configured and there will soon be integration with popular IP cameras like Foscam etc.  
+
+&nbsp;
+
+# iotJumpWay Finalization
 There are a couple of things we need to do before we can boot up the intelligent server software. To finish up we need two additional iotJumpWay applications. 
 
 In the UI, navigate to **Server->Location** and click on the **+** icon in the **iotJumpWay Location Applications** section, this will bring you to the page that allows you to create iotJumpWay applications. 
@@ -1141,18 +1163,6 @@ And update the TASS related settings:
     }
 }
 ```
-
-&nbsp;
-
-#  HIAS Users
-![GeniSys AI Server PHP config](../../Media/Images/HIAS-Users.png)
-HIAS users can be created using the HIS Staff system. Users can be granted admin privileges allowing them access to further restricted areas of the UI. Each user has a connected iotJumpWay application which will later be used in our HIAS Android application.
-
-&nbsp;
-
-# HIAS Facial Recognition
-![HIAS Facial Recognition](../../Media/Images/HIAS-TASS.png)
-The HIAS facial recognition system is based on [tassAI](https://www.facebook.com/TASSNetwork/ "tassAI"). The facial recognition system uses cameras attached to devices on the network and processes frames from the cameras in real-time, before streaming the processed framed to a local server endpoint. Multiple TASS devices can be configured and there will soon be integration with popular IP cameras like Foscam etc.  
 
 &nbsp;
 

@@ -1,7 +1,16 @@
-        <div id="GeniSysAiWindow" class="modal">
-                <h1 id="GeniSysAiWindowH"></h1>
-                <p id="GeniSysAiWindowP">Thanks for clicking. That felt good.</p>
-                <a href="#" rel="modal:close">Close</a>
+        <div id="responsive-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h5 class="modal-title"></h5>
+                    </div>
+                    <div class="modal-body"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>

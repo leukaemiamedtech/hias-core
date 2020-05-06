@@ -44,7 +44,9 @@ var GeniSys = {
                         GeniSys.ResetForm("Login");
                         msg = "Form submission failed: " + arsep.ResponseMessage
                         Logging.logMessage("Core", "Forms", msg);
-                        GeniSys.ShowModel("GeniSysAi", "Failed", msg);
+                        $('.modal-title').text('Failed');
+                        $('.modal-body').text(msg);
+                        $('#responsive-modal').modal('show');
                         break;
                 }
             });
@@ -52,7 +54,9 @@ var GeniSys = {
             GeniSys.ResetForm("Login");
             msg = "Form submission failed";
             Logging.logMessage("Core", "Forms", msg);
-            GeniSys.ShowModel("GeniSysAi", "Failed", msg);
+            $('.modal-title').text('Failed');
+            $('.modal-body').text(msg);
+            $('#responsive-modal').modal('show');
         }
     },
     ResetPass: function() {
@@ -63,9 +67,9 @@ var GeniSys = {
                 switch (resp.Response) {
                     case "OK":
                         Logging.logMessage("Core", "Forms", "Reset OK");
-                        var modal = $(this)
-                        modal.find('.modal-title').text('New Password')
-                        modal.find('.modal-body input').val(resp.pw)
+                        $('.modal-title').text('New Password');
+                        $('.modal-body').text(resp.pw);
+                        $('#responsive-modal').modal('show');
                         break;
                     default:
                         msg = "Reset failed: " + resp.Message
