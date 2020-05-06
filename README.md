@@ -45,6 +45,8 @@ __This project is a proof of concept, and is still a work in progress, however o
     - High grade (A+) encryption for the web server, proxy and network.
 - **Server UI (Work In Progress)** 
     - A control panel to monitor and manage your HIAS network.
+- **Local Samba Server** 
+    - A local Samba file server allowing controlled individual and group access to files on your local network.
 - **Local IoT Broker (Complete)** 
     - Local and private MQTT/Websockets broker based on the  [iotJumpway Broker](https://github.com/iotJumpway/Broker "iotJumpway Broker").
 - **Facial Identification Server (Complete)** 
