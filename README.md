@@ -2,7 +2,7 @@
 ## HIAS - Hospital Intelligent Automation System
 [![HIAS - Hospital Intelligent Automation System](Media/Images/HIAS-Hospital-Intelligent-Automation-System.png)](https://github.com/LeukemiaAiResearch/HIAS)
 
-[![VERSION](https://img.shields.io/badge/VERSION-0.1.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.1.0) [![DEV BRANCH](https://img.shields.io/badge/DEV%20BRANCH-0.1.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.2.0) [![Issues Welcome!](https://img.shields.io/badge/Contributions-Welcome-lightgrey.svg)](CONTRIBUTING.md)  [![Issues](https://img.shields.io/badge/Issues-Welcome-lightgrey.svg)](issues) [![LICENSE](https://img.shields.io/badge/LICENSE-MIT-blue.svg)](LICENSE)
+[![VERSION](https://img.shields.io/badge/VERSION-0.1.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.1.0) [![DEV BRANCH](https://img.shields.io/badge/DEV%20BRANCH-0.2.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.2.0) [![Issues Welcome!](https://img.shields.io/badge/Contributions-Welcome-lightgrey.svg)](CONTRIBUTING.md)  [![Issues](https://img.shields.io/badge/Issues-Welcome-lightgrey.svg)](issues) [![LICENSE](https://img.shields.io/badge/LICENSE-MIT-blue.svg)](LICENSE)
 
 &nbsp;
 
@@ -12,6 +12,9 @@
 - [Key Features](#key-features)
 - [HIAS Network Map](#hias-network-map)
 - [HIAS UI](#hias-ui)
+- [HIAS Users](#hias-users)
+- [HIAS IoT Network](#hias-ui)
+- [HIAS Facial Recognition](#hias-facial-recognition)
 - [Installation](#installation)
 - [Acknowledgement](#acknowledgement)
 - [Contributing](#contributing)
@@ -64,6 +67,12 @@ The HIAS UI is the central control panel for the server, and all of the modular 
 
 &nbsp;
 
+# HIAS Users
+![HIAS Users](Media/Images/HIAS-Users.png)
+HIAS users can be created using the HIS Staff system. Users can be granted admin privileges allowing them access to further restricted areas of the UI. Each user has a connected iotJumpWay application which will later be used in our HIAS Android application.
+
+&nbsp;
+
 # HIAS IoT Network
 ![HIAS IoT Network](Media/Images/HIAS-IoT-Dashboard.png)
 The HIAS IoT network is powered by a new, fully open-source version of the [iotJumpWay](https://www.iotJumpWay.com "iotJumpWay"). The HIAS iotJumpway dashboard is your control panel for managing all of your network iotJumpWay zones, devices, sensors/actuators and applications. The modular systems that we build to be compatible with this network will all create their own iotJumpWay applications etc during installation, you will be able to manage all of these applications and devices through the iotJumpWay dashboard. 
@@ -73,12 +82,6 @@ The HIAS IoT network is powered by a new, fully open-source version of the [iotJ
 # HIAS Facial Recognition
 ![HIAS Facial Recognition](Media/Images/HIAS-TASS.png)
 The HIAS facial recognition system is based on [tassAI](https://www.facebook.com/TASSNetwork/ "tassAI"). The facial recognition system uses cameras attached to devices on the network and processes frames from the cameras in real-time, before streaming the processed framed to a local server endpoint. Multiple TASS devices can be configured and there will soon be integration with popular IP cameras like Foscam etc.  
-
-&nbsp;
-
-#  HIAS Users
-![GeniSys AI Server PHP config](Media/Images/HIAS-Users.png)
-HIAS users can be created using the HIS Staff system. Users can be granted admin privileges allowing them access to further restricted areas of the UI. Each user has a connected iotJumpWay application which will later be used in our HIAS Android application.
 
 &nbsp;
 
