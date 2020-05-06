@@ -37,7 +37,7 @@
     - [Create Admin User](#create-admin-user)
 - [Login To Your Server UI](#login-to-your-server-ui) 
 - [HIAS IoT Network](#hias-iot-network)
-- [Final iotJumpWay Setup](#final-iotjumpway-setup)
+- [Final iotJumpWay Setup](#iotjumpway-finalization)
 - [BOOT HER UP](#boot-her-up)
 - [HIAS Users](#hias-users)
 - [HIAS Facial Recognition](#hias-facial-recognition)
