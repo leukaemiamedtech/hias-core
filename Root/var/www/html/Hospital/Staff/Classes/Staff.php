@@ -335,7 +335,7 @@
         public function resetPassword()
         {
             $pass = $this->_GeniSys->_helpers->password();
-            $passhash=$this->passwordHash($pass);
+            $passhash=$this->_GeniSys->_helpers->createPasswordHash($pass);
 
             $htpasswd = new Htpasswd('/etc/nginx/tass/htpasswd');
             $htpasswd->updateUser(filter_input(INPUT_POST, "user", FILTER_SANITIZE_STRING), $pass, Htpasswd::ENCTYPE_APR_MD5);
@@ -370,6 +370,9 @@
             $mqtt=$pdoQuery->fetch(PDO::FETCH_ASSOC);
             $pdoQuery->closeCursor();
             $pdoQuery = null;
+
+            $mqttPass = $this->_GeniSys->_helpers->password();
+            $mqttHash = create_hash($mqttPass);
     
             $query = $this->_GeniSys->_secCon->prepare("
                 UPDATE mqtta
@@ -415,6 +418,6 @@
         die(json_encode($Staff->resetMqtt()));
     endif;
 
-    if(filter_input(INPUT_POST, "reset_pass", FILTER_SANITIZE_NUMBER_INT)):
+    if(filter_input(INPUT_POST, "reset_u_pass", FILTER_SANITIZE_NUMBER_INT)):
         die(json_encode($Staff->resetPassword()));
     endif;
