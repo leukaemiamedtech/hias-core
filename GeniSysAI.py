@@ -47,7 +47,6 @@ class GeniSysAI():
         })
         self.iotJumpWay.appConnect()
         
-        self.iotJumpWay.appChannelSub(self.Helpers.confs["iotJumpWay"]["channels"]["commands"])
         self.iotJumpWay.deviceCommandsCallback = self.commands
 
         self.Helpers.logger.info("GeniSysAI Class initialization complete.")
