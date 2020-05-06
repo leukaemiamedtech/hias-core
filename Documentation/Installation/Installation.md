@@ -35,9 +35,12 @@
     - [iotJumpWay Broker](#iotjumpway-broker)
     - [iotJumpWay Location and Application](#iotjumpway-location-and-application)
     - [Create Admin User](#create-admin-user)
-- [Login To Your Server UI](#login-to-server-ui) 
+- [Login To Your Server UI](#login-to-your-server-ui) 
+- [HIAS IoT Network](#hias-iot-network)
 - [Final iotJumpWay Setup](#final-iotjumpway-setup)
 - [BOOT HER UP](#boot-her-up)
+- [HIAS Users](#hias-users)
+- [HIAS Facial Recognition](#hias-facial-recognition)
 - [Contributing](#contributing)
     - [Contributors](#contributors)
 - [Versioning](#versioning)
@@ -1149,18 +1152,6 @@ And update the TASS related settings:
 
 &nbsp;
 
-#  HIAS Users
-![GeniSys AI Server PHP config](../../Media/Images/HIAS-Users.png)
-HIAS users can be created using the HIS Staff system. Users can be granted admin privileges allowing them access to further restricted areas of the UI. Each user has a connected iotJumpWay application which will later be used in our HIAS Android application.
-
-&nbsp;
-
-# HIAS Facial Recognition
-![HIAS Facial Recognition](../../Media/Images/HIAS-TASS.png)
-The HIAS facial recognition system is based on [tassAI](https://www.facebook.com/TASSNetwork/ "tassAI"). The facial recognition system uses cameras attached to devices on the network and processes frames from the cameras in real-time, before streaming the processed framed to a local server endpoint. Multiple TASS devices can be configured and there will soon be integration with popular IP cameras like Foscam etc.  
-
-&nbsp;
-
 # BOOT HER UP!! 
 Now it is time to boot up your GeniSysAI & iotJumpWay software. These two programs start the facial recognition server, the NLU (Once integrated), and the core iotJumpWay functions that monitor the broker for messages and store the data in the MongoDB. 
 
@@ -1173,6 +1164,18 @@ python3 GeniSysAI.py
 ```
 python3 iotJumpWay.py
 ``` 
+
+&nbsp;
+
+#  HIAS Users
+![GeniSys AI Server PHP config](../../Media/Images/HIAS-Users.png)
+HIAS users can be created using the HIS Staff system. Users can be granted admin privileges allowing them access to further restricted areas of the UI. Each user has a connected iotJumpWay application which will later be used in our HIAS Android application.
+
+&nbsp;
+
+# HIAS Facial Recognition
+![HIAS Facial Recognition](../../Media/Images/HIAS-TASS.png)
+The HIAS facial recognition system is based on [tassAI](https://www.facebook.com/TASSNetwork/ "tassAI"). The facial recognition system uses cameras attached to devices on the network and processes frames from the cameras in real-time, before streaming the processed framed to a local server endpoint. Multiple TASS devices can be configured and there will soon be integration with popular IP cameras like Foscam etc.  
 
 &nbsp;
 
