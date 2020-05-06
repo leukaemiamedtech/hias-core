@@ -13,7 +13,7 @@
 - [HIAS Network Map](#hias-network-map)
 - [HIAS UI](#hias-ui)
 - [HIAS Users](#hias-users)
-- [HIAS IoT Network](#hias-ui)
+- [HIAS IoT Network](#hias-iot-network)
 - [HIAS Facial Recognition](#hias-facial-recognition)
 - [Installation](#installation)
 - [Acknowledgement](#acknowledgement)
