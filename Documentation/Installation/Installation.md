@@ -12,7 +12,7 @@
   - [Ubuntu Server 18.04.4 LTS](#ubuntu-server-18044-lts)
   - [Domain Name](#domain-name)
   - [Port Forwarding](#port-forwarding)
-  - [Security](#security)
+  - [Server Security](#server-security)
     - [Remote User](#remote-user)
     - [SSH Access](#ssh-access)
       - [Tips](#tips)
@@ -347,6 +347,7 @@ To clone the repository and install the Hospital Intelligent Automation System, 
 
 ```
   $ git clone https://github.com/LeukemiaAiResearch/HIAS.git
+```
 
 Once you have used the command above you will see a directory called **HIAS** in your home directory. 
 ```
