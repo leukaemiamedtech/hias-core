@@ -37,10 +37,10 @@
     - [Create Admin User](#create-admin-user)
 - [Login To Your Server UI](#login-to-your-server-ui) 
 - [HIAS IoT Network](#hias-iot-network)
-- [Final iotJumpWay Setup](#iotjumpway-finalization)
-- [BOOT HER UP](#boot-her-up)
 - [HIAS Users](#hias-users)
 - [HIAS Facial Recognition](#hias-facial-recognition)
+- [Final iotJumpWay Setup](#iotjumpway-finalization)
+- [BOOT HER UP](#boot-her-up)
 - [Contributing](#contributing)
     - [Contributors](#contributors)
 - [Versioning](#versioning)
@@ -1082,9 +1082,23 @@ The HIAS dashboard is your control panel for your encrypted intelligent and IoT 
 
 # HIAS IoT Network
 ![HIAS IoT Network](../../Media/Images/HIAS-IoT-Dashboard.png)
-The HIAS IoT network is powered by a new, fully open-source version of the [iotJumpWay](https://www.iotJumpWay.com "iotJumpWay"). The HIAS iotJumpway dashboard is your control panel for managing all of your network iotJumpWay zones, devices, sensors/actuators and applications. The modular systems that we build to be compatible with this network will all create their own iotJumpWay applications etc during installation, you will be able to manage all of these applications and devices through the iotJumpWay dashboard. 
+The HIAS IoT network is powered by a new, fully open-source version of the [iotJumpWay](https://www.iotJumpWay.com "iotJumpWay"). The HIAS iotJumpway dashboard is your control panel for managing all of your network iotJumpWay zones, devices, sensors/actuators and applications. The modular systems that we build to be compatible with this network will all create their own iotJumpWay applications etc during installation, you will be able to manage all of these applications and devices through the iotJumpWay dashboard.   
 
-## iotJumpWay Finalization
+&nbsp;
+
+#  HIAS Users
+![GeniSys AI Server PHP config](../../Media/Images/HIAS-Users.png)
+HIAS users can be created using the HIS Staff system. Users can be granted admin privileges allowing them access to further restricted areas of the UI. Each user has a connected iotJumpWay application which will later be used in our HIAS Android application.
+
+&nbsp;
+
+# HIAS Facial Recognition
+![HIAS Facial Recognition](../../Media/Images/HIAS-TASS.png)
+The HIAS facial recognition system is based on [tassAI](https://www.facebook.com/TASSNetwork/ "tassAI"). The facial recognition system uses cameras attached to devices on the network and processes frames from the cameras in real-time, before streaming the processed framed to a local server endpoint. Multiple TASS devices can be configured and there will soon be integration with popular IP cameras like Foscam etc.  
+
+&nbsp;
+
+# iotJumpWay Finalization
 There are a couple of things we need to do before we can boot up the intelligent server software. To finish up we need two additional iotJumpWay applications. 
 
 In the UI, navigate to **Server->Location** and click on the **+** icon in the **iotJumpWay Location Applications** section, this will bring you to the page that allows you to create iotJumpWay applications. 
@@ -1164,18 +1178,6 @@ python3 GeniSysAI.py
 ```
 python3 iotJumpWay.py
 ``` 
-
-&nbsp;
-
-#  HIAS Users
-![GeniSys AI Server PHP config](../../Media/Images/HIAS-Users.png)
-HIAS users can be created using the HIS Staff system. Users can be granted admin privileges allowing them access to further restricted areas of the UI. Each user has a connected iotJumpWay application which will later be used in our HIAS Android application.
-
-&nbsp;
-
-# HIAS Facial Recognition
-![HIAS Facial Recognition](../../Media/Images/HIAS-TASS.png)
-The HIAS facial recognition system is based on [tassAI](https://www.facebook.com/TASSNetwork/ "tassAI"). The facial recognition system uses cameras attached to devices on the network and processes frames from the cameras in real-time, before streaming the processed framed to a local server endpoint. Multiple TASS devices can be configured and there will soon be integration with popular IP cameras like Foscam etc.  
 
 &nbsp;
 
