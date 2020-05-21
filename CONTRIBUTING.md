@@ -10,7 +10,7 @@ The first step is to head to our repository issues tab and decide how you would 
 # Bug reports
 ![Bug Reports](Media/Images/bug-report.png)
 
-If you would like to contribute bug fixes or make the team aware of bugs you have identified in the project, please raise a **Bug report** issue in the [COVID19-Medical-Support-System-Server](https://github.com/COVID-19-AI-Research-Project/COVID19-Medical-Support-System-Server/issues/new/choose) section. A template is provided that will allow you to provide your suggestions for your bug report / bug fix(es) which will be reviewed by the team who will communicate with you through your issue.
+If you would like to contribute bug fixes or make the team aware of bugs you have identified in the project, please raise a **Bug report** issue in the [HIAS - Hospital Intelligent Automation System](https://github.com/LeukemiaAiResearch/HIAS/issues/new/choose) section. A template is provided that will allow you to provide your suggestions for your bug report / bug fix(es) which will be reviewed by the team who will communicate with you through your issue.
 
 Bug fix issues are the first step to creating a pull request for bug fixes, once you have created your issue and it has been approved you can proceed with your bug fixes.
 
@@ -19,13 +19,13 @@ Bug fix issues are the first step to creating a pull request for bug fixes, once
 # Feature requests
 ![Bug Reports](Media/Images/feature-request.png)
 
-If you would like to suggest a new feature/ new features for this project, please raise a **Feature request** issue in the [COVID19-Medical-Support-System-Server](https://github.com/AMLResearchProject/ALL-Detection-System-2020/issues/new) section. A template is provided that will allow you to provide your suggestions for your feature request which will be reviewed by the team who will communicate through your issue.
+If you would like to suggest a new feature/ new features for this project, please raise a **Feature request** issue in the [HIAS - Hospital Intelligent Automation System](https://github.com/LeukemiaAiResearch/HIAS/issues/new) section. A template is provided that will allow you to provide your suggestions for your feature request which will be reviewed by the team who will communicate through your issue.
 
 &nbsp;
 
 # Feature proposals
 
-If you would like to contribute new features to the project, please raise a **Feature proposal** issue in the [COVID19-Medical-Support-System-Server](https://github.com/AMLResearchProject/ALL-Detection-System-2020/issues/new) section. A template is provided that will allow you to provide your suggestions for your feature proposal which will be reviewed by the team who will communicate through your issue.
+If you would like to contribute new features to the project, please raise a **Feature proposal** issue in the [HIAS - Hospital Intelligent Automation System](https://github.com/LeukemiaAiResearch/HIAS/issues/new) section. A template is provided that will allow you to provide your suggestions for your feature proposal which will be reviewed by the team who will communicate through your issue.
 
 Feature proposals are the first step to creating a pull request for new features, once you have created your issue and it has been approved you can proceed with your feature proposal. 
 
