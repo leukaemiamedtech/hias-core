@@ -53,33 +53,37 @@
 						<a href="javascript:void(0);" data-toggle="collapse" data-target="#server" class="<?=$pageDetails["PageID"]=="Server" ? "active" : ""; ?>"><div class="pull-left"><i class="fa fa-server fa-fw mr-20"></i><span class="right-nav-text">Server</span></div><div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
 						<ul id="server" class="<?=$pageDetails["PageID"]=="Server" ? "" : "collapse"; ?> collapse-level-1">
 							<li>
-								<a href="<?=$domain; ?>/Server/Control" class="<?=$pageDetails["SubPageID"]=="ServerControl" ? "active" : ""; ?>"><div class="pull-left"><i class="fa fa-server fa-fw mr-20"></i><span class="right-nav-text">Control</span></div><div class="clearfix"></div></a>
+								<a href="<?=$domain; ?>/Server/Settings" class="<?=$pageDetails["SubPageID"]=="Settings" ? "active" : ""; ?>"><div class="pull-left"><i class="fa fa-cogs fa-fw mr-20"></i><span class="right-nav-text">Settings</span></div><div class="clearfix"></div></a>
 							</li>
 							<li>
 								<a href="<?=$domain; ?>/phpmyadmin" class="" target="_BLANK"><div class="pull-left"><i class="fa fa-database fa-fw mr-20"></i><span class="right-nav-text">Database</span></div><div class="clearfix"></div></a>
 							</li>
-							<li>
-								<a href="javascript:void(0);" data-toggle="collapse" data-target="#dropdown_dr_lv2" class="<?=$pageDetails["SubPageID"]=="IoT" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-wifi fa-fw mr-20"></i></div> IoT<div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
-								<ul id="dropdown_dr_lv2" class="<?=$pageDetails["SubPageID"]=="IoT" ? "" : "collapse"; ?>  collapse-level-2">
-									<li>
-										<a href="<?=$domain; ?>/iotJumpWay/" class="<?=$pageDetails["LowPageID"]=="Location" ? "active" : ""; ?>">Location</a>
-									</li>
-									<li>
-										<a href="<?=$domain; ?>/iotJumpWay/Zones" class="<?=$pageDetails["LowPageID"]=="Zones" ? "active" : ""; ?>">Zones</a>
-									</li>
-									<li>
-										<a href="<?=$domain; ?>/iotJumpWay/Devices" class="<?=$pageDetails["LowPageID"]=="Devices" ? "active" : ""; ?>">Devices</a>
-									</li>
-									<li>
-										<a href="<?=$domain; ?>/iotJumpWay/Sensors" class="<?=$pageDetails["LowPageID"]=="Sensors" ? "active" : ""; ?>">Sensors</a>
-									</li>
-									<li>
-										<a href="<?=$domain; ?>/iotJumpWay/Applications" class="<?=$pageDetails["LowPageID"]=="Applications" ? "active" : ""; ?>">Applications</a>
-									</li>
-								</ul>
-							</li>
 						</ul>
                     </li>
+					<li><hr class="light-grey-hr mb-10"/></li>
+					<li>
+						<a href="javascript:void(0);" data-toggle="collapse" data-target="#dropdown_dr_lv2" class="<?=$pageDetails["PageID"]=="IoT" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-wifi fa-fw mr-20"></i></div> IoT<div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
+						<ul id="dropdown_dr_lv2" class="<?=$pageDetails["PageID"]=="IoT" ? "" : "collapse"; ?>  collapse-level-2">
+							<li>
+								<a href="<?=$domain; ?>/iotJumpWay/" class="<?=$pageDetails["LowPageID"]=="Location" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-map-marker-alt fa-fw mr-20"></i></div> Location<div class="clearfix"></div></a>
+							</li>
+							<li>
+								<a href="<?=$domain; ?>/iotJumpWay/Zones" class="<?=$pageDetails["LowPageID"]=="Zones" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-network-wired fa-fw mr-20"></i></div> Zones<div class="clearfix"></div></a>
+							</li>
+							<li>
+								<a href="<?=$domain; ?>/iotJumpWay/Devices" class="<?=$pageDetails["LowPageID"]=="Devices" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-wifi fa-fw mr-20"></i></div> Devices<div class="clearfix"></div></a>
+							</li>
+							<li>
+								<a href="<?=$domain; ?>/iotJumpWay/Sensors" class="<?=$pageDetails["LowPageID"]=="Sensors" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-upload fa-fw mr-20"></i></div> Sensors<div class="clearfix"></div></a>
+							</li>
+							<li>
+								<a href="<?=$domain; ?>/iotJumpWay/Applications" class="<?=$pageDetails["LowPageID"]=="Applications" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-mobile-alt fa-fw mr-20"></i></div> Applications<div class="clearfix"></div></a>
+							</li>
+							<li>
+								<a href="<?=$domain; ?>/iotJumpWay/Data" class="<?=$pageDetails["LowPageID"]=="Data" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-chart-area fa-fw mr-20"></i></div> Data<div class="clearfix"></div></a>
+							</li>
+						</ul>
+					</li>
 					<li><hr class="light-grey-hr mb-10"/></li>
                     <li>
 						<a href="javascript:void(0);" data-toggle="collapse" data-target="#security" class="<?=$pageDetails["PageID"]=="Security" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-id-card-alt fa-fw mr-20"></i><span class="right-nav-text">Security</span></div><div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
@@ -139,6 +143,21 @@
                     </li>
 					<li><hr class="light-grey-hr mb-10"/></li>
                     <li>
+						<a href="javascript:void(0);" data-toggle="collapse" data-target="#dataa" class="<?=$pageDetails["PageID"]=="DataAnalysis" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-table fa-fw mr-20"></i><span class="right-nav-text">Data Analysis</span></div><div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
+						<ul id="dataa" class="<?=$pageDetails["PageID"]=="DataAnalysis" ? "" : "collapse"; ?> collapse-level-1">
+							<li>
+								<a href="javascript:void(0);" data-toggle="collapse" data-target="#dropdown_covid" class="<?=$pageDetails["SubPageID"]=="COVID19" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-virus fa-fw mr-20"></i></div> COVID-19<div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
+								<ul id="dropdown_covid" class="<?=$pageDetails["SubPageID"]=="COVID19" ? "" : "collapse"; ?>  collapse-level-2">
+									<li>
+										<a href="<?=$domain; ?>/Data-Analysis/COVID-19" class="<?=$pageDetails["LowPageID"]=="Dashboard" ? "active" : ""; ?>"><div class="pull-left"><i class="zmdi zmdi-view-dashboard mr-15"></i> <span class="right-nav-text">Dashboard</span></div><div class="clearfix"></div></a>
+									</li>
+									<li><a href="https://github.com/COVID-19-AI-Research-Project/AI-Data-Analysis" target="_BLANK"><div class="pull-left"><i class="fa fa-github fa-fw mr-20"></i><span class="right-nav-text">Github</span></div><div class="clearfix"></div></a></li>
+								</ul>
+							</li>
+						</ul>
+                    </li>
+					<li><hr class="light-grey-hr mb-10"/></li>
+                    <li>
 						<a href="javascript:void(0);" data-toggle="collapse" data-target="#diagnosis" class="<?=$pageDetails["PageID"]=="Diagnosis" ? "active" : ""; ?>"><div class="pull-left"><i class="fa fa-hospital fa-fw mr-20"></i><span class="right-nav-text">Diagnosis</span></div><div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
 						<ul id="diagnosis" class="<?=$pageDetails["PageID"]=="Diagnosis" ? "" : "collapse"; ?> collapse-level-1">
 							<li>
@@ -149,6 +168,8 @@
 							</li>
 						</ul>
                     </li>
+					<li><hr class="light-grey-hr mb-10"/></li>
+					<li><a href="https://github.com/LeukemiaAiResearch/HIAS" target="_BLANK"><div class="pull-left"><i class="fa fa-github fa-fw mr-20"></i><span class="right-nav-text">Github</span></div><div class="clearfix"></div></a></li>
 					<li><hr class="light-grey-hr mb-10"/></li>
                 </ul>
             </div>

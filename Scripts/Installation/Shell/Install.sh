@@ -61,12 +61,7 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
         echo $FMSG;
         exit
     fi
-    sh Scripts/Installation/Shell/TASS.sh
-    if [ $? -ne 0 ]; then
-        echo $FMSG;
-        exit
-    fi
-    sh Scripts/Installation/Shell/TASSIoT.sh
+    sh Scripts/Installation/Shell/Finalize.sh
     if [ $? -ne 0 ]; then
         echo $FMSG;
         exit
@@ -76,7 +71,12 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
         echo $FMSG;
         exit
     fi
-    sh Scripts/Installation/Shell/Finalize.sh
+    sh Scripts/Installation/Shell/TASS.sh
+    if [ $? -ne 0 ]; then
+        echo $FMSG;
+        exit
+    fi
+    sh Scripts/Installation/Shell/iotJumpWayTASS.sh
     if [ $? -ne 0 ]; then
         echo $FMSG;
         exit

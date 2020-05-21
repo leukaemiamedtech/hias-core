@@ -3,12 +3,18 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 05, 2020 at 07:51 PM
--- Server version: 5.7.29-0ubuntu0.18.04.1
+-- Generation Time: May 21, 2020 at 05:04 PM
+-- Server version: 5.7.30-0ubuntu0.18.04.1
 -- PHP Version: 7.2.24-0ubuntu0.18.04.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `fhedfbvc`
@@ -43,6 +49,64 @@ CREATE TABLE `blocked` (
   `id` int(11) NOT NULL,
   `ipv6` varchar(255) NOT NULL,
   `banned` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `covid19data`
+--
+
+CREATE TABLE `covid19data` (
+  `id` int(11) NOT NULL,
+  `country` varchar(255) NOT NULL,
+  `province` varchar(255) NOT NULL,
+  `lat` varchar(255) NOT NULL,
+  `lng` varchar(255) NOT NULL,
+  `confirmed` int(11) NOT NULL DEFAULT '0',
+  `deaths` int(11) NOT NULL DEFAULT '0',
+  `recovered` int(11) NOT NULL DEFAULT '0',
+  `active` int(11) NOT NULL DEFAULT '0',
+  `file` varchar(255) NOT NULL,
+  `date` datetime NOT NULL,
+  `timeadded` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `covid19pulls`
+--
+
+CREATE TABLE `covid19pulls` (
+  `id` int(11) NOT NULL,
+  `pulldate` date NOT NULL,
+  `datefrom` date NOT NULL,
+  `dateto` date NOT NULL,
+  `rows` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `emar`
+--
+
+CREATE TABLE `emar` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `status` varchar(255) NOT NULL DEFAULT 'OFFLINE',
+  `uid` int(11) NOT NULL DEFAULT '0',
+  `lid` int(11) NOT NULL DEFAULT '0',
+  `zid` int(11) NOT NULL DEFAULT '0',
+  `did` int(11) NOT NULL DEFAULT '0',
+  `aid` int(11) NOT NULL DEFAULT '0',
+  `mid` int(11) NOT NULL DEFAULT '0',
+  `ip` varchar(255) NOT NULL DEFAULT '',
+  `mac` varchar(255) NOT NULL DEFAULT '',
+  `sport` varchar(255) NOT NULL DEFAULT '',
+  `sportf` varchar(255) NOT NULL DEFAULT '',
+  `sckport` varchar(255) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -150,17 +214,6 @@ CREATE TABLE `mqttlz` (
   `zn` varchar(255) NOT NULL,
   `time` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `mqttlz`
---
-
-INSERT INTO `mqttlz` (`id`, `uid`, `lid`, `zn`, `time`) VALUES
-(1, 0, 1, 'Office', 1587820104),
-(2, 0, 1, 'Downstairs Bathroom', 1588379693),
-(3, 0, 1, 'Boxroom', 1588380489),
-(4, 0, 1, 'Lounge', 1588380508),
-(5, 0, 1, 'Kitchen', 1588380520);
 
 -- --------------------------------------------------------
 
@@ -284,7 +337,7 @@ CREATE TABLE `settings` (
 --
 
 INSERT INTO `settings` (`id`, `version`, `phpmyadmin`, `recaptcha`, `recaptchas`, `meta_title`, `meta_description`, `meta_keywords`, `domainString`) VALUES
-(1, '0.1.0', 'phpmyadmin', '', '', 'HIAS', 'The Peter Moss COVID-19 Medical Support System Server is a locally hosted, secure NGINX server powering an online medical support system based on GeniSysAI. The server and support system provide an easy to use control panel to communicate with, monitor and control Peter Moss COVID-19 AI Research Project projects such as the COVID-19 Emergency Assistance Robot, the COVID-19 IoT Devices & AI projects.', '', 'TkdFUWpmZi9pNExjWnM5L0NDeEF2RkpialloaDZwZWp0UVJUSmpvdTVveTErZG50Y0VPVlYwNmduZnVKT3ovUTo619knGBt58Kuu/RtQ3Epy5g==');
+(1, '0.2.0', 'phpmyadmin', '', '', 'HIAS - Hospital Intelligent Automation System', 'Open-source Hospital Intelligent Automation System & Hospital Information/Management System. A locally hosted web/IoT server and proxy for managing a network of open-source, modular, intelligent devices, robotics and applications.', '', '');
 
 -- --------------------------------------------------------
 
@@ -347,6 +400,33 @@ ALTER TABLE `beds`
 ALTER TABLE `blocked`
   ADD PRIMARY KEY (`id`),
   ADD KEY `banned` (`banned`);
+
+--
+-- Indexes for table `covid19data`
+--
+ALTER TABLE `covid19data`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `country` (`country`),
+  ADD KEY `province` (`province`),
+  ADD KEY `timeadded` (`timeadded`);
+
+--
+-- Indexes for table `covid19pulls`
+--
+ALTER TABLE `covid19pulls`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `emar`
+--
+ALTER TABLE `emar`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `uid` (`uid`),
+  ADD KEY `lid` (`lid`),
+  ADD KEY `zid` (`zid`),
+  ADD KEY `did` (`did`),
+  ADD KEY `aid` (`aid`),
+  ADD KEY `mid` (`mid`);
 
 --
 -- Indexes for table `logins`
@@ -475,3 +555,97 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `beds`
+--
+ALTER TABLE `beds`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+--
+-- AUTO_INCREMENT for table `blocked`
+--
+ALTER TABLE `blocked`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `covid19data`
+--
+ALTER TABLE `covid19data`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+--
+-- AUTO_INCREMENT for table `covid19pulls`
+--
+ALTER TABLE `covid19pulls`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+--
+-- AUTO_INCREMENT for table `emar`
+--
+ALTER TABLE `emar`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+--
+-- AUTO_INCREMENT for table `logins`
+--
+ALTER TABLE `logins`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+--
+-- AUTO_INCREMENT for table `loginsf`
+--
+ALTER TABLE `loginsf`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+--
+-- AUTO_INCREMENT for table `mqtta`
+--
+ALTER TABLE `mqtta`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+--
+-- AUTO_INCREMENT for table `mqttl`
+--
+ALTER TABLE `mqttl`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+--
+-- AUTO_INCREMENT for table `mqttld`
+--
+ALTER TABLE `mqttld`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+--
+-- AUTO_INCREMENT for table `mqttlz`
+--
+ALTER TABLE `mqttlz`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+--
+-- AUTO_INCREMENT for table `mqttu`
+--
+ALTER TABLE `mqttu`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+--
+-- AUTO_INCREMENT for table `mqttua`
+--
+ALTER TABLE `mqttua`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+--
+-- AUTO_INCREMENT for table `patients`
+--
+ALTER TABLE `patients`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+--
+-- AUTO_INCREMENT for table `sensors`
+--
+ALTER TABLE `sensors`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+--
+-- AUTO_INCREMENT for table `settings`
+--
+ALTER TABLE `settings`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+--
+-- AUTO_INCREMENT for table `tass`
+--
+ALTER TABLE `tass`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

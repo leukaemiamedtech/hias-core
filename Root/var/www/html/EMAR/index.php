@@ -1,22 +1,16 @@
 <?php session_start();
 
 $pageDetails = [
-    "PageID" => "IoT",
-    "SubPageID" => "IoT",
-    "LowPageID" => "Zones"
+    "PageID" => "Robotics",
+    "SubPageID" => "EMAR"
 ];
 
 include dirname(__FILE__) . '/../../Classes/Core/init.php';
 include dirname(__FILE__) . '/../../Classes/Core/GeniSys.php';
-include dirname(__FILE__) . '/../iotJumpWay/Classes/iotJumpWay.php';
+include dirname(__FILE__) . '/../EMAR/Classes/EMAR.php';
 
 $_GeniSysAi->checkSession();
-
-$LId = 1;
-$Location = $iotJumpWay->getLocation($LId);
-
-$Zones = $iotJumpWay->getZones();
-$Devices = $iotJumpWay->getDevices();
+$TDevices = $EMAR->getDevices();
 
 ?>
 
@@ -46,7 +40,7 @@ $Devices = $iotJumpWay->getDevices();
 		<link href="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.css" rel="stylesheet" type="text/css"/>
 	</head>
 
-    <body id="GeniSysAI">
+    <body>
         
         <div class="preloader-it">
             <div class="la-anim-1"></div>
@@ -176,9 +170,9 @@ $Devices = $iotJumpWay->getDevices();
                         <div class="panel panel-default card-view panel-refresh">
                             <div class="panel-heading">
 								<div class="pull-left">
-									<h6 class="panel-title txt-dark">iotJumpWay Location Zones</h6>
+									<h6 class="panel-title txt-dark">EMAR Robotic Units</h6>
 								</div>
-								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/Zones/Create"><i class="fa fa-plus"></i></a></div> 
+								<div class="pull-right"><a href="<?=$domain; ?>/EMAR/Create"><i class="fa fa-plus"></i></a></div> 
 								<div class="clearfix"></div>
                             </div>
                             <div class="panel-wrapper collapse in">
@@ -191,22 +185,28 @@ $Devices = $iotJumpWay->getDevices();
 													<th>ID</th>
 													<th>Name</th>
 													<th>Location</th>
+													<th>Zone</th>
+													<th>Device</th>
+													<th>Status</th>
 													<th>ACTION</th>
 												  </tr>
 												</thead>
 												<tbody>
 
 												<?php 
-													if(count($Zones)):
-														foreach($Zones as $key => $value):
+													if(count($TDevices)):
+														foreach($TDevices as $key => $value):
 
 												?>
 
 												  <tr>
 													<td><a href="javascript:void(0)">#<?=$value["id"];?></a></td>
-													<td><?=$value["zn"];?></td>
+													<td><?=$value["name"];?></td>
 													<td>#<?=$value["lid"];?> </td>
-													<td><a href="<?=$domain; ?>/iotJumpWay/<?=$value["lid"];?>/Zones/<?=$value["id"];?>/"><i class="fa fa-edit"></i></a></a></td>
+													<td>#<?=$value["zid"];?> </td>
+													<td>#<?=$value["did"];?> </td>
+													<td><div class="label label-table <?=$value["status"] == "OFFLINE" ? "label-danger" : "label-success"; ?>"><?=$value["status"] == "OFFLINE" ? "OFFLINE" : "ONLINE"; ?></div></td>
+													<td><a href="<?=$domain; ?>/EMAR/<?=$value["id"];?>/"><i class="fa fa-edit"></i></a></a></td>
 												  </tr>
 
 												<?php 
@@ -258,7 +258,6 @@ $Devices = $iotJumpWay->getDevices();
 
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWayUI.js"></script>
 
     </body>
 
