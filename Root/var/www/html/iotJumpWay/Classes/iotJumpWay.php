@@ -964,7 +964,111 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
                 "P" => $mqttPass
             ];
 
-        }
+        }  
+		
+		public function retrieveStatuses($params=[]){
+
+            $mngConn = new MongoDB\Driver\Manager('mongodb://'.$this->_GeniSys->_mdbusername.':'.$this->_GeniSys->_mdbpassword.'@localhost/'.$this->_GeniSys->_mdbname.'');
+            $query = new MongoDB\Driver\Query([],['limit' => 5]); 
+
+            $rows = $mngConn->executeQuery($this->_GeniSys->_mdbname.".Statuses", $query);
+
+            $mngoData = [];
+            
+            foreach ($rows as $document):
+                $mngoData[]=$document;
+            endforeach;
+			
+			if(count($mngoData)):
+				return  [
+					'Response'=>'OK',
+					'ResponseData'=>$mngoData
+				];
+			else:
+				return  [
+					'Response'=>'FAILED'
+				];
+			endif;
+		   
+		}     
+		
+		public function retrieveCommands($params=[]){
+
+            $mngConn = new MongoDB\Driver\Manager('mongodb://'.$this->_GeniSys->_mdbusername.':'.$this->_GeniSys->_mdbpassword.'@localhost/'.$this->_GeniSys->_mdbname.'');
+            $query = new MongoDB\Driver\Query([], ['limit' => 5]); 
+
+            $rows = $mngConn->executeQuery($this->_GeniSys->_mdbname.".Commands", $query);
+
+            $mngoData = [];
+            
+            foreach ($rows as $document):
+                $mngoData[]=$document;
+            endforeach;
+			
+			if(count($mngoData)):
+				return  [
+					'Response'=>'OK',
+					'ResponseData'=>$mngoData
+				];
+			else:
+				return  [
+					'Response'=>'FAILED'
+				];
+			endif;
+		   
+		}        
+		
+		public function retrieveSensors($params=[]){
+
+            $mngConn = new MongoDB\Driver\Manager('mongodb://'.$this->_GeniSys->_mdbusername.':'.$this->_GeniSys->_mdbpassword.'@localhost/'.$this->_GeniSys->_mdbname.'');
+            $query = new MongoDB\Driver\Query([], ['limit' => 5]); 
+
+            $rows = $mngConn->executeQuery($this->_GeniSys->_mdbname.".Sensors", $query);
+
+            $mngoData = [];
+            
+            foreach ($rows as $document):
+                $mngoData[]=$document;
+            endforeach;
+			
+			if(count($mngoData)):
+				return  [
+					'Response'=>'OK',
+					'ResponseData'=>$mngoData
+				];
+			else:
+				return  [
+					'Response'=>'FAILED'
+				];
+			endif;
+		   
+		}         
+		
+		public function retrieveActuators($params=[]){
+
+            $mngConn = new MongoDB\Driver\Manager('mongodb://'.$this->_GeniSys->_mdbusername.':'.$this->_GeniSys->_mdbpassword.'@localhost/'.$this->_GeniSys->_mdbname.'');
+            $query = new MongoDB\Driver\Query([], ['limit' => 5]); 
+
+            $rows = $mngConn->executeQuery($this->_GeniSys->_mdbname.".Actuators", $query);
+
+            $mngoData = [];
+            
+            foreach ($rows as $document):
+                $mngoData[]=$document;
+            endforeach;
+			
+			if(count($mngoData)):
+				return  [
+					'Response'=>'OK',
+					'ResponseData'=>$mngoData
+				];
+			else:
+				return  [
+					'Response'=>'FAILED'
+				];
+			endif;
+		   
+		}    
 
 
     }
