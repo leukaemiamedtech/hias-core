@@ -348,10 +348,10 @@ Clone the [HIAS](https://github.com/LeukemiaAiResearch/HIAS "HIAS") repository f
 To clone the repository and install the Hospital Intelligent Automation System, make sure you have Git installed. Now to the home directory on your server device using terminal/commandline, and then use the following command.
 
 ```
-  $ git clone -b "0.1.0" https://github.com/LeukemiaAiResearch/HIAS.git
+  $ git clone -b "0.3.0" https://github.com/LeukemiaAiResearch/HIAS.git
 ```
 
-The **-b "0.1.0"** parameter ensures you get the code from the latest development branch. Before using the below command please check our latest development branch in the button at the top of the project README.
+The **-b "0.3.0"** parameter ensures you get the code from the latest development branch. Before using the below command please check our latest development branch in the button at the top of the project README.
 
 Once you have used the command above you will see a directory called **HIAS** in your home directory. 
 ```
