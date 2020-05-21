@@ -97,7 +97,7 @@ iotJumpWay Zones represent a room or area within a location. For instance, in a 
 iotJumpWay Devices represent physical devices on the network. Each device is attached to a location and zone, allowing staff to know where each of their devices are, soon all devices will publish their location to the system allowing for real-time tracking within the network. 
 
 ## HIAS IoT Network Sensors/Actuators
-![HIAS IoT Network](Media/Images/HIAS-IoT-Devices.png)
+![HIAS IoT Network](Media/Images/HIAS-IoT-Sensors.png)
 iotJumpWay Sensors & Actuators represent physical sensors and actuators included on network devices and allows direct communication with each sensor/actuator. 
 
 **This feature is still in development**
