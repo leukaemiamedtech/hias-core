@@ -97,16 +97,18 @@ class iotJumpWay():
         try:
             collection = self.mongoConn.Statuses
             doc = {
+                "Use": "Application",
+                "Location": splitTopic[0],
+                "Zone": 0,
                 "Application": splitTopic[2],
+                "Device": 0,
                 "Status": payload.decode(),
                 "Time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             }
             collection.insert(doc)
-            logging.info('OK: STATUS PUBLISH OK FOR APPLICATION %s IN LOCATION SPACE %s AT %s',  splitTopic[2], splitTopic[0], datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             self.Helpers.logger.info("Mongo data inserted OK")
         except:
             e = sys.exc_info()[0]
-            logging.warning('ERROR: STATUS PUBLISH FAILED FOR APPLICATION %s IN LOCATION SPACE %s AT %s',  splitTopic[2], splitTopic[0], datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             self.Helpers.logger.info("Mongo data inserted FAILED")
             
     def appCommandsCallback(self, topic, payload):
@@ -119,6 +121,27 @@ class iotJumpWay():
         
         self.Helpers.logger.info("Recieved iotJumpWay Application Command Data: " + payload.decode())
         command = json.loads(payload.decode("utf-8"))
+        
+        splitTopic=topic.split("/")
+
+        try:
+            collection = self.mongoConn.Commands
+            doc = {
+                "Use": "Application",
+                "Location": splitTopic[0],
+                "Zone": 0,
+                "From": command["From"],
+                "To": splitTopic[3],
+                "Type": command["Type"],
+                "Value": command["Value"],
+                "Message": command["Message"],
+                "Time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
+            collection.insert(doc)
+            self.Helpers.logger.info("Mongo data inserted OK")
+        except:
+            e = sys.exc_info()[0]
+            self.Helpers.logger.info("Mongo data inserted FAILED")
             
     def appSensorCallback(self, topic, payload):
         """ 
@@ -130,6 +153,28 @@ class iotJumpWay():
         
         self.Helpers.logger.info("Recieved iotJumpWay Application Sensors Data : " + payload.decode())
         command = json.loads(payload.decode("utf-8"))
+        
+        splitTopic=topic.split("/")
+
+        try:
+            collection = self.mongoConn.Sensors
+            doc = {
+                "Use": "Application",
+                "Location": splitTopic[0],
+                "Zone": 0,
+                "Application": splitTopic[2],
+                "Device": 0,
+                "Sensor": command["Sensor"],
+                "Type": command["Type"],
+                "Value": command["Value"],
+                "Message": command["Message"],
+                "Time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
+            collection.insert(doc)
+            self.Helpers.logger.info("Mongo data inserted OK")
+        except:
+            e = sys.exc_info()[0]
+            self.Helpers.logger.info("Mongo data inserted FAILED")
             
     def appTriggerCallback(self, topic, payload):
         """ 
@@ -152,6 +197,27 @@ class iotJumpWay():
         
         self.Helpers.logger.info("Recieved iotJumpWay Application Sensors Data : " + payload.decode())
         command = json.loads(payload.decode("utf-8"))
+        
+        splitTopic=topic.split("/")
+
+        try:
+            collection = self.mongoConn.Statuses
+            doc = {
+                "Use": "Device",
+                "Location": splitTopic[0],
+                "Zone": splitTopic[2],
+                "From": command["From"],
+                "To": splitTopic[3],
+                "Type": command["Type"],
+                "Value": command["Value"],
+                "Message": command["Message"],
+                "Time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
+            collection.insert(doc)
+            self.Helpers.logger.info("Mongo data inserted OK")
+        except:
+            e = sys.exc_info()[0]
+            self.Helpers.logger.info("Mongo data inserted FAILED")
             
     def deviceCommandsCallback(self, topic, payload):
         """ 
@@ -163,6 +229,27 @@ class iotJumpWay():
         
         self.Helpers.logger.info("Recieved iotJumpWay Device Command Data: " + payload.decode())
         command = json.loads(payload.decode("utf-8"))
+        
+        splitTopic=topic.split("/")
+
+        try:
+            collection = self.mongoConn.Commands
+            doc = {
+                "Use": "Device",
+                "Location": splitTopic[0],
+                "Zone": splitTopic[2],
+                "From": command["From"],
+                "To": splitTopic[3],
+                "Type": command["Type"],
+                "Value": command["Value"],
+                "Message": command["Message"],
+                "Time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
+            collection.insert(doc)
+            self.Helpers.logger.info("Mongo data inserted OK")
+        except:
+            e = sys.exc_info()[0]
+            self.Helpers.logger.info("Mongo data inserted FAILED")
             
     def deviceSensorCallback(self, topic, payload):
         """ 
@@ -174,6 +261,28 @@ class iotJumpWay():
         
         self.Helpers.logger.info("Recieved iotJumpWay Device Sensors Data : " + payload.decode())
         command = json.loads(payload.decode("utf-8"))
+        
+        splitTopic=topic.split("/")
+
+        try:
+            collection = self.mongoConn.Sensors
+            doc = {
+                "Use": "Device",
+                "Location": splitTopic[0],
+                "Zone": splitTopic[2],
+                "Application": 0,
+                "Device": splitTopic[3],
+                "Sensor": command["Sensor"],
+                "Type": command["Type"],
+                "Value": command["Value"],
+                "Message": command["Message"],
+                "Time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
+            collection.insert(doc)
+            self.Helpers.logger.info("Mongo data inserted OK")
+        except:
+            e = sys.exc_info()[0]
+            self.Helpers.logger.info("Mongo data inserted FAILED")
             
     def deviceTriggerCallback(self, topic, payload):
         """ 

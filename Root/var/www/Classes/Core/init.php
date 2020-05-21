@@ -17,6 +17,9 @@ include dirname(__FILE__) . '/../../Classes/Htpasswd.php';
             $this->dbname = $config->dbname;
             $this->dbusername = $config->dbusername;
             $this->dbpassword = $config->dbpassword;
+            $this->mdbname = $config->dbname;
+            $this->mdbusername = $config->mdbusername;
+            $this->mdbpassword = $config->mdbpassword;
             $this->connect();
         }
 
@@ -57,6 +60,10 @@ include dirname(__FILE__) . '/../../Classes/Htpasswd.php';
 
             $this->_secCon = $_secCon->dbcon;
             $this->_key = $_secCon->config->key;
+            
+            $this->_mdbname = $_secCon->config->mdbname;
+            $this->_mdbusername = $_secCon->config->mdbusername;
+            $this->_mdbpassword = $_secCon->config->mdbpassword;
 
             include dirname(__FILE__) . '/../../Classes/helpers.php';
 

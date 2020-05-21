@@ -3,7 +3,7 @@
 $pageDetails = [
     "PageID" => "IoT",
     "SubPageID" => "IoT",
-    "LowPageID" => "Zones"
+    "LowPageID" => "Data"
 ];
 
 include dirname(__FILE__) . '/../../Classes/Core/init.php';
@@ -17,6 +17,10 @@ $Location = $iotJumpWay->getLocation($LId);
 
 $Zones = $iotJumpWay->getZones();
 $Devices = $iotJumpWay->getDevices();
+$Statuses = $iotJumpWay->retrieveStatuses();
+$Commands = $iotJumpWay->retrieveCommands();
+$Actuators = $iotJumpWay->retrieveActuators();
+$Sensors = $iotJumpWay->retrieveSensors();
 
 ?>
 
@@ -176,9 +180,9 @@ $Devices = $iotJumpWay->getDevices();
                         <div class="panel panel-default card-view panel-refresh">
                             <div class="panel-heading">
 								<div class="pull-left">
-									<h6 class="panel-title txt-dark">iotJumpWay Location Zones</h6>
+									<h6 class="panel-title txt-dark">iotJumpWay Location Device/Application Statuses</h6>
 								</div>
-								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/Zones/Create"><i class="fa fa-plus"></i></a></div> 
+								<div class="pull-right"></div> 
 								<div class="clearfix"></div>
                             </div>
                             <div class="panel-wrapper collapse in">
@@ -189,30 +193,235 @@ $Devices = $iotJumpWay->getDevices();
 												<thead>
 												  <tr>
 													<th>ID</th>
-													<th>Name</th>
+													<th>Use</th>
 													<th>Location</th>
+													<th>Zone</th>
+													<th>Device</th>
+													<th>Application</th>
+													<th>Status</th>
+													<th>Time</th>
 													<th>ACTION</th>
 												  </tr>
 												</thead>
 												<tbody>
 
 												<?php 
-													if(count($Zones)):
-														foreach($Zones as $key => $value):
-
+                                                    if($Statuses["Response"] == "OK"):
+                                                        foreach($Statuses["ResponseData"] as $key => $value):
 												?>
 
 												  <tr>
-													<td><a href="javascript:void(0)">#<?=$value["id"];?></a></td>
-													<td><?=$value["zn"];?></td>
-													<td>#<?=$value["lid"];?> </td>
-													<td><a href="<?=$domain; ?>/iotJumpWay/<?=$value["lid"];?>/Zones/<?=$value["id"];?>/"><i class="fa fa-edit"></i></a></a></td>
+													<td>#<?=$value->_id;?></td>
+													<td><?=$value->Use;?></td>
+													<td><?=$value->Location;?></td>
+													<td><?=$value->Zone;?></td>
+													<td><?=$value->Device;?></td>
+													<td><?=$value->Application;?></td>
+													<td><?=$value->Status;?></td>
+													<td><?=$value->Time;?> </td>
+													<td><a href="#" id="removeStatusData"><i class="fa fa-trash-alt"></i></a></a></td>
 												  </tr>
 
 												<?php 
 														endforeach;
 													endif;
 												?>
+												</tbody>
+											</table>
+										</div>
+									</div>
+                                </div>
+                            </div>
+						</div>
+					</div>
+				</div>
+                
+				<div class="row">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="panel panel-default card-view panel-refresh">
+                            <div class="panel-heading">
+								<div class="pull-left">
+									<h6 class="panel-title txt-dark">iotJumpWay Location Device/Application Commands</h6>
+								</div>
+								<div class="pull-right"></div> 
+								<div class="clearfix"></div>
+                            </div>
+                            <div class="panel-wrapper collapse in">
+                                <div class="panel-body">
+									<div class="table-wrap mt-40">
+										<div class="table-responsive">
+											<table class="table mb-0">
+												<thead>
+												  <tr>
+													<th>ID</th>
+													<th>Use</th>
+													<th>Location</th>
+													<th>Zone</th>
+													<th>Type</th>
+													<th>From</th>
+													<th>To</th>
+													<th>Value</th>
+													<th>Message</th>
+													<th>Time</th>
+													<th>ACTION</th>
+												  </tr>
+												</thead>
+												<tbody>
+
+												<?php 
+                                                    if($Commands["Response"] == "OK"):
+                                                        foreach($Commands["ResponseData"] as $key => $value):
+												?>
+
+												  <tr>
+													<td>#<?=$value->_id;?></td>
+													<td><?=$value->Use;?></td>
+													<td><?=$value->Location;?></td>
+													<td><?=$value->Zone;?></td>
+													<td><?=$value->Type;?></td>
+													<td><?=$value->From;?></td>
+													<td><?=$value->To;?></td>
+													<td><?=$value->Value;?></td>
+													<td><?=$value->Message;?></td>
+													<td><?=$value->Time;?> </td>
+													<td><a href="#" id="removeCommandsData"><i class="fa fa-trash-alt"></i></a></a></td>
+												  </tr>
+
+												<?php 
+														endforeach;
+													endif;
+												?>
+
+												</tbody>
+											</table>
+										</div>
+									</div>
+                                </div>
+                            </div>
+						</div>
+					</div>
+				</div>
+                
+				<div class="row">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="panel panel-default card-view panel-refresh">
+                            <div class="panel-heading">
+								<div class="pull-left">
+									<h6 class="panel-title txt-dark">iotJumpWay Location Device/Application Sensors</h6>
+								</div>
+								<div class="pull-right"></div> 
+								<div class="clearfix"></div>
+                            </div>
+                            <div class="panel-wrapper collapse in">
+                                <div class="panel-body">
+									<div class="table-wrap mt-40">
+										<div class="table-responsive">
+											<table class="table mb-0">
+												<thead>
+												  <tr>
+													<th>ID</th>
+													<th>Use</th>
+													<th>Location</th>
+													<th>Zone</th>
+													<th>Device</th>
+													<th>Type</th>
+													<th>Sensor</th>
+													<th>Value</th>
+													<th>Message</th>
+													<th>Time</th>
+													<th>ACTION</th>
+												  </tr>
+												</thead>
+												<tbody>
+
+												<?php 
+                                                    if($Sensors["Response"] == "OK"):
+                                                        foreach($Sensors["ResponseData"] as $key => $value):
+												?>
+
+												  <tr>
+													<td>#<?=$value->_id;?></td>
+													<td><?=$value->Use;?></td>
+													<td><?=$value->Location;?></td>
+													<td><?=$value->Zone;?></td>
+													<td><?=$value->Device;?></td>
+													<td><?=$value->Type;?></td>
+													<td><?=$value->Sensor;?></td>
+													<td><?=$value->Value;?></td>
+													<td><?=$value->Message;?></td>
+													<td><?=$value->Time;?> </td>
+													<td><a href="#" id="removeCommandsData"><i class="fa fa-trash-alt"></i></a></a></td>
+												  </tr>
+
+												<?php 
+														endforeach;
+													endif;
+												?>
+
+												</tbody>
+											</table>
+										</div>
+									</div>
+                                </div>
+                            </div>
+						</div>
+					</div>
+				</div>
+                
+				<div class="row">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="panel panel-default card-view panel-refresh">
+                            <div class="panel-heading">
+								<div class="pull-left">
+									<h6 class="panel-title txt-dark">iotJumpWay Location Device/Application Actuators</h6>
+								</div>
+								<div class="pull-right"></div> 
+								<div class="clearfix"></div>
+                            </div>
+                            <div class="panel-wrapper collapse in">
+                                <div class="panel-body">
+									<div class="table-wrap mt-40">
+										<div class="table-responsive">
+											<table class="table mb-0">
+												<thead>
+												  <tr>
+													<th>ID</th>
+													<th>Use</th>
+													<th>Location</th>
+													<th>Zone</th>
+													<th>Type</th>
+													<th>From</th>
+													<th>Value</th>
+													<th>Message</th>
+													<th>Time</th>
+													<th>ACTION</th>
+												  </tr>
+												</thead>
+												<tbody>
+
+												<?php 
+                                                    if($Actuators["Response"] == "OK"):
+                                                        foreach($Actuators["ResponseData"] as $key => $value):
+												?>
+
+												  <tr>
+													<td>#<?=$value->_id;?></td>
+													<td><?=$value->Use;?></td>
+													<td><?=$value->Location;?></td>
+													<td><?=$value->Zone;?></td>
+													<td><?=$value->Type;?></td>
+													<td><?=$value->From;?></td>
+													<td><?=$value->Value;?></td>
+													<td><?=$value->Message;?></td>
+													<td><?=$value->Time;?> </td>
+													<td><a href="#" id="removeCommandsData"><i class="fa fa-trash-alt"></i></a></a></td>
+												  </tr>
+
+												<?php 
+														endforeach;
+													endif;
+												?>
+
 												</tbody>
 											</table>
 										</div>

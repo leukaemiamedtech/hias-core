@@ -1,7 +1,7 @@
 <?php session_start();
 
 $pageDetails = [
-    "PageID" => "Server",
+    "PageID" => "IoT",
     "SubPageID" => "IoT",
     "LowPageID" => "Application"
 ];

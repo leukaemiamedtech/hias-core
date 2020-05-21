@@ -74,7 +74,6 @@ include dirname(__FILE__) . '/../Classes/Core/GeniSys.php';
 													<div class="clearfix"></div>
 													<input type="password" class="form-control" required="" id="password" name="password" placeholder="Enter password">
 												</div>
-												
 												<div class="form-group">
 													<div class="g-recaptcha" data-sitekey="<?=$_GeniSys->_helpers->oDecrypt($_GeniSys->_confs["recaptcha"]); ?>"></div>
 													<input id="login" type="hidden" class="" name="login" value="1">

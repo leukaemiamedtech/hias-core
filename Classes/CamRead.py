@@ -88,10 +88,10 @@ class CamRead(Thread):
                             self.publishes[person] = time.time()
                             # Send iotJumpWay notification
                             self.iotJumpWay.appDeviceChannelPub("Sensors", self.Helpers.confs["tass"]["zid"], self.Helpers.confs["tass"]["did"],{
-                                "WarningOrigin": self.Helpers.confs["tass"]["sid"],
-                                "WarningType": "TASS",
-                                "WarningValue": person,
-                                "WarningMessage": msg
+                                "Sensor": self.Helpers.confs["tass"]["sid"],
+                                "Type": "TASS",
+                                "Value": person,
+                                "Message": msg
                             })
                         # Draws facial landmarks
                         for (x, y) in coordsi:

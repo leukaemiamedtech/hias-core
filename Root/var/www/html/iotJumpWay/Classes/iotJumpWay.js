@@ -1,13 +1,13 @@
 var iotJumpWayWebSoc = {
     client: null,
     connected: false,
-    host: "genisysai.iotjumpway.com",
+    host: "",
     port: 9001,
     useTLS: true,
     cleansession: true,
     mqttOptions: {
-        locationID: 1,
-        applicationID: 1,
+        locationID: 0,
+        applicationID: 0,
         applicationName: "",
         userName: "",
         passwd: ""

@@ -1,22 +1,26 @@
 <?php session_start();
 
 $pageDetails = [
-    "PageID" => "IoT",
-    "SubPageID" => "IoT",
-    "LowPageID" => "Application"
+    "PageID" => "Robotics",
+    "SubPageID" => "EMAR"
 ];
 
 include dirname(__FILE__) . '/../../Classes/Core/init.php';
 include dirname(__FILE__) . '/../../Classes/Core/GeniSys.php';
+include dirname(__FILE__) . '/../EMAR/Classes/EMAR.php';
 include dirname(__FILE__) . '/../iotJumpWay/Classes/iotJumpWay.php';
-include dirname(__FILE__) . '/../TASS/Classes/TASS.php';
 
 $_GeniSysAi->checkSession();
 
-$ZId = filter_input(INPUT_GET, 'zone', FILTER_SANITIZE_NUMBER_INT);
-$Zone = $iotJumpWay->getZone($ZId);
+$TId = filter_input(INPUT_GET, 'emar', FILTER_SANITIZE_NUMBER_INT);
+$TDevice = $EMAR->getDevice($TId);
 
 $Locations = $iotJumpWay->getLocations();
+$Zones = $iotJumpWay->getZones();
+$MDevices = $iotJumpWay->getMDevices();
+$Devices = $iotJumpWay->getDevices();
+$TMDevice = $iotJumpWay->getDevice($TDevice["did"]);
+
 
 ?>
 
@@ -176,7 +180,7 @@ $Locations = $iotJumpWay->getLocations();
                         <div class="panel panel-default card-view panel-refresh">
                             <div class="panel-heading">
 								<div class="pull-left">
-									<h6 class="panel-title txt-dark">Zone #<?=$ZId; ?></h6>
+									<h6 class="panel-title txt-dark">EMAR Robotic Unit #<?=$TId; ?></h6>
 								</div>
 								<div class="pull-right"></div>
 								<div class="clearfix"></div>
@@ -184,12 +188,11 @@ $Locations = $iotJumpWay->getLocations();
                             <div class="panel-wrapper collapse in">
                                 <div class="panel-body">
                                     <div class="form-wrap">
-                                        <form data-toggle="validator" role="form" id="form">
-                                            <hr class="light-grey-hr"/>
+                                        <form data-toggle="validator" role="form" id="emar">
                                             <div class="form-group">
                                                 <label for="name" class="control-label mb-10">Name</label>
-                                                <input type="text" class="form-control" id="name" name="name" placeholder="Application Name" required value="<?=$Zone["zn"]; ?>">
-                                                <span class="help-block"> Name of zone</span> 
+                                                <input type="text" class="form-control" id="name" name="name" placeholder="EMAR Device Name" required value="<?=$TDevice["name"]; ?>">
+                                                <span class="help-block"> Name of EMAR Robotic Unit</span> 
                                             </div>
                                             <div class="form-group">
                                                 <label class="control-label mb-10">Location</label>
@@ -200,7 +203,7 @@ $Locations = $iotJumpWay->getLocations();
                                                             foreach($Locations as $key => $value):
                                                     ?>
 
-                                                    <option value="<?=$value["id"]; ?>" <?=$Zone["lid"] == $value["id"] ? " selected " : ""; ?>>#<?=$value["id"]; ?>: <?=$value["name"]; ?></option>
+                                                    <option value="<?=$value["id"]; ?>" <?=$TDevice["lid"] == $value["id"] ? " selected " : ""; ?>>#<?=$value["id"]; ?>: <?=$value["name"]; ?></option>
 
                                                     <?php 
                                                             endforeach;
@@ -208,14 +211,75 @@ $Locations = $iotJumpWay->getLocations();
                                                     ?>
 
                                                 </select>
-                                                <span class="help-block"> Location of zone</span> 
+                                                <span class="help-block"> Location of EMAR Robotic Unit</span> 
                                             </div>
-								            <div class="clearfix"></div>
-                                            <hr class="light-grey-hr"/>
+                                            <div class="form-group">
+                                                <label class="control-label mb-10">Zone</label>
+                                                <select class="form-control" id="zid" name="zid">
+                                                
+                                                    <?php 
+                                                        if(count($Zones)):
+                                                            foreach($Zones as $key => $value):
+                                                    ?>
+
+                                                    <option value="<?=$value["id"]; ?>" <?=$TDevice["zid"] == $value["id"] ? " selected " : ""; ?>>#<?=$value["id"]; ?>: <?=$value["zn"]; ?></option>
+
+                                                    <?php 
+                                                            endforeach;
+                                                        endif;
+                                                    ?>
+
+                                                </select>
+                                                <span class="help-block"> Zone of EMAR Robotic Unit</span> 
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label mb-10">iotJumpWay Device</label>
+                                                <select class="form-control" id="did" name="did">
+                                                
+                                                    <?php 
+                                                        if(count($Devices)):
+                                                            foreach($Devices as $key => $value):
+                                                    ?>
+
+                                                    <option value="<?=$value["id"]; ?>" <?=$TDevice["did"] == $value["id"] ? " selected " : ""; ?>>#<?=$value["id"]; ?>: <?=$value["name"]; ?></option>
+
+                                                    <?php 
+                                                            endforeach;
+                                                        endif;
+                                                    ?>
+
+                                                </select>
+                                                <span class="help-block"> iotJumpWay device</span> 
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="name" class="control-label mb-10">IP</label>
+                                                <input type="text" class="form-control" id="ip" name="ip" placeholder="EMAR Device IP" required value="<?=$TDevice["ip"] ? $_GeniSys->_helpers->oDecrypt($TDevice["ip"]) : ""; ?>">
+                                                <span class="help-block"> IP of EMAR Robotic Unit</span> 
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="name" class="control-label mb-10">MAC</label>
+                                                <input type="text" class="form-control" id="mac" name="mac" placeholder="EMAR Device MAC" required value="<?=$TDevice["mac"] ? $_GeniSys->_helpers->oDecrypt($TDevice["mac"]) : ""; ?>">
+                                                <span class="help-block"> MAC of EMAR Robotic Unit</span> 
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="name" class="control-label mb-10">Stream Port</label>
+                                                <input type="text" class="form-control" id="sport" name="sport" placeholder="EMAR Device Stream Port" required value="<?=$TDevice["sport"] ? $_GeniSys->_helpers->oDecrypt($TDevice["sport"]) : ""; ?>">
+                                                <span class="help-block"> MAC of EMAR Robotic Unit</span> 
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="name" class="control-label mb-10">Stream File</label>
+                                                <input type="text" class="form-control" id="sportf" name="sportf" placeholder="EMAR Device Stream File" required value="<?=$TDevice["sportf"] ? $_GeniSys->_helpers->oDecrypt($TDevice["sportf"]) : ""; ?>">
+                                                <span class="help-block">EMAR Robotic Unit Stream File</span> 
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="name" class="control-label mb-10">Socket Port</label>
+                                                <input type="text" class="form-control" id="sckport" name="sckport" placeholder="EMAR Device Socket Port" required value="<?=$TDevice["sckport"] ? $_GeniSys->_helpers->oDecrypt($TDevice["sckport"]) : ""; ?>">
+                                                <span class="help-block">EMAR Robotic Unit Socket Port</span> 
+                                            </div>
                                             <div class="form-group mb-0">
-                                                <input type="hidden" class="form-control" id="update_zone" name="update_zone" required value="1">
-                                                <input type="hidden" class="form-control" id="id" name="id" required value="<?=$Zone["id"]; ?>">
-                                                <button type="submit" class="btn btn-success btn-anim" id="zone_update"><i class="icon-rocket"></i><span class="btn-text">submit</span></button>
+                                                <input type="hidden" class="form-control" id="update_emar" name="update_emar" required value="1">
+                                                <input type="hidden" class="form-control" id="id" name="id" required value="<?=$TDevice["id"]; ?>">
+                                                <button type="submit" class="btn btn-success btn-anim" id="emar_update"><i class="icon-rocket"></i><span class="btn-text">submit</span></button>
                                             </div>
                                         </form>
                                     </div>
@@ -224,6 +288,34 @@ $Locations = $iotJumpWay->getLocations();
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                        <div class="panel panel-default card-view panel-refresh">
+                            <div class="panel-wrapper collapse in">
+                                <div class="panel-body">
+                                    <?php include dirname(__FILE__) . '/../EMAR/Includes/EMAR.php'; ?>
+                                </div>
+                            </div>
+                        </div>
+					</div>
+					<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                        <div class="panel panel-default card-view panel-refresh">
+                            <div class="panel-wrapper collapse in">
+                                <div class="panel-body">
+								    <div class="pull-right"><a href="javascipt:void(0)" id="reset_mqtt"><i class="fa fa-refresh"></i> Reset MQTT Password</a></div>
+                                    <div class="form-group">
+										<label class="control-label col-md-5">MQTT Username</label>
+                                        <div class="col-md-9">
+                                            <p class="form-control-static"><?=$_GeniSys->_helpers->oDecrypt($TMDevice["mqttu"]); ?></p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+										<label class="control-label col-md-5">MQTT Password</label>
+                                        <div class="col-md-9">
+                                            <p class="form-control-static"><span id="mqttp"><?=$_GeniSys->_helpers->oDecrypt($TMDevice["mqttp"]); ?></span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 					</div>
 				</div>
 				
@@ -262,13 +354,10 @@ $Locations = $iotJumpWay->getLocations();
 
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWayUI.js"></script>
 
-        <script type="text/javascript" src="<?=$domain; ?>/TASS/Classes/TASS.js"></script>
+        <script type="text/javascript" src="<?=$domain; ?>/EMAR/Classes/EMAR.js"></script>
 
-		<script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/bootstrap-validator/dist/validator.min.js"></script>
-
-        <script type="text/javascript" src="<?=$domain; ?>/Hospital/Staff/Classes/Staff.js"></script>
+		<script src="<?=$domain; ?>/vendors/bower_components/bootstrap-validator/dist/validator.min.js"></script>
 
     </body>
 
