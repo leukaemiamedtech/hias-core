@@ -1044,17 +1044,17 @@ The script will also use your password the with Apache HTPassword system that pr
 The script will also create a local iotJumpWay application, allowing you to authenticate to the broker as your self. This can be useful for personal applications such as smart phone applications etc.
 
 ```
-php Scripts/Installation/PHP/Admin.php YourUsername YourLocationId
+php Scripts/Installation/PHP/Admin.php YourUsername YourLocationId YourApplicationIP YourApplicationMac
 ```
 You should see something similar to the following:
 ```
 !! NOTE THESE CREDENTIALS AND KEEP THEM IN A SAFE PLACE !!
 
-!! Admin user, AdamMiltonBarker, has been created with ID 1 !! 
-!! Your Username is: AdamMiltonBarker !! 
+!! Admin user, YourUsername, has been created with ID 1 !! 
+!! Your Username is: YourUsername !! 
 !! Your password is: YourPassword !! 
 
-!! Application,  AdamMiltonBarker,  has been created with ID 2 !! 
+!! Application,  YourUsername,  has been created with ID 2 !! 
 !! Your application public key is: YourPublicKey !! 
 !! Your application private key is: YourPrivateKey !! 
 !! Your application MQTT username is: YourMqttUser !! 
@@ -1064,10 +1064,10 @@ You should see something similar to the following:
 **Shell Script**  [Admin.sh](../../Scripts/Installation/Shell/Admin.sh "Admin.sh")
 
 ### Finalize Server Settings
-Now you need to finalize your server settings, to do this you need your server URL, IE: https://www.YourDomain.com, and your [Google Recaptcha](https://www.google.com/recaptcha "Google Recaptcha") site/secret keys.
+Now you need to finalize your server settings, to do this you need your server URL, IE: https://www.YourDomain.com, you will need to register free [Google Maps](https://developers.google.com/maps/documentation/javascript/get-api-key "Google Maps") and [Google Recaptcha](https://www.google.com/recaptcha "Google Recaptcha") site/secret keys, and you will need to provide your default latitude and longitude settings. The latitude and longitude settings will be used for the default coordinates for Google Maps in HIAS, they must be correct. 
 
 ```
-php Scripts/Installation/PHP/Finalize.php YourServerURL RecaptchaSiteKey RecaptchaSecretKey
+php Scripts/Installation/PHP/Finalize.php YourServerURL RecaptchaSiteKey RecaptchaSecretKey GMapsKey DefaultLatitude DefaultLongitude 
 ```
 
 **Shell Script**  [Finalize.sh](../../Scripts/Installation/Shell/Finalize.sh "Finalize.sh")
