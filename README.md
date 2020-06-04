@@ -2,7 +2,7 @@
 ## HIAS - Hospital Intelligent Automation System
 [![HIAS - Hospital Intelligent Automation System](Media/Images/HIAS-Hospital-Intelligent-Automation-System.png)](https://github.com/LeukemiaAiResearch/HIAS)
 
-[![VERSION](https://img.shields.io/badge/VERSION-0.2.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.2.0) [![DEV BRANCH](https://img.shields.io/badge/DEV%20BRANCH-0.3.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.3.0) [![Issues Welcome!](https://img.shields.io/badge/Contributions-Welcome-lightgrey.svg)](CONTRIBUTING.md)  [![Issues](https://img.shields.io/badge/Issues-Welcome-lightgrey.svg)](issues) [![LICENSE](https://img.shields.io/badge/LICENSE-MIT-blue.svg)](LICENSE)
+[![VERSION](https://img.shields.io/badge/VERSION-0.3.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.3.0) [![DEV BRANCH](https://img.shields.io/badge/DEV%20BRANCH-0.4.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.4.0) [![Issues Welcome!](https://img.shields.io/badge/Contributions-Welcome-lightgrey.svg)](CONTRIBUTING.md)  [![Issues](https://img.shields.io/badge/Issues-Welcome-lightgrey.svg)](issues) [![LICENSE](https://img.shields.io/badge/LICENSE-MIT-blue.svg)](LICENSE)
 
 &nbsp;
 
@@ -94,29 +94,37 @@ The modular systems that we build to be compatible with this network will all cr
 
 A HIAS network is represented by an iotJumpWay location. Within each location you can have multiple zones, devices and applications.
 
-## HIAS IoT Network Zones
-![HIAS IoT Network](Media/Images/HIAS-IoT-Zones.png)
+## IoT Network Zones
+![HIAS IoT Network Zones](Media/Images/HIAS-IoT-Zones.png)
 
 iotJumpWay Zones represent a room or area within a location. For instance, in a hospital you may have zones such as *Reception*, *Waiting Room*, *Operating Room 1* etc.
 
-## HIAS IoT Network Devices
-![HIAS IoT Network](Media/Images/HIAS-IoT-Devices.png)
+![HIAS IoT Network Zones](Media/Images/HIAS-IoT-Zones-Edit.png)
+
+## IoT Network Devices
+![HIAS IoT Network Devices](Media/Images/HIAS-IoT-Devices.png)
 
 iotJumpWay Devices represent physical devices on the network. Each device is attached to a location and zone, allowing staff to know where each of their devices are, soon all devices will publish their location to the system allowing for real-time tracking within the network. 
 
-## HIAS IoT Network Sensors/Actuators
-![HIAS IoT Network](Media/Images/HIAS-IoT-Sensors.png)
+![HIAS IoT Network Devices](Media/Images/HIAS-IoT-Devices-Edit.png)
+
+## IoT Network Sensors/Actuators
+![HIAS IoT Network Sensors/Actuators](Media/Images/HIAS-IoT-Sensors.png)
 
 iotJumpWay Sensors & Actuators represent physical sensors and actuators included on network devices and allows direct communication with each sensor/actuator. 
 
 **This feature is still in development**
 
-## HIAS IoT Network Applications
-![HIAS IoT Network](Media/Images/HIAS-IoT-Applications.png)
-iotJumpWay Devices represent applications that can communicate with the  network. Each application is attached to a location, soon all applications will publish their location to the system allowing for real-time tracking. 
+## IoT Network Applications
+![HIAS IoT Network Applications](Media/Images/HIAS-IoT-Applications.png)
 
-## HIAS IoT Network Data
-![HIAS IoT Network](Media/Images/HIAS-IoT-Data.png)
+iotJumpWay Devices represent applications that can communicate with the  network. Each application is attached to a location, soon all applications will publish their location to the system allowing for real-time tracking.
+
+![HIAS IoT Network Applications](Media/Images/HIAS-IoT-Applications-Edit.png) 
+
+## IoT Network Data
+![HIAS IoT Network Data](Media/Images/HIAS-IoT-Data.png)
+
 All data sent from devices and applications connected to the HIAS network is stored locally in a Mongo database (NoSQL). This means that staff can monitor all data on their network, and kall data stays on the network giving organizations total control of their data.
 
 &nbsp;
@@ -126,30 +134,34 @@ All data sent from devices and applications connected to the HIAS network is sto
 
 The HIAS facial recognition system is based on [tassAI](https://www.facebook.com/TASSNetwork/ "tassAI"). The facial recognition system uses cameras attached to devices on the network and processes frames from the cameras in real-time, before streaming the processed framed to a local server endpoint. Multiple TASS devices can be configured and there will soon be integration with popular IP cameras like Foscam etc. 
 
+![HIAS Facial Recognition](Media/Images/HIAS-TASS-Edit.png)
+
 &nbsp; 
 
 # HIAS Data Analysis
-![HIAS Facial Recognition](Media/Images/HIAS-Data-Analysis.png)
+![HIAS Data Analysis](Media/Images/HIAS-Data-Analysis.png)
 
 The HIAS network hosts a number of AI models and that monitor data from local and external sources to make predictions based on the raw data. You can monitor real-time data using the HIAS UI. 
 
 ## HIAS COVID-19 Data Analysis
-![HIAS Facial Recognition](Media/Images/HIAS-Data-Analysis-COVID-19.png)
+![HIAS COVID-19 Data Analysis](Media/Images/HIAS-Data-Analysis-COVID-19.png)
 
 Functionality is now available to set up a basic COVID-19 tracker that will power the graphs in the HIAS UI. This system pulls data from the [COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19 "COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University") and displays the stats in the UI. 
 
 &nbsp;
 
 # EMAR
-![EMAR](Media/Images/EMAR-Dashboard.png) 
+![EMAR](Media/Images/HIAS-Robotics-EMAR.png) 
 
 Basic functionality to update, monitor and control [EMAR](https://www.facebook.com/TASSNetwork/ "EMAR") is now available. The current features allow you to create EMAR devices, update the settings, monitor the camera stream and send commands to the robotic arm to move it. 
 
-![EMAR](Media/Images/EMAR-Control.png)
+![EMAR](Media/Images/HIAS-Robotics-EMAR-Edit.png) 
+
+![EMAR](Media/Images/HIAS-Robotics-EMAR-Edit-2.png)
 
 &nbsp;
 
-## Installation
+# Installation
 Installation scripts and tutorials for setting up your HIAS - Hospital Intelligent Automation System & UI are provided. To get started, please follow the installation guides provided below in the order they are given:
 
 | ORDER | GUIDE | INFORMATION | AUTHOR |
