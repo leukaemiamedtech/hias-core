@@ -1,79 +1,101 @@
 ############################################################################################
 #
-# Project:       Peter Moss COVID-19 AI Research Project
-# Repository:    COVID-19 Medical Support System Server
+# Project:       Peter Moss Leukemia AI Research
+# Repository:    HIAS: Hospital Intelligent Automation System
 # Project:       GeniSysAI
 #
-# Author:        Adam Milton-Barker (AdamMiltonBarker.com)
+# Author:		 Adam Milton-Barker (AdamMiltonBarker.com)
 # Contributors:
-# Title:         GeniSysAI Class
-# Description:   The GeniSysAI Class provides the Medical Support System Server with it's
-#                intelligent functionality.
-# License:       MIT License
-# Last Modified: 2020-04-25
+# Title:		 GeniSysAI Class
+# Description:   The GeniSysAI Class provides the Hospital Intelligent Automation System with 
+#                it's intelligent functionality.
+# License:	     MIT License
+# Last Modified: 2020-06-04
 #
 ############################################################################################
 
-import json, sys
+import json, psutil, requests, sys, threading
 
 from threading import Thread
 
 from Classes.Helpers import Helpers
-from Classes.iotJumpWay import Application as iotJumpWay
+from Classes.iotJumpWay import Application as iotJumpWayA
 from Classes.CamRead import CamRead
 from Classes.CamStream import CamStream
 
 class GeniSysAI():
-    """ GeniSysAI Class
-    
-    The GeniSysAI Class provides the Medical Support System Server with 
-    it's intelligent functionality.
-    """
-    
-    def __init__(self):
-        """ Initializes the class. """
+	""" GeniSysAI Class
+	
+	The GeniSysAI Class provides the Hospital Intelligent Automation System with 
+	it's intelligent functionality.
+	"""
+	
+	def __init__(self):
+		""" Initializes the class. """
 
-        self.Helpers = Helpers("GeniSysAI")
-        
-        # Initiates the iotJumpWay connection class
-        self.iotJumpWay = iotJumpWay({
-            "host": self.Helpers.confs["iotJumpWay"]["host"],
-            "port": self.Helpers.confs["iotJumpWay"]["port"],
-            "lid": self.Helpers.confs["iotJumpWay"]["lid"],
-            "aid": self.Helpers.confs["iotJumpWay"]["aid"],
-            "an": self.Helpers.confs["iotJumpWay"]["an"],
-            "un": self.Helpers.confs["iotJumpWay"]["un"],
-            "pw": self.Helpers.confs["iotJumpWay"]["pw"]
-        })
-        self.iotJumpWay.appConnect()
-        
-        self.iotJumpWay.deviceCommandsCallback = self.commands
+		self.Helpers = Helpers("GeniSysAI")
+		
+		# Initiates the iotJumpWay connection class
+		self.iotJumpWayApp = iotJumpWayA({
+			"host": self.Helpers.confs["iotJumpWay"]["host"],
+			"port": self.Helpers.confs["iotJumpWay"]["port"],
+			"lid": self.Helpers.confs["iotJumpWay"]["lid"],
+			"aid": self.Helpers.confs["iotJumpWay"]["aid"],
+			"an": self.Helpers.confs["iotJumpWay"]["an"],
+			"un": self.Helpers.confs["iotJumpWay"]["un"],
+			"pw": self.Helpers.confs["iotJumpWay"]["pw"]
+		})
+		self.iotJumpWayApp.connect() 
 
-        self.Helpers.logger.info("GeniSysAI Class initialization complete.")
-        
-    def threading(self):
-        """ Creates required module threads. """
-        
-        Thread(target=CamRead.run, args=(self, )).start()
-        Thread(target=CamStream.run, args=(self,)).start()
-            
-    def commands(self, topic, payload):
-        """ 
-        iotJumpWay Commands Callback
-        
-        The callback function that is triggerend in the event of a
-        command communication from the iotJumpWay.
-        """
-        
-        self.Helpers.logger.info("Recieved iotJumpWay Command Data : " + str(payload))
-        command = json.loads(payload.decode("utf-8"))
-        
+		self.Helpers.logger.info("GeniSysAI Class initialization complete.")
+		
+	def life(self):
+		""" Sends vital statistics to HIAS """
+		
+		cpu = psutil.cpu_percent()
+		mem = psutil.virtual_memory()[2]
+		hdd = psutil.disk_usage('/').percent
+		tmp = psutil.sensors_temperatures()['coretemp'][0].current
+		r = requests.get('http://ipinfo.io/json?token=15062dec38bfc3')
+		data = r.json()
+		location = data["loc"].split(',')
+  
+		self.Helpers.logger.info("GeniSysAI Life (TEMPERATURE): " + str(tmp) + "\u00b0")
+		self.Helpers.logger.info("GeniSysAI Life (CPU): " + str(cpu) + "%")
+		self.Helpers.logger.info("GeniSysAI Life (Memory): " + str(mem) + "%")
+		self.Helpers.logger.info("GeniSysAI Life (HDD): " + str(hdd) + "%")
+		self.Helpers.logger.info("GeniSysAI Life (LAT): " + str(location[0]))
+		self.Helpers.logger.info("GeniSysAI Life (LNG): " + str(location[1]))
+		
+		# Send iotJumpWay notification
+		self.iotJumpWayApp.appChannelPub("Life", self.Helpers.confs["iotJumpWay"]["aid"], {
+			"CPU": cpu,
+			"Memory": mem,
+			"Diskspace": hdd,
+			"Temperature": tmp,
+			"Latitude": location[0],
+			"Longitude": location[1]
+		})
+		
+		threading.Timer(60.0, self.life).start()
+		
+	def threading(self):
+		""" Creates required module threads. """
+		
+		# Life thread
+		Thread(target = self.life, args = ()).start()
+		threading.Timer(60.0, self.life).start()
+		
+		# Camera read and stream
+		Thread(target=CamRead.run, args=(self, )).start()
+		Thread(target=CamStream.run, args=(self,)).start()
+		
 GeniSysAI = GeniSysAI()
 
 def main():
-    # Starts threading
-    GeniSysAI.threading()
-    exit()
+	# Starts threading
+	GeniSysAI.threading()
+	exit()
 
 if __name__ == "__main__":
-    main()
+	main()

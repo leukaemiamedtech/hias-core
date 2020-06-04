@@ -1,15 +1,15 @@
 ############################################################################################
 #
-# Project:       Peter Moss COVID-19 AI Research Project
-# Repository:    COVID-19 Medical Support System Server
-# Project:       EMAR, Emergency Assistance Robot
+# Project:       Peter Moss Leukemia AI Research
+# Repository:    HIAS: Hospital Intelligent Automation System
+# Project:       GeniSysAI
 #
 # Author:        Adam Milton-Barker (AdamMiltonBarker.com)
 # Contributors:
 # Title:         MySQL Class
-# Description:   MySQL functions for the HIAS intelligent network.
+# Description:   MySQL functions for the Hospital Intelligent Automation System.
 # License:       MIT License
-# Last Modified: 2020-04-17
+# Last Modified: 2020-06-04
 #
 ############################################################################################
 
@@ -24,7 +24,7 @@ from Classes.Helpers import Helpers
 class MySQL():
     """ MySQL Class
     
-    MySQL functions for the HIAS intelligent network.
+    MySQL functions for the Hospital Intelligent Automation System.
     """
     
     def __init__(self):
