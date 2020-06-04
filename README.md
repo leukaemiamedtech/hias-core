@@ -22,7 +22,7 @@
 - [HIAS Facial Recognition](#hias-facial-recognition)
 - [HIAS Data Analysis](#hias-data-analysis)
     - [COVID-19](#covid-19)
-- [EMAR / EMAR Mini](#emar-emar-mini)
+- [EMAR / EMAR Mini](#emar--emar-mini)
 - [Installation](#installation)
 - [Acknowledgement](#acknowledgement)
 - [Contributing](#contributing)
