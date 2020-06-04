@@ -22,7 +22,7 @@
 - [HIAS Facial Recognition](#hias-facial-recognition)
 - [HIAS Data Analysis](#hias-data-analysis)
     - [COVID-19](#covid-19)
-- [EMAR](#emar)
+- [EMAR / EMAR Mini](#emar-emar-mini)
 - [Installation](#installation)
 - [Acknowledgement](#acknowledgement)
 - [Contributing](#contributing)
@@ -150,7 +150,7 @@ Functionality is now available to set up a basic COVID-19 tracker that will powe
 
 &nbsp;
 
-# EMAR
+# EMAR / EMAR Mini
 ![EMAR](Media/Images/HIAS-Robotics-EMAR.png) 
 
 Basic functionality to update, monitor and control [EMAR](https://www.facebook.com/TASSNetwork/ "EMAR") is now available. The current features allow you to create EMAR devices, update the settings, monitor the camera stream and send commands to the robotic arm to move it. 
