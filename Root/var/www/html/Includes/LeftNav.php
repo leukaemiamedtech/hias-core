@@ -86,13 +86,21 @@
 					</li>
 					<li><hr class="light-grey-hr mb-10"/></li>
                     <li>
-						<a href="javascript:void(0);" data-toggle="collapse" data-target="#security" class="<?=$pageDetails["PageID"]=="Security" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-id-card-alt fa-fw mr-20"></i><span class="right-nav-text">Security</span></div><div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
+						<a href="javascript:void(0);" data-toggle="collapse" data-target="#security" class="<?=$pageDetails["PageID"]=="Security" ? "active" : ""; ?>"><div class="pull-left"><i class="fa fa-id-card-alt fa-fw mr-20"></i><span class="right-nav-text">Security</span></div><div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
 						<ul id="security" class="<?=$pageDetails["PageID"]=="Security" ? "" : "collapse"; ?> collapse-level-1">
 							<li>
-								<a href="<?=$domain; ?>/TASS/" class="<?=$pageDetails["SubPageID"]=="TASS" ? "active" : ""; ?>"><div class="pull-left"><i class="fa fa-video-camera fa-fw mr-20"></i><span class="right-nav-text">Cameras</span></div><div class="clearfix"></div></a>
+								<a href="javascript:void(0);" data-toggle="collapse" data-target="#tass" class="<?=$pageDetails["SubPageID"]=="TASS" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-video-camera fa-fw mr-20"></i></div> TASS<div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
+								<ul id="tass" class="<?=$pageDetails["SubPageID"]=="TASS" ? "" : "collapse"; ?> collapse-level-2">
+									<li>
+										<a href="<?=$domain; ?>/Security/TASS/" class="<?=$pageDetails["LowPageID"]=="List" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-list fa-fw mr-20"></i></div> List<div class="pull-right"></div><div class="clearfix"></div></a>
+									</li>
+									<li>
+										<a href="<?=$domain; ?>/Security/TASS/Create" class="<?=$pageDetails["LowPageID"]=="Create" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-plus fa-fw mr-20"></i></div> Create<div class="pull-right"></div></a>
+									</li>
+								</ul>
 							</li>
 						</ul>
-                    </li>
+                    </li> 
 					<li><hr class="light-grey-hr mb-10"/></li>
                     <li>
 						<a href="javascript:void(0);" data-toggle="collapse" data-target="#hospital" class="<?=$pageDetails["PageID"]=="HIS" ? "active" : ""; ?>"><div class="pull-left"><i class="fa fa-hospital fa-fw mr-20"></i><span class="right-nav-text">HIS</span></div><div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
@@ -101,10 +109,10 @@
 								<a href="javascript:void(0);" data-toggle="collapse" data-target="#staffdd" class="<?=$pageDetails["SubPageID"]=="Staff" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-users fa-fw mr-20"></i></div> Staff<div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
 								<ul id="staffdd" class="<?=$pageDetails["SubPageID"]=="Staff" ? "" : "collapse"; ?> collapse-level-2">
 									<li>
-										<a href="<?=$domain; ?>/Hospital/Staff" class="<?=$pageDetails["LowPageID"]=="List" ? "active" : ""; ?>">List</a>
-									</li>
+										<a href="<?=$domain; ?>/Hospital/Staff/" class="<?=$pageDetails["LowPageID"]=="List" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-list fa-fw mr-20"></i></div> List<div class="pull-right"></div><div class="clearfix"></div></a>
+									</li> 
 									<li>
-										<a href="<?=$domain; ?>/Hospital/Staff/Create" class="<?=$pageDetails["LowPageID"]=="Create" ? "active" : ""; ?>">Create</a>
+										<a href="<?=$domain; ?>/Hospital/Staff/Create" class="<?=$pageDetails["LowPageID"]=="Create" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-plus fa-fw mr-20"></i></div> Create<div class="pull-right"></div></a>
 									</li>
 								</ul>
 							</li>
@@ -112,10 +120,10 @@
 								<a href="javascript:void(0);" data-toggle="collapse" data-target="#patientsdd" class="<?=$pageDetails["SubPageID"]=="Patients" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-hospital-user fa-fw mr-20"></i></div> Patients<div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
 								<ul id="patientsdd" class="<?=$pageDetails["SubPageID"]=="Patients" ? "" : "collapse"; ?> collapse-level-2">
 									<li>
-										<a href="<?=$domain; ?>/Hospital/Patients" class="<?=$pageDetails["SubPageID"]=="" ? "active" : ""; ?>">List</a>
-									</li>
+										<a href="<?=$domain; ?>/Hospital/Patients" class="<?=$pageDetails["LowPageID"]=="List" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-list fa-fw mr-20"></i></div> List<div class="pull-right"></div><div class="clearfix"></div></a>
+									</li> 
 									<li>
-										<a href="<?=$domain; ?>/Hospital/Patients/Create" class="<?=$pageDetails["SubPageID"]=="" ? "active" : ""; ?>">Create</a>
+										<a href="<?=$domain; ?>/Hospital/Patients/Create" class="<?=$pageDetails["LowPageID"]=="Create" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-plus fa-fw mr-20"></i></div> Create<div class="pull-right"></div></a>
 									</li>
 								</ul>
 							</li>
@@ -123,10 +131,10 @@
 								<a href="javascript:void(0);" data-toggle="collapse" data-target="#bedsdd" class="<?=$pageDetails["SubPageID"]=="Beds" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-bed fa-fw mr-20"></i></div> Beds<div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
 								<ul id="bedsdd" class="<?=$pageDetails["SubPageID"]=="Beds" ? "" : "collapse"; ?>  collapse-level-2">
 									<li>
-										<a href="<?=$domain; ?>/Hospital/Beds" class="<?=$pageDetails["SubPageID"]=="" ? "active" : ""; ?>">List</a>
-									</li>
+										<a href="<?=$domain; ?>/Hospital/Beds" class="<?=$pageDetails["LowPageID"]=="List" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-list fa-fw mr-20"></i></div> List<div class="pull-right"></div><div class="clearfix"></div></a>
+									</li> 
 									<li>
-										<a href="<?=$domain; ?>/Hospital/Beds/Create" class="<?=$pageDetails["SubPageID"]=="" ? "active" : ""; ?>">Create</a>
+										<a href="<?=$domain; ?>/Hospital/Beds/Create" class="<?=$pageDetails["LowPageID"]=="Create" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-plus fa-fw mr-20"></i></div> Create<div class="pull-right"></div></a>
 									</li>
 								</ul>
 							</li>
@@ -137,7 +145,17 @@
 						<a href="javascript:void(0);" data-toggle="collapse" data-target="#robotics" class="<?=$pageDetails["PageID"]=="Robotics" ? "active" : ""; ?>"><div class="pull-left"><i class="fa fa-robot fa-fw mr-20"></i><span class="right-nav-text">Robotics</span></div><div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
 						<ul id="robotics" class="<?=$pageDetails["PageID"]=="Robotics" ? "" : "collapse"; ?> collapse-level-1">
 							<li>
-								<a href="<?=$domain; ?>/EMAR/" class="<?=$pageDetails["SubPageID"]=="EMAR" ? "active" : ""; ?>"><div class="pull-left"><i class="fa fa-robot fa-fw mr-20"></i><span class="right-nav-text">EMAR</span></div><div class="clearfix"></div></a>
+								<a href="javascript:void(0);" data-toggle="collapse" data-target="#roboticsd" class="<?=$pageDetails["SubPageID"]=="EMAR" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-robot fa-fw mr-20"></i></div> EMAR<div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
+								<ul id="roboticsd" class="<?=$pageDetails["SubPageID"]=="EMAR" ? "" : "collapse"; ?> collapse-level-2">
+									<li>
+										<a href="<?=$domain; ?>/Robotics/EMAR/" class="<?=$pageDetails["LowPageID"]=="List" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-list fa-fw mr-20"></i></div> List<div class="pull-right"></div><div class="clearfix"></div></a>
+									</li>
+									<li>
+										<a href="<?=$domain; ?>/Robotics/EMAR/Create" class="<?=$pageDetails["LowPageID"]=="Create" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-plus fa-fw mr-20"></i></div> Create<div class="pull-right"></div></a>
+									</li>
+									<li><a href="https://github.com/COVID-19-AI-Research-Project/EMAR-Mini" target="_BLANK"><div class="pull-left"><i class="fa fa-github fa-fw mr-20"></i><span class="right-nav-text">EMAR Mini</span></div><div class="clearfix"></div></a></li>
+									<li><a href="https://github.com/COVID-19-AI-Research-Project/EMAR" target="_BLANK"><div class="pull-left"><i class="fa fa-github fa-fw mr-20"></i><span class="right-nav-text">EMAR</span></div><div class="clearfix"></div></a></li>
+								</ul>
 							</li>
 						</ul>
                     </li>

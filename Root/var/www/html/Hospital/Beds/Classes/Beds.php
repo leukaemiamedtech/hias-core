@@ -11,8 +11,15 @@
         public function getBeds()
         {
             $pdoQuery = $this->_GeniSys->_secCon->prepare("
-                SELECT *
-                FROM beds
+                SELECT beds.id,
+                    beds.lid,
+                    beds.did,
+                    mqttld.status,
+                    mqttld.mqttu,
+                    mqttld.mqttp
+                FROM beds beds
+                INNER JOIN mqttld mqttld 
+                ON beds.id = mqttld.bid 
                 ORDER BY id DESC
             ");
             $pdoQuery->execute();
@@ -27,8 +34,15 @@
             $pdoQuery = $this->_GeniSys->_secCon->prepare("
                     SELECT beds.*,
                     mqttld.lid,
+                    mqttld.status,
                     mqttld.mqttu,
                     mqttld.mqttp,
+                    mqttld.lt,
+                    mqttld.lg,
+                    mqttld.cpu,
+                    mqttld.mem,
+                    mqttld.hdd,
+                    mqttld.tempr,
                     mqttld.id AS did
                 FROM beds beds
                 INNER JOIN mqttld mqttld 
@@ -328,6 +342,32 @@
             ];
 
         }
+
+		public function getMapMarkers($application)
+		{
+            if(!$application["lt"]):
+                $lat = $this->_GeniSys->lt;
+                $lng = $this->_GeniSys->lg;
+            else:
+                $lat = $application["lt"];
+                $lng = $application["lg"];
+            endif;
+
+            return [$lat, $lng];
+		}	
+
+		public function getStatusShow($status)
+		{
+            if($status=="ONLINE"):
+                $on = "  ";
+                $off = " hide ";
+            else:
+                $on = " hide ";
+                $off = "  ";
+            endif;
+
+            return [$on, $off];
+		}
 
     }
     

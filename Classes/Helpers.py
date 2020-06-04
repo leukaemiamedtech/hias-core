@@ -1,15 +1,15 @@
 ############################################################################################
 #
-# Project:       Peter Moss COVID-19 AI Research Project
-# Repository:    COVID-19 Medical Support System Server
+# Project:       Peter Moss Leukemia AI Research
+# Repository:    HIAS: Hospital Intelligent Automation System
 # Project:       GeniSysAI
 #
 # Author:        Adam Milton-Barker (AdamMiltonBarker.com)
 # Contributors:
 # Title:         Helper Class
-# Description:   Helper functions for the Medical Support System Server.
+# Description:   Helper functions for the Hospital Intelligent Automation System.
 # License:       MIT License
-# Last Modified: 2020-04-25
+# Last Modified: 2020-06-04
 #
 ############################################################################################
 
@@ -22,8 +22,7 @@ from datetime import datetime
 class Helpers():
     """ Helper Class
     
-    Helper functions for the COVID-19 Medical Support System Server Emergency
-    Assistance Robot.
+    Helper functions for the Hospital Intelligent Automation System.
     """
 
     def __init__(self, ltype, log=True):

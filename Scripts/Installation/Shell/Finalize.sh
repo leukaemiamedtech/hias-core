@@ -6,7 +6,10 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
     read -p "! Enter your server URL. IE: https://www.YourDomain.com. This should match the domain used in the NGINX configuration: " domain
     read -p "! Enter your site Recaptcha key: " pub
     read -p "! Enter your secret Recaptcha key: " prv
-    php Scripts/Installation/PHP/Finalize.php "$domain" "$pub" "$prv"
+    read -p "! Enter your Google Maps key: " gmaps
+    read -p "! Enter your default latitude: " lat
+    read -p "! Enter your default longitude: " lng
+    php Scripts/Installation/PHP/Finalize.php "$domain" "$pub" "$prv" "$gmaps" "$lat" "$lng"
 else
     echo "- Server database finalization terminated";
     exit

@@ -6,8 +6,8 @@ var iotJumpWayWebSoc = {
     useTLS: true,
     cleansession: true,
     mqttOptions: {
-        locationID: 0,
-        applicationID: 0,
+        locationID: 1,
+        applicationID: 1,
         applicationName: "",
         userName: "",
         passwd: ""
@@ -139,37 +139,31 @@ var iotJumpWayWebSoc = {
             new Date($.now()) +
             "</p>"
         );
-        console.log(
-            "Published to: " +
-            iotJumpWayWebSoc.mqttOptions.locationID +
-            "/Applications/" +
-            iotJumpWayWebSoc.mqttOptions.applicationID +
-            "/Status"
-        );
+        Logging.logMessage("Core", "iotJumpWay", "Published to: " + iotJumpWayWebSoc.mqttOptions.locationID + "/Applications/" + iotJumpWayWebSoc.mqttOptions.applicationID + "/Status");
     },
     publishToDeviceCommands: function(params) {
         message = new Paho.MQTT.Message(JSON.stringify(params.message));
-        message.destinationName =
-            params.loc +
-            "/Devices/" +
-            params.zne +
-            "/" +
-            params.dvc +
-            "/Commands";
+        message.destinationName = params.loc + "/Devices/" + params.zne + "/" + params.dvc + "/Commands";
         this.client.send(message);
         $("#status").prepend(
-            "<p class='iotJumpWayText'>" +
-            new Date($.now()) +
-            " | iotJumpWay | STATUS | Published to: " +
-            params.loc +
-            "/Devices/" +
-            params.zne +
-            "/" +
-            params.dvc +
-            "/Command</p>"
+            "<p class='iotJumpWayText'>" + new Date($.now()) + " | iotJumpWay | STATUS | Published to: " + params.loc + "/Devices/" + params.zne + "/" + params.dvc + "/Command</p>"
         );
+    },
+    getStats: function() {
+        $.post(window.location.href, { "getServerStats": 1 },
+            function(resp) {
+                var resp = jQuery.parseJSON(resp);
+                $("#up_cpu").text(resp.cpu)
+                $("#up_mem").text(resp.mem)
+                $("#up_hdd").text(resp.hdd)
+                $("#up_tempr").text(resp.tempr)
+                Logging.logMessage("Core", "Server", "Server Stats OK");
+            });
     }
 };
 $(document).ready(function() {
     iotJumpWayWebSoc.connect();
+    setInterval(function() {
+        iotJumpWayWebSoc.getStats();
+    }, 5000);
 });

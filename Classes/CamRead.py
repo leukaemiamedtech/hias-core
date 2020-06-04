@@ -1,7 +1,7 @@
 ############################################################################################
 #
-# Project:       Peter Moss COVID-19 AI Research Project
-# Repository:    COVID-19 Medical Support System Server
+# Project:       Peter Moss Leukemia AI Research
+# Repository:    HIAS: Hospital Intelligent Automation System
 # Project:       GeniSysAI
 #
 # Author:        Adam Milton-Barker (AdamMiltonBarker.com)
@@ -10,7 +10,7 @@
 # Description:   The CamRead Class processes the frames from the local camera and 
 #                identifies known users and intruders.
 # License:       MIT License
-# Last Modified: 2020-04-25
+# Last Modified: 2020-06-04
 #
 ############################################################################################
 
@@ -35,11 +35,17 @@ class CamRead(Thread):
         """ Initializes the class. """
 
         self.Helpers = Helpers("CamRead")
+        super(CamRead, self).__init__()
         
         self.Helpers.logger.info("CamRead Class initialization complete.")
 
     def run(self):
         """ Runs the module. """
+
+        fps = ""
+        framecount = 0
+        time1 = 0
+        time2 = 0
         
         self.font = cv2.FONT_HERSHEY_SIMPLEX
         self.color = (0,0,0)
@@ -59,19 +65,22 @@ class CamRead(Thread):
 
         while True:
             try:
+                t1 = time.perf_counter()
                 # Reads the current frame
                 _, frame = self.TASS.lcv.read()
                 # Processes the frame
                 raw, frame, gray = self.TASS.processim(frame)
+                width = frame.shape[1]
+                
                 # Gets faces and coordinates
                 faces, coords = self.TASS.faces(frame)
                 
                 # Writes header to frame
-                cv2.putText(frame, "Office Camera 1", (10,50), self.font,
+                cv2.putText(frame, "Office Camera 1", (10, 30), self.font,
                             0.7, self.color, 2, cv2.LINE_AA)
     
                 # Writes date to frame
-                cv2.putText(frame, str(datetime.now()), (10,80), self.font,
+                cv2.putText(frame, str(datetime.now()), (10, 80), self.font,
                             0.5, self.color, 2, cv2.LINE_AA)
                 
                 if len(coords):
@@ -87,7 +96,7 @@ class CamRead(Thread):
                             # Update publish time for user
                             self.publishes[person] = time.time()
                             # Send iotJumpWay notification
-                            self.iotJumpWay.appDeviceChannelPub("Sensors", self.Helpers.confs["tass"]["zid"], self.Helpers.confs["tass"]["did"],{
+                            self.iotJumpWayApp.appDeviceChannelPub("Sensors", self.Helpers.confs["tass"]["zid"], self.Helpers.confs["tass"]["did"],{
                                 "Sensor": self.Helpers.confs["tass"]["sid"],
                                 "Type": "TASS",
                                 "Value": person,
@@ -104,9 +113,25 @@ class CamRead(Thread):
                         cv2.putText(frame, string, (x + 75, y), self.font,
                                     1, (0, 255, 0), 2, cv2.LINE_AA)
                         i+=1
+                
+                cv2.putText(frame, fps, (width-170, 30), cv2.FONT_HERSHEY_SIMPLEX, 
+                            0.5, self.color, 1, cv2.LINE_AA)
+                
                 # Streams the modified frame to the socket server
                 encoded, buffer = cv2.imencode('.jpg', frame)
                 soc.send(base64.b64encode(buffer))
+
+                # FPS calculation
+                framecount += 1
+                if framecount >= 15:
+                    fps = "Stream: {:.1f} FPS".format(time1/15)
+                    framecount = 0
+                    time1 = 0
+                    time2 = 0
+                t2 = time.perf_counter()
+                elapsedTime = t2-t1
+                time1 += 1/elapsedTime
+                time2 += elapsedTime
                 
             except KeyboardInterrupt:
                 self.TASS.lcv.release()

@@ -9,14 +9,15 @@ $pageDetails = [
 include dirname(__FILE__) . '/../../Classes/Core/init.php';
 include dirname(__FILE__) . '/../../Classes/Core/GeniSys.php';
 include dirname(__FILE__) . '/../iotJumpWay/Classes/iotJumpWay.php';
-include dirname(__FILE__) . '/../TASS/Classes/TASS.php';
 
 $_GeniSysAi->checkSession();
+
+$Locations = $iotJumpWay->getLocations();
 
 $AId = filter_input(INPUT_GET, 'application', FILTER_SANITIZE_NUMBER_INT);
 $Application = $iotJumpWay->getApplication($AId);
 
-$Locations = $iotJumpWay->getLocations();
+list($appOn, $appOff) = $iotJumpWay->getStatusShow($Application["status"]);
 
 ?>
 
@@ -60,93 +61,8 @@ $Locations = $iotJumpWay->getLocations();
 
             <div class="page-wrapper">
             <div class="container-fluid pt-25">
-
-				<div class="row">
-					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-						<div class="panel panel-default card-view pa-0 bg-gradient3">
-							<div class="panel-wrapper collapse in">
-								<div class="panel-body pa-0">
-									<div class="sm-data-box">
-										<div class="container-fluid">
-											<div class="row">
-												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
-													<span class="txt-light block counter"><span class=""><?=$stats["CPU"]; ?>%</span></span>
-													<span class="weight-500 uppercase-font block font-13 txt-light">CPU</span>
-												</div>
-												<div class="col-xs-6 text-center  pl-0 pr-0 pt-25 data-wrap-right">
-													<div id="sparkline_4" class="sp-small-chart" ></div>
-												</div>
-											</div>	
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-						<div class="panel panel-default card-view pa-0 bg-gradient3">
-							<div class="panel-wrapper collapse in">
-								<div class="panel-body pa-0">
-									<div class="sm-data-box">
-										<div class="container-fluid">
-											<div class="row">
-												<div class="col-xs-6 text-center pl-0 pr-0 txt-light data-wrap-left">
-													<span class="block counter"><span class=""><?=$stats["Memory"]; ?>%</span></span>
-													<span class="weight-500 uppercase-font block">Memory</span>
-												</div>
-												<div class="col-xs-6 text-center  pl-0 pr-0 txt-light data-wrap-right">
-													<i class=" zmdi zmdi-memory data-right-rep-icon"></i>
-												</div>
-											</div>	
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-						<div class="panel panel-default card-view pa-0 bg-gradient3">
-							<div class="panel-wrapper collapse in">
-								<div class="panel-body pa-0">
-									<div class="sm-data-box">
-										<div class="container-fluid">
-											<div class="row">
-												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
-													<span class="txt-light block counter"><span class="counter-anim">46.43</span>%</span>
-													<span class="weight-500 uppercase-font block txt-light">Swap</span>
-												</div>
-												<div class="col-xs-6 text-center  pl-0 pr-0  data-wrap-right">
-													<i class="zmdi zmdi-refresh-alt  data-right-rep-icon txt-light"></i>
-												</div>
-											</div>	
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-						<div class="panel panel-default card-view pa-0 bg-gradient3">
-							<div class="panel-wrapper collapse in">
-								<div class="panel-body pa-0">
-									<div class="sm-data-box">
-										<div class="container-fluid">
-											<div class="row">
-												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
-													<span class="txt-light block counter"><span class=""><?=$stats["Temperature"]; ?></span></span>
-													<span class="weight-500 uppercase-font block txt-light">Temp</span>
-												</div>
-												<div class="col-xs-6 text-center  pl-0 pr-0 data-wrap-right">
-													<i class="fa fa-thermometer-quarter data-right-rep-icon txt-light" aria-hidden="true"></i>
-												</div>
-											</div>	
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-                </div>
+            
+                <?php include dirname(__FILE__) . '/../Includes/Stats.php'; ?>
                 
 				<div class="row">
 					<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
@@ -184,58 +100,53 @@ $Locations = $iotJumpWay->getLocations();
                             <div class="panel-wrapper collapse in">
                                 <div class="panel-body">
                                     <div class="form-wrap">
-                                        <form data-toggle="validator" role="form" id="form">
+                                        <form data-toggle="validator" role="form" id="application_update">
                                             <hr class="light-grey-hr"/>
-                                            <div class="form-group">
-                                                <label for="name" class="control-label mb-10">Name</label>
-                                                <input type="text" class="form-control" id="name" name="name" placeholder="Application Name" required value="<?=$Application["name"]; ?>">
-                                                <span class="help-block"> Name of application</span> 
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label mb-10">Location</label>
-                                                <select class="form-control" id="lid" name="lid">
-                                                
-                                                    <?php 
-                                                        if(count($Locations)):
-                                                            foreach($Locations as $key => $value):
-                                                    ?>
+                                            <div class="row">
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="form-group">
+                                                        <label for="name" class="control-label mb-10">Name</label>
+                                                        <input type="text" class="form-control" id="name" name="name" placeholder="Application Name" required value="<?=$Application["name"]; ?>">
+                                                        <span class="help-block"> Name of application</span> 
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label mb-10">Location</label>
+                                                        <select class="form-control" id="lid" name="lid">
+                                                        
+                                                            <?php 
+                                                                if(count($Locations)):
+                                                                    foreach($Locations as $key => $value):
+                                                            ?>
 
-                                                    <option value="<?=$value["id"]; ?>" <?=$Application["lid"] == $value["id"] ? " selected " : ""; ?>>#<?=$value["id"]; ?>: <?=$value["name"]; ?></option>
+                                                            <option value="<?=$value["id"]; ?>" <?=$Application["lid"] == $value["id"] ? " selected " : ""; ?>>#<?=$value["id"]; ?>: <?=$value["name"]; ?></option>
 
-                                                    <?php 
-                                                            endforeach;
-                                                        endif;
-                                                    ?>
+                                                            <?php 
+                                                                    endforeach;
+                                                                endif;
+                                                            ?>
 
-                                                </select>
-                                                <span class="help-block"> Location of application</span> 
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="name" class="control-label mb-10">IP</label>
-                                                <input type="text" class="form-control" id="ip" name="ip" placeholder="Application IP" required value="<?=$Application["ip"] ? $_GeniSys->_helpers->oDecrypt($Application["ip"]) : ""; ?>">
-                                                <span class="help-block"> IP of application</span> 
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="name" class="control-label mb-10">MAC</label>
-                                                <input type="text" class="form-control" id="mac" name="mac" placeholder="Application MAC" required value="<?=$Application["mac"] ? $_GeniSys->_helpers->oDecrypt($Application["mac"]) : ""; ?>">
-                                                <span class="help-block"> MAC of application</span> 
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="name" class="control-label mb-10">Latitude</label>
-                                                <input type="text" class="form-control" id="lt" name="lt" placeholder="Application IP" required value="<?=$Application["lt"] ? $_GeniSys->_helpers->oDecrypt($Application["lt"]) : ""; ?>">
-                                                <span class="help-block"> Latitude of application</span> 
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="name" class="control-label mb-10">Longitude</label>
-                                                <input type="text" class="form-control" id="lg" name="lg" placeholder="Application MAC" required value="<?=$Application["lg"] ? $_GeniSys->_helpers->oDecrypt($Application["lg"]) : ""; ?>">
-                                                <span class="help-block"> Longitude of application</span> 
-                                            </div>
-								            <div class="clearfix"></div>
-                                            <hr class="light-grey-hr"/>
-                                            <div class="form-group mb-0">
-                                                <input type="hidden" class="form-control" id="update_application" name="update_application" required value="1">
-                                                <input type="hidden" class="form-control" id="id" name="id" required value="<?=$Application["id"]; ?>">
-                                                <button type="submit" class="btn btn-success btn-anim" id="application_update"><i class="icon-rocket"></i><span class="btn-text">submit</span></button>
+                                                        </select>
+                                                        <span class="help-block"> Location of application</span> 
+                                                    </div>
+                                                    <div class="form-group mb-0">
+                                                        <input type="hidden" class="form-control" id="update_application" name="update_application" required value="1">
+                                                        <input type="hidden" class="form-control" id="id" name="id" required value="<?=$Application["id"]; ?>">
+                                                        <button type="submit" class="btn btn-success btn-anim" id="application_update"><i class="icon-rocket"></i><span class="btn-text">submit</span></button>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="form-group">
+                                                        <label for="name" class="control-label mb-10">IP</label>
+                                                        <input type="text" class="form-control hider" id="ip" name="ip" placeholder="Application IP" required value="<?=$Application["ip"] ? $_GeniSys->_helpers->oDecrypt($Application["ip"]) : ""; ?>">
+                                                        <span class="help-block"> IP of application</span> 
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="name" class="control-label mb-10">MAC</label>
+                                                        <input type="text" class="form-control hider" id="mac" name="mac" placeholder="Application MAC" required value="<?=$Application["mac"] ? $_GeniSys->_helpers->oDecrypt($Application["mac"]) : ""; ?>">
+                                                        <span class="help-block"> MAC of application</span> 
+                                                    </div>
+                                                    <div class="clearfix"></div>
+                                                </div>
                                             </div>
                                         </form>
                                     </div>
@@ -247,26 +158,40 @@ $Locations = $iotJumpWay->getLocations();
                         <div class="panel panel-default card-view panel-refresh">
                             <div class="panel-wrapper collapse in">
                                 <div class="panel-body">
-                                    <div id="map_canvas" style="height:300px;"></div>
+								<div class="pull-right"><span id="offline1" style="color: #33F9FF !important;" class="<?=$appOn; ?>"><i class="fas fa-power-off" style="color: #33F9FF !important;"></i> Online</span> <span id="online1" class="<?=$appOff; ?>" style="color: #99A3A4 !important;"><i class="fas fa-power-off" style="color: #99A3A4 !important;"></i> Offline</span></div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-5">Status</label>
+                                        <div class="col-md-9">
+                                            <i class="fa fa-microchip data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idecpuU"><?=$Application["cpu"]; ?></span>% &nbsp;&nbsp;
+                                            <i class="zmdi zmdi-memory data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idememU"><?=$Application["mem"]; ?></span>% &nbsp;&nbsp;
+                                            <i class="far fa-hdd data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idehddU"><?=$Application["hdd"]; ?></span>% &nbsp;&nbsp;
+                                            <i class="fa fa-thermometer-quarter data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idetempU"><?=$Application["tempr"]; ?></span>°C  
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-					</div>
-					<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
                         <div class="panel panel-default card-view panel-refresh">
                             <div class="panel-wrapper collapse in">
                                 <div class="panel-body">
-								    <div class="pull-right"><a href="javascipt:void(0)" id="reset_app_mqtt"><i class="fa fa-refresh"></i> Reset MQTT Password</a></div>
+                                    <div id="map1" style="height:300px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default card-view panel-refresh">
+                            <div class="panel-wrapper collapse in">
+                                <div class="panel-body">
+                                    <div class="pull-right"><a href="javascipt:void(0)" id="reset_app_mqtt"><i class="fa fa-refresh"></i> Reset MQTT Password</a></div>
                                     <div class="form-group">
-										<label class="control-label col-md-5">MQTT Username</label>
+                                        <label class="control-label col-md-5">MQTT Username</label>
                                         <div class="col-md-9">
-                                            <p class="form-control-static"><?=$_GeniSys->_helpers->oDecrypt($Application["mqttu"]); ?></p>
+                                            <p class="form-control-static " id="amqttu"><?=$_GeniSys->_helpers->oDecrypt($Application["mqttu"]); ?></p>
                                         </div>
                                     </div>
                                     <div class="form-group">
-										<label class="control-label col-md-5">MQTT Password</label>
+                                        <label class="control-label col-md-5">MQTT Password</label>
                                         <div class="col-md-9">
-                                            <p class="form-control-static"><span id="mqttp"><?=$_GeniSys->_helpers->oDecrypt($Application["mqttp"]); ?></span></p>
+                                            <p class="form-control-static"><span id="amqttp"><?=$_GeniSys->_helpers->oDecrypt($Application["mqttp"]); ?></span></p>
                                         </div>
                                     </div>
                                 </div>
@@ -287,85 +212,38 @@ $Locations = $iotJumpWay->getLocations();
             if($Application["lt"] == ""):
                 $coords = "41.54329,2.10942";
             else:
-                $coords = $_GeniSys->_helpers->oDecrypt($Application["lt"]) . "," . $_GeniSys->_helpers->oDecrypt($Application["lg"]);
+                $coords = $Application["lt"] . "," . $Application["lg"];
             endif;
 
         ?>
         
         <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/moment/min/moment.min.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/simpleWeather/jquery.simpleWeather.min.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/simpleweather-data.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/waypoints/lib/jquery.waypoints.min.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/jquery.counterup/jquery.counterup.min.js"></script>
-        
         <script type="text/javascript" src="<?=$domain; ?>/dist/js/dropdown-bootstrap-extended.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/jquery.sparkline/dist/jquery.sparkline.min.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/owl.carousel/dist/owl.carousel.min.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/echarts/dist/echarts-en.min.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/echarts-liquidfill.min.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/switchery/dist/switchery.min.js"></script>
-		<script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
-		<script type="text/javascript" src="<?=$domain; ?>/dist/js/fullcalendar-data.js"></script>
-        
         <script type="text/javascript" src="<?=$domain; ?>/dist/js/init.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/dashboard-data.js"></script>
-
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWayUI.js"></script>
 
-		<script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/bootstrap-validator/dist/validator.min.js"></script>
-
-		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8shvpI37cre-_3GSguznWalRN2AjYSGc"></script>
+		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKduSuIeLzSjNwKTyNpzuefe6Np1aBcBw&callback=initMap"></script>
 		<script>
-        
-            var settings = {
-                zoom: 16,
-                center: new google.maps.LatLng(<?=$coords; ?>),
-                mapTypeControl: false,
-                scrollwheel: false,
-                draggable: true,
-                panControl:false,
-                scaleControl: false,
-                zoomControl: false,
-                streetViewControl:false,
-                navigationControl: false,
-                mapTypeId: google.maps.MapTypeId.ROADMAP,
-                styles: [
-                    {
-                        "featureType": "landscape.natural.landcover",
-                        "elementType": "labels.text.stroke",
-                        "stylers": [
-                            {
-                                "visibility": "on"
-                            }
-                        ]
-                    }
-                ]};		
-                var map = new google.maps.Map(document.getElementById("map_canvas"), settings);	
-                google.maps.event.addDomListener(window, "resize", function() {
-                    var center = map.getCenter();
-                    google.maps.event.trigger(map, "resize");
-                    map.setCenter(center);
-                });	
-                
-                var infowindow = new google.maps.InfoWindow();	
-                var companyPos = new google.maps.LatLng(<?=$coords; ?>);	
-                var companyMarker = new google.maps.Marker({
-                    position: companyPos,
+
+            iotJumpwayUI.HideApplicationInputs();
+
+			function initMap() {
+
+        		var latlng = new google.maps.LatLng("<?=floatval($Application["lt"]); ?>", "<?=floatval($Application["lg"]); ?>");
+				var map = new google.maps.Map(document.getElementById('map1'), {
+					zoom: 10,
+					center: latlng
+				});
+
+                var loc = new google.maps.LatLng(<?=floatval($Application["lt"]); ?>, <?=floatval($Application["lg"]); ?>);
+                var marker = new google.maps.Marker({
+                    position: loc,
                     map: map,
-                    title:"Our Office",
-                    zIndex: 3});	
-                google.maps.event.addListener(companyMarker, 'click', function() {
-                    infowindow.open(map,companyMarker);
+                    title: 'Device '
                 });
+			}
 
         </script>
 

@@ -2,6 +2,8 @@
 
     class Staff
     {
+        private $lat = 41.5463;
+        private $lng = 2.1086;
 
         function __construct($_GeniSys)
         {
@@ -11,8 +13,18 @@
         public function getStaffs()
         {
             $pdoQuery = $this->_GeniSys->_secCon->prepare("
-                SELECT *
-                FROM users
+                SELECT users.id,
+                    users.admin,
+                    users.pic,
+                    users.username,
+                    mqtta.lid,
+                    mqtta.status,
+                    mqtta.mqttu,
+                    mqtta.mqttp,
+                    mqtta.id AS aid
+                FROM users users
+                INNER JOIN mqtta mqtta 
+                ON users.id = mqtta.uid 
                 ORDER BY id DESC
             ");
             $pdoQuery->execute();
@@ -27,8 +39,15 @@
             $pdoQuery = $this->_GeniSys->_secCon->prepare("
                 SELECT users.*,
                     mqtta.lid,
+                    mqtta.status,
                     mqtta.mqttu,
                     mqtta.mqttp,
+                    mqtta.lt,
+                    mqtta.lg,
+                    mqtta.cpu,
+                    mqtta.mem,
+                    mqtta.hdd,
+                    mqtta.tempr,
                     mqtta.id AS aid
                 FROM users users
                 INNER JOIN mqtta mqtta 
@@ -47,87 +66,41 @@
             if(!filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT)):
                 return [
                     "Response"=> "Failed", 
-                    "Message" => "ID is required"
+                    "Message" => "Staff ID is required"
                 ];
             endif;
-            if(!filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING)):
+            if(!filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING)):
                 return [
                     "Response"=> "Failed", 
-                    "Message" => "Staff Staff name is required"
+                    "Message" => "Staff username is required"
                 ];
             endif;
             if(!filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT)):
                 return [
                     "Response"=> "Failed", 
-                    "Message" => "iotJumpWay location id is required"
+                    "Message" => "Staff iotJumpWay application location id is required"
                 ];
             endif;
-            if(!filter_input(INPUT_POST, "zid", FILTER_SANITIZE_NUMBER_INT)):
+            if(!filter_input(INPUT_POST, "aid", FILTER_SANITIZE_NUMBER_INT)):
                 return [
                     "Response"=> "Failed", 
-                    "Message" => "iotJumpWay zone id is required"
-                ];
-            endif;
-            if(!filter_input(INPUT_POST, "did", FILTER_SANITIZE_NUMBER_INT)):
-                return [
-                    "Response"=> "Failed", 
-                    "Message" => "iotJumpWay Staff id is required"
-                ];
-            endif;
-            if(!filter_input(INPUT_POST, "ip", FILTER_SANITIZE_STRING)):
-                return [
-                    "Response"=> "Failed", 
-                    "Message" => "Staff IP is required"
-                ];
-            endif;
-            if(!filter_input(INPUT_POST, "mac", FILTER_SANITIZE_STRING)):
-                return [
-                    "Response"=> "Failed", 
-                    "Message" => "Staff MAC is required"
-                ];
-            endif;
-            if(!filter_input(INPUT_POST, "sport", FILTER_SANITIZE_STRING)):
-                return [
-                    "Response"=> "Failed", 
-                    "Message" => "Staff stream port is required"
-                ];
-            endif;
-            if(!filter_input(INPUT_POST, "sportf", FILTER_SANITIZE_STRING)):
-                return [
-                    "Response"=> "Failed", 
-                    "Message" => "Staff stream file is required"
-                ];
-            endif;
-            if(!filter_input(INPUT_POST, "sckport", FILTER_SANITIZE_STRING)):
-                return [
-                    "Response"=> "Failed", 
-                    "Message" => "Staff socket port is required"
+                    "Message" => "Staff iotJumpWay application id is required"
                 ];
             endif;
 
             $pdoQuery = $this->_GeniSys->_secCon->prepare("
                 UPDATE users
-                SET name = :name,
+                SET username = :username,
+                    admin = :admin, 
                     lid = :lid, 
-                    zid = :zid, 
-                    did = :did, 
-                    ip = :ip, 
-                    mac = :mac, 
-                    sport = :sport, 
-                    sportf = :sportf, 
-                    sckport = :sckport
+                    aid = :aid 
                 WHERE id = :id 
             ");
             $pdoQuery->execute([
-                ":name" => filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING),
+                ":admin" => filter_input(INPUT_POST, "admin", FILTER_SANITIZE_STRING) ? filter_input(INPUT_POST, "admin", FILTER_SANITIZE_STRING) : 0,
+                ":username" => filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING),
                 ":lid" => filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT),
-                ":zid" => filter_input(INPUT_POST, "zid", FILTER_SANITIZE_NUMBER_INT),
-                ":did" => filter_input(INPUT_POST, "did", FILTER_SANITIZE_NUMBER_INT),
-                ":ip" => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "ip", FILTER_SANITIZE_STRING)),
-                ":mac" => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "mac", FILTER_SANITIZE_STRING)),
-                ":sport" => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "sport", FILTER_SANITIZE_STRING)),
-                ":sportf" => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "sportf", FILTER_SANITIZE_STRING)),
-                ":sckport" => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "sckport", FILTER_SANITIZE_STRING)),
+                ":aid" => filter_input(INPUT_POST, "aid", FILTER_SANITIZE_NUMBER_INT),
                 ":id" => filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT)
             ]);
             $pdoQuery->closeCursor();
@@ -240,6 +213,16 @@
                 ':time' => time()
             ]);
             $this->aid = $this->_GeniSys->_secCon->lastInsertId();
+    
+            $query = $this->_GeniSys->_secCon->prepare("
+                UPDATE users
+                SET aid = :aid 
+                WHERE id = :id
+            ");
+            $query->execute(array(
+                ':aid'=>$this->aid,
+                ':id'=>$uid
+            ));
     
             $query = $this->_GeniSys->_secCon->prepare("
                 INSERT INTO  mqttu  (
@@ -401,6 +384,32 @@
             ];
 
         }
+
+		public function getMapMarkers($application)
+		{
+            if(!$application["lt"]):
+                $lat = $this->lat;
+                $lng = $this->lng;
+            else:
+                $lat = $application["lt"];
+                $lng = $application["lg"];
+            endif;
+
+            return [$lat, $lng];
+		}	
+
+		public function getStatusShow($status)
+		{
+            if($status=="ONLINE"):
+                $on = "  ";
+                $off = " hide ";
+            else:
+                $on = " hide ";
+                $off = "  ";
+            endif;
+
+            return [$on, $off];
+		}
 
     }
     

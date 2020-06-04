@@ -9,7 +9,6 @@ $pageDetails = [
 include dirname(__FILE__) . '/../../Classes/Core/init.php';
 include dirname(__FILE__) . '/../../Classes/Core/GeniSys.php';
 include dirname(__FILE__) . '/../iotJumpWay/Classes/iotJumpWay.php';
-include dirname(__FILE__) . '/../TASS/Classes/TASS.php';
 
 $_GeniSysAi->checkSession();
 
@@ -61,92 +60,7 @@ $Locations = $iotJumpWay->getLocations();
             <div class="page-wrapper">
             <div class="container-fluid pt-25">
 
-				<div class="row">
-					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-						<div class="panel panel-default card-view pa-0 bg-gradient3">
-							<div class="panel-wrapper collapse in">
-								<div class="panel-body pa-0">
-									<div class="sm-data-box">
-										<div class="container-fluid">
-											<div class="row">
-												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
-													<span class="txt-light block counter"><span class=""><?=$stats["CPU"]; ?>%</span></span>
-													<span class="weight-500 uppercase-font block font-13 txt-light">CPU</span>
-												</div>
-												<div class="col-xs-6 text-center  pl-0 pr-0 pt-25 data-wrap-right">
-													<div id="sparkline_4" class="sp-small-chart" ></div>
-												</div>
-											</div>	
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-						<div class="panel panel-default card-view pa-0 bg-gradient3">
-							<div class="panel-wrapper collapse in">
-								<div class="panel-body pa-0">
-									<div class="sm-data-box">
-										<div class="container-fluid">
-											<div class="row">
-												<div class="col-xs-6 text-center pl-0 pr-0 txt-light data-wrap-left">
-													<span class="block counter"><span class=""><?=$stats["Memory"]; ?>%</span></span>
-													<span class="weight-500 uppercase-font block">Memory</span>
-												</div>
-												<div class="col-xs-6 text-center  pl-0 pr-0 txt-light data-wrap-right">
-													<i class=" zmdi zmdi-memory data-right-rep-icon"></i>
-												</div>
-											</div>	
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-						<div class="panel panel-default card-view pa-0 bg-gradient3">
-							<div class="panel-wrapper collapse in">
-								<div class="panel-body pa-0">
-									<div class="sm-data-box">
-										<div class="container-fluid">
-											<div class="row">
-												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
-													<span class="txt-light block counter"><span class="counter-anim">46.43</span>%</span>
-													<span class="weight-500 uppercase-font block txt-light">Swap</span>
-												</div>
-												<div class="col-xs-6 text-center  pl-0 pr-0  data-wrap-right">
-													<i class="zmdi zmdi-refresh-alt  data-right-rep-icon txt-light"></i>
-												</div>
-											</div>	
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-						<div class="panel panel-default card-view pa-0 bg-gradient3">
-							<div class="panel-wrapper collapse in">
-								<div class="panel-body pa-0">
-									<div class="sm-data-box">
-										<div class="container-fluid">
-											<div class="row">
-												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
-													<span class="txt-light block counter"><span class=""><?=$stats["Temperature"]; ?></span></span>
-													<span class="weight-500 uppercase-font block txt-light">Temp</span>
-												</div>
-												<div class="col-xs-6 text-center  pl-0 pr-0 data-wrap-right">
-													<i class="fa fa-thermometer-quarter data-right-rep-icon txt-light" aria-hidden="true"></i>
-												</div>
-											</div>	
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-                </div>
+				<?php include dirname(__FILE__) . '/../Includes/Stats.php'; ?>
                 
 				<div class="row">
 					<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
@@ -184,38 +98,43 @@ $Locations = $iotJumpWay->getLocations();
                             <div class="panel-wrapper collapse in">
                                 <div class="panel-body">
                                     <div class="form-wrap">
-                                        <form data-toggle="validator" role="form" id="form">
-                                            <hr class="light-grey-hr"/>
-                                            <div class="form-group">
-                                                <label for="name" class="control-label mb-10">Name</label>
-                                                <input type="text" class="form-control" id="name" name="name" placeholder="Application Name" required value="<?=$Zone["zn"]; ?>">
-                                                <span class="help-block"> Name of zone</span> 
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label mb-10">Location</label>
-                                                <select class="form-control" id="lid" name="lid">
-                                                
-                                                    <?php 
-                                                        if(count($Locations)):
-                                                            foreach($Locations as $key => $value):
-                                                    ?>
+                                        <form data-toggle="validator" role="form" id="zone_update">
+                                            <div class="row">
+                                                <hr class="light-grey-hr"/>
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="form-group">
+                                                        <label for="name" class="control-label mb-10">Name</label>
+                                                        <input type="text" class="form-control" id="name" name="name" placeholder="Zone Name" required value="<?=$Zone["zn"]; ?>">
+                                                        <span class="help-block"> Name of zone</span> 
+                                                    </div>
+                                                    <div class="form-group mb-0">
+                                                        <input type="hidden" class="form-control" id="update_zone" name="update_zone" required value="1">
+                                                        <input type="hidden" class="form-control" id="id" name="id" required value="<?=$Zone["id"]; ?>">
+                                                        <button type="submit" class="btn btn-success btn-anim"><i class="icon-rocket"></i><span class="btn-text">submit</span></button>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label mb-10">Location</label>
+                                                        <select class="form-control" id="lid" name="lid">
+                                                        
+                                                            <?php 
+                                                                if(count($Locations)):
+                                                                    foreach($Locations as $key => $value):
+                                                            ?>
 
-                                                    <option value="<?=$value["id"]; ?>" <?=$Zone["lid"] == $value["id"] ? " selected " : ""; ?>>#<?=$value["id"]; ?>: <?=$value["name"]; ?></option>
+                                                            <option value="<?=$value["id"]; ?>" <?=$Zone["lid"] == $value["id"] ? " selected " : ""; ?>>#<?=$value["id"]; ?>: <?=$value["name"]; ?></option>
 
-                                                    <?php 
-                                                            endforeach;
-                                                        endif;
-                                                    ?>
+                                                            <?php 
+                                                                    endforeach;
+                                                                endif;
+                                                            ?>
 
-                                                </select>
-                                                <span class="help-block"> Location of zone</span> 
-                                            </div>
-								            <div class="clearfix"></div>
-                                            <hr class="light-grey-hr"/>
-                                            <div class="form-group mb-0">
-                                                <input type="hidden" class="form-control" id="update_zone" name="update_zone" required value="1">
-                                                <input type="hidden" class="form-control" id="id" name="id" required value="<?=$Zone["id"]; ?>">
-                                                <button type="submit" class="btn btn-success btn-anim" id="zone_update"><i class="icon-rocket"></i><span class="btn-text">submit</span></button>
+                                                        </select>
+                                                        <span class="help-block"> Location of zone</span> 
+                                                    </div>
+                                                    <div class="clearfix"></div>
+                                                </div>
                                             </div>
                                         </form>
                                     </div>
@@ -235,40 +154,9 @@ $Locations = $iotJumpWay->getLocations();
 
         <?php  include dirname(__FILE__) . '/../Includes/JS.php'; ?>
         
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/moment/min/moment.min.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/simpleWeather/jquery.simpleWeather.min.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/simpleweather-data.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/waypoints/lib/jquery.waypoints.min.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/jquery.counterup/jquery.counterup.min.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/dropdown-bootstrap-extended.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/jquery.sparkline/dist/jquery.sparkline.min.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/owl.carousel/dist/owl.carousel.min.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/echarts/dist/echarts-en.min.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/echarts-liquidfill.min.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/switchery/dist/switchery.min.js"></script>
-		<script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
-		<script type="text/javascript" src="<?=$domain; ?>/dist/js/fullcalendar-data.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/init.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/dashboard-data.js"></script>
-
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWayUI.js"></script>
-
-        <script type="text/javascript" src="<?=$domain; ?>/TASS/Classes/TASS.js"></script>
-
-		<script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/bootstrap-validator/dist/validator.min.js"></script>
-
-        <script type="text/javascript" src="<?=$domain; ?>/Hospital/Staff/Classes/Staff.js"></script>
 
     </body>
 
