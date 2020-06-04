@@ -48,13 +48,15 @@ class Core
 
 class Admin{
 
-    public function __construct(Core $core, $user, $lid)
+    public function __construct(Core $core, $user, $lid, $ip, $mac)
     {
         $this->confs = $core->confs;
         $this->key = $core->key;
         $this->conn = $core->dbcon;
         $this->user = $user;
         $this->lid = (int)$lid;
+        $this->ip = $ip;
+        $this->mac = $mac;
     }     
 
     public function create()
@@ -124,6 +126,8 @@ class Admin{
                 `mqttp`,
                 `apub`,
                 `aprv`,
+                `ip`,
+                `mac`,
                 `time`
             )  VALUES (
                 :name,
@@ -133,6 +137,8 @@ class Admin{
                 :mqttp,
                 :apub,
                 :aprv,
+                :ip,
+                :mac,
                 :time
             )
         ");
@@ -144,9 +150,21 @@ class Admin{
             ':mqttp' =>$this->encrypt($mqttPass),
             ':apub' => $this->encrypt($apiKey),
             ':aprv' => $this->encrypt($apiSecretKey),
+            ':ip' => $this->encrypt($this->ip),
+            ':mac' => $this->encrypt($this->mac),
             ':time' => time()
         ]);
         $this->aid = $this->conn->lastInsertId();
+
+        $query = $this->conn->prepare("
+            UPDATE users
+            SET aid = :aid
+            WHERE id = :id
+        ");
+        $query->execute(array(
+            ':aid'=>$this->aid,
+            ':id'=>$this->lid
+        ));
 
         $query = $this->conn->prepare("
             INSERT INTO  mqttu  (
@@ -344,7 +362,7 @@ class Admin{
 }
 
 $Core  = new Core();
-$Admin = new Admin($Core, $argv[1], $argv[2]);
+$Admin = new Admin($Core, $argv[1], $argv[2], $argv[3], $argv[4]);
 $Admin->create();
 
 ?>

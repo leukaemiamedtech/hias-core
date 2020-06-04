@@ -1,9 +1,9 @@
 <?php session_start();
 
 $pageDetails = [
-    "PageID" => "IoT",
-    "SubPageID" => "IoT",
-    "LowPageID" => "Data"
+	"PageID" => "IoT",
+	"SubPageID" => "IoT",
+	"LowPageID" => "Data"
 ];
 
 include dirname(__FILE__) . '/../../Classes/Core/init.php';
@@ -15,12 +15,6 @@ $_GeniSysAi->checkSession();
 $LId = 1;
 $Location = $iotJumpWay->getLocation($LId);
 
-$Zones = $iotJumpWay->getZones();
-$Devices = $iotJumpWay->getDevices();
-$Statuses = $iotJumpWay->retrieveStatuses();
-$Commands = $iotJumpWay->retrieveCommands();
-$Actuators = $iotJumpWay->retrieveActuators();
-$Sensors = $iotJumpWay->retrieveSensors();
 
 ?>
 
@@ -42,151 +36,136 @@ $Sensors = $iotJumpWay->retrieveSensors();
 		<link type="image/x-icon" rel="shortcut icon" href="<?=$domain; ?>/img/favicon.png" />
 		<link type="image/x-icon" rel="apple-touch-icon" href="<?=$domain; ?>/img/favicon.png" />
 
-        <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
-        <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>		
+		<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
+		<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>		
 		<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.css" rel="stylesheet" type="text/css"/>
 	</head>
 
-    <body id="GeniSysAI">
-        
-        <div class="preloader-it">
-            <div class="la-anim-1"></div>
-        </div>
-        
-        <div class="wrapper theme-6-active pimary-color-pink">
-            
-            <?php include dirname(__FILE__) . '/../Includes/Nav.php'; ?>
-            <?php include dirname(__FILE__) . '/../Includes/LeftNav.php'; ?>
-            <?php include dirname(__FILE__) . '/../Includes/RightNav.php'; ?>
+	<body id="GeniSysAI">
+		
+		<div class="preloader-it">
+			<div class="la-anim-1"></div>
+		</div>
+		
+		<div class="wrapper theme-6-active pimary-color-pink">
+			
+			<?php include dirname(__FILE__) . '/../Includes/Nav.php'; ?>
+			<?php include dirname(__FILE__) . '/../Includes/LeftNav.php'; ?>
+			<?php include dirname(__FILE__) . '/../Includes/RightNav.php'; ?>
 
-            <div class="page-wrapper">
-            <div class="container-fluid pt-25">
-
-				<div class="row">
-					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-						<div class="panel panel-default card-view pa-0 bg-gradient3">
-							<div class="panel-wrapper collapse in">
-								<div class="panel-body pa-0">
-									<div class="sm-data-box">
-										<div class="container-fluid">
-											<div class="row">
-												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
-													<span class="txt-light block counter"><span class=""><?=$stats["CPU"]; ?>%</span></span>
-													<span class="weight-500 uppercase-font block font-13 txt-light">CPU</span>
-												</div>
-												<div class="col-xs-6 text-center  pl-0 pr-0 pt-25 data-wrap-right">
-													<div id="sparkline_4" class="sp-small-chart" ></div>
-												</div>
-											</div>	
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-						<div class="panel panel-default card-view pa-0 bg-gradient3">
-							<div class="panel-wrapper collapse in">
-								<div class="panel-body pa-0">
-									<div class="sm-data-box">
-										<div class="container-fluid">
-											<div class="row">
-												<div class="col-xs-6 text-center pl-0 pr-0 txt-light data-wrap-left">
-													<span class="block counter"><span class=""><?=$stats["Memory"]; ?>%</span></span>
-													<span class="weight-500 uppercase-font block">Memory</span>
-												</div>
-												<div class="col-xs-6 text-center  pl-0 pr-0 txt-light data-wrap-right">
-													<i class=" zmdi zmdi-memory data-right-rep-icon"></i>
-												</div>
-											</div>	
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-						<div class="panel panel-default card-view pa-0 bg-gradient3">
-							<div class="panel-wrapper collapse in">
-								<div class="panel-body pa-0">
-									<div class="sm-data-box">
-										<div class="container-fluid">
-											<div class="row">
-												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
-													<span class="txt-light block counter"><span class="counter-anim">46.43</span>%</span>
-													<span class="weight-500 uppercase-font block txt-light">Swap</span>
-												</div>
-												<div class="col-xs-6 text-center  pl-0 pr-0  data-wrap-right">
-													<i class="zmdi zmdi-refresh-alt  data-right-rep-icon txt-light"></i>
-												</div>
-											</div>	
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-						<div class="panel panel-default card-view pa-0 bg-gradient3">
-							<div class="panel-wrapper collapse in">
-								<div class="panel-body pa-0">
-									<div class="sm-data-box">
-										<div class="container-fluid">
-											<div class="row">
-												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
-													<span class="txt-light block counter"><span class=""><?=$stats["Temperature"]; ?></span></span>
-													<span class="weight-500 uppercase-font block txt-light">Temp</span>
-												</div>
-												<div class="col-xs-6 text-center  pl-0 pr-0 data-wrap-right">
-													<i class="fa fa-thermometer-quarter data-right-rep-icon txt-light" aria-hidden="true"></i>
-												</div>
-											</div>	
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-                </div>
-                
+			<div class="page-wrapper">
+			<div class="container-fluid pt-25">
+			
+				<?php include dirname(__FILE__) . '/../Includes/Stats.php'; ?>
+				
 				<div class="row">
 					<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
-                        <div class="panel panel-default card-view panel-refresh">
-                            <div class="panel-heading">
-                            </div>
-                            <div class="panel-wrapper collapse in">
-                                <div class="panel-body">
-                                    <?php include dirname(__FILE__) . '/../Includes/Weather.php'; ?>
-                                </div>
-                            </div>
+						<div class="panel panel-default card-view panel-refresh">
+							<div class="panel-heading">
+							</div>
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
+									<?php include dirname(__FILE__) . '/../Includes/Weather.php'; ?>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
 						<div class="panel panel-default card-view">
 							<div class="panel-wrapper collapse in">
 								<div class="panel-body">
-                                    <?php include dirname(__FILE__) . '/../iotJumpWay/Includes/iotJumpWay.php'; ?>
+									<?php include dirname(__FILE__) . '/../iotJumpWay/Includes/iotJumpWay.php'; ?>
 								</div>
 							</div>
 						</div>	
 					</div>
 				</div>
-                
+				
 				<div class="row">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="panel panel-default card-view panel-refresh">
-                            <div class="panel-heading">
+						<div class="panel panel-default card-view panel-refresh">
+							<div class="panel-heading">
+								<div class="pull-left">
+									<h6 class="panel-title txt-dark">iotJumpWay Location Device/Application Life</h6>
+								</div>
+								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/Data/Life"><i class="fa fa-eye pull-left"></i> View All Life Data</a></div> 
+								<div class="clearfix"></div>
+							</div>
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
+									<div class="table-wrap mt-40">
+										<div class="table-responsive">
+											<table class="table mb-0">
+												<thead>
+												  <tr>
+													<th>ID</th>
+													<th>Use</th>
+													<th>Device/Application Details</th>
+													<th>Data</th>
+													<th>Time</th>
+												  </tr>
+												</thead>
+												<tbody>
+
+												<?php 
+													$Life = $iotJumpWay->retrieveLife(5);
+													if($Life["Response"] == "OK"):
+														foreach($Life["ResponseData"] as $key => $value):
+
+															$location = $iotJumpWay->getLocation($value->Location);
+															$device = $iotJumpWay->getDevice($value->Device);
+															$zone = $iotJumpWay->getZone($value->Zone);
+															$application = $iotJumpWay->getApplication($value->Application);
+												?>
+
+												  <tr>
+													<td>#<?=$value->_id;?></td>
+													<td><?=$value->Use;?></td>
+													<td><strong>Location:</strong> #<?=$value->Location;?> - <?=$location["name"]; ?><br />
+														<strong>Zone:</strong> <?=$value->Zone != 0 ? "#" . $value->Zone . " - " . $zone["zn"] : "NA"; ?><br />
+														<strong>Device</strong> <?=$value->Device != 0 ? "#" . $value->Device . " - " . $device["name"] : "NA"; ?><br />
+														<strong>Application</strong> <?=$value->Application != 0 ? "#" . $value->Application . " - " . $application["name"] : "NA";?>
+													</td>
+													<td>
+														<strong>CPU</strong>: <?=$value->Data->CPU;?>%<br />
+														<strong>Memory</strong>: <?=$value->Data->Memory;?>%<br />
+														<strong>Diskspace</strong>: <?=$value->Data->Diskspace;?>%<br />
+														<strong>Temperature</strong>: <?=$value->Data->Temperature;?>°C<br />
+														<strong>Latitude</strong>: <?=$value->Data->Latitude;?><br />
+														<strong>Longitude</strong>: <?=$value->Data->Longitude;?><br />
+													</td>
+													<td><?=$value->Time;?> </td>
+												  </tr>
+
+												<?php 
+														endforeach;
+													endif;
+												?>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						<div class="panel panel-default card-view panel-refresh">
+							<div class="panel-heading">
 								<div class="pull-left">
 									<h6 class="panel-title txt-dark">iotJumpWay Location Device/Application Statuses</h6>
 								</div>
-								<div class="pull-right"></div> 
+								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/Data/Life"><i class="fa fa-eye pull-left"></i> View All Status Data</a></div>
 								<div class="clearfix"></div>
-                            </div>
-                            <div class="panel-wrapper collapse in">
-                                <div class="panel-body">
+							</div>
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
 									<div class="table-wrap mt-40">
 										<div class="table-responsive">
 											<table class="table mb-0">
@@ -194,32 +173,34 @@ $Sensors = $iotJumpWay->retrieveSensors();
 												  <tr>
 													<th>ID</th>
 													<th>Use</th>
-													<th>Location</th>
-													<th>Zone</th>
-													<th>Device</th>
-													<th>Application</th>
+													<th>Details</th>
 													<th>Status</th>
 													<th>Time</th>
-													<th>ACTION</th>
 												  </tr>
 												</thead>
 												<tbody>
 
 												<?php 
-                                                    if($Statuses["Response"] == "OK"):
-                                                        foreach($Statuses["ResponseData"] as $key => $value):
+													$Statuses = $iotJumpWay->retrieveStatuses(5);
+													if($Statuses["Response"] == "OK"):
+														foreach($Statuses["ResponseData"] as $key => $value):
+
+															$location = $iotJumpWay->getLocation($value->Location);
+															$device = $iotJumpWay->getDevice($value->Device);
+															$zone = $iotJumpWay->getZone($value->Zone);
+															$application = $iotJumpWay->getApplication($value->Application);
 												?>
 
 												  <tr>
 													<td>#<?=$value->_id;?></td>
 													<td><?=$value->Use;?></td>
-													<td><?=$value->Location;?></td>
-													<td><?=$value->Zone;?></td>
-													<td><?=$value->Device;?></td>
-													<td><?=$value->Application;?></td>
+													<td><strong>Location:</strong> #<?=$value->Location;?> - <?=$location["name"]; ?><br />
+														<strong>Zone:</strong> <?=$value->Zone != 0 ? "#" . $value->Zone . " - " . $zone["zn"] : "NA"; ?><br />
+														<strong>Device</strong> <?=$value->Device != 0 ? "#" . $value->Device . " - " . $device["name"] : "NA"; ?><br />
+														<strong>Application</strong> <?=$value->Application != 0 ? "#" . $value->Application . " - " . $application["name"] : "NA";?>
+													</td>
 													<td><?=$value->Status;?></td>
 													<td><?=$value->Time;?> </td>
-													<td><a href="#" id="removeStatusData"><i class="fa fa-trash-alt"></i></a></a></td>
 												  </tr>
 
 												<?php 
@@ -230,24 +211,24 @@ $Sensors = $iotJumpWay->retrieveSensors();
 											</table>
 										</div>
 									</div>
-                                </div>
-                            </div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
-                
+				
 				<div class="row">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="panel panel-default card-view panel-refresh">
-                            <div class="panel-heading">
+						<div class="panel panel-default card-view panel-refresh">
+							<div class="panel-heading">
 								<div class="pull-left">
-									<h6 class="panel-title txt-dark">iotJumpWay Location Device/Application Commands</h6>
+									<h6 class="panel-title txt-dark">iotJumpWay Location Device/Application Commmands</h6>
 								</div>
-								<div class="pull-right"></div> 
+								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/Data/Life"><i class="fa fa-eye pull-left"></i> View All Commmand Data</a></div>
 								<div class="clearfix"></div>
-                            </div>
-                            <div class="panel-wrapper collapse in">
-                                <div class="panel-body">
+							</div>
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
 									<div class="table-wrap mt-40">
 										<div class="table-responsive">
 											<table class="table mb-0">
@@ -255,36 +236,38 @@ $Sensors = $iotJumpWay->retrieveSensors();
 												  <tr>
 													<th>ID</th>
 													<th>Use</th>
-													<th>Location</th>
-													<th>Zone</th>
+													<th>Details</th>
 													<th>Type</th>
-													<th>From</th>
-													<th>To</th>
 													<th>Value</th>
 													<th>Message</th>
 													<th>Time</th>
-													<th>ACTION</th>
 												  </tr>
 												</thead>
 												<tbody>
 
 												<?php 
-                                                    if($Commands["Response"] == "OK"):
-                                                        foreach($Commands["ResponseData"] as $key => $value):
+													$Commands = $iotJumpWay->retrieveCommands();
+													if($Commands["Response"] == "OK"):
+														foreach($Commands["ResponseData"] as $key => $value):
+
+															$location = $iotJumpWay->getLocation($value->Location);
+															$device = $iotJumpWay->getDevice($value->From);
+															$devicet = $iotJumpWay->getDevice($value->To);
+															$zone = $iotJumpWay->getZone($value->Zone);
 												?>
 
 												  <tr>
 													<td>#<?=$value->_id;?></td>
 													<td><?=$value->Use;?></td>
-													<td><?=$value->Location;?></td>
-													<td><?=$value->Zone;?></td>
+													<td>Location #<?=$value->Location;?>: <?=$location["name"]; ?><br />
+														Zone <?=$value->Zone != 0 ? "#" . $value->Zone . ": " . $zone["zn"] : "NA"; ?><br />
+														From <?=$value->From != 0 ? "#" . $value->From . ": " . $device["name"] : "NA"; ?><br />
+														To <?=$value->To != 0 ? "#" . $value->To . ": " . $devicet["name"] : "NA"; ?><br />
+													</td>
 													<td><?=$value->Type;?></td>
-													<td><?=$value->From;?></td>
-													<td><?=$value->To;?></td>
 													<td><?=$value->Value;?></td>
 													<td><?=$value->Message;?></td>
 													<td><?=$value->Time;?> </td>
-													<td><a href="#" id="removeCommandsData"><i class="fa fa-trash-alt"></i></a></a></td>
 												  </tr>
 
 												<?php 
@@ -296,24 +279,24 @@ $Sensors = $iotJumpWay->retrieveSensors();
 											</table>
 										</div>
 									</div>
-                                </div>
-                            </div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
-                
+				
 				<div class="row">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="panel panel-default card-view panel-refresh">
-                            <div class="panel-heading">
+						<div class="panel panel-default card-view panel-refresh">
+							<div class="panel-heading">
 								<div class="pull-left">
 									<h6 class="panel-title txt-dark">iotJumpWay Location Device/Application Sensors</h6>
 								</div>
-								<div class="pull-right"></div> 
+								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/Data/Life"><i class="fa fa-eye pull-left"></i> View All Sensor Data</a></div>
 								<div class="clearfix"></div>
-                            </div>
-                            <div class="panel-wrapper collapse in">
-                                <div class="panel-body">
+							</div>
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
 									<div class="table-wrap mt-40">
 										<div class="table-responsive">
 											<table class="table mb-0">
@@ -321,36 +304,34 @@ $Sensors = $iotJumpWay->retrieveSensors();
 												  <tr>
 													<th>ID</th>
 													<th>Use</th>
-													<th>Location</th>
-													<th>Zone</th>
-													<th>Device</th>
+													<th>Details</th>
 													<th>Type</th>
 													<th>Sensor</th>
 													<th>Value</th>
 													<th>Message</th>
 													<th>Time</th>
-													<th>ACTION</th>
 												  </tr>
 												</thead>
 												<tbody>
 
 												<?php 
-                                                    if($Sensors["Response"] == "OK"):
-                                                        foreach($Sensors["ResponseData"] as $key => $value):
+													$Sensors = $iotJumpWay->retrieveSensors();
+													if($Sensors["Response"] == "OK"):
+														foreach($Sensors["ResponseData"] as $key => $value):
 												?>
 
 												  <tr>
 													<td>#<?=$value->_id;?></td>
 													<td><?=$value->Use;?></td>
-													<td><?=$value->Location;?></td>
-													<td><?=$value->Zone;?></td>
-													<td><?=$value->Device;?></td>
+													<td>Location #<?=$value->Location;?>: <?=$location["name"]; ?><br />
+														Zone <?=$value->Zone != 0 ? "#" . $value->Zone . ": " . $zone["zn"] : "NA"; ?><br />
+														Device <?=$value->Device != 0 ? "#" . $value->Device . ": " . $device["name"] : "NA"; ?><br />
+													</td>
 													<td><?=$value->Type;?></td>
 													<td><?=$value->Sensor;?></td>
 													<td><?=$value->Value;?></td>
 													<td><?=$value->Message;?></td>
 													<td><?=$value->Time;?> </td>
-													<td><a href="#" id="removeCommandsData"><i class="fa fa-trash-alt"></i></a></a></td>
 												  </tr>
 
 												<?php 
@@ -362,72 +343,8 @@ $Sensors = $iotJumpWay->retrieveSensors();
 											</table>
 										</div>
 									</div>
-                                </div>
-                            </div>
-						</div>
-					</div>
-				</div>
-                
-				<div class="row">
-					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="panel panel-default card-view panel-refresh">
-                            <div class="panel-heading">
-								<div class="pull-left">
-									<h6 class="panel-title txt-dark">iotJumpWay Location Device/Application Actuators</h6>
 								</div>
-								<div class="pull-right"></div> 
-								<div class="clearfix"></div>
-                            </div>
-                            <div class="panel-wrapper collapse in">
-                                <div class="panel-body">
-									<div class="table-wrap mt-40">
-										<div class="table-responsive">
-											<table class="table mb-0">
-												<thead>
-												  <tr>
-													<th>ID</th>
-													<th>Use</th>
-													<th>Location</th>
-													<th>Zone</th>
-													<th>Type</th>
-													<th>From</th>
-													<th>Value</th>
-													<th>Message</th>
-													<th>Time</th>
-													<th>ACTION</th>
-												  </tr>
-												</thead>
-												<tbody>
-
-												<?php 
-                                                    if($Actuators["Response"] == "OK"):
-                                                        foreach($Actuators["ResponseData"] as $key => $value):
-												?>
-
-												  <tr>
-													<td>#<?=$value->_id;?></td>
-													<td><?=$value->Use;?></td>
-													<td><?=$value->Location;?></td>
-													<td><?=$value->Zone;?></td>
-													<td><?=$value->Type;?></td>
-													<td><?=$value->From;?></td>
-													<td><?=$value->Value;?></td>
-													<td><?=$value->Message;?></td>
-													<td><?=$value->Time;?> </td>
-													<td><a href="#" id="removeCommandsData"><i class="fa fa-trash-alt"></i></a></a></td>
-												  </tr>
-
-												<?php 
-														endforeach;
-													endif;
-												?>
-
-												</tbody>
-											</table>
-										</div>
-									</div>
-                                </div>
-                            </div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -438,37 +355,11 @@ $Sensors = $iotJumpWay->retrieveSensors();
 			
 		</div>
 
-        <?php  include dirname(__FILE__) . '/../Includes/JS.php'; ?>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/moment/min/moment.min.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/simpleWeather/jquery.simpleWeather.min.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/simpleweather-data.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/waypoints/lib/jquery.waypoints.min.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/jquery.counterup/jquery.counterup.min.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/dropdown-bootstrap-extended.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/jquery.sparkline/dist/jquery.sparkline.min.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/owl.carousel/dist/owl.carousel.min.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/echarts/dist/echarts-en.min.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/echarts-liquidfill.min.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/switchery/dist/switchery.min.js"></script>
-		<script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
-		<script type="text/javascript" src="<?=$domain; ?>/dist/js/fullcalendar-data.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/init.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/dashboard-data.js"></script>
+		<?php  include dirname(__FILE__) . '/../Includes/JS.php'; ?>
+		
+		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
+		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
 
-        <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWayUI.js"></script>
-
-    </body>
+	</body>
 
 </html>

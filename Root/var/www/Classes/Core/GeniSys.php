@@ -387,65 +387,50 @@
         private static function verifyPassword($password,$hash) {
             return password_verify($password, $hash);
         }
-        
-        private function getCPULoad($coreCount = 2, $interval = 1)
-        {
-            $rs = sys_getloadavg();
-            $interval = $interval >= 1 && 3 <= $interval ? $interval : 1;
-            $load = $rs[$interval];
-            return number_format(round(($load * 100) / $coreCount,2),2);
-        }
-        
-        private function getMemoryUsage()
-        {
-            $free = shell_exec('free');
-            $free = (string)trim($free);
-            $free_arr = explode("\n", $free);
-            $mem = explode(" ", $free_arr[1]);
-            $mem = array_filter($mem);
-            $mem = array_merge($mem);
-            $memory_usage = $mem[2]/$mem[1]*100;
-            return number_format($memory_usage,2);
-        }
-
-        private function getTemperature()
-        {
-            if (exec('cat /sys/class/thermal/thermal_zone0/temp', $t)):
-                $temp = round($t[0] / 1000).' °C';
-            endif;
-            return $temp;
-        }
-
-        private function getSwap()
-        {
-            if (!($free = shell_exec('grep SwapFree /proc/meminfo | awk \'{print $2}\''))):
-                $free = 0;
-            endif;
-            $free = (int)$free;
-            if (!($total = shell_exec('grep SwapTotal /proc/meminfo | awk \'{print $2}\''))):
-                $total = 0;
-            endif;
-
-            $total = (int)$total;
-            $used = $total - $free;
-            $percent_used = 0;
-
-            if ($total > 0):
-                $percent_used = 100 - (round($free / $total * 100));
-            endif;
-
-            return $percent_used;
-        } 
 
         public function getStats()
         {
-            return [
-                "CPU"=>number_format($this->getCPULoad(),2),
-                "Memory"=>number_format($this->getMemoryUsage(),2),
-                "Temperature"=>$this->getTemperature(),
-                "Swap"=>$this->getSwap()
-            ];
+            $pdoQuery = $this->_GeniSys->_secCon->prepare("
+                SELECT cpu,
+                    mem,
+                    hdd,
+                    tempr
+                FROM mqtta
+                Where id = :id
+            ");
+            $pdoQuery->execute([
+                ":id" => $this->_GeniSys->_confs["aid"]
+            ]);
+            $stats=$pdoQuery->fetch(PDO::FETCH_ASSOC);
+
+            return $stats;
         }
+
+		public function getMapMarkers($application)
+		{
+            if(!$application["lt"]):
+                $lat = $this->lat;
+                $lng = $this->lng;
+            else:
+                $lat = $device["lt"];
+                $lng = $device["lg"];
+            endif;
+
+            return [$lat, $lng];
+		}	
+
+		public function getStatusShow($status)
+		{
+            if($status=="ONLINE"):
+                $on = "  ";
+                $off = " hide ";
+            else:
+                $on = " hide ";
+                $off = "  ";
+            endif;
+
+            return [$on, $off];
+		}
     }
 
 $_GeniSysAi = new _GeniSysAi($_GeniSys);
@@ -455,6 +440,9 @@ if(filter_input(INPUT_POST, "login", FILTER_SANITIZE_STRING)):
 endif;
 if(filter_input(INPUT_POST, "reset_pass", FILTER_SANITIZE_STRING)):
     die(json_encode($_GeniSysAi->resetpass()));
+endif;
+if(filter_input(INPUT_POST, 'getServerStats', FILTER_SANITIZE_NUMBER_INT)):
+    die(json_encode($_GeniSysAi->getStats()));
 endif;
 
 $domain = $_GeniSys->_helpers->oDecrypt($_GeniSys->_confs["domainString"]);

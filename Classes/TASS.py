@@ -1,16 +1,15 @@
 ############################################################################################
 #
-# Project:       Peter Moss COVID-19 AI Research Project
-# Repository:    COVID-19 Medical Support System Server
-# Project:       EMAR, Emergency Assistance Robot
+# Project:       Peter Moss Leukemia AI Research
+# Repository:    HIAS: Hospital Intelligent Automation System
+# Project:       GeniSysAI
 #
 # Author:        Adam Milton-Barker (AdamMiltonBarker.com)
 # Contributors:
 # Title:         TASS Class
-# Description:   TASS functions for the COVID-19 Medical Support System Server Emergency 
-#                Assistance Robot.
+# Description:   TASS functions for the Hospital Intelligent Automation System.
 # License:       MIT License
-# Last Modified: 2020-04-19
+# Last Modified: 2020-06-04
 #
 ############################################################################################
 
@@ -25,8 +24,7 @@ class TASS():
     def __init__(self):
         """ TASS Class
     
-        TASS functions for the COVID-19 Medical Support System Server Emergency
-        Assistance Robot.
+        TASS functions for the COVID-19 Hospital Intelligent Automation System.
         """
         
         self.Helpers = Helpers("TASS", False)

@@ -45,13 +45,15 @@ class Core
 
 class Location{
 
-    public function __construct(Core $core, $location, $application)
+    public function __construct(Core $core, $location, $application, $ip, $mac)
     {
         $this->confs = $core->confs;
         $this->key = $core->key;
         $this->conn = $core->dbcon;
         $this->ln = $location;
         $this->an = $application;
+        $this->ip = $ip;
+        $this->mac = $mac;
     }     
 		
     public function location(){ 
@@ -97,6 +99,8 @@ class Location{
                 `mqttp`,
                 `apub`,
                 `aprv`,
+                `ip`,
+                `mac`,
                 `time`
             )  VALUES (
                 :name,
@@ -105,6 +109,8 @@ class Location{
                 :mqttp,
                 :apub,
                 :aprv,
+                :ip,
+                :mac,
                 :time
             )
         ");
@@ -115,6 +121,8 @@ class Location{
             ':mqttp' =>$this->encrypt($mqttHash),
             ':apub' => $this->encrypt($apiKey),
             ':aprv' => $this->encrypt($apiSecretKey),
+            ':ip' => $this->encrypt($this->ip),
+            ':mac' => $this->encrypt($this->mac),
             ':time' => time()
         ]);
         $this->aid = $this->conn->lastInsertId();
@@ -282,7 +290,7 @@ class Location{
 
 
 $Core  = new Core();
-$Location = new Location($Core, $argv[1], $argv[2]);
+$Location = new Location($Core, $argv[1], $argv[2], $argv[3], $argv[4]);
 $Location->location();
 $Location->application();
 

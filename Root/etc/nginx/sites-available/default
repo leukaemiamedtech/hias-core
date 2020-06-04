@@ -3,13 +3,28 @@ server {
         root /fserver/var/www/html;
         server_name YourSubdomain.YourDomain.TLD;
 
-        location ~* ^/TASS/Live/(.*)$ {
+        location ~* ^/Security/TASS/Live/(.*)$ {
                 auth_basic "Restricted";
                 auth_basic_user_file /etc/nginx/tass/htpasswd;
-                proxy_pass http://###.###.#.##:8080/$1;
+                proxy_pass http://YourTassDeviceIP:YourTassDevicePort/$1;
+        }
+
+        location ~* ^/Robotics/EMAR/Live2/(.*)$ {
+                auth_basic "Restricted";
+                auth_basic_user_file /etc/nginx/tass/htpasswd;
+                proxy_pass http://YourEmarDevice2IP:YourEmarDevice2Port/$1;
+        }
+
+        location ~* ^/Robotics/EMAR/Live3/(.*)$ {
+                auth_basic "Restricted";
+                auth_basic_user_file /etc/nginx/tass/htpasswd;
+                proxy_pass http://YourEmarDevice3IP:YourEmarDevice3Port/$1;
         }
 
         location / {
+                rewrite ^/Hospital/Patients/([0-9]+)/$ /Hospital/Patients/Patient.php?patient=$1 last;
+                rewrite ^/Hospital/Beds/([0-9]+)/$ /Hospital/Beds/Bed.php?bed=$1 last;
+                rewrite ^/Hospital/Staff/([0-9]+)/$ /Hospital/Staff/Staff.php?staff=$1 last;
                 rewrite ^/iotJumpWay/Sensors/([0-9]+)/$ /iotJumpWay/Sensor.php?sensor=$1 last;
                 rewrite ^/iotJumpWay/Sensors/Create$ /iotJumpWay/CreateSensor.php last;
                 rewrite ^/iotJumpWay/Devices/Create$ /iotJumpWay/CreateDevice.php last;
@@ -18,10 +33,8 @@ server {
                 rewrite ^/iotJumpWay/([0-9]+)/Zones/([0-9])/$ /iotJumpWay/Zone.php?location=$1&zone=$2 last;
                 rewrite ^/iotJumpWay/Applications/Create$ /iotJumpWay/CreateApp.php last;
                 rewrite ^/iotJumpWay/([0-9]+)/Applications/([0-9])/$ /iotJumpWay/Application.php?location=$1&application=$2 last;
-                rewrite ^/Hospital/Patients/([0-9]+)/$ /Hospital/Patients/Patient.php?patient=$1 last;
-                rewrite ^/Hospital/Beds/([0-9]+)/$ /Hospital/Beds/Bed.php?bed=$1 last;
-                rewrite ^/TASS/([0-9]+)/$ /TASS/Device.php?tass=$1 last;
-                rewrite ^/Hospital/Staff/([0-9]+)/$ /Hospital/Staff/Staff.php?staff=$1 last;
+                rewrite ^/Robotics/EMAR/([0-9]+)/$ /Robotics/EMAR/Device.php?emar=$1 last;
+		rewrite ^/Security/TASS/([0-9]+)/$ /Security/TASS/Device.php?tass=$1 last;
                 try_files $uri $uri.html $uri/ @extensionless-php;
                 index index.php index.html index.htm index.nginx-debian.html;
         }
@@ -41,17 +54,17 @@ server {
                 deny all;
         }
 
-        listen [::]:443 ssl ipv6only=on; # managed by Certbot
-        listen 443 ssl; # managed by Certbot
-        ssl_certificate /etc/letsencrypt/live/YourSubdomain.YourDomain.TLD/fullchain.pem; # managed by Certbot
-        ssl_certificate_key /etc/letsencrypt/live/YourSubdomain.YourDomain.TLD/privkey.pem; # managed by Certbot
-        include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
-        ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+    listen [::]:443 ssl ipv6only=on; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/YourSubdomain.YourDomain.TLD/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/YourSubdomain.YourDomain.TLD/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
 }
 server {
-        listen      80;
-        server_name "";
-        return      444;
+    listen      80;
+    server_name "";
+    return      444;
 }
 server {
 

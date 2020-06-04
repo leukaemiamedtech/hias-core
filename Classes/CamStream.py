@@ -1,7 +1,7 @@
 ############################################################################################
 #
-# Project:       Peter Moss COVID-19 AI Research Project
-# Repository:    COVID-19 Medical Support System Server
+# Project:       Peter Moss Leukemia AI Research
+# Repository:    HIAS: Hospital Intelligent Automation System
 # Project:       GeniSysAI
 #
 # Author:        Adam Milton-Barker (AdamMiltonBarker.com)
@@ -9,7 +9,7 @@
 # Title:         CamRead Class
 # Description:   The CamStream Class streams the processed frame to a local server.
 # License:       MIT License
-# Last Modified: 2020-04-25
+# Last Modified: 2020-06-04
 #
 ############################################################################################
 
