@@ -56,92 +56,7 @@ $_GeniSysAi->checkSession();
             <div class="page-wrapper">
             <div class="container-fluid pt-25">
 
-				<div class="row">
-					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-						<div class="panel panel-default card-view pa-0 bg-gradient3">
-							<div class="panel-wrapper collapse in">
-								<div class="panel-body pa-0">
-									<div class="sm-data-box">
-										<div class="container-fluid">
-											<div class="row">
-												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
-													<span class="txt-light block counter"><span class=""><?=$stats["CPU"]; ?>%</span></span>
-													<span class="weight-500 uppercase-font block font-13 txt-light">CPU</span>
-												</div>
-												<div class="col-xs-6 text-center  pl-0 pr-0 pt-25 data-wrap-right">
-													<div id="sparkline_4" class="sp-small-chart" ></div>
-												</div>
-											</div>	
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-						<div class="panel panel-default card-view pa-0 bg-gradient3">
-							<div class="panel-wrapper collapse in">
-								<div class="panel-body pa-0">
-									<div class="sm-data-box">
-										<div class="container-fluid">
-											<div class="row">
-												<div class="col-xs-6 text-center pl-0 pr-0 txt-light data-wrap-left">
-													<span class="block counter"><span class=""><?=$stats["Memory"]; ?>%</span></span>
-													<span class="weight-500 uppercase-font block">Memory</span>
-												</div>
-												<div class="col-xs-6 text-center  pl-0 pr-0 txt-light data-wrap-right">
-													<i class=" zmdi zmdi-memory data-right-rep-icon"></i>
-												</div>
-											</div>	
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-						<div class="panel panel-default card-view pa-0 bg-gradient3">
-							<div class="panel-wrapper collapse in">
-								<div class="panel-body pa-0">
-									<div class="sm-data-box">
-										<div class="container-fluid">
-											<div class="row">
-												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
-													<span class="txt-light block counter"><span class="counter-anim">46.43</span>%</span>
-													<span class="weight-500 uppercase-font block txt-light">Swap</span>
-												</div>
-												<div class="col-xs-6 text-center  pl-0 pr-0  data-wrap-right">
-													<i class="zmdi zmdi-refresh-alt  data-right-rep-icon txt-light"></i>
-												</div>
-											</div>	
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-						<div class="panel panel-default card-view pa-0 bg-gradient3">
-							<div class="panel-wrapper collapse in">
-								<div class="panel-body pa-0">
-									<div class="sm-data-box">
-										<div class="container-fluid">
-											<div class="row">
-												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
-													<span class="txt-light block counter"><span class=""><?=$stats["Temperature"]; ?></span></span>
-													<span class="weight-500 uppercase-font block txt-light">Temp</span>
-												</div>
-												<div class="col-xs-6 text-center  pl-0 pr-0 data-wrap-right">
-													<i class="fa fa-thermometer-quarter data-right-rep-icon txt-light" aria-hidden="true"></i>
-												</div>
-											</div>	
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-                </div>
+				<?php include dirname(__FILE__) . '/../Includes/Stats.php'; ?>
                 
 				<div class="row">
 					<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
@@ -167,11 +82,11 @@ $_GeniSysAi->checkSession();
 				</div>
                 
 				<div class="row">
-					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
                         <div class="panel panel-default card-view panel-refresh">
                             <div class="panel-heading">
 								<div class="pull-left">
-									<h6 class="panel-title txt-dark">iotJumpWay Sensors</h6>
+									<h6 class="panel-title txt-dark">iotJumpWay Device Sensors/Actuators</h6>
 								</div>
 								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/Sensors/Create"><i class="fa fa-plus"></i></a></div> 
 								<div class="clearfix"></div>
@@ -184,31 +99,34 @@ $_GeniSysAi->checkSession();
 												<thead>
 												  <tr>
 													<th>ID</th>
-													<th>Name</th>
+													<th></th>
+													<th>DETAILS</th>
 													<th>ACTION</th>
 												  </tr>
 												</thead>
 												<tbody>
 
 												<?php 
-                                                    $Sensors = $iotJumpWay->getSensors([
-                                                        "limit" => 0
-                                                    ]);
+                                                    $Sensors = $iotJumpWay->getSensors(0);
 													if(count($Sensors)):
 														foreach($Sensors as $key => $value):
-
 												?>
-
+												
 												  <tr>
 													<td><a href="javascript:void(0)">#<?=$value["id"];?></a></td>
-													<td><?=$value["name"];?></td>
-													<td><a href="<?=$domain; ?>/iotJumpWay/Sensors/<?=$value["id"];?>/"><i class="fa fa-edit"></i></a></a></td>
+													<td style="width: 10%;"><img src="<?=$domain; ?>/iotJumpWay/Media/Images/Sensors/<?=$value["image"];?>" style="width: 100%;" /></td>
+													<td>
+														<strong>Name:</strong> <?=$value["name"];?><br />
+														<strong>Type:</strong> <?=$value["type"];?>
+													</td>
+													<td><a href="<?=$domain; ?>/iotJumpWay/Sensors/<?=$value["id"];?>/"><i class="fa fa-edit"></i> Edit</a></td>
 												  </tr>
 
 												<?php 
 														endforeach;
 													endif;
 												?>
+
 												</tbody>
 											</table>
 										</div>
@@ -226,35 +144,9 @@ $_GeniSysAi->checkSession();
 		</div>
 
         <?php  include dirname(__FILE__) . '/../Includes/JS.php'; ?>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/moment/min/moment.min.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/simpleWeather/jquery.simpleWeather.min.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/simpleweather-data.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/waypoints/lib/jquery.waypoints.min.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/jquery.counterup/jquery.counterup.min.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/dropdown-bootstrap-extended.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/jquery.sparkline/dist/jquery.sparkline.min.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/owl.carousel/dist/owl.carousel.min.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/echarts/dist/echarts-en.min.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/echarts-liquidfill.min.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/switchery/dist/switchery.min.js"></script>
-		<script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
-		<script type="text/javascript" src="<?=$domain; ?>/dist/js/fullcalendar-data.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/init.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/dashboard-data.js"></script>
 
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWayUI.js"></script>
 
     </body>
 

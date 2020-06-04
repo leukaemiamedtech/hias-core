@@ -11,9 +11,18 @@
         public function getPatients()
         {
             $pdoQuery = $this->_GeniSys->_secCon->prepare("
-                SELECT *
-                FROM patients
-                ORDER BY id DESC
+                SELECT patients.id,
+                    patients.username,
+                    patients.pic,
+                    mqtta.lid,
+                    mqtta.status,
+                    mqtta.mqttu,
+                    mqtta.mqttp,
+                    mqtta.id AS aid 
+                FROM patients patients
+                INNER JOIN mqtta mqtta
+                ON mqtta.id = patients.aid 
+                ORDER BY patients.id DESC
             ");
             $pdoQuery->execute();
             $response=$pdoQuery->fetchAll(PDO::FETCH_ASSOC);
@@ -27,8 +36,15 @@
             $pdoQuery = $this->_GeniSys->_secCon->prepare("
                 SELECT patients.*,
                     mqtta.lid,
+                    mqtta.status,
                     mqtta.mqttu,
                     mqtta.mqttp,
+                    mqtta.lt,
+                    mqtta.lg,
+                    mqtta.cpu,
+                    mqtta.mem,
+                    mqtta.hdd,
+                    mqtta.tempr,
                     mqtta.id AS aid
                 FROM patients patients
                 INNER JOIN mqtta mqtta 
@@ -47,7 +63,7 @@
             if(!filter_input(INPUT_POST, "email", FILTER_SANITIZE_EMAIL)):
                 return [
                     "Response"=> "Failed", 
-                    "Message" => "Patients email is required"
+                    "Message" => "Patient email is required"
                 ];
             endif;
 
@@ -64,14 +80,21 @@
             if($response["id"]):
                 return [
                     "Response"=> "Failed", 
-                    "Message" => "Patients email exists"
+                    "Message" => "Patient email exists"
                 ];
             endif;
 
             if(!filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING)):
                 return [
                     "Response"=> "Failed", 
-                    "Message" => "Patients username is required"
+                    "Message" => "Patient username is required"
+                ];
+            endif;
+
+            if(!filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT)):
+                return [
+                    "Response"=> "Failed", 
+                    "Message" => "Patient iotJumpWay location ID is required"
                 ];
             endif;
 
@@ -88,13 +111,13 @@
             if($response["id"]):
                 return [
                     "Response"=> "Failed", 
-                    "Message" => "Patients username exists"
+                    "Message" => "Patient username exists"
                 ];
             endif;
             if(!filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT)):
                 return [
                     "Response"=> "Failed", 
-                    "Message" => "iotJumpWay location id is required"
+                    "Message" => "Patient iotJumpWay location id is required"
                 ];
             endif;
 
@@ -102,6 +125,7 @@
 
             $pdoQuery = $this->_GeniSys->_secCon->prepare("
                 INSERT INTO  patients  (
+                    `lid`,
                     `email`,
                     `name`,
                     `username`,
@@ -109,6 +133,7 @@
                     `gpstime`,
                     `created`
                 )  VALUES (
+                    :lid,
                     :email,
                     :name,
                     :username,
@@ -118,7 +143,8 @@
                 )
             ");
             $pdoQuery->execute([
-                ":email" => filter_input(INPUT_POST, "email", FILTER_SANITIZE_STRING),
+                ":lid" => filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT),
+                ":email" => filter_input(INPUT_POST, "email", FILTER_SANITIZE_EMAIL),
                 ":name" => filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING),
                 ":username" => filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING),
                 ":password" =>  $this->_GeniSys->_helpers->oEncrypt($uPass),
@@ -171,6 +197,16 @@
                 ':time' => time()
             ]);
             $aid = $this->_GeniSys->_secCon->lastInsertId();
+    
+            $query = $this->_GeniSys->_secCon->prepare("
+                UPDATE patients
+                SET aid = :aid 
+                WHERE id = :id
+            ");
+            $query->execute(array(
+                ':aid'=>$aid,
+                ':id'=>$pid
+            ));
     
             $query = $this->_GeniSys->_secCon->prepare("
                 INSERT INTO  mqttu  (
@@ -258,8 +294,8 @@
 
             return [
                 "Response"=> "OK", 
-                "Message" => "Patients created!", 
-                "UID" => $uid
+                "Message" => "Patient created!", 
+                "UID" => $pid
             ];
         }
 
@@ -400,6 +436,32 @@
             ];
 
         }
+
+		public function getMapMarkers($application)
+		{
+            if(!$application["lt"]):
+                $lat = $this->_GeniSys->lt;
+                $lng = $this->_GeniSys->lg;
+            else:
+                $lat = $application["lt"];
+                $lng = $application["lg"];
+            endif;
+
+            return [$lat, $lng];
+		}	
+
+		public function getStatusShow($status)
+		{
+            if($status=="ONLINE"):
+                $on = "  ";
+                $off = " hide ";
+            else:
+                $on = " hide ";
+                $off = "  ";
+            endif;
+
+            return [$on, $off];
+		}
 
     }
     

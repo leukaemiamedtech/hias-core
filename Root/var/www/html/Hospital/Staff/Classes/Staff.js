@@ -1,31 +1,37 @@
 var Staff = {
     Create: function() {
-        $.post(window.location.href, $("#form").serialize(), function(resp) {
+        $.post(window.location.href, $("#staff_create").serialize(), function(resp) {
             var resp = jQuery.parseJSON(resp);
             switch (resp.Response) {
                 case "OK":
-                    GeniSys.ResetForm("form");
-                    Logging.logMessage("Core", "Forms", "Create OK");
+                    GeniSys.ResetForm("staff_create");
+                    Logging.logMessage("Core", "Staff", "Staff Created OK");
                     window.location.replace(location.protocol + "//" + location.hostname + "/Hospital/Staff/" + resp.UID + '/');
                     break;
                 default:
-                    msg = "Create failed: " + resp.Message
-                    Logging.logMessage("Core", "Forms", msg);
+                    msg = "Staff Creation Failed: " + resp.Message
+                    Logging.logMessage("Core", "Staff", msg);
                     break;
             }
         });
     },
     Update: function() {
-        $.post(window.location.href, $("#form").serialize(), function(resp) {
+        $.post(window.location.href, $("#staff_update").serialize(), function(resp) {
+            console.log(resp)
             var resp = jQuery.parseJSON(resp);
             switch (resp.Response) {
                 case "OK":
-                    GeniSys.ResetForm("form");
-                    Logging.logMessage("Core", "Forms", "Update OK");
+                    $('.modal-title').text('Staff Update');
+                    $('.modal-body').text("Staff Updated OK");
+                    $('#responsive-modal').modal('show');
+                    Logging.logMessage("Core", "Staff", "Staff Updated OK");
                     break;
                 default:
-                    msg = "Update failed: " + resp.ResponseMessage
-                    Logging.logMessage("Core", "Forms", msg);
+                    msg = "Staff Update Failed: " + resp.Message
+                    $('.modal-title').text('Staff Update');
+                    $('.modal-body').text(msg);
+                    $('#responsive-modal').modal('show');
+                    Logging.logMessage("Core", "Staff", msg);
                     break;
             }
         });
@@ -36,12 +42,12 @@ var Staff = {
                 var resp = jQuery.parseJSON(resp);
                 switch (resp.Response) {
                     case "OK":
-                        Logging.logMessage("Core", "Forms", "Reset OK");
-                        $("#mqttp").text(resp.P)
+                        Logging.logMessage("Core", "MQTT", "User MQTT Password Reset OK");
+                        $("#usrmqttp").text(resp.P)
                         break;
                     default:
-                        msg = "Reset failed: " + resp.Message
-                        Logging.logMessage("Core", "Forms", msg);
+                        msg = "User MQTT Password Reset Failed: " + resp.Message
+                        Logging.logMessage("Core", "MQTT", msg);
                         break;
                 }
             });
@@ -53,29 +59,43 @@ var Staff = {
                 var resp = jQuery.parseJSON(resp);
                 switch (resp.Response) {
                     case "OK":
-                        Logging.logMessage("Core", "Forms", "Reset OK");
+                        Logging.logMessage("Core", "Security", "User Password Reset OK");
                         $('.modal-title').text('New Password');
                         $('.modal-body').text(resp.pw);
                         $('#responsive-modal').modal('show');
                         break;
                     default:
-                        msg = "Reset failed: " + resp.Message
-                        Logging.logMessage("Core", "Forms", msg);
+                        msg = "User Password Reset Failed: " + resp.Message
+                        Logging.logMessage("Core", "Security", msg);
                         break;
                 }
             });
     },
+    HideInputs: function() {
+
+        Staff.mqttua = $("#usrmqttu").text();
+        Staff.mqttuae = $("#usrmqttu").text().replace(/\S/gi, '*');
+        Staff.mqttpa = $("#usrmqttp").text();
+        Staff.mqttpae = $("#usrmqttp").text().replace(/\S/gi, '*');
+
+        $("#usrmqttu").text(Staff.mqttuae);
+        $("#usrmqttp").text(Staff.mqttpae);
+    },
 };
 $(document).ready(function() {
 
-    $("#GeniSysAI").on("click", "#staff_update", function(e) {
-        e.preventDefault();
-        Staff.Update();
+    $('#staff_create').validator().on('submit', function(e) {
+        if (!e.isDefaultPrevented()) {
+            e.preventDefault();
+            Staff.Create();
+        }
     });
 
-    $("#GeniSysAI").on("click", "#staff_create", function(e) {
-        e.preventDefault();
-        Staff.Create();
+    $('#staff_update').validator().on('submit', function(e) {
+        if (!e.isDefaultPrevented()) {
+            e.preventDefault();
+            Staff.Update();
+        }
     });
 
     $("#GeniSysAI").on("click", "#reset_staff_mqtt", function(e) {
@@ -86,6 +106,18 @@ $(document).ready(function() {
     $("#GeniSysAI").on("click", "#reset_pass", function(e) {
         e.preventDefault();
         Staff.ResetPass();
+    });
+
+    $('#usrmqttu').hover(function() {
+        $("#usrmqttu").text(Staff.mqttua);
+    }, function() {
+        $("#usrmqttu").text(Staff.mqttuae);
+    });
+
+    $('#usrmqttp').hover(function() {
+        $("#usrmqttp").text(Staff.mqttpa);
+    }, function() {
+        $("#usrmqttp").text(Staff.mqttpae);
     });
 
 });

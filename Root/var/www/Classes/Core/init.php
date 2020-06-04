@@ -71,6 +71,8 @@ include dirname(__FILE__) . '/../../Classes/Htpasswd.php';
             $this->_confs = $this->getConfigs();
             $this->_pageDetails = $_pageDetails;
 
+            $this->lt = $this->_helpers->oDecrypt($this->_confs["lt"]);
+            $this->lg = $this->_helpers->oDecrypt($this->_confs["lg"]);
         }
 
         private function setCookie()
@@ -95,14 +97,27 @@ include dirname(__FILE__) . '/../../Classes/Htpasswd.php';
         protected function getConfigs()
         {
             $pdoQuery = $this->_secCon->prepare("
-                SELECT version,
-                    phpmyadmin,
-                    recaptcha,
-                    recaptchas,
-                    meta_title,
-                    meta_description,
-                    domainString
-                FROM settings
+                SELECT server.version,
+                    server.aid,
+                    server.phpmyadmin,
+                    server.recaptcha,
+                    server.recaptchas,
+                    server.gmaps,
+                    server.lt,
+                    server.lg,
+                    server.meta_title,
+                    server.meta_description,
+                    server.domainString,
+                    mqtta.status,
+                    mqtta.lt as alt,
+                    mqtta.lg as alg,
+                    mqtta.cpu,
+                    mqtta.mem,
+                    mqtta.hdd,
+                    mqtta.tempr
+                FROM settings server
+                INNER JOIN mqtta mqtta 
+                ON mqtta.id = server.aid 
             ");
             $pdoQuery->execute();
             $response=$pdoQuery->fetch(PDO::FETCH_ASSOC);
@@ -111,78 +126,45 @@ include dirname(__FILE__) . '/../../Classes/Htpasswd.php';
             return $response;
         }
 
-        public function getCPULoad($coreCount = 2, $interval = 1)
+        public function updateConfigs()
         {
-            $rs = sys_getloadavg();
-            $interval = $interval >= 1 && 3 <= $interval ? $interval : 1;
-            $load = $rs[$interval];
-            return number_format(round(($load * 100) / $coreCount,2),2);
-        }
+            $pdoQuery = $this->_secCon->prepare("
+                UPDATE settings
+                SET version = :version,
+                    aid = :aid,
+                    phpmyadmin = :phpmyadmin,
+                    recaptcha = :recaptcha,
+                    recaptchas = :recaptchas,
+                    gmaps = :gmaps,
+                    lt = :lt,
+                    lg = :lg,
+                    domainString = :domainString 
+            ");
+            $pdoQuery->execute([
+                ":version" => filter_input(INPUT_POST, "version", FILTER_SANITIZE_STRING),
+                ":aid" => filter_input(INPUT_POST, "aid", FILTER_SANITIZE_NUMBER_INT),
+                ":phpmyadmin" => filter_input(INPUT_POST, "phpmyadmin", FILTER_SANITIZE_STRING),
+                ":recaptcha" => $this->_helpers->oEncrypt(filter_input(INPUT_POST, "recaptcha", FILTER_SANITIZE_STRING)),
+                ":recaptchas" => $this->_helpers->oEncrypt(filter_input(INPUT_POST, "recaptchas", FILTER_SANITIZE_STRING)),
+                ":gmaps" => $this->_helpers->oEncrypt(filter_input(INPUT_POST, "gmaps", FILTER_SANITIZE_STRING)),
+                ":lt" => $this->_helpers->oEncrypt(filter_input(INPUT_POST, "lt", FILTER_SANITIZE_STRING)),
+                ":lg" => $this->_helpers->oEncrypt(filter_input(INPUT_POST, "lg", FILTER_SANITIZE_STRING)),
+                ":domainString" => $this->_helpers->oEncrypt(filter_input(INPUT_POST, "domainString", FILTER_SANITIZE_STRING))
+            ]);
+            $pdoQuery->closeCursor();
+            $pdoQuery = null;
 
-        public function getMemoryUsage()
-        {
-            $free = shell_exec('free');
-            $free = (string)trim($free);
-            $free_arr = explode("\n", $free);
-            $mem = explode(" ", $free_arr[1]);
-            $mem = array_filter($mem);
-            $mem = array_merge($mem);
-            $memory_usage = $mem[2]/$mem[1]*100;
-
-            return number_format($memory_usage,2);
-        }
-
-        public function getTemperature()
-        {
-            if (exec('cat /sys/class/thermal/thermal_zone0/temp', $t)):
-                $temp = round($t[0] / 1000).' °C';
-            endif;
-
-            return $temp;
-        }
-
-        public function getSwap()
-        {
-            if (!($free = shell_exec('grep SwapFree /proc/meminfo | awk \'{print $2}\''))):
-                $free = 0;
-            endif;
-
-            $free = (int)$free;
-
-            if (!($total = shell_exec('grep SwapTotal /proc/meminfo | awk \'{print $2}\''))):
-                $total = 0;
-            endif;
-
-            $total = (int)$total;
-            $used = $total - $free;
-            $percent_used = 0;
-
-            if ($total > 0):
-                $percent_used = 100 - (round($free / $total * 100));
-            endif;
-
-            return $percent_used;
-
-        }
-
-        public function getStats()
-        {
             return [
-                "CPU"=>number_format($this->getCPULoad(),2),
-                "Memory"=>number_format($this->getMemoryUsage(),2),
-                "Temperature"=>$this->getTemperature(),
-                "Swap"=>$this->getSwap()
+                "Response"=> "OK", 
+                "Message" => "Server Settings Updated!"
             ];
-
         }
 
     }
 
     $_secCon  = new Core();
-    $_GeniSys = new aiInit(
-        $_secCon,
-        $pageDetails);
+    $_GeniSys = new aiInit($_secCon, $pageDetails);
 
-    if(filter_input(INPUT_POST, 'getServerStats', FILTER_SANITIZE_STRING)):
-        die(json_encode($_GeniSys->getStats()));
+    if(filter_input(INPUT_POST, "update_server", FILTER_SANITIZE_NUMBER_INT)):
+        die(json_encode($_GeniSys->updateConfigs()));
     endif;
