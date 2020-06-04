@@ -99,6 +99,8 @@ class TASS{
                 `mqttp`,
                 `apub`,
                 `aprv`,
+                `ip`,
+                `mac`,
                 `time`
             )  VALUES (
                 :lid,
@@ -108,6 +110,8 @@ class TASS{
                 :mqttp,
                 :apub,
                 :aprv,
+                :ip,
+                :mac,
                 :time
             )
         ");
@@ -119,6 +123,8 @@ class TASS{
             ':mqttp' =>$this->encrypt($mqttPass),
             ':apub' => $this->encrypt($apiKey),
             ':aprv' => $this->encrypt($apiSecretKey),
+            ':ip' => $this->encrypt($this->ip),
+            ':mac' => $this->encrypt($this->mac),
             ':time' => time()
         ]);
         $this->did = $this->conn->lastInsertId();
@@ -184,34 +190,40 @@ class TASS{
         $pdoQuery = $this->conn->prepare("
             INSERT INTO  tass  (
                 `name`,
+                `type`,
                 `lid`,
                 `zid`,
                 `did`,
                 `ip`,
                 `mac`,
                 `sport`,
+                `strdir`,
                 `sportf`,
                 `sckport`
             )  VALUES (
                 :name,
+                :type,
                 :lid,
                 :zid,
                 :did,
                 :ip,
                 :mac,
                 :sport,
+                :strdir,
                 :sportf,
                 :sckport
             )
         ");
         $pdoQuery->execute([
             ":name" => "TASS",
+            ":type" => "Local",
             ":lid" => $this->lid,
             ":zid" => $this->zid,
             ":did" => $this->did,
             ":ip" => $this->encrypt($this->ip),
             ":mac" => $this->encrypt($this->mac),
             ":sport" => $this->encrypt("8080"),
+            ":strdir" => $this->encrypt("Live"),
             ":sportf" => $this->encrypt("stream.mjpg"),
             ":sckport" => $this->encrypt("8181")
         ]);

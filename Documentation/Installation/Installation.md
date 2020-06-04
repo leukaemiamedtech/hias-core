@@ -2,8 +2,6 @@
 ##  Hospital Intelligent Automation System
 [![Hospital Intelligent Automation System](../../Media/Images/HIAS-Hospital-Intelligent-Automation-System.png)](https://github.com/LeukemiaAiResearch/HIAS)
 
-&nbsp;
-
 # Table Of Contents
 
 - [Introduction](#introduction)
@@ -21,7 +19,6 @@
   - [Attach Hard-Drive](#attach-hard-drive) 
   - [Clone The Repository](#clone-the-repository) 
     - [Developer Forks](#developer-forks) 
-  - [Mongo Database](#mongo-database)
 - [Installation](#installation)  
   - [Easy Install (Recommended)](#easy-install-recommended) 
   - [Manual Install](#manual-install) 
@@ -30,6 +27,7 @@
     - [PHP](#php) 
     - [MySql](#mysql) 
     - [phpMyAdmin](#phpmyadmin) 
+    - [Mongo Database](#mongo-database)
     - [SSL Security](#ssl-security)  
     - [File Server](#file-server)  
     - [iotJumpWay Broker](#iotjumpway-broker)
@@ -45,8 +43,6 @@
 - [Versioning](#versioning)
 - [License](#license)
 - [Bugs/Issues](#bugs-issues)
-
-&nbsp;
 
 # Introduction
 The following guide will take you through setting up and installing the  [ Hospital Intelligent Automation System](https://github.com/LeukemiaAiResearch/HIAS " Hospital Intelligent Automation System").
@@ -174,7 +170,7 @@ Now open the required ports, these ports will be open on your server, but are no
 sudo ufw allow 22
 sudo ufw allow 80
 sudo ufw allow 443
-sudo ufw allow 1883
+sudo ufw allow 8883
 sudo ufw allow 9001
 sudo ufw allow OpenSSH
 sudo ufw allow Samba
@@ -348,10 +344,10 @@ Clone the [HIAS](https://github.com/LeukemiaAiResearch/HIAS "HIAS") repository f
 To clone the repository and install the Hospital Intelligent Automation System, make sure you have Git installed. Now to the home directory on your server device using terminal/commandline, and then use the following command.
 
 ```
-  $ git clone -b "0.3.0" https://github.com/LeukemiaAiResearch/HIAS.git
+  $ git clone -b "0.1.0" https://github.com/LeukemiaAiResearch/HIAS.git
 ```
 
-The **-b "0.3.0"** parameter ensures you get the code from the latest development branch. Before using the below command please check our latest development branch in the button at the top of the project README.
+The **-b "0.1.0"** parameter ensures you get the code from the latest development branch. Before using the below command please check our latest development branch in the button at the top of the project README.
 
 Once you have used the command above you will see a directory called **HIAS** in your home directory. 
 ```
@@ -365,139 +361,6 @@ The HIAS directory is your project root directory for this tutorial.
 
 ### Developer Forks
 Developers from the Github community that would like to contribute to the development of this project should first create a fork, and clone that repository. For detailed information please view the [CONTRIBUTING](../../CONTRIBUTING.md "CONTRIBUTING") guide.
-
-## Mongo Database
-We will use [Mongo DB](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/ "Mongo DB") to store the data from our sensors.
-
-```
-sudo mkdir /fserver/libraries/mongo
-wget -P /fserver/libraries/mongo -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -
-sudo apt-get install gnupg
-echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list
-sudo apt-get update
-sudo apt-get install -y mongodb-org
-sudo systemctl start mongod
-sudo systemctl status mongod
-sudo apt-get install python-dev libmysqlclient-dev
-sudo install mysqlclient
-```
-You should see the following:
-```
-● mongod.service - MongoDB Database Server
-   Loaded: loaded (/lib/systemd/system/mongod.service; disabled; vendor preset: enabled)
-   Active: active (running) since Sat 2020-05-02 05:11:02 CEST; 23s ago
-     Docs: https://docs.mongodb.org/manual
- Main PID: 16833 (mongod)
-   CGroup: /system.slice/mongod.service
-           └─16833 /usr/bin/mongod --config /etc/mongod.conf
-
-May 02 05:11:02 genisysai systemd[1]: Started MongoDB Database Server.
-```
-Now make sure it starts on reboot:
-```
-sudo systemctl enable mongod
-```
-You now need to start the Mongo client:
-```
-mongo
-```
-And create an admin database and user, replacing **username** and **password** with your desired username and password.
-
-```
-use admin
-db.createUser(
-      {
-          user: "username",
-          pwd: "password",
-          roles: [ "root" ]
-      }
-  )
-```
-You should see:
-```
-Successfully added user: { "user" : "username", "roles" : [ "root" ] }
-```
-Now create a iotJumpWay database and user, change **YourMongoDatabaseName** to the name you want to use for the database:
-```
-use YourMongoDatabaseName
-db.createUser(
-    {
-        user: "YourMongoDatabaseUser",
-        pwd: "YourMongoDatabasePass",
-        roles: [
-            { role: "readWrite", db: "YourMongoDatabaseName" }
-        ]
-    }
-)
-```
-Now you need to update the related settings in the Python configuration. Assuming you are in the project root:
-```
-sudo nano confs.json
-```
-And update the mongo related settings:
-```
-{
-    "iotJumpWay": {
-        "channels": {
-            "commands": "Commands"
-        },
-        "host": "",
-        "port": 8883,
-        "ip": "localhost",
-        "lid": 0,
-        "aid": 0,
-        "an": "",
-        "un": "",
-        "pw": "",
-        "paid": 0,
-        "pan": "",
-        "pun": "",
-        "ppw": "",
-        "mdb": "YourMongoDatabaseName",
-        "mdbu": "YourMongoDatabaseUser",
-        "mdbp": "YourMongoDatabasePass",
-        "dbname": "",
-        "dbuser": "",
-        "dbpass": ""
-    },
-    "tass": {
-        "core": {
-            "allowed": [".jpg", ".JPG", ".png", ".PNG"]
-        },
-        "ip": "",
-        "data": "/fserver/models/TASS/Data/Security/",
-        "dlib": "/fserver/models/TASS/shape_predictor_68_face_landmarks.dat",
-        "dlibr": "/fserver/models/TASS/dlib_face_recognition_resnet_model_v1.dat",
-        "lid": 0,
-        "zid": 0,
-        "did": 0,
-        "sid": 0,
-        "port": 8080,
-        "socket": {
-            "ip": "",
-            "port": 8181
-        },
-        "threshold": 0.6,
-        "vid": 0
-    }
-}
-```
-Now you need to update the related settings in the PHP configuration. Assuming you are in the project root:
-```
-sudo nano /fserver/var/www/Classes/Core/confs.json
-```
-And update the mongo related settings:
-```
-{
-    "dbname": "",
-    "dbusername": "",
-    "dbpassword": "",
-    "mdbname": "",
-    "mdbusername": "",
-    "mdbpassword": "",
-    "key": ""
-}
-```
 
 &nbsp;
 
@@ -620,8 +483,8 @@ Now it is time to install MySql on your server. Follow the commands below and co
 - Remove test database
 
 ```
-sudo apt-get install mysql-server
-sudo mysql_secure_installation
+sudo apt-get install python-dev libmysqlclient-dev
+sudo install mysqlclient
 ```
 
 Now create a user and password that you will use for phpMyAdmin, first login in with the root MySql username you created earlier and then enter the password when prompted, this will log you into MySql as that user.
@@ -764,6 +627,135 @@ sudo sed -i "s/|\s*\((count(\$analyzed_sql_results\['select_expr'\]\)/| (\1)/g" 
 Now you should be able to visit phpMyAdmin by accessing the relevant directory on your website. IE: https://www.YourDomain.com/phpmyadmin/
 
 **Shell Script**  [phpMyAdmin.sh](../../Scripts/Installation/Shell/phpMyAdmin.sh "phpMyAdmin.sh")
+
+### Mongo Database
+We will use [Mongo DB](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/ "Mongo DB") to store the data from our sensors.
+
+```
+wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -
+sudo apt-get install gnupg (If required)
+echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list
+sudo apt-get update
+sudo apt-get install -y mongodb-org 
+sudo apt-get install php-mongodb
+sudo systemctl enable mongod.service
+sudo systemctl start mongod
+sudo systemctl status mongod
+```
+You should see the following:
+```
+● mongod.service - MongoDB Database Server
+   Loaded: loaded (/lib/systemd/system/mongod.service; disabled; vendor preset: enabled)
+   Active: active (running) since Sat 2020-05-02 05:11:02 CEST; 23s ago
+     Docs: https://docs.mongodb.org/manual
+ Main PID: 16833 (mongod)
+   CGroup: /system.slice/mongod.service
+           └─16833 /usr/bin/mongod --config /etc/mongod.conf
+
+May 02 05:11:02 genisysai systemd[1]: Started MongoDB Database Server.
+```
+
+You now need to start the Mongo client:
+```
+mongo
+```
+And create an admin database and user, replacing **username** and **password** with your desired username and password.
+
+```
+use admin
+db.createUser(
+    {
+        user: "YourAdminUser",
+        pwd: "YourAdminUserPass",
+        roles: [ "root" ]
+    }
+ )
+```
+You should see:
+```
+Successfully added user: { "user" : "username", "roles" : [ "root" ] }
+```
+Now create a iotJumpWay database and user, change **YourMongoDatabaseName** to the name you want to use for the database:
+```
+use YourMongoDatabaseName
+db.createUser(
+    {
+        user: "YourMongoDatabaseUser",
+        pwd: "YourMongoDatabasePass",
+        roles: [
+            { role: "readWrite", db: "YourMongoDatabaseName" }
+        ]
+    }
+)
+```
+Now you need to update the related settings in the Python configuration. Assuming you are in the project root:
+```
+sudo nano confs.json
+```
+And update the mongo related settings:
+```
+{
+    "iotJumpWay": {
+        "channels": {
+            "commands": "Commands"
+        },
+        "host": "",
+        "port": 8883,
+        "ip": "localhost",
+        "lid": 0,
+        "aid": 0,
+        "an": "",
+        "un": "",
+        "pw": "",
+        "paid": 0,
+        "pan": "",
+        "pun": "",
+        "ppw": "",
+        "mdb": "YourMongoDatabaseName",
+        "mdbu": "YourMongoDatabaseUser",
+        "mdbp": "YourMongoDatabasePass",
+        "dbname": "",
+        "dbuser": "",
+        "dbpass": ""
+    },
+    "tass": {
+        "core": {
+            "allowed": [".jpg", ".JPG", ".png", ".PNG"]
+        },
+        "ip": "",
+        "data": "/fserver/models/TASS/Data/Security/",
+        "dlib": "/fserver/models/TASS/shape_predictor_68_face_landmarks.dat",
+        "dlibr": "/fserver/models/TASS/dlib_face_recognition_resnet_model_v1.dat",
+        "lid": 0,
+        "zid": 0,
+        "did": 0,
+        "sid": 0,
+        "port": 8080,
+        "socket": {
+            "ip": "",
+            "port": 8181
+        },
+        "threshold": 0.6,
+        "vid": 0
+    }
+}
+```
+Now you need to update the related settings in the PHP configuration. Assuming you are in the project root:
+```
+sudo nano /fserver/var/www/Classes/Core/confs.json
+```
+And update the mongo related settings:
+```
+{
+    "dbname": "",
+    "dbusername": "",
+    "dbpassword": "",
+    "mdbname": "",
+    "mdbusername": "",
+    "mdbpassword": "",
+    "key": ""
+}
+```
 
 ### SSL Security
 
@@ -919,10 +911,11 @@ Apr 24 20:42:49 genisysai systemd[1]: Started LSB: mosquitto MQTT v3.1 message b
 **Shell Script**  [iotJumpWay.sh](../../Scripts/Installation/Shell/iotJumpWay.sh "iotJumpWay.sh")
 
 #### iotJumpWay Location and Application
-Now setup the local iotJumpWay location and application.
+Now setup the local iotJumpWay location and application. Replace the 
+**YourLocationName**, **YourApplicationName**, **YourApplicationIP** & **YourApplicationMac** with your chosen name for the server iotJumpWay location, your chose name for the server application and the local IP and MAC address of the device the application will run on. 
 
 ```
-php Scripts/Installation/PHP/Location.php YourLocationName YourApplicationName
+php Scripts/Installation/PHP/Location.php YourLocationName YourApplicationName YourApplicationIP YourApplicationMac
 ```
 You should see similar to the following:
 ```
@@ -1102,12 +1095,14 @@ You can update the system with the latest data by going to **Data Analysis -> CO
 Congratulations, you have the basics of the server installed!! Visit your domain name and you should see the above page. You can then login with your username and password you created earlier.
 
 ![HIAS Dashboard](../../Media/Images/dashboard.png)
+
 The HIAS dashboard is your control panel for your encrypted intelligent and IoT connected  Hospital Intelligent Automation System.
 
 &nbsp;
 
 # HIAS IoT Network
 ![HIAS IoT Network](../../Media/Images/HIAS-IoT-Dashboard.png)
+
 The HIAS IoT network is powered by a new, fully open-source version of the [iotJumpWay](https://www.iotJumpWay.com "iotJumpWay"). The HIAS iotJumpway dashboard is your control panel for managing all of your network iotJumpWay zones, devices, sensors/actuators and applications. The modular systems that we build to be compatible with this network will all create their own iotJumpWay applications etc during installation, you will be able to manage all of these applications and devices through the iotJumpWay dashboard. 
 
 ## iotJumpWay Finalization
@@ -1178,19 +1173,7 @@ And update the TASS related settings:
 
 &nbsp;
 
-#  HIAS Users
-![GeniSys AI Server PHP config](../../Media/Images/HIAS-Users.png)
-HIAS users can be created using the HIS Staff system. Users can be granted admin privileges allowing them access to further restricted areas of the UI. Each user has a connected iotJumpWay application which will later be used in our HIAS Android application.
-
-&nbsp;
-
-# HIAS Facial Recognition
-![HIAS Facial Recognition](../../Media/Images/HIAS-TASS.png)
-The HIAS facial recognition system is based on [tassAI](https://www.facebook.com/TASSNetwork/ "tassAI"). The facial recognition system uses cameras attached to devices on the network and processes frames from the cameras in real-time, before streaming the processed framed to a local server endpoint. Multiple TASS devices can be configured and there will soon be integration with popular IP cameras like Foscam etc.  
-
-&nbsp;
-
-# BOOT HER UP!! 
+# Start the system
 Now it is time to boot up your GeniSysAI & iotJumpWay software. These two programs start the facial recognition server, the NLU (Once integrated), and the core iotJumpWay functions that monitor the broker for messages and store the data in the MongoDB. 
 
 Assuming you are in the project, use the following commands in two separate terminals. 
