@@ -53,7 +53,7 @@ __This project is a proof of concept, and is still a work in progress, however o
     - High grade (A+) encryption for the web server, proxy and network.
 - **Server UI (Work In Progress)** 
     - A control panel to monitor and manage your HIAS network.
-- **Local Samba Server** 
+- **Local Samba Server (Complete)** 
     - A local Samba file server allowing controlled individual and group access to files on your local network.
 - **Local IoT Broker (Complete)** 
     - Local and private MQTT/Websockets broker based on the  [iotJumpway Broker](https://github.com/iotJumpway/Broker "iotJumpway Broker").
@@ -61,7 +61,7 @@ __This project is a proof of concept, and is still a work in progress, however o
     - Facial identification systems based on [tassAI](https://github.com/TASS-AI/Tass-History "tassAI").
 - **Natural Language Understanding (NLU) Server (In Redevelopment)** 
     - Natural Language Understanding server based on [GeniSysAI](https://github.com/GeniSysAI/ "GeniSysAI").
-- **HIS/HMS (In Redevelopment)** 
+- **HIS/HMS (In Development)** 
     - Hospital management system providing online tools for managing and running day to day activities and resources for the hospital.
 
 &nbsp;
@@ -157,7 +157,9 @@ Basic functionality to update, monitor and control [EMAR](https://www.facebook.c
 
 ![EMAR](Media/Images/HIAS-Robotics-EMAR-Edit.png) 
 
-![EMAR](Media/Images/HIAS-Robotics-EMAR-Edit-2.png)
+![EMAR](Media/Images/HIAS-Robotics-EMAR-Edit-2.png) 
+
+![EMAR](Media/Images/HIAS-Robotics-EMAR-Edit-3.png)
 
 &nbsp;
 
