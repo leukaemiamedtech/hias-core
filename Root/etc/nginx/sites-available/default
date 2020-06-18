@@ -21,10 +21,11 @@ server {
                 proxy_pass http://YourEmarDevice3IP:YourEmarDevice3Port/$1;
         }
 
+        location ~ ^/Diagnosis/COVID-19/CNN/API/(.*)$ {
+                proxy_pass http://YourCovid19CnnDiagnosisIP:YourCovid19CnnDiagnosisPort/$1;
+        }
+
         location / {
-                rewrite ^/Hospital/Patients/([0-9]+)/$ /Hospital/Patients/Patient.php?patient=$1 last;
-                rewrite ^/Hospital/Beds/([0-9]+)/$ /Hospital/Beds/Bed.php?bed=$1 last;
-                rewrite ^/Hospital/Staff/([0-9]+)/$ /Hospital/Staff/Staff.php?staff=$1 last;
                 rewrite ^/iotJumpWay/Sensors/([0-9]+)/$ /iotJumpWay/Sensor.php?sensor=$1 last;
                 rewrite ^/iotJumpWay/Sensors/Create$ /iotJumpWay/CreateSensor.php last;
                 rewrite ^/iotJumpWay/Devices/Create$ /iotJumpWay/CreateDevice.php last;
@@ -33,6 +34,9 @@ server {
                 rewrite ^/iotJumpWay/([0-9]+)/Zones/([0-9])/$ /iotJumpWay/Zone.php?location=$1&zone=$2 last;
                 rewrite ^/iotJumpWay/Applications/Create$ /iotJumpWay/CreateApp.php last;
                 rewrite ^/iotJumpWay/([0-9]+)/Applications/([0-9])/$ /iotJumpWay/Application.php?location=$1&application=$2 last;
+                rewrite ^/Hospital/Patients/([0-9]+)/$ /Hospital/Patients/Patient.php?patient=$1 last;
+                rewrite ^/Hospital/Beds/([0-9]+)/$ /Hospital/Beds/Bed.php?bed=$1 last;
+                rewrite ^/Hospital/Staff/([0-9]+)/$ /Hospital/Staff/Staff.php?staff=$1 last;
                 rewrite ^/Robotics/EMAR/([0-9]+)/$ /Robotics/EMAR/Device.php?emar=$1 last;
 		rewrite ^/Security/TASS/([0-9]+)/$ /Security/TASS/Device.php?tass=$1 last;
                 try_files $uri $uri.html $uri/ @extensionless-php;
