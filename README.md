@@ -165,7 +165,7 @@ Using AI models on the HIAS network, the UI can be used to classify image based 
 # EMAR / EMAR Mini
 ![EMAR](Media/Images/HIAS-Robotics-EMAR.png) 
 
-Basic functionality to update, monitor and control [EMAR](https://www.facebook.com/TASSNetwork/ "EMAR") is now available. The current features allow you to create EMAR devices, update the settings, monitor the camera stream and send commands to the robotic arm to move it. 
+Functionality to update, monitor and control [EMAR](https://github.com/COVID-19-AI-Research-Project/EMAR "EMAR")/[EMAR Mini](https://github.com/COVID-19-AI-Research-Project/EMAR-Mini "EMAR Mini") is now available. These features allow you to create EMAR/EMAR Mini devices, update the settings, monitor the camera streams and send commands to the robotic arm to move it. 
 
 ![EMAR](Media/Images/HIAS-Robotics-EMAR-Edit.png) 
 
