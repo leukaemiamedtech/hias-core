@@ -2,7 +2,7 @@
 ## HIAS - Hospital Intelligent Automation System
 [![HIAS - Hospital Intelligent Automation System](Media/Images/HIAS-Hospital-Intelligent-Automation-System.png)](https://github.com/LeukemiaAiResearch/HIAS)
 
-[![VERSION](https://img.shields.io/badge/VERSION-0.3.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.3.0) [![DEV BRANCH](https://img.shields.io/badge/DEV%20BRANCH-0.4.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.4.0) [![Issues Welcome!](https://img.shields.io/badge/Contributions-Welcome-lightgrey.svg)](CONTRIBUTING.md)  [![Issues](https://img.shields.io/badge/Issues-Welcome-lightgrey.svg)](issues) [![LICENSE](https://img.shields.io/badge/LICENSE-MIT-blue.svg)](LICENSE)
+[![VERSION](https://img.shields.io/badge/VERSION-0.4.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.4.0) [![DEV BRANCH](https://img.shields.io/badge/DEV%20BRANCH-0.5.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.5.0) [![Issues Welcome!](https://img.shields.io/badge/Contributions-Welcome-lightgrey.svg)](CONTRIBUTING.md)  [![Issues](https://img.shields.io/badge/Issues-Welcome-lightgrey.svg)](issues) [![LICENSE](https://img.shields.io/badge/LICENSE-MIT-blue.svg)](LICENSE)
 
 &nbsp;
 
@@ -22,6 +22,8 @@
 - [HIAS Facial Recognition](#hias-facial-recognition)
 - [HIAS Data Analysis](#hias-data-analysis)
     - [COVID-19](#covid-19)
+- [HIAS Diagnosis](#hias-diagnosis)
+    - [COVID-19 Diagnosis (CNN)](#covid-19-diagnosis-cnn)
 - [EMAR / EMAR Mini](#emar--emar-mini)
 - [Installation](#installation)
 - [Acknowledgement](#acknowledgement)
@@ -139,14 +141,24 @@ The HIAS facial recognition system is based on [tassAI](https://www.facebook.com
 &nbsp; 
 
 # HIAS Data Analysis
-![HIAS Data Analysis](Media/Images/HIAS-Data-Analysis.png)
 
-The HIAS network hosts a number of AI models and that monitor data from local and external sources to make predictions based on the raw data. You can monitor real-time data using the HIAS UI. 
+The HIAS network hosts a number of AI models that monitor data from local and external sources to make predictions based on the raw data. You can monitor real-time data using the HIAS UI. 
 
 ## HIAS COVID-19 Data Analysis
 ![HIAS COVID-19 Data Analysis](Media/Images/HIAS-Data-Analysis-COVID-19.png)
 
 Functionality is now available to set up a basic COVID-19 tracker that will power the graphs in the HIAS UI. This system pulls data from the [COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19 "COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University") and displays the stats in the UI. 
+
+&nbsp;
+
+# HIAS Diagnosis
+
+Using AI models on the HIAS network, the UI can be used to classify image based samples for diseases such as COVID-19 and Leukemia. 
+
+## HIAS COVID-19 Data Analysis (CNN)
+![HIAS COVID-19 Data Analysis (CNN)](Media/Images/HIAS-Diagnosis-COVID-19-CNN.png)
+
+ The HIAS COVID-19 Data Analysis (CNN) system uses the [COVID-19 Tensorflow DenseNet Classifier](https://github.com/COVID-19-AI-Research-Project/AI-Classification/tree/master/Projects/2 "COVID-19 Tensorflow DenseNet Classifier") project, a Tensorflow 2 DenseNet implementation using the [SARS-COV-2 Ct-Scan Dataset](https://www.kaggle.com/plameneduardo/sarscov2-ctscan-dataset "SARS-COV-2 Ct-Scan Dataset") by our collaborators, Plamenlancaster: [Professor Plamen Angelov](https://www.lancaster.ac.uk/lira/people/#d.en.397371) from [Lancaster University](https://www.lancaster.ac.uk/)/ Centre Director @ [Lira](https://www.lancaster.ac.uk/lira/), & his researcher, [Eduardo Soares PhD](https://www.lancaster.ac.uk/sci-tech/about-us/people/eduardo-almeida-soares).
 
 &nbsp;
 
