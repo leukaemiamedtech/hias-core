@@ -176,13 +176,21 @@
                     </li>
 					<li><hr class="light-grey-hr mb-10"/></li>
                     <li>
-						<a href="javascript:void(0);" data-toggle="collapse" data-target="#diagnosis" class="<?=$pageDetails["PageID"]=="Diagnosis" ? "active" : ""; ?>"><div class="pull-left"><i class="fa fa-hospital fa-fw mr-20"></i><span class="right-nav-text">Diagnosis</span></div><div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
+						<a href="javascript:void(0);" data-toggle="collapse" data-target="#diagnosis" class="<?=$pageDetails["PageID"]=="Diagnosis" ? "active" : ""; ?>"><div class="pull-left"><i class="fa fa-hospital fa-fw mr-20"></i><span class="right-nav-text">Detection</span></div><div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
 						<ul id="diagnosis" class="<?=$pageDetails["PageID"]=="Diagnosis" ? "" : "collapse"; ?> collapse-level-1">
 							<li>
 								<a href="javascript:void(0);" data-toggle="collapse" data-target="#dropdown_dcovid19" class="<?=$pageDetails["SubPageID"]=="DCOVID19" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-virus fa-fw mr-20"></i></div> COVID-19<div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
 								<ul id="dropdown_dcovid19" class="<?=$pageDetails["SubPageID"]=="DCOVID19" ? "" : "collapse"; ?>  collapse-level-2">
 									<li>
-										<a href="<?=$domain; ?>/Diagnosis/COVID-19/CNN/" class="<?=$pageDetails["LowPageID"]=="CNN" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-virus fa-fw mr-20"></i> <span class="right-nav-text">CNN</span></div><div class="clearfix"></div></a>
+										<a href="<?=$domain; ?>/Detection/COVID-19/CNN/" class="<?=$pageDetails["LowPageID"]=="CNN" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-virus fa-fw mr-20"></i> <span class="right-nav-text">CNN</span></div><div class="clearfix"></div></a>
+									</li>
+								</ul>
+							</li>
+							<li>
+								<a href="javascript:void(0);" data-toggle="collapse" data-target="#dropdown_dall" class="<?=$pageDetails["SubPageID"]=="DALL" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-disease fa-fw mr-20"></i></div> ALL<div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
+								<ul id="dropdown_dall" class="<?=$pageDetails["SubPageID"]=="DALL" ? "" : "collapse"; ?>  collapse-level-2">
+									<li>
+										<a href="<?=$domain; ?>/Detection/ALL/CNN/" class="<?=$pageDetails["LowPageID"]=="CNN" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-disease fa-fw mr-20"></i> <span class="right-nav-text">CNN</span></div><div class="clearfix"></div></a>
 									</li>
 								</ul>
 							</li>

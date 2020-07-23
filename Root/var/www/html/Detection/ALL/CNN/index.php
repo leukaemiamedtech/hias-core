@@ -2,12 +2,12 @@
 
 $pageDetails = [
     "PageID" => "Diagnosis",
-    "SubPageID" => "DCOVID19"
+    "SubPageID" => "DALL"
 ];
 
 include dirname(__FILE__) . '/../../../../Classes/Core/init.php';
 include dirname(__FILE__) . '/../../../../Classes/Core/GeniSys.php';
-include dirname(__FILE__) . '/../../../Diagnosis/COVID-19/CNN/Classes/COVID19.php';
+include dirname(__FILE__) . '/../../../Detection/ALL/CNN/Classes/ALL.php';
 
 $_GeniSysAi->checkSession();
 $stats = $_GeniSysAi->getStats();
@@ -85,7 +85,7 @@ $stats = $_GeniSysAi->getStats();
 						<div class="panel panel-default card-view">
                             <div class="panel-heading">
 								<div class="pull-left">
-									<h6 class="panel-title txt-dark">COVID-19 Tensorflow DenseNet Classifier</h6>
+									<h6 class="panel-title txt-dark">HIAS Acute Lymphoblastic Leukemia Detection System</h6>
 								</div>
 								<div class="pull-right">
 									<div class="pull-left inline-block dropdown"></div>
@@ -94,10 +94,15 @@ $stats = $_GeniSysAi->getStats();
                             </div>
 							<div class="panel-wrapper collapse in">
 								<div class="panel-body">
-                                    <p>This system uses the <a href="https://github.com/COVID-19-AI-Research-Project/AI-Classification/tree/master/Projects/2" title="Peter Moss COVID-19 AI Research Project COVID-19 Tensorflow DenseNet Classifier" target="_BLANK">Peter Moss COVID-19 AI Research Project COVID-19 Tensorflow DenseNet Classifier</a> and the <a href="https://www.kaggle.com/plameneduardo/sarscov2-ctscan-dataset" title="SARS-COV-2 Ct-Scan Dataset" target="_BLANK">SARS-COV-2 Ct-Scan Dataset</a>, a large dataset of CT scans for SARS-CoV-2 (COVID-19) identification created by our collaborators, Plamenlancaster: <a href="https://www.lancaster.ac.uk/lira/people/#d.en.397371"target="_BLANK">Professor Plamen Angelov</a> from <a href="https://www.lancaster.ac.uk/"target="_BLANK">Lancaster University</a>/ Centre Director @ <a href="https://www.lancaster.ac.uk/lira/"target="_BLANK">Lira</a>, &amp; his researcher, <a href="https://www.lancaster.ac.uk/sci-tech/about-us/people/eduardo-almeida-soares"target="_BLANK">Eduardo Soares PhD</a>.</p>
+
+                                    <p>This system uses the <a href="https://github.com/AMLResearchProject/ALL-Detection-System-2020/tree/master/RPI4" title="Peter Moss Leukemia AI Research Project Tensorflow 2.0 AllDS2020 CNN For Raspberry Pi 4" target="_BLANK">Peter Moss Tensorflow 2.0 AllDS2020 CNN For Raspberry Pi 4</a> and the <a href="https://homes.di.unimi.it/scotti/all/" title="Acute Lymphoblastic Leukemia Image Database for Image Processing" target="_BLANK">Acute Lymphoblastic Leukemia Image Database for Image Processing</a> created by  <a href="https://homes.di.unimi.it/scotti/" target="_BLANK">Fabio Scotti</a>, Associate Professor Dipartimento di Informatica at Università degli Studi di Milano.</p>
                                     <p>&nbsp;</p>
 
-                                    <p>To use this diagnosis system you need to complete the <a href="https://github.com/COVID-19-AI-Research-Project/AI-Classification/tree/master/Projects/2" title="Peter Moss COVID-19 AI Research Project COVID-19 Tensorflow DenseNet Classifier" target="_BLANK">Peter Moss COVID-19 AI Research Project COVID-19 Tensorflow DenseNet Classifier</a> tutorial from our Github account and make sure that the classification server is running and accepting connections.</p>
+                                    <p>To use this diagnosis system you need to complete the <a href="https://github.com/AMLResearchProject/ALL-Detection-System-2020/tree/master/RPI4" title="Peter Moss Tensorflow 2.0 AllDS2020 CNN For Raspberry Pi 4" target="_BLANK">Peter Moss Tensorflow 2.0 AllDS2020 CNN For Raspberry Pi 4</a> tutorial from our Github account and make sure that the classification server is running and accepting connections.</p>
+                                    <p>&nbsp;</p>
+
+                                    <h6>DISCLAIMER</h6>
+                                    <p>This project should be used for research purposes only. The purpose of the project is to show the potential of Artificial Intelligence for medical support systems such as diagnosis systems. Although the classifier is accurate, and shows good results both on paper and in real world testing, it is not meant to be an alternative to professional medical diagnosis. Developers that have contributed to this project have experience in using Artificial Intelligence for detecting certain types of cancer & COVID-19. They are not a doctors, medical or cancer/COVID-19 experts. Please use this system responsibly.</p>
 								</div>
 							</div>
 						</div>	
@@ -106,7 +111,7 @@ $stats = $_GeniSysAi->getStats();
                         <div class="panel panel-default card-view panel-refresh">
                             <div class="panel-heading">
 								<div class="pull-left">
-									<h6 class="panel-title txt-dark">SARS-COV-2 Ct-Scan Dataset</h6>
+									<h6 class="panel-title txt-dark">Acute Lymphoblastic Leukemia Image Database for Image Processing Dataset</h6>
 								</div>
 								<div class="pull-right">
 									<a href="#" id="uploadData"><i class="fas fa-upload  fa-fw"></i>&nbsp;UPLOAD DATA</a>&nbsp;&nbsp;&nbsp;<a href="#" id="deleteData"><i class="fas fa-trash  fa-fw"></i>&nbsp;DELETE DATA</a>
@@ -122,7 +127,7 @@ $stats = $_GeniSysAi->getStats();
                                     <div class="row" id="dataBlock">
 
                                     <?php
-                                        $images = glob($COVID19->dataFiles);
+                                        $images = glob($ALL->dataFiles);
                                         $count = 1;
                                         if(count($images)):
                                             foreach( $images as $image ):
@@ -133,7 +138,7 @@ $stats = $_GeniSysAi->getStats();
                                                 $count++;
                                             endforeach;
                                         else:
-                                            echo "<div class='col-lg-12 col-md-12 col-sm-12 col-xs-12'><p>Please upload your SARS-COV-2 Ct-Scan Dataset data.</p></div>";
+                                            echo "<div class='col-lg-12 col-md-12 col-sm-12 col-xs-12'><p>Please upload your Acute Lymphoblastic Leukemia Image Database for Image Processing data.</p></div>";
                                         endif;
                                     ?>
                                     
@@ -179,7 +184,7 @@ $stats = $_GeniSysAi->getStats();
 
 		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/Diagnosis/COVID-19/CNN/Classes/COVID19.js"></script>
+        <script type="text/javascript" src="<?=$domain; ?>/Detection/ALL/CNN/Classes/ALL.js"></script>
 
     </body>
 

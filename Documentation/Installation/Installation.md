@@ -35,7 +35,6 @@
     - [Create Admin User](#create-admin-user)
     - [Finalize Server Settings](#finalize-server-settings)
     - [Install COVID-19 Data Analysis System](#install-covid-19-data-analysis-system)
-    - [Install Lockdown Environment Data Analysis System](#install-lockdown-environment-data-analysis-system)
 - [Login To Your Server UI](#login-to-server-ui) 
 - [Final iotJumpWay Setup](#final-iotjumpway-setup)
 - [Contributing](#contributing)

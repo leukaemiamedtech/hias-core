@@ -8,10 +8,10 @@
             $this->_GeniSys = $_GeniSys;
 
             $this->dataDir = "Data/";
-            $this->dataDirFull = "/fserver/var/www/html/Diagnosis/COVID-19/CNN/";
+            $this->dataDirFull = "/fserver/var/www/html/Detection/COVID-19/CNN/";
             $this->dataFiles = $this->dataDir . "*.png";
             $this->allowedFiles = ["png","PNG"];
-            $this->api = $this->_GeniSys->_helpers->oDecrypt($this->_GeniSys->_confs["domainString"])."/Diagnosis/COVID-19/CNN/API/Inference";
+            $this->api = $this->_GeniSys->_helpers->oDecrypt($this->_GeniSys->_confs["domainString"])."/Detection/COVID-19/CNN/API/Inference";
         }
 
         public function deleteData()

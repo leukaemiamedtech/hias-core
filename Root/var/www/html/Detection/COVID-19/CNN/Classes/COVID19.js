@@ -67,7 +67,11 @@ var COVID19 = {
         $('#imageView').html("<img src='" + im + "' style='width: 100%;' />");
         $("#imName").text(im);
         var classification = '';
+        $("#imClass").html("<strong>Diagnosis:</strong> WAITING FOR RESPONSE");
+        $("#imConf").html("<strong>Confidence:</strong> WAITING FOR RESPONSE");
+        $("#imResult").html("<strong>Result:</strong> WAITING FOR RESPONSE");
         $.post(window.location.href, { "classifyData": 1, "im": im }, function(resp) {
+            console.log(resp)
             var resp = jQuery.parseJSON(resp);
             switch (resp.Response) {
                 case "OK":
