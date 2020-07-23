@@ -92,7 +92,7 @@ $TDevices = $EMAR->getDevices();
                                 <div class="pull-left">
                                     <h6 class="panel-title txt-dark">EMAR Robotic Units</h6>
                                 </div>
-                                <div class="pull-right"><a href="<?=$domain; ?>/EMAR/Create"><i
+                                <div class="pull-right"><a href="<?=$domain; ?>/Robotics/EMAR/Create"><i
                                             class="fa fa-plus"></i></a></div>
                                 <div class="clearfix"></div>
                             </div>
@@ -127,9 +127,7 @@ $TDevices = $EMAR->getDevices();
                                                             Zone: #<?=$value["zid"];?> 
                                                         </td>
                                                         <td>
-                                                            1: #<?=$value["did"];?> - <?=$value["dname"];?><br />
-                                                            2: #<?=$value["did2"];?> - <?=$value["dname2"];?><br />
-                                                            3: #<?=$value["did3"];?> - <?=$value["dname3"];?> 
+                                                            #<?=$value["did"];?> - <?=$value["dname"];?><br />
                                                         </td>
 
                                                         <?php
@@ -140,26 +138,10 @@ $TDevices = $EMAR->getDevices();
                                                                 $label = "label-danger";
                                                                 $message = "OFFLINE";
                                                             endif;
-                                                            if($value["status2"] == "ONLINE"):
-                                                                $label2 = "label-success";
-                                                                $message2 = "ONLINE";
-                                                            else:
-                                                                $label2 = "label-danger";
-                                                                $message2 = "OFFLINE";
-                                                            endif;
-                                                            if($value["status3"] == "ONLINE"):
-                                                                $label3 = "label-success";
-                                                                $message3 = "ONLINE";
-                                                            else:
-                                                                $label3 = "label-danger";
-                                                                $message3 = "OFFLINE";
-                                                            endif;
                                                         ?>
 
                                                         <td>
-                                                            <div class="label label-table <?=$label; ?>">DEVICE 1 <?=$message; ?></div><br /><br />
-                                                            <div class="label label-table <?=$label2; ?>">DEVICE 2 <?=$message2; ?></div><br /><br />
-                                                            <div class="label label-table <?=$label3; ?>">DEVICE 3 <?=$message3; ?></div><br /><br />
+                                                            <div class="label label-table <?=$label; ?>">DEVICE <?=$message; ?></div><br /><br />
                                                         </td>
                                                         <td><a href="<?=$domain; ?>/Robotics/EMAR/<?=$value["id"];?>/"><i class="fa fa-edit"></i></a></a></td>
                                                     </tr>

@@ -6,8 +6,8 @@ var iotJumpWayWebSoc = {
     useTLS: true,
     cleansession: true,
     mqttOptions: {
-        locationID: 1,
-        applicationID: 1,
+        locationID: 0,
+        applicationID: 0,
         applicationName: "",
         userName: "",
         passwd: ""
