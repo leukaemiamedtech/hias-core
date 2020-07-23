@@ -104,176 +104,113 @@ $Devices = $iotJumpWay->getDevices(0, "id ASC");
                                 <div class="panel-body">
                                     <div class="form-wrap">
                                         <form data-toggle="validator" role="form" id="emar_create">
-                                            <div class="row">
-                                                <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+											<div class="row">
+												<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
 
-                                                    <div class="form-group">
-                                                        <label for="name" class="control-label mb-10">Device 1 Name</label>
-                                                        <input type="text" class="form-control" id="name" name="name"
-                                                            placeholder="EMAR Device Name" required value="">
-                                                        <span class="help-block"> Name of EMAR device 1</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="name" class="control-label mb-10">IP</label>
-                                                        <input type="text" class="form-control" id="ip" name="ip"
-                                                            placeholder="EMAR Device IP" required value="">
-                                                        <span class="help-block"> IP of EMAR device 1</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="name" class="control-label mb-10">MAC</label>
-                                                        <input type="text" class="form-control" id="mac" name="mac"
-                                                            placeholder="EMAR Device MAC" required value="">
-                                                        <span class="help-block"> MAC of EMAR device 1</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="name" class="control-label mb-10">Stream Port</label>
-                                                        <input type="text" class="form-control" id="sport" name="sport"
-                                                            placeholder="EMAR Device Stream Port"  value="">
-                                                        <span class="help-block"> Stream port of EMAR device 1</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="name" class="control-label mb-10">Stream File</label>
-                                                        <input type="text" class="form-control" id="sportf" name="sportf"
-                                                            placeholder="EMAR Stream File"  value="">
-                                                        <span class="help-block"> Stream file of EMAR device 1</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="name" class="control-label mb-10">Socket Port</label>
-                                                        <input type="text" class="form-control" id="sckport" name="sckport"
-                                                            placeholder="EMAR Device Socket Port"  value="">
-                                                        <span class="help-block"> Socket port of EMAR device 1</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="control-label mb-10">Location</label>
-                                                        <select class="form-control" id="lid" name="lid" required>
-                                                            <option value="">PLEASE SELECT</option>
+													<h4>Device</h4><br />
+													
+													<div class="form-group">
+														<label class="control-label mb-10">Location</label>
+														<select class="form-control" id="lid" name="lid" required>
+															<option value="">PLEASE SELECT</option>
 
-                                                            <?php 
-                                                                if(count($Locations)):
-                                                                    foreach($Locations as $key => $value):
-                                                            ?>
+															<?php 
+																if(count($Locations)):
+																	foreach($Locations as $key => $value):
+															?>
 
-                                                            <option value="<?=$value["id"]; ?>">#<?=$value["id"]; ?>:
-                                                                <?=$value["name"]; ?></option>
+															<option value="<?=$value["id"]; ?>">#<?=$value["id"]; ?>: <?=$value["name"]; ?></option>
 
-                                                            <?php 
-                                                                    endforeach;
-                                                                endif;
-                                                            ?>
+															<?php 
+																	endforeach;
+																endif;
+															?>
 
-                                                        </select>
-                                                        <span class="help-block"> Location of EMAR device</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="control-label mb-10">Zone</label>
-                                                        <select class="form-control" id="zid" name="zid" required>
-                                                            <option value="">PLEASE SELECT</option>
+														</select>
+														<span class="help-block">EMAR iotJumpWay Location</span>
+													</div>
+													<div class="form-group">
+														<label class="control-label mb-10">Zone</label>
+														<select class="form-control" id="zid" name="zid" required>
+															<option value="">PLEASE SELECT</option>
+															
+															<?php 
+																if(count($Zones)):
+																	foreach($Zones as $key => $value):
+															?>
 
-                                                            <?php 
-                                                                if(count($Zones)):
-                                                                    foreach($Zones as $key => $value):
-                                                            ?>
+															<option value="<?=$value["id"]; ?>">#<?=$value["id"]; ?>:
+																<?=$value["zn"]; ?></option>
 
-                                                            <option value="<?=$value["id"]; ?>">#<?=$value["id"]; ?>:
-                                                                <?=$value["zn"]; ?></option>
+															<?php 
+																	endforeach;
+																endif;
+															?>
 
-                                                            <?php 
-                                                                    endforeach;
-                                                                endif;
-                                                            ?>
-
-                                                        </select>
-                                                        <span class="help-block"> Zone of EMAR device</span>
-                                                    </div>
+														</select>
+														<span class="help-block">EMAR iotJumpWay Zone</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Device Name</label>
+														<input type="text" class="form-control" id="name" name="name"
+															placeholder="EMAR Device Name" required
+															value="">
+														<span class="help-block">EMAR iotJumpWay Device Name</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">IP</label>
+														<input type="text" class="form-control" id="ip" name="ip"
+															placeholder="EMAR Device IP" required
+															value="">
+														<span class="help-block">EMAR iotJumpWay Device IP</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">MAC Address</label>
+														<input type="text" class="form-control" id="mac" name="mac"
+															placeholder="EMAR Device MAC" required
+															value="">
+														<span class="help-block">EMAR iotJumpWay Device MAC</span>
+													</div>
                                                     <div class="form-group mb-0">
                                                         <input type="hidden" class="form-control" id="create_emar" name="create_emar" required value="1">
                                                         <button type="submit" class="btn btn-success btn-anim"><i class="icon-rocket"></i><span class="btn-text">submit</span></button>
                                                     </div>
-                                                </div>
-                                                <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+												</div>
+												<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
 
-                                                    <div class="form-group">
-                                                        <label for="name" class="control-label mb-10">Device 2 Name</label>
-                                                        <input type="text" class="form-control" id="name2" name="name2"
-                                                            placeholder="EMAR Device Name" required value="">
-                                                        <span class="help-block"> Name of EMAR device 2</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="name" class="control-label mb-10">Device 2 IP</label>
-                                                        <input type="text" class="form-control" id="ip2" name="ip2"
-                                                            placeholder="EMAR Device IP" required value="">
-                                                        <span class="help-block"> IP of EMAR device 2</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="name" class="control-label mb-10">Device 2 MAC</label>
-                                                        <input type="text" class="form-control" id="mac2" name="mac2"
-                                                            placeholder="EMAR Device MAC" required value="">
-                                                        <span class="help-block"> MAC of EMAR device 2</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="name" class="control-label mb-10">Device 2 Stream Port</label>
-                                                        <input type="text" class="form-control" id="sport2" name="sport2"
-                                                            placeholder="EMAR Device Stream Port" required value="">
-                                                        <span class="help-block"> Stream port of EMAR device 2</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="name" class="control-label mb-10">Device 2 Stream File</label>
-                                                        <input type="text" class="form-control" id="sportf2" name="sportf2"
-                                                            placeholder="EMAR Stream File" required value="">
-                                                        <span class="help-block"> Stream file of EMAR device 2</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="name" class="control-label mb-10">Device 2 Socket Port</label>
-                                                        <input type="text" class="form-control" id="sckport2" name="sckport2"
-                                                            placeholder="EMAR Device Socket Port" required value="">
-                                                        <span class="help-block"> Socket port of EMAR device 2</span>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+													<h4>Real-Time Object Detection & Depth</h4><br />
 
-                                                    <div class="form-group">
-                                                        <label for="name" class="control-label mb-10">Device 3 Name</label>
-                                                        <input type="text" class="form-control" id="name3" name="name3"
-                                                            placeholder="EMAR Device Name" required value="">
-                                                        <span class="help-block"> Name of EMAR device 3</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="name" class="control-label mb-10">Device 3 IP</label>
-                                                        <input type="text" class="form-control" id="ip3" name="ip3"
-                                                            placeholder="EMAR Device IP" required value="">
-                                                        <span class="help-block"> IP of EMAR device 3</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="name" class="control-label mb-10">Device 3 MAC</label>
-                                                        <input type="text" class="form-control" id="mac3" name="mac3"
-                                                            placeholder="EMAR Device MAC" required value="">
-                                                        <span class="help-block"> MAC of EMAR device 3</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="name" class="control-label mb-10">Device 3 Stream Port</label>
-                                                        <input type="text" class="form-control" id="sport3" name="sport3"
-                                                            placeholder="EMAR Device Stream Port" required value="">
-                                                        <span class="help-block"> Stream port of EMAR device 3</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="name" class="control-label mb-10">Device 3 Stream File</label>
-                                                        <input type="text" class="form-control" id="sportf3" name="sportf3"
-                                                            placeholder="EMAR Stream File" required value="">
-                                                        <span class="help-block"> Stream file of EMAR device 3</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="name" class="control-label mb-10">Device 3 Socket Port</label>
-                                                        <input type="text" class="form-control" id="sckport3" name="sckport3"
-                                                            placeholder="EMAR Device Socket Port" required value="">
-                                                        <span class="help-block"> Socket port of EMAR device 3</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Stream Port</label>
+														<input type="text" class="form-control" id="sport" name="sport"
+															placeholder="EMAR Device Stream Port" required
+															value="8282">
+														<span class="help-block">Stream port of EMAR live stream</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Stream Directory</label>
+														<input type="text" class="form-control" id="sdir" name="sdir"
+															placeholder="EMAR Device Stream Directory" 
+															value="EMAR" required>
+														<span class="help-block">Stream directory of EMAR live stream</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Stream File</label>
+														<input type="text" class="form-control" id="sportf" name="sportf"
+															placeholder="EMAR Device Stream File" required
+															value="Stream.mjpg">
+														<span class="help-block">Stream file of EMAR live stream</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Socket Port</label>
+														<input type="text" class="form-control" id="sckport" name="sckport"
+															placeholder="EMAR Device Socket Port" required
+															value="8383">
+														<span class="help-block">Socket port of EMAR live stream</span>
+													</div>
 
-                                                </div>
-                                            </div>
+												</div>
+											</div>
                                         </form>
                                     </div>
                                 </div>
@@ -291,6 +228,9 @@ $Devices = $iotJumpWay->getDevices(0, "id ASC");
         </div>
 
         <?php  include dirname(__FILE__) . '/../../Includes/JS.php'; ?>
+		
+		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
+		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
 
 		<script type="text/javascript" src="<?=$domain; ?>/Robotics/EMAR/Classes/EMAR.js"></script>
         <script type="text/javascript">

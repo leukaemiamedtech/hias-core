@@ -3,6 +3,7 @@ var EMAR = {
     zone: 0,
     device: 0,
     controller: 0,
+    LifeDevice: 1,
     Create: function() {
         $.post(window.location.href, $("#emar_create").serialize(), function(resp) {
             var resp = jQuery.parseJSON(resp);
@@ -92,49 +93,34 @@ var EMAR = {
             }
         });
     },
+    cams: function(direction) {
+        iotJumpWayWebSoc.publishToDeviceCommands({
+            "loc": EMAR.location,
+            "zne": EMAR.zone,
+            "dvc": EMAR.device,
+            "message": {
+                "From": EMAR.controller,
+                "Type": "Head",
+                "Value": direction,
+                "Message": "Move " + direction
+            }
+        });
+    },
     HideInputs: function() {
         $('#ip').attr('type', 'password');
-        $('#ip2').attr('type', 'password');
-        $('#ip3').attr('type', 'password');
         $('#mac').attr('type', 'password');
-        $('#mac2').attr('type', 'password');
-        $('#mac3').attr('type', 'password');
         $('#sport').attr('type', 'password');
-        $('#sport2').attr('type', 'password');
-        $('#sport3').attr('type', 'password');
         $('#sportf').attr('type', 'password');
-        $('#sportf2').attr('type', 'password');
-        $('#sportf3').attr('type', 'password');
         $('#sckport').attr('type', 'password');
-        $('#sckport2').attr('type', 'password');
-        $('#sckport3').attr('type', 'password');
         $('#sdir').attr('type', 'password');
-        $('#sdir2').attr('type', 'password');
-        $('#sdir3').attr('type', 'password');
 
         EMAR.mqttua = $("#mqttu").text();
         EMAR.mqttuae = $("#mqttu").text().replace(/\S/gi, '*');
         EMAR.mqttpa = $("#mqttp").text();
         EMAR.mqttpae = $("#mqttp").text().replace(/\S/gi, '*');
 
-        EMAR.mqttu2a = $("#mqttu2").text();
-        EMAR.mqttu2ae = $("#mqttu2").text().replace(/\S/gi, '*');
-        EMAR.mqttp2a = $("#mqttp2").text();
-        EMAR.mqttp2ae = $("#mqttp2").text().replace(/\S/gi, '*');
-
-        EMAR.mqttu3a = $("#mqttu3").text();
-        EMAR.mqttu3ae = $("#mqttu3").text().replace(/\S/gi, '*');
-        EMAR.mqttp3a = $("#mqttp3").text();
-        EMAR.mqttp3ae = $("#mqttp3").text().replace(/\S/gi, '*');
-
         $("#mqttu").text(EMAR.mqttuae);
         $("#mqttp").text(EMAR.mqttpae);
-
-        $("#mqttu2").text(EMAR.mqttu2ae);
-        $("#mqttp2").text(EMAR.mqttp2ae);
-
-        $("#mqttu3").text(EMAR.mqttu3ae);
-        $("#mqttp3").text(EMAR.mqttp3ae);
     },
     GetLifes: function() {
         $.post(window.location.href, { "get_lifes": 1, "device": $("#id").val() }, function(resp) {
@@ -148,32 +134,10 @@ var EMAR = {
                         $("#offline1").addClass("hide");
                         $("#online1").removeClass("hide");
                     }
-                    if (resp.ResponseData["status2"] == "ONLINE") {
-                        $("#offline2").removeClass("hide");
-                        $("#online2").addClass("hide");
-                    } else {
-                        $("#offline2").addClass("hide");
-                        $("#online2").removeClass("hide");
-                    }
-                    if (resp.ResponseData["status3"] == "ONLINE") {
-                        $("#offline3").removeClass("hide");
-                        $("#online3").addClass("hide");
-                    } else {
-                        $("#offline3").addClass("hide");
-                        $("#online3").removeClass("hide");
-                    }
                     $("#ecpuU").text(resp.ResponseData.cpu)
                     $("#ememU").text(resp.ResponseData.mem)
                     $("#ehddU").text(resp.ResponseData.hdd)
                     $("#etempU").text(resp.ResponseData.tempr)
-                    $("#ecpuU2").text(resp.ResponseData.cpu2)
-                    $("#ememU2").text(resp.ResponseData.mem2)
-                    $("#ehddU2").text(resp.ResponseData.hdd2)
-                    $("#etempU2").text(resp.ResponseData.tempr2)
-                    $("#ecpuU3").text(resp.ResponseData.cpu3)
-                    $("#ememU3").text(resp.ResponseData.mem3)
-                    $("#ehddU3").text(resp.ResponseData.hdd3)
-                    $("#etempU3").text(resp.ResponseData.tempr3)
 
                     Logging.logMessage("Core", "EMAR", "EMAR Stats Updated OK");
                     break;
@@ -184,8 +148,12 @@ var EMAR = {
             }
         });
     },
+    imgError: function(image) {
+        $("#" + image).removeClass("hide");
+        $("#" + image + "on").addClass("hide");
+        return true;
+    },
     UpdateLife: function() {
-
         setInterval(function() {
             EMAR.GetLifes();
         }, 5000);
@@ -208,51 +176,64 @@ $(document).ready(function() {
         }
     });
 
-    $("#GeniSysAI").on("click", ".reset_mqtt", function(e) {
-        e.preventDefault();
-        EMAR.ResetMqtt();
-    });
-
-    $("#GeniSysAI").on("click", "#FORWARD", function(e) {
-        e.preventDefault();
-        EMAR.wheels("FORWARD");
-    });
-    $("#GeniSysAI").on("click", "#BACK", function(e) {
-        e.preventDefault();
-        EMAR.wheels("BACK");
-    });
-    $("#GeniSysAI").on("click", "#RIGHT", function(e) {
-        e.preventDefault();
-        EMAR.wheels("RIGHT");
-    });
-    $("#GeniSysAI").on("click", "#LEFT", function(e) {
-        e.preventDefault();
-        EMAR.wheels("LEFT");
-    });
-
-    $("#GeniSysAI").on("click", "#UP", function(e) {
+    $("#GeniSysAI").on("click", "#UPA", function(e) {
         e.preventDefault();
         EMAR.arm("UP");
     });
-    $("#GeniSysAI").on("click", "#DOWN", function(e) {
+    $("#GeniSysAI").on("click", "#DOWNA", function(e) {
         e.preventDefault();
         EMAR.arm("DOWN");
     });
     $("#GeniSysAI").on("click", "#RIGHTA", function(e) {
         e.preventDefault();
-        EMAR.arm("RIGHT");
+        EMAR.arm("2UP");
     });
     $("#GeniSysAI").on("click", "#LEFTA", function(e) {
         e.preventDefault();
-        EMAR.arm("LEFT");
+        EMAR.arm("2DOWN");
     });
-    $("#GeniSysAI").on("click", "#OPEN", function(e) {
+
+    $("#GeniSysAI").on("click", "#FORWARDW", function(e) {
         e.preventDefault();
-        EMAR.arm("OPEN");
+        EMAR.wheels("FORWARD");
     });
-    $("#GeniSysAI").on("click", "#CLOSE", function(e) {
+    $("#GeniSysAI").on("click", "#BACKW", function(e) {
         e.preventDefault();
-        EMAR.arm("CLOSE");
+        EMAR.wheels("BACK");
+    });
+    $("#GeniSysAI").on("click", "#RIGHTW", function(e) {
+        e.preventDefault();
+        EMAR.wheels("RIGHT");
+    });
+    $("#GeniSysAI").on("click", "#LEFTW", function(e) {
+        e.preventDefault();
+        EMAR.wheels("LEFT");
+    });
+
+    $("#GeniSysAI").on("click", "#UPC", function(e) {
+        e.preventDefault();
+        EMAR.cams("UP");
+    });
+    $("#GeniSysAI").on("click", "#DOWNC", function(e) {
+        e.preventDefault();
+        EMAR.cams("DOWN");
+    });
+    $("#GeniSysAI").on("click", "#RIGHTC", function(e) {
+        e.preventDefault();
+        EMAR.cams("RIGHT");
+    });
+    $("#GeniSysAI").on("click", "#LEFTC", function(e) {
+        e.preventDefault();
+        EMAR.cams("LEFT");
+    });
+    $("#GeniSysAI").on("click", "#CENTERC", function(e) {
+        e.preventDefault();
+        EMAR.cams("CENTER");
+    });
+
+    $("#GeniSysAI").on("click", ".reset_mqtt", function(e) {
+        e.preventDefault();
+        EMAR.ResetMqtt();
     });
 
     $('.hider').hover(function() {
@@ -271,30 +252,6 @@ $(document).ready(function() {
         $("#mqttp").text(EMAR.mqttpa);
     }, function() {
         $("#mqttp").text(EMAR.mqttpae);
-    });
-
-    $('#mqttu2').hover(function() {
-        $("#mqttu2").text(EMAR.mqttu2a);
-    }, function() {
-        $("#mqttu2").text(EMAR.mqttu2ae);
-    });
-
-    $('#mqttp2').hover(function() {
-        $("#mqttp2").text(EMAR.mqttp2a);
-    }, function() {
-        $("#mqttp2").text(EMAR.mqttp2ae);
-    });
-
-    $('#mqttu3').hover(function() {
-        $("#mqttu3").text(EMAR.mqttu3a);
-    }, function() {
-        $("#mqttu3").text(EMAR.mqttu3ae);
-    });
-
-    $('#mqttp3').hover(function() {
-        $("#mqttp3").text(EMAR.mqttp3a);
-    }, function() {
-        $("#mqttp3").text(EMAR.mqttp3ae);
     });
 
 });

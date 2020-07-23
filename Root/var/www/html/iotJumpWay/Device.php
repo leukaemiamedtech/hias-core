@@ -64,8 +64,8 @@ list($dev1On, $dev1Off) = $iotJumpWay->getStatusShow($Device["status"]);
 
         <div class="page-wrapper">
             <div class="container-fluid pt-25">
-			
-				<?php include dirname(__FILE__) . '/../Includes/Stats.php'; ?>
+            
+                <?php include dirname(__FILE__) . '/../Includes/Stats.php'; ?>
 
                 <div class="row">
                     <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
@@ -192,7 +192,7 @@ list($dev1On, $dev1Off) = $iotJumpWay->getStatusShow($Device["status"]);
                         <div class="panel panel-default card-view panel-refresh">
                             <div class="panel-wrapper collapse in">
                                 <div class="panel-body">
-								<div class="pull-right"><span id="offline1" style="color: #33F9FF !important;" class="<?=$dev1On; ?>"><i class="fas fa-power-off" style="color: #33F9FF !important;"></i> Online</span> <span id="online1" class="<?=$dev1Off; ?>" style="color: #99A3A4 !important;"><i class="fas fa-power-off" style="color: #99A3A4 !important;"></i> Offline</span></div>
+                                <div class="pull-right"><span id="offline1" style="color: #33F9FF !important;" class="<?=$dev1On; ?>"><i class="fas fa-power-off" style="color: #33F9FF !important;"></i> Online</span> <span id="online1" class="<?=$dev1Off; ?>" style="color: #99A3A4 !important;"><i class="fas fa-power-off" style="color: #99A3A4 !important;"></i> Offline</span></div>
                                     <div class="form-group">
                                         <label class="control-label col-md-5">Status</label>
                                         <div class="col-md-9">
@@ -208,11 +208,11 @@ list($dev1On, $dev1Off) = $iotJumpWay->getStatusShow($Device["status"]);
                         <div class="panel panel-default card-view panel-refresh">
                             <div class="panel-wrapper collapse in">
                                 <div class="panel-body">
-								<div class="pull-right"></div>
+                                <div class="pull-right"></div>
                                     <div class="form-group">
                                         <label class="control-label col-md-5">Location</label>
                                         <div class="col-md-12">
-  									        <div id="map1" class="map" style="height: 300px;"></div>
+                                              <div id="map1" class="map" style="height: 300px;"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -260,13 +260,13 @@ list($dev1On, $dev1Off) = $iotJumpWay->getStatusShow($Device["status"]);
                 iotJumpwayUI.StartDeviceLife();
             });
             
-			function initMap() {
+            function initMap() {
 
-        		var latlng = new google.maps.LatLng("<?=floatval($Device["lt"]); ?>", "<?=floatval($Device["lg"]); ?>");
-				var map = new google.maps.Map(document.getElementById('map1'), {
-					zoom: 10,
-					center: latlng
-				});
+                var latlng = new google.maps.LatLng("<?=floatval($Device["lt"]); ?>", "<?=floatval($Device["lg"]); ?>");
+                var map = new google.maps.Map(document.getElementById('map1'), {
+                    zoom: 10,
+                    center: latlng
+                });
 
                 var loc = new google.maps.LatLng(<?=floatval($Device["lt"]); ?>, <?=floatval($Device["lg"]); ?>);
                 var marker = new google.maps.Marker({
@@ -276,8 +276,8 @@ list($dev1On, $dev1Off) = $iotJumpWay->getStatusShow($Device["status"]);
                 });
             }
             
-		</script>
-		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKduSuIeLzSjNwKTyNpzuefe6Np1aBcBw&callback=initMap"></script>
+        </script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKduSuIeLzSjNwKTyNpzuefe6Np1aBcBw&callback=initMap"></script>
 
 </body>
 

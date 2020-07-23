@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jun 04, 2020 at 07:53 PM
+-- Generation Time: Jul 23, 2020 at 03:06 AM
 -- Server version: 5.7.30-0ubuntu0.18.04.1
 -- PHP Version: 7.2.24-0ubuntu0.18.04.6
 
@@ -11,12 +11,6 @@ SET SQL_MODE
 = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone
 = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `fhedfbvc`
@@ -130,10 +124,6 @@ CREATE TABLE `emar`
 (11) NOT NULL,
   `name` varchar
 (255) NOT NULL,
-  `name2` varchar
-(255) NOT NULL,
-  `name3` varchar
-(255) NOT NULL,
   `uid` int
 (11) NOT NULL DEFAULT '0',
   `lid` int
@@ -142,49 +132,21 @@ CREATE TABLE `emar`
 (11) NOT NULL DEFAULT '0',
   `did` int
 (11) NOT NULL DEFAULT '0',
-  `did2` int
-(11) NOT NULL,
-  `did3` int
-(11) NOT NULL,
   `aid` int
 (11) NOT NULL DEFAULT '0',
   `mid` int
 (11) NOT NULL DEFAULT '0',
   `ip` varchar
-(255) NOT NULL DEFAULT '',
-  `ip2` varchar
-(255) NOT NULL,
-  `ip3` varchar
 (255) NOT NULL,
   `mac` varchar
-(255) NOT NULL DEFAULT '',
-  `mac2` varchar
-(255) NOT NULL,
-  `mac3` varchar
 (255) NOT NULL,
   `sport` varchar
-(255) NOT NULL DEFAULT '',
-  `sport2` varchar
-(255) NOT NULL,
-  `sport3` varchar
 (255) NOT NULL,
   `sdir` varchar
 (255) NOT NULL,
-  `sdir2` varchar
-(255) NOT NULL,
-  `sdir3` varchar
-(255) NOT NULL,
   `sportf` varchar
-(255) NOT NULL DEFAULT '',
-  `sportf2` varchar
-(255) NOT NULL,
-  `sportf3` varchar
 (255) NOT NULL,
   `sckport` varchar
-(255) NOT NULL DEFAULT '',
-  `sckport2` varchar
-(255) NOT NULL,
-  `sckport3` varchar
 (255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -488,6 +450,33 @@ CREATE TABLE `sensors`
 (255) NOT NULL DEFAULT 'default.png'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `sensors`
+--
+
+INSERT INTO `sensors` (`
+id`,
+`name
+`, `type`, `hasAction`, `hasCommand`, `image`) VALUES
+(1, 'LED', 'Actuator', 0, 1, 'led.jpg'),
+(2, 'Button', 'Actuator', 1, 0, 'button.jpg'),
+(3, 'Reed Switch', 'Sensor', 1, 0, 'reed-switch.jpg'),
+(4, 'Motion Sensor', 'Sensor', 1, 0, 'motion-sensor.jpg'),
+(5, 'Light Sensor', 'Sensor', 1, 0, 'light-sensor.jpg'),
+(6, 'Sound Sensor', 'Sensor', 1, 0, 'sound-sensor.jpg'),
+(7, 'Camera', 'Sensor', 1, 0, 'cctv.jpg'),
+(8, 'Buzzer', 'Actuator', 0, 1, 'buzzer.jpg'),
+(9, 'Moisture Sensor', 'Sensor', 1, 0, 'moisture-sensor.jpg'),
+(10, 'Rain Sensor', 'Sensor', 1, 0, 'RainSensor.jpg'),
+(11, 'Water Level Sensor', 'Sensor', 1, 0, 'WaterLevelSensor.jpg'),
+(12, 'Temperature Sensor', 'Sensor', 1, 0, 'temperature.jpg'),
+(13, 'Servo', 'Actuator', 0, 1, 'servo.jpg'),
+(14, 'Servo Controller', 'Actuator', 1, 0, 'servoController.jpg'),
+(15, 'Relay', 'Actuator', 0, 1, 'relay.jpg'),
+(16, 'NFC Scanner', 'Sensor', 1, 0, 'NFCScanner.jpg'),
+(17, 'LCD Keypad (4 Buttons)', 'Sensor', 1, 1, 'LCD-KeyPad-4.jpg'),
+(18, 'Virtual Controller', 'Sensor', 1, 0, 'virtual-controller.png');
+
 -- --------------------------------------------------------
 
 --
@@ -533,7 +522,7 @@ id`,
 `phpmyadmin`,
 `recaptcha
 `, `recaptchas`, `gmaps`, `lt`, `lg`, `meta_title`, `meta_description`, `meta_keywords`, `domainString`) VALUES
-(1, 0, '0.3.0', 'phpmyadmin', '', '', '', '', 'HIAS Hospital Intelligent Automation System', 'Open-source Hospital Intelligent Automation System & Hospital Information/Management System. A locally hosted web/IoT server and proxy for managing a network of open-source, modular, intelligent devices, robotics and applications.', '', '');
+(1, 0, '0.5.0', 'phpmyadmin', '', '', '', '', '', 'HIAS Hospital Intelligent Automation System', 'Open-source Hospital Intelligent Automation System & Hospital Information/Management System. A locally hosted web/IoT server and proxy for managing a network of open-source, modular, intelligent devices, robotics and applications.', '', '');
 
 -- --------------------------------------------------------
 
@@ -971,6 +960,3 @@ ALTER TABLE `tass`
 ALTER TABLE `users`
   MODIFY `id` int
 (11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

@@ -2,6 +2,7 @@ server {
 
         root /fserver/var/www/html;
         server_name YourSubdomain.YourDomain.TLD;
+        client_max_body_size 100M;
 
         location ~* ^/Security/TASS/Live/(.*)$ {
                 auth_basic "Restricted";
@@ -9,36 +10,35 @@ server {
                 proxy_pass http://YourTassDeviceIP:YourTassDevicePort/$1;
         }
 
-        location ~* ^/Robotics/EMAR/Live2/(.*)$ {
+        location ~* ^/Robotics/EMAR/Live/(.*)$ {
                 auth_basic "Restricted";
                 auth_basic_user_file /etc/nginx/tass/htpasswd;
-                proxy_pass http://YourEmarDevice2IP:YourEmarDevice2Port/$1;
+                proxy_pass http://YourEmarDeviceIP:YourEmarDevicePort/$1;
         }
 
-        location ~* ^/Robotics/EMAR/Live3/(.*)$ {
-                auth_basic "Restricted";
-                auth_basic_user_file /etc/nginx/tass/htpasswd;
-                proxy_pass http://YourEmarDevice3IP:YourEmarDevice3Port/$1;
+        location ~ ^/Detection/COVID-19/CNN/API/(.*)$ {
+                proxy_pass http://YourCovid19CnnIP:YourCovid19CnnPort/$1;
         }
 
-        location ~ ^/Diagnosis/COVID-19/CNN/API/(.*)$ {
-                proxy_pass http://YourCovid19CnnDiagnosisIP:YourCovid19CnnDiagnosisPort/$1;
+        location ~ ^/Detection/ALL/CNN/API/(.*)$ {
+                proxy_pass http://YourAllCnnIP:YourAllCnnPort/$1;
         }
 
         location / {
+                rewrite ^/Data-Analysis/COVID-19/([A-Za-z]+)/([A-Za-z]+)/([A-Za-z]+)$ /Data-Analysis/COVID-19/index.php?country=$1&period=$2&stat=$3 last;
+                rewrite ^/Robotics/EMAR/([0-9]+)/$ /Robotics/EMAR/Device.php?emar=$1 last;
                 rewrite ^/iotJumpWay/Sensors/([0-9]+)/$ /iotJumpWay/Sensor.php?sensor=$1 last;
                 rewrite ^/iotJumpWay/Sensors/Create$ /iotJumpWay/CreateSensor.php last;
                 rewrite ^/iotJumpWay/Devices/Create$ /iotJumpWay/CreateDevice.php last;
-                rewrite ^/iotJumpWay/([0-9]+)/Zones/([0-9])/Devices/([0-9])/$ /iotJumpWay/Device.php?location=$1&zone=$2&device=$3 last;
+                rewrite ^/iotJumpWay/([0-9]+)/Zones/([0-9]+)/Devices/([0-9]+)/$ /iotJumpWay/Device.php?location=$1&zone=$2&device=$3 last;
                 rewrite ^/iotJumpWay/Zones/Create$ /iotJumpWay/CreateZone.php last;
-                rewrite ^/iotJumpWay/([0-9]+)/Zones/([0-9])/$ /iotJumpWay/Zone.php?location=$1&zone=$2 last;
+                rewrite ^/iotJumpWay/([0-9]+)/Zones/([0-9]+)/$ /iotJumpWay/Zone.php?location=$1&zone=$2 last;
                 rewrite ^/iotJumpWay/Applications/Create$ /iotJumpWay/CreateApp.php last;
-                rewrite ^/iotJumpWay/([0-9]+)/Applications/([0-9])/$ /iotJumpWay/Application.php?location=$1&application=$2 last;
+                rewrite ^/iotJumpWay/([0-9]+)/Applications/([0-9]+)/$ /iotJumpWay/Application.php?location=$1&application=$2 last;
                 rewrite ^/Hospital/Patients/([0-9]+)/$ /Hospital/Patients/Patient.php?patient=$1 last;
                 rewrite ^/Hospital/Beds/([0-9]+)/$ /Hospital/Beds/Bed.php?bed=$1 last;
                 rewrite ^/Hospital/Staff/([0-9]+)/$ /Hospital/Staff/Staff.php?staff=$1 last;
-                rewrite ^/Robotics/EMAR/([0-9]+)/$ /Robotics/EMAR/Device.php?emar=$1 last;
-		rewrite ^/Security/TASS/([0-9]+)/$ /Security/TASS/Device.php?tass=$1 last;
+                rewrite ^/Security/TASS/([0-9]+)/$ /Security/TASS/Device.php?tass=$1 last;
                 try_files $uri $uri.html $uri/ @extensionless-php;
                 index index.php index.html index.htm index.nginx-debian.html;
         }

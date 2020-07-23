@@ -7,9 +7,9 @@
         {
             $this->_GeniSys = $_GeniSys;
 
-            $this->country = "Spain";
-            $this->period = "Year";
-            $this->stat = "Deaths";
+            $this->country = filter_input(INPUT_GET, "country", FILTER_SANITIZE_STRING) ? filter_input(INPUT_GET, "country", FILTER_SANITIZE_STRING) : "Spain";
+            $this->period = filter_input(INPUT_GET, "year", FILTER_SANITIZE_STRING) ? filter_input(INPUT_GET, "year", FILTER_SANITIZE_STRING) : "Year";
+            $this->stat = filter_input(INPUT_GET, "stat", FILTER_SANITIZE_STRING) ? filter_input(INPUT_GET, "stat", FILTER_SANITIZE_STRING) : "Active";
 
             $this->dataURL = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/';
         }
@@ -17,7 +17,7 @@
         public function getCOVID19($params = [])
         {
             if($params["period"]=="Day"):
-                $dater = "WHERE date > DATE_SUB(DATE(CURDATE()), INTERVAL 1 DAY) ";
+                $dater = "WHERE date > DATE_SUB(DATE(CURDATE()), INTERVAL 1 DAY)W ";
             elseif($params["period"]=="Week"):
                 $dater = "WHERE date >= DATE(NOW()) - INTERVAL 7 DAY ";
             elseif($params["period"]=="Month"):
