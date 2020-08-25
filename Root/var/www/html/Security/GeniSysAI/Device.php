@@ -2,13 +2,13 @@
 
 $pageDetails = [
     "PageID" => "Security",
-    "SubPageID" => "TASS"
+    "SubPageID" => "GeniSysAI"
 ];
 
 include dirname(__FILE__) . '/../../../Classes/Core/init.php';
 include dirname(__FILE__) . '/../../../Classes/Core/GeniSys.php';
 include dirname(__FILE__) . '/../../iotJumpWay/Classes/iotJumpWay.php';
-include dirname(__FILE__) . '/../../Security/TASS/Classes/TASS.php';
+include dirname(__FILE__) . '/../../Security/GeniSysAI/Classes/GeniSysAI.php';
 
 $_GeniSysAi->checkSession();
 
@@ -17,11 +17,11 @@ $Zones = $iotJumpWay->getZones();
 $MDevices = $iotJumpWay->getMDevices();
 $Devices = $iotJumpWay->getDevices();
 
-$TId = filter_input(INPUT_GET, 'tass', FILTER_SANITIZE_NUMBER_INT);
-$TDevice = $TASS->getDevice($TId);
+$TId = filter_input(INPUT_GET, 'genisysai', FILTER_SANITIZE_NUMBER_INT);
+$TDevice = $GeniSysAI->getDevice($TId);
 
-list($dev1On, $dev1Off) = $TASS->getStatusShow($TDevice["status"]);
-list($lat, $lng) = $TASS->getMapMarkers($TDevice);
+list($dev1On, $dev1Off) = $GeniSysAI->getStatusShow($TDevice["status"]);
+list($lat, $lng) = $GeniSysAI->getMapMarkers($TDevice);
 
 ?>
 
@@ -101,7 +101,7 @@ list($lat, $lng) = $TASS->getMapMarkers($TDevice);
                         <div class="panel panel-default card-view panel-refresh">
                             <div class="panel-heading">
                                 <div class="pull-left">
-                                    <h6 class="panel-title txt-dark">TASS Security Camera Device #<?=$TId; ?></h6>
+                                    <h6 class="panel-title txt-dark">GeniSysAI Security Camera Device #<?=$TId; ?></h6>
                                 </div>
                                 <div class="pull-right"></div>
                                 <div class="clearfix"></div>
@@ -109,44 +109,52 @@ list($lat, $lng) = $TASS->getMapMarkers($TDevice);
                             <div class="panel-wrapper collapse in">
                                 <div class="panel-body">
                                     <div class="form-wrap">
-                                        <form data-toggle="validator" role="form" id="tass_update">
+                                        <form data-toggle="validator" role="form" id="genisysai_update">
                                             <div class="row">
                                                 <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
                                                     <div class="form-group">
                                                         <label for="name" class="control-label mb-10">Name</label>
                                                         <input type="text" class="form-control" id="name" name="name"
-                                                            placeholder="TASS Device Name" required
+                                                            placeholder="GeniSysAI Device Name" required
                                                             value="<?=$TDevice["name"]; ?>">
-                                                        <span class="help-block"> Name of TASS camera device</span>
+                                                        <span class="help-block"> Name of GeniSysAI camera device</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label mb-10">Type</label>
+                                                        <select class="form-control" id="type" name="type" required>
+                                                            <option value="">PLEASE SELECT</option>
+                                                            <option value="API" <?=$TDevice["type"] == "API" ? " selected " : ""; ?>>API</option>
+                                                            <option value="Foscam Camera" <?=$TDevice["type"] == "Foscam Camera" ? " selected " : ""; ?>>Foscam Camera</option>
+                                                            <option value="USB Camera" <?=$TDevice["type"] == "USB Camera" ? " selected " : ""; ?>>USB Camera</option>
+                                                        </select>
+                                                        <span class="help-block"> Location of GeniSysAI camera device</span>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="control-label mb-10">Location</label>
                                                         <select class="form-control" id="lid" name="lid" required>
                                                             <option value="">PLEASE SELECT</option>
 
-                                                            <?php 
+                                                            <?php
                                                                 if(count($Locations)):
                                                                     foreach($Locations as $key => $value):
                                                             ?>
 
-                                                            <option value="<?=$value["id"]; ?>"
-                                                                <?=$TDevice["lid"] == $value["id"] ? " selected " : ""; ?>>
-                                                                #<?=$value["id"]; ?>: <?=$value["name"]; ?></option>
+                                                            <option value="<?=$value["id"]; ?>" <?=$TDevice["lid"] == $value["id"] ? " selected " : ""; ?>> #<?=$value["id"]; ?>: <?=$value["name"]; ?></option>
 
-                                                            <?php 
+                                                            <?php
                                                                     endforeach;
                                                                 endif;
                                                             ?>
 
                                                         </select>
-                                                        <span class="help-block"> Location of TASS camera device</span>
+                                                        <span class="help-block"> Location of GeniSysAI camera device</span>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="control-label mb-10">Zone</label>
                                                         <select class="form-control" id="zid" name="zid" required>
                                                             <option value="">PLEASE SELECT</option>
 
-                                                            <?php 
+                                                            <?php
                                                                 if(count($Zones)):
                                                                     foreach($Zones as $key => $value):
                                                             ?>
@@ -155,20 +163,20 @@ list($lat, $lng) = $TASS->getMapMarkers($TDevice);
                                                                 <?=$TDevice["zid"] == $value["id"] ? " selected " : ""; ?>>
                                                                 #<?=$value["id"]; ?>: <?=$value["zn"]; ?></option>
 
-                                                            <?php 
+                                                            <?php
                                                                     endforeach;
                                                                 endif;
                                                             ?>
 
                                                         </select>
-                                                        <span class="help-block"> Zone of TASS camera device</span>
+                                                        <span class="help-block"> Zone of GeniSysAI camera device</span>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="control-label mb-10">iotJumpWay Device</label>
                                                         <select class="form-control" id="did" name="did" required>
                                                             <option value="">PLEASE SELECT</option>
 
-                                                            <?php 
+                                                            <?php
                                                                 if(count($Devices)):
                                                                     foreach($Devices as $key => $value):
                                                             ?>
@@ -177,7 +185,7 @@ list($lat, $lng) = $TASS->getMapMarkers($TDevice);
                                                                 <?=$TDevice["did"] == $value["id"] ? " selected " : ""; ?>>
                                                                 #<?=$value["id"]; ?>: <?=$value["name"]; ?></option>
 
-                                                            <?php 
+                                                            <?php
                                                                     endforeach;
                                                                 endif;
                                                             ?>
@@ -187,40 +195,41 @@ list($lat, $lng) = $TASS->getMapMarkers($TDevice);
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="name" class="control-label mb-10">IP</label>
-                                                        <input type="text" class="form-control hider" id="ip" name="ip" placeholder="TASS Device IP" required value="<?=$TDevice["ip"] ? $_GeniSys->_helpers->oDecrypt($TDevice["ip"]) : ""; ?>">
-                                                        <span class="help-block"> IP of TASS camera device</span>
+                                                        <input type="text" class="form-control hider" id="ip" name="ip" placeholder="GeniSysAI Device IP" required value="<?=$TDevice["ip"] ? $_GeniSys->_helpers->oDecrypt($TDevice["ip"]) : ""; ?>">
+                                                        <span class="help-block"> IP of GeniSysAI camera device</span>
                                                     </div>
                                                     <div class="form-group mb-0">
-                                                        <input type="hidden" class="form-control" id="update_tass" name="update_tass" required value="1">
+                                                        <input type="hidden" class="form-control" id="update_genisysai" name="update_genisysai" required value="1">
                                                         <input type="hidden" class="form-control" id="id" name="id" required value="<?=$TDevice["id"]; ?>">
-                                                        <button type="submit" class="btn btn-success btn-anim" id="tass_update"><i class="icon-rocket"></i><span class="btn-text">submit</span></button>
+                                                        <input type="hidden" class="form-control" id="did" name="did" required value="<?=$TDevice["did"]; ?>">
+                                                        <button type="submit" class="btn btn-success btn-anim" id="genisysai_update"><i class="icon-rocket"></i><span class="btn-text">Submit</span></button>
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
                                                     <div class="form-group">
                                                         <label for="name" class="control-label mb-10">MAC</label>
-                                                        <input type="text" class="form-control hider" id="mac" name="mac" placeholder="TASS Device MAC" required value="<?=$TDevice["ip"] ? $_GeniSys->_helpers->oDecrypt($TDevice["ip"]) : ""; ?>">
-                                                        <span class="help-block"> MAC of TASS camera device</span>
+                                                        <input type="text" class="form-control hider" id="mac" name="mac" placeholder="GeniSysAI Device MAC" required value="<?=$TDevice["ip"] ? $_GeniSys->_helpers->oDecrypt($TDevice["ip"]) : ""; ?>">
+                                                        <span class="help-block"> MAC of GeniSysAI camera device</span>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="name" class="control-label mb-10">Stream Port</label>
-                                                        <input type="text" class="form-control hider" id="sport" name="sport" placeholder="TASS Device MAC" required value="<?=$TDevice["sport"] ? $_GeniSys->_helpers->oDecrypt($TDevice["sport"]) : ""; ?>">
-                                                        <span class="help-block"> MAC of TASS camera device</span>
+                                                        <input type="text" class="form-control hider" id="sport" name="sport" placeholder="GeniSysAI Device MAC" required value="<?=$TDevice["sport"] ? $_GeniSys->_helpers->oDecrypt($TDevice["sport"]) : ""; ?>">
+                                                        <span class="help-block"> MAC of GeniSysAI camera device</span>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="name" class="control-label mb-10">Stream Directory</label>
-                                                        <input type="text" class="form-control hider" id="strdir" name="strdir" placeholder="TASS Device Stream Directory" required value="<?=$TDevice["strdir"] ? $_GeniSys->_helpers->oDecrypt($TDevice["strdir"]) : ""; ?>">
-                                                        <span class="help-block"> Name of TASS camera stream directory</span>
+                                                        <input type="text" class="form-control hider" id="strdir" name="strdir" placeholder="GeniSysAI Device Stream Directory" required value="<?=$TDevice["strdir"] ? $_GeniSys->_helpers->oDecrypt($TDevice["strdir"]) : ""; ?>">
+                                                        <span class="help-block"> Name of GeniSysAI camera stream directory</span>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="name" class="control-label mb-10">Stream File</label>
-                                                        <input type="text" class="form-control hider" id="sportf" name="sportf" placeholder="TASS Device Stream File" required value="<?=$TDevice["sportf"] ? $_GeniSys->_helpers->oDecrypt($TDevice["sportf"]) : ""; ?>">
-                                                        <span class="help-block"> Name of TASS camera stream file (.mjpg)</span>
+                                                        <input type="text" class="form-control hider" id="sportf" name="sportf" placeholder="GeniSysAI Device Stream File" required value="<?=$TDevice["sportf"] ? $_GeniSys->_helpers->oDecrypt($TDevice["sportf"]) : ""; ?>">
+                                                        <span class="help-block"> Name of GeniSysAI camera stream file (.mjpg)</span>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="name" class="control-label mb-10">Socket Port</label>
-                                                        <input type="text" class="form-control hider" id="sckport" name="sckport" placeholder="TASS Device MAC" required value="<?=$TDevice["sckport"] ? $_GeniSys->_helpers->oDecrypt($TDevice["sckport"]) : ""; ?>">
-                                                        <span class="help-block"> Port of TASS camera socket stream</span>
+                                                        <input type="text" class="form-control hider" id="sckport" name="sckport" placeholder="GeniSysAI Device MAC" required value="<?=$TDevice["sckport"] ? $_GeniSys->_helpers->oDecrypt($TDevice["sckport"]) : ""; ?>">
+                                                        <span class="help-block"> Port of GeniSysAI camera socket stream</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -241,16 +250,18 @@ list($lat, $lng) = $TASS->getMapMarkers($TDevice);
                                             <i class="fa fa-microchip data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idecpuU"><?=$TDevice["cpu"]; ?></span>% &nbsp;&nbsp;
                                             <i class="zmdi zmdi-memory data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idememU"><?=$TDevice["mem"]; ?></span>% &nbsp;&nbsp;
                                             <i class="far fa-hdd data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idehddU"><?=$TDevice["hdd"]; ?></span>% &nbsp;&nbsp;
-                                            <i class="fa fa-thermometer-quarter data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idetempU"><?=$TDevice["tempr"]; ?></span>°C 
+                                            <i class="fa fa-thermometer-quarter data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idetempU"><?=$TDevice["tempr"]; ?></span>°C
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="panel panel-default card-view panel-refresh">
+
+
+                        <div class="panel panel-default card-view panel-refresh <?=$TDevice["type"] == "API" ? "hide" : ""; ?>">
                             <div class="panel-wrapper collapse in">
                                 <div class="panel-body">
-                                    <img src="<?=$domain; ?>/Security/TASS/<?=$_GeniSys->_helpers->oDecrypt($TDevice["strdir"]); ?>/<?=$_GeniSys->_helpers->oDecrypt($TDevice["sportf"]); ?>" style="width: 100%;" />
+                                    <img src="<?=$domain; ?>/Security/GeniSysAI/<?=$_GeniSys->_helpers->oDecrypt($TDevice["strdir"]); ?>/<?=$_GeniSys->_helpers->oDecrypt($TDevice["sportf"]); ?>" style="width: 100%;" />
                                 </div>
                             </div>
                         </div>
@@ -297,15 +308,15 @@ list($lat, $lng) = $TASS->getMapMarkers($TDevice);
         </div>
 
         <?php  include dirname(__FILE__) . '/../../Includes/JS.php'; ?>
-        
+
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/Security/TASS/Classes/TASS.js"></script>
+        <script type="text/javascript" src="<?=$domain; ?>/Security/GeniSysAI/Classes/GeniSysAI.js"></script>
 
 		<script type="text/javascript">
 
             $(document).ready(function() {
-                TASS.HideInputs();
+                GeniSysAI.HideInputs();
             });
 
 			function initMap() {
@@ -323,7 +334,7 @@ list($lat, $lng) = $TASS->getMapMarkers($TDevice);
                     title: 'Device '
                 });
             }
-            
+
 		</script>
 		<script async defer src="https://maps.googleapis.com/maps/api/js?key=<?=$_GeniSys->_helpers->oDecrypt($_GeniSys->_confs["gmaps"]); ?>&callback=initMap"></script>
 

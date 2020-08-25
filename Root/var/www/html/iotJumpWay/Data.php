@@ -37,7 +37,7 @@ $Location = $iotJumpWay->getLocation($LId);
 		<link type="image/x-icon" rel="apple-touch-icon" href="<?=$domain; ?>/img/favicon.png" />
 
 		<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
-		<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>		
+		<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
 		<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
@@ -45,22 +45,22 @@ $Location = $iotJumpWay->getLocation($LId);
 	</head>
 
 	<body id="GeniSysAI">
-		
+
 		<div class="preloader-it">
 			<div class="la-anim-1"></div>
 		</div>
-		
+
 		<div class="wrapper theme-6-active pimary-color-pink">
-			
+
 			<?php include dirname(__FILE__) . '/../Includes/Nav.php'; ?>
 			<?php include dirname(__FILE__) . '/../Includes/LeftNav.php'; ?>
 			<?php include dirname(__FILE__) . '/../Includes/RightNav.php'; ?>
 
 			<div class="page-wrapper">
 			<div class="container-fluid pt-25">
-			
+
 				<?php include dirname(__FILE__) . '/../Includes/Stats.php'; ?>
-				
+
 				<div class="row">
 					<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
 						<div class="panel panel-default card-view panel-refresh">
@@ -80,10 +80,10 @@ $Location = $iotJumpWay->getLocation($LId);
 									<?php include dirname(__FILE__) . '/../iotJumpWay/Includes/iotJumpWay.php'; ?>
 								</div>
 							</div>
-						</div>	
+						</div>
 					</div>
 				</div>
-				
+
 				<div class="row">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 						<div class="panel panel-default card-view panel-refresh">
@@ -91,7 +91,7 @@ $Location = $iotJumpWay->getLocation($LId);
 								<div class="pull-left">
 									<h6 class="panel-title txt-dark">iotJumpWay Location Device/Application Life</h6>
 								</div>
-								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/Data/Life"><i class="fa fa-eye pull-left"></i> View All Life Data</a></div> 
+								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/Data/Life"><i class="fa fa-eye pull-left"></i> View All Life Data</a></div>
 								<div class="clearfix"></div>
 							</div>
 							<div class="panel-wrapper collapse in">
@@ -110,7 +110,7 @@ $Location = $iotJumpWay->getLocation($LId);
 												</thead>
 												<tbody>
 
-												<?php 
+												<?php
 													$Life = $iotJumpWay->retrieveLife(5);
 													if($Life["Response"] == "OK"):
 														foreach($Life["ResponseData"] as $key => $value):
@@ -140,7 +140,7 @@ $Location = $iotJumpWay->getLocation($LId);
 													<td><?=$value->Time;?> </td>
 												  </tr>
 
-												<?php 
+												<?php
 														endforeach;
 													endif;
 												?>
@@ -153,7 +153,7 @@ $Location = $iotJumpWay->getLocation($LId);
 						</div>
 					</div>
 				</div>
-				
+
 				<div class="row">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 						<div class="panel panel-default card-view panel-refresh">
@@ -180,7 +180,7 @@ $Location = $iotJumpWay->getLocation($LId);
 												</thead>
 												<tbody>
 
-												<?php 
+												<?php
 													$Statuses = $iotJumpWay->retrieveStatuses(5);
 													if($Statuses["Response"] == "OK"):
 														foreach($Statuses["ResponseData"] as $key => $value):
@@ -203,7 +203,7 @@ $Location = $iotJumpWay->getLocation($LId);
 													<td><?=$value->Time;?> </td>
 												  </tr>
 
-												<?php 
+												<?php
 														endforeach;
 													endif;
 												?>
@@ -216,7 +216,7 @@ $Location = $iotJumpWay->getLocation($LId);
 						</div>
 					</div>
 				</div>
-				
+
 				<div class="row">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 						<div class="panel panel-default card-view panel-refresh">
@@ -245,7 +245,7 @@ $Location = $iotJumpWay->getLocation($LId);
 												</thead>
 												<tbody>
 
-												<?php 
+												<?php
 													$Commands = $iotJumpWay->retrieveCommands();
 													if($Commands["Response"] == "OK"):
 														foreach($Commands["ResponseData"] as $key => $value):
@@ -270,7 +270,7 @@ $Location = $iotJumpWay->getLocation($LId);
 													<td><?=$value->Time;?> </td>
 												  </tr>
 
-												<?php 
+												<?php
 														endforeach;
 													endif;
 												?>
@@ -284,7 +284,7 @@ $Location = $iotJumpWay->getLocation($LId);
 						</div>
 					</div>
 				</div>
-				
+
 				<div class="row">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 						<div class="panel panel-default card-view panel-refresh">
@@ -314,7 +314,7 @@ $Location = $iotJumpWay->getLocation($LId);
 												</thead>
 												<tbody>
 
-												<?php 
+												<?php
 													$Sensors = $iotJumpWay->retrieveSensors();
 													if($Sensors["Response"] == "OK"):
 														foreach($Sensors["ResponseData"] as $key => $value):
@@ -329,12 +329,25 @@ $Location = $iotJumpWay->getLocation($LId);
 													</td>
 													<td><?=$value->Type;?></td>
 													<td><?=$value->Sensor;?></td>
-													<td><?=$value->Value;?></td>
+													<td>
+														<?php
+															if(($value->Sensor == "Facial API" || $value->Sensor == "Foscam Camera" || $value->Sensor == "USB Camera") && is_array($value->Value)):
+																foreach($value->Value AS $key => $val):
+																	 echo  $val[0] == 0 ? "<strong>Identification: </strong> Intruder<br />" :"<strong>Identification: </strong> User #" . $val[0] . "<br />";
+																	echo "<strong>Distance: </strong> " . $val[1] . "<br />";
+																	echo "<strong>Message: </strong> " . $val[2] . "<br /><br />";
+																endforeach;
+															else:
+																echo $value->Value;
+															endif;
+														?>
+
+													</td>
 													<td><?=$value->Message;?></td>
 													<td><?=$value->Time;?> </td>
 												  </tr>
 
-												<?php 
+												<?php
 														endforeach;
 													endif;
 												?>
@@ -348,15 +361,15 @@ $Location = $iotJumpWay->getLocation($LId);
 						</div>
 					</div>
 				</div>
-				
+
 			</div>
-			
+
 			<?php include dirname(__FILE__) . '/../Includes/Footer.php'; ?>
-			
+
 		</div>
 
 		<?php  include dirname(__FILE__) . '/../Includes/JS.php'; ?>
-		
+
 		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
 		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
 

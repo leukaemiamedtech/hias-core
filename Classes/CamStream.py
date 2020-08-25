@@ -42,7 +42,7 @@ class CamStream(Thread):
         self.Helpers = Helpers("CamStream")
 
         self.Helpers.logger.info("CamStream Helper Class initialization complete.")
-        
+
     def run(self):
         """ Runs the module. """
         global capture
@@ -54,7 +54,7 @@ class CamStream(Thread):
         # Starts the socket module
         self.Socket = Socket("CamStream")
         # Subscribes to the socket server
-        capture = self.Socket.subscribe(self.Helpers.confs["tass"]["socket"]["ip"], 
+        capture = self.Socket.subscribe(self.Helpers.confs["tass"]["socket"]["ip"],
                                      self.Helpers.confs["tass"]["socket"]["port"])
 
         try:
@@ -66,7 +66,7 @@ class CamStream(Thread):
             # Closes socket server
             capture.close()
             exit()
-        
+
 class CamHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         # Responds to .mjpg requests
@@ -75,7 +75,7 @@ class CamHandler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', 'multipart/x-mixed-replace; boundary=--jpgboundary')
             self.end_headers()
-            
+
             try:
                 while True:
                     # Gets processed frame from socket server
@@ -102,12 +102,12 @@ class CamHandler(BaseHTTPRequestHandler):
                 print("errror " + str(e))
                 return
             return
-        
+
         else:
             # Sets headers and response
             self.send_response(403)
             self.send_header('Content-type','multipart/x-mixed-replace; boundary=--jpgboundary')
             self.end_headers()
-            
+
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 	"""Handle requests in a separate thread."""

@@ -1,8 +1,8 @@
-# Peter Moss Leukemia AI Research
+# Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss
 ## HIAS - Hospital Intelligent Automation System
 [![HIAS - Hospital Intelligent Automation System](Media/Images/HIAS-Hospital-Intelligent-Automation-System.png)](https://github.com/LeukemiaAiResearch/HIAS)
 
-[![VERSION](https://img.shields.io/badge/VERSION-0.5.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.5.0) [![DEV BRANCH](https://img.shields.io/badge/DEV%20BRANCH-0.6.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.6.0) [![Contributions Welcome!](https://img.shields.io/badge/Contributions-Welcome-lightgrey.svg)](CONTRIBUTING.md)  [![Issues](https://img.shields.io/badge/Issues-Welcome-lightgrey.svg)](issues) [![LICENSE](https://img.shields.io/badge/LICENSE-MIT-blue.svg)](LICENSE)
+[![VERSION](https://img.shields.io/badge/VERSION-0.6.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.6.0) [![DEV BRANCH](https://img.shields.io/badge/DEV%20BRANCH-0.7.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.7.0) [![Contributions Welcome!](https://img.shields.io/badge/Contributions-Welcome-lightgrey.svg)](CONTRIBUTING.md)  [![Issues](https://img.shields.io/badge/Issues-Welcome-lightgrey.svg)](issues) [![LICENSE](https://img.shields.io/badge/LICENSE-MIT-blue.svg)](LICENSE)
 
 &nbsp;
 
@@ -39,9 +39,9 @@
 
 # Introduction
 
-The **Peter Moss Leukemia AI Research HIAS Network** is an open-source Hospital Intelligent Automation System. The system's server powers an intelligent network using a locally hosted, encrypted IoT server and proxy. 
+The **Peter Moss Leukemia AI Research HIAS Network** is an open-source Hospital Intelligent Automation System. The system's server powers an intelligent network using a locally hosted, encrypted IoT server and proxy.
 
-The server UI provides the capabalities of managing a network of open-soruce intelligent devices and applications. These devices/applications and databases all run and communicate on the local network. This means that premises have more control and security when it comes to their hardware, data and storage.   
+The server UI provides the capabalities of managing a network of open-soruce intelligent devices and applications. These devices/applications and databases all run and communicate on the local network. This means that premises have more control and security when it comes to their hardware, data and storage.
 
 __This project is a proof of concept, and is still a work in progress, however our plan is to work with a local medical/health center or hospital to do a pilot project.__
 
@@ -49,29 +49,29 @@ __This project is a proof of concept, and is still a work in progress, however o
 
 # Key Features
 
-- **Local Web Server (Complete)** 
+- **Local Web Server (Complete)**
     - Locally hosted webserver using NGINX.
 - **Proxy (Complete)**
     - Secure access to local devices from the outside world.
-- **High Grade SSL Encryption (Complete)** 
+- **High Grade SSL Encryption (Complete)**
     - High grade (A+) encryption for the web server, proxy and network.
-- **Server UI (Work In Progress)** 
+- **Server UI (Work In Progress)**
     - A control panel to monitor and manage your HIAS network.
-- **Local Samba Server (Complete)** 
+- **Local Samba Server (Complete)**
     - A local Samba file server allowing controlled individual and group access to files on your local network.
-- **Local IoT Broker (Complete)** 
+- **Local IoT Broker (Complete)**
     - Local and private MQTT/Websockets broker based on the  [iotJumpway Broker](https://github.com/iotJumpway/Broker "iotJumpway Broker").
-- **Facial Identification Server (Complete)** 
+- **Facial Identification Server (Complete)**
     - Facial identification systems based on [tassAI](https://github.com/TASS-AI/Tass-History "tassAI").
-- **Natural Language Understanding (NLU) Server (In Redevelopment)** 
+- **Natural Language Understanding (NLU) Server (In Redevelopment)**
     - Natural Language Understanding server based on [GeniSysAI](https://github.com/GeniSysAI/ "GeniSysAI").
-- **HIS/HMS (In Development)** 
+- **HIS/HMS (In Development)**
     - Hospital management system providing online tools for managing and running day to day activities and resources for the hospital.
 
 &nbsp;
 
 # HIAS Network Map
-![HIAS Network Map](Media/Images/HIAS-Network.png) 
+![HIAS Network Map](Media/Images/HIAS-Network.png)
 
 &nbsp;
 
@@ -92,9 +92,9 @@ HIAS users can be created using the HIS Staff system. Users can be granted admin
 # HIAS IoT Network
 ![HIAS IoT Network](Media/Images/HIAS-IoT-Dashboard.png)
 
-The HIAS IoT network is powered by a new, fully open-source version of the [iotJumpWay](https://www.iotJumpWay.com "iotJumpWay"). The HIAS iotJumpway dashboard is your control panel for managing all of your network iotJumpWay zones, devices, sensors/actuators and applications. 
+The HIAS IoT network is powered by a new, fully open-source version of the [iotJumpWay](https://www.iotJumpWay.com "iotJumpWay"). The HIAS iotJumpway dashboard is your control panel for managing all of your network iotJumpWay zones, devices, sensors/actuators and applications.
 
-The modular systems that we build to be compatible with this network will all create their own iotJumpWay applications etc during installation, you will be able to manage all of these applications and devices through the iotJumpWay dashboard. 
+The modular systems that we build to be compatible with this network will all create their own iotJumpWay applications etc during installation, you will be able to manage all of these applications and devices through the iotJumpWay dashboard.
 
 A HIAS network is represented by an iotJumpWay location. Within each location you can have multiple zones, devices and applications.
 
@@ -108,14 +108,14 @@ iotJumpWay Zones represent a room or area within a location. For instance, in a 
 ## IoT Network Devices
 ![HIAS IoT Network Devices](Media/Images/HIAS-IoT-Devices.png)
 
-iotJumpWay Devices represent physical devices on the network. Each device is attached to a location and zone, allowing staff to know where each of their devices are, soon all devices will publish their location to the system allowing for real-time tracking within the network. 
+iotJumpWay Devices represent physical devices on the network. Each device is attached to a location and zone, allowing staff to know where each of their devices are, soon all devices will publish their location to the system allowing for real-time tracking within the network.
 
 ![HIAS IoT Network Devices](Media/Images/HIAS-IoT-Devices-Edit.png)
 
 ## IoT Network Sensors/Actuators
 ![HIAS IoT Network Sensors/Actuators](Media/Images/HIAS-IoT-Sensors.png)
 
-iotJumpWay Sensors & Actuators represent physical sensors and actuators included on network devices and allows direct communication with each sensor/actuator. 
+iotJumpWay Sensors & Actuators represent physical sensors and actuators included on network devices and allows direct communication with each sensor/actuator.
 
 **This feature is still in development**
 
@@ -124,7 +124,7 @@ iotJumpWay Sensors & Actuators represent physical sensors and actuators included
 
 iotJumpWay Devices represent applications that can communicate with the  network. Each application is attached to a location, soon all applications will publish their location to the system allowing for real-time tracking.
 
-![HIAS IoT Network Applications](Media/Images/HIAS-IoT-Applications-Edit.png) 
+![HIAS IoT Network Applications](Media/Images/HIAS-IoT-Applications-Edit.png)
 
 ## IoT Network Data
 ![HIAS IoT Network Data](Media/Images/HIAS-IoT-Data.png)
@@ -136,26 +136,26 @@ All data sent from devices and applications connected to the HIAS network is sto
 # HIAS Facial Recognition
 ![HIAS Facial Recognition](Media/Images/HIAS-TASS.png)
 
-The HIAS facial recognition system is based on [tassAI](https://www.facebook.com/TASSNetwork/ "tassAI"). The facial recognition system uses cameras attached to devices on the network and processes frames from the cameras in real-time, before streaming the processed framed to a local server endpoint. Multiple TASS devices can be configured and there will soon be integration with popular IP cameras like Foscam etc. 
+The HIAS facial recognition system is based on [tassAI](https://www.facebook.com/TASSNetwork/ "tassAI"). The facial recognition system uses cameras attached to devices on the network and processes frames from the cameras in real-time, before streaming the processed framed to a local server endpoint. Multiple TASS devices can be configured and there will soon be integration with popular IP cameras like Foscam etc.
 
 ![HIAS Facial Recognition](Media/Images/HIAS-TASS-Edit.png)
 
-&nbsp; 
+&nbsp;
 
 # HIAS Data Analysis
 
-The HIAS network hosts a number of AI models that monitor data from local and external sources to make predictions based on the raw data. You can monitor real-time data using the HIAS UI. 
+The HIAS network hosts a number of AI models that monitor data from local and external sources to make predictions based on the raw data. You can monitor real-time data using the HIAS UI.
 
 ## HIAS COVID-19 Data Analysis
 ![HIAS COVID-19 Data Analysis](Media/Images/HIAS-Data-Analysis-COVID-19.png)
 
-Functionality is now available to set up a basic COVID-19 tracker that will power the graphs in the HIAS UI. This system pulls data from the [COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19 "COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University") and displays the stats in the UI. 
+Functionality is now available to set up a basic COVID-19 tracker that will power the graphs in the HIAS UI. This system pulls data from the [COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19 "COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University") and displays the stats in the UI.
 
 &nbsp;
 
 # HIAS Detection Systems
 
-Using AI models on the HIAS network, the UI can be used to classify image based samples for diseases such as COVID-19 and Leukemia. 
+Using AI models on the HIAS network, the UI can be used to classify image based samples for diseases such as COVID-19 and Leukemia.
 
 ## COVID-19 Detection System (CNN)
 ![HIAS COVID-19 Diagnosis (CNN)](Media/Images/HIAS-COVID-19-Detection-System.png)
@@ -170,13 +170,13 @@ The HIAS Acute Lymphoblastic Leukemia Detection System (CNN) is based on the pro
 &nbsp;
 
 # EMAR / EMAR Mini
-![EMAR](Media/Images/HIAS-Robotics-EMAR.png) 
+![EMAR](Media/Images/HIAS-Robotics-EMAR.png)
 
-Functionality to update, monitor and control [EMAR](https://github.com/COVID-19-AI-Research-Project/EMAR "EMAR")/[EMAR Mini](https://github.com/COVID-19-AI-Research-Project/EMAR-Mini "EMAR Mini") is now available. These features allow you to create EMAR/EMAR Mini devices, update the settings, monitor the camera streams and send commands to the robotic arm to move it. 
+Functionality to update, monitor and control [EMAR](https://github.com/COVID-19-AI-Research-Project/EMAR "EMAR")/[EMAR Mini](https://github.com/COVID-19-AI-Research-Project/EMAR-Mini "EMAR Mini") is now available. These features allow you to create EMAR/EMAR Mini devices, update the settings, monitor the camera streams and send commands to the robotic arm to move it.
 
-![EMAR](Media/Images/HIAS-Robotics-EMAR-Edit.png) 
+![EMAR](Media/Images/HIAS-Robotics-EMAR-Edit.png)
 
-![EMAR](Media/Images/HIAS-Robotics-EMAR-Edit-2.png) 
+![EMAR](Media/Images/HIAS-Robotics-EMAR-Edit-2.png)
 
 ![EMAR](Media/Images/HIAS-Robotics-EMAR-Edit-3.png)
 
@@ -199,6 +199,7 @@ The HIAS network is made up of modular, intelligent devices. Below are some of t
 | [COVID-19 AI Research Project](https://github.com/COVID-19-AI-Research-Project "COVID-19 AI Research Project") | [EMAR Mini](https://github.com/COVID-19-AI-Research-Project/EMAR-Mini "EMAR Mini") | EMAR Mini is a minature version of [EMAR](https://github.com/COVID-19-AI-Research-Project/EMAR "EMAR"), an open-source Emergency Robot Assistant to assist doctors, nurses and hospital staff during the COVID-19 pandemic, and similar situations we may face in the future. |  [Adam Milton-Barker](https://www.leukemiaresearchassociation.ai.com/team/adam-milton-barker "Adam Milton-Barker") |
 | [COVID-19 AI Research Project](https://github.com/COVID-19-AI-Research-Project "COVID-19 AI Research Project") | [COVID-19 Tensorflow DenseNet Classifier For Raspberry Pi 4](https://github.com/COVID-19-AI-Research-Project/AI-Classification/tree/master/Projects/3 "COVID-19 Tensorflow DenseNet Classifier For Raspberry Pi 4") |  Uses DenseNet and [SARS-COV-2 Ct-Scan Dataset](https://www.kaggle.com/plameneduardo/sarscov2-ctscan-dataset "SARS-COV-2 Ct-Scan Dataset"), a large dataset of CT scans for SARS-CoV-2 (COVID-19) identification created by our collaborators, Plamenlancaster: [Professor Plamen Angelov](https://www.lancaster.ac.uk/lira/people/#d.en.397371) from [Lancaster University](https://www.lancaster.ac.uk/)/ Centre Director @ [Lira](https://www.lancaster.ac.uk/lira/), & his researcher, [Eduardo Soares PhD](https://www.lancaster.ac.uk/sci-tech/about-us/people/eduardo-almeida-soares) |  [Adam Milton-Barker](https://www.leukemiaresearchassociation.ai.com/team/adam-milton-barker "Adam Milton-Barker") |
 | [Acute Myeloid & Lymphoblastic Leukemia AI Research Project](https://github.com/AMLResearchProject "Acute Myeloid & Lymphoblastic Leukemia AI Research Project") | [Acute Lymphoblastic Leukemia Tensorflow CNN For Raspberry Pi 4](https://github.com/AMLResearchProject/ALL-Tensorflow-2020/tree/master/RPI4 "Acute Lymphoblastic Leukemia Tensorflow CNN For Raspberry Pi 4") |  Uses an Acute Lymphoblastic Leukemia CNN based on the proposed architecture in the [Acute Leukemia Classification Using Convolution Neural Network In Clinical Decision Support System](https://airccj.org/CSCP/vol7/csit77505.pdf) paper, using the [Acute Lymphoblastic Leukemia Image Database for Image Processing dataset](https://homes.di.unimi.it/scotti/all). |  [Adam Milton-Barker](https://www.leukemiaresearchassociation.ai.com/team/adam-milton-barker "Adam Milton-Barker") |
+| [Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss](https://github.com/LeukemiaAiResearch "Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss") | [GeniSysAI](https://github.com/LeukemiaAiResearch/GeniSysAI "GeniSysAI") |  HIAS GeniSysAI provides Natural Language Understanding & Facial Recognition applications for the HIAS network. The projects provided in this repository are based on the original GeniSysAI projects. |  [Adam Milton-Barker](https://www.leukemiaresearchassociation.ai.com/team/adam-milton-barker "Adam Milton-Barker") |
 
 &nbsp;
 
@@ -209,13 +210,13 @@ The template used for the UI in this project is a commercial template by  [Hence
 
 # Contributing
 
-The Peter Moss Acute Myeloid & Lymphoblastic Leukemia AI Research project encourages and welcomes code contributions, bug fixes and enhancements from the Github.
+Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss encourages and welcomes code contributions, bug fixes and enhancements from the Github community.
 
 Please read the [CONTRIBUTING](CONTRIBUTING.md "CONTRIBUTING") document for a full guide to forking our repositories and submitting your pull requests. You will also find information about our code of conduct on this page.
 
 ## Contributors
 
-- **AUTHOR:** [Adam Milton-Barker](https://www.leukemiaresearchassociation.ai.com/team/adam-milton-barker "Adam Milton-Barker") - [Peter Moss Leukemia AI Research](https://www.leukemiaresearchassociation.ai "Peter Moss Leukemia AI Research") Founder & Intel Software Innovator, Sabadell, Spain
+- [Adam Milton-Barker](https://www.leukemiaresearchassociation.ai.com/team/adam-milton-barker "Adam Milton-Barker") - [Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss](https://www.leukemiaresearchassociation.ai "Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss") President/Founder & Intel Software Innovator, Sabadell, Spain
 
 &nbsp;
 

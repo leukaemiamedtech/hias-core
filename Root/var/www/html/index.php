@@ -6,7 +6,6 @@ $pageDetails = [
 
 include dirname(__FILE__) . '/../Classes/Core/init.php';
 include dirname(__FILE__) . '/../Classes/Core/GeniSys.php';
-
 ?>
 
 <!DOCTYPE html>
@@ -26,18 +25,18 @@ include dirname(__FILE__) . '/../Classes/Core/GeniSys.php';
 		<link type="image/x-icon" rel="icon" href="<?=$domain; ?>/img/favicon.png" />
 		<link type="image/x-icon" rel="shortcut icon" href="<?=$domain; ?>/img/favicon.png" />
 		<link type="image/x-icon" rel="apple-touch-icon" href="<?=$domain; ?>/img/favicon.png" />
-		
+
 		<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
-		
+
 		<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
-		
+
 		<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
 	</head>
 	<body id="GeniSysAI">
 		<div class="preloader-it">
 			<div class="la-anim-1"></div>
 		</div>
-				
+
 		<div class="wrapper pa-0">
 			<header class="sp-header">
 				<div class="sp-logo-wrap pull-left">
@@ -49,10 +48,10 @@ include dirname(__FILE__) . '/../Classes/Core/GeniSys.php';
 				<div class="form-group mb-0 pull-right"></div>
 				<div class="clearfix"></div>
 			</header>
-		
+
 			<div class="page-wrapper pa-0 ma-0 auth-page">
 				<div class="container-fluid">
-				
+
 					<div class="table-struct full-width full-height">
 						<div class="table-cell vertical-align-middle auth-form-wrap">
 							<div class="auth-form  ml-auto mr-auto no-float card-view pt-30 pb-30">
@@ -61,7 +60,7 @@ include dirname(__FILE__) . '/../Classes/Core/GeniSys.php';
 										<div class="mb-30">
 											<h3 class="text-center txt-dark mb-10">Sign in to HIAS</h3>
 											<h6 class="text-center nonecase-font txt-grey">Enter your details below</h6>
-										</div>	
+										</div>
 										<div class="form-wrap">
 											<form role="form" id="Login">
 												<div class="form-group">
@@ -83,14 +82,14 @@ include dirname(__FILE__) . '/../Classes/Core/GeniSys.php';
 												</div>
 											</form>
 										</div>
-									</div>	
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-					
+
 				</div>
-				
+
 			</div>
 			<div id="responsive-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
 				<div class="modal-dialog">
@@ -106,7 +105,7 @@ include dirname(__FILE__) . '/../Classes/Core/GeniSys.php';
 					</div>
 				</div>
 			</div>
-			
+
 		</div>
 
         <?php  include dirname(__FILE__) . '/Includes/JS.php'; ?>

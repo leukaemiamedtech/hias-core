@@ -1,16 +1,16 @@
 var iotJumpWayWebSoc = {
     client: null,
     connected: false,
-    host: "",
+    host: "YourServerDomainName",
     port: 9001,
     useTLS: true,
     cleansession: true,
     mqttOptions: {
-        locationID: 0,
-        applicationID: 0,
-        applicationName: "",
-        userName: "",
-        passwd: ""
+        locationID: YourLocationID,
+        applicationID: YourApplicationID,
+        applicationName: "YourApplicationName",
+        userName: "YourMqttUser",
+        passwd: "YourMqttPassword"
     },
     connect: function() {
         var reconnectTimeout = 2000;
