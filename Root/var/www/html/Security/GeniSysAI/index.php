@@ -2,15 +2,15 @@
 
 $pageDetails = [
     "PageID" => "Security",
-    "SubPageID" => "TASS"
+    "SubPageID" => "GeniSysAI"
 ];
 
 include dirname(__FILE__) . '/../../../Classes/Core/init.php';
 include dirname(__FILE__) . '/../../../Classes/Core/GeniSys.php';
-include dirname(__FILE__) . '/../../Security/TASS/Classes/TASS.php';
+include dirname(__FILE__) . '/../../Security/GeniSysAI/Classes/GeniSysAI.php';
 
 $_GeniSysAi->checkSession();
-$TDevices = $TASS->getDevices();
+$TDevices = $GeniSysAI->getDevices();
 
 ?>
 
@@ -90,9 +90,9 @@ $TDevices = $TASS->getDevices();
                         <div class="panel panel-default card-view panel-refresh">
                             <div class="panel-heading">
                                 <div class="pull-left">
-                                    <h6 class="panel-title txt-dark">TASS Security Camera Devices</h6>
+                                    <h6 class="panel-title txt-dark">GeniSysAI Security Camera Devices</h6>
                                 </div>
-                                <div class="pull-right"><a href="<?=$domain; ?>/Security/TASS/Create"><i
+                                <div class="pull-right"><a href="<?=$domain; ?>/Security/GeniSysAI/Create"><i
                                             class="fa fa-plus"></i></a></div>
                                 <div class="clearfix"></div>
                             </div>
@@ -111,7 +111,7 @@ $TDevices = $TASS->getDevices();
                                                 </thead>
                                                 <tbody>
 
-                                                    <?php 
+                                                    <?php
 													if(count($TDevices)):
 														foreach($TDevices as $key => $value):
 
@@ -131,10 +131,10 @@ $TDevices = $TASS->getDevices();
                                                                 <?=$value["status"] == "OFFLINE" ? "OFFLINE" : "ONLINE"; ?>
                                                             </div>
                                                         </td>
-                                                        <td><a href="<?=$domain; ?>/Security/TASS/<?=$value["id"];?>/"><i class="fa fa-edit"></i></a></a></td>
+                                                        <td><a href="<?=$domain; ?>/Security/GeniSysAI/<?=$value["id"];?>/"><i class="fa fa-edit"></i></a></a></td>
                                                     </tr>
 
-                                                    <?php 
+                                                    <?php
 														endforeach;
 													endif;
 												?>

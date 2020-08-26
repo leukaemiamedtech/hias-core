@@ -64,7 +64,7 @@ list($dev1On, $dev1Off) = $iotJumpWay->getStatusShow($Device["status"]);
 
         <div class="page-wrapper">
             <div class="container-fluid pt-25">
-            
+
                 <?php include dirname(__FILE__) . '/../Includes/Stats.php'; ?>
 
                 <div class="row">
@@ -118,7 +118,7 @@ list($dev1On, $dev1Off) = $iotJumpWay->getStatusShow($Device["status"]);
                                                         <select class="form-control" id="lid" name="lid" required>
                                                             <option value="">PLEASE SELECT</option>
 
-                                                            <?php 
+                                                            <?php
                                                                 if(count($Locations)):
                                                                     foreach($Locations as $key => $value):
                                                             ?>
@@ -127,7 +127,7 @@ list($dev1On, $dev1Off) = $iotJumpWay->getStatusShow($Device["status"]);
                                                                 <?=$Device["lid"] == $value["id"] ? " selected " : ""; ?>>
                                                                 #<?=$value["id"]; ?>: <?=$value["name"]; ?></option>
 
-                                                            <?php 
+                                                            <?php
                                                                     endforeach;
                                                                 endif;
                                                             ?>
@@ -140,7 +140,7 @@ list($dev1On, $dev1Off) = $iotJumpWay->getStatusShow($Device["status"]);
                                                         <select class="form-control" id="zid" name="zid" required>
                                                             <option value="">PLEASE SELECT</option>
 
-                                                            <?php 
+                                                            <?php
                                                                 if(count($Zones)):
                                                                     foreach($Zones as $key => $value):
                                                             ?>
@@ -149,7 +149,7 @@ list($dev1On, $dev1Off) = $iotJumpWay->getStatusShow($Device["status"]);
                                                                 <?=$Device["zid"] == $value["id"] ? " selected " : ""; ?>>
                                                                 #<?=$value["id"]; ?>: <?=$value["zn"]; ?></option>
 
-                                                            <?php 
+                                                            <?php
                                                                     endforeach;
                                                                 endif;
                                                             ?>
@@ -179,8 +179,7 @@ list($dev1On, $dev1Off) = $iotJumpWay->getStatusShow($Device["status"]);
                                             <div class="form-group mb-0">
                                                 <input type="hidden" class="form-control" id="update_device" name="update_device" required value="1">
                                                 <input type="hidden" class="form-control" id="id" name="id" required value="<?=$Device["id"]; ?>">
-                                                <button type="submit" class="btn btn-success btn-anim" id="device_update"><i class="icon-rocket"></i><span
-                                                        class="btn-text">submit</span></button>
+                                                <button type="submit" class="btn btn-success btn-anim" id="device_update"><i class="icon-rocket"></i><span class="btn-text">submit</span></button>
                                             </div>
                                         </form>
                                     </div>
@@ -199,7 +198,7 @@ list($dev1On, $dev1Off) = $iotJumpWay->getStatusShow($Device["status"]);
                                             <i class="fa fa-microchip data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idecpuU"><?=$Device["cpu"]; ?></span>% &nbsp;&nbsp;
                                             <i class="zmdi zmdi-memory data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idememU"><?=$Device["mem"]; ?></span>% &nbsp;&nbsp;
                                             <i class="far fa-hdd data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idehddU"><?=$Device["hdd"]; ?></span>% &nbsp;&nbsp;
-                                            <i class="fa fa-thermometer-quarter data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idetempU"><?=$Device["tempr"]; ?></span>°C 
+                                            <i class="fa fa-thermometer-quarter data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idetempU"><?=$Device["tempr"]; ?></span>°C
                                         </div>
                                     </div>
                                 </div>
@@ -221,8 +220,7 @@ list($dev1On, $dev1Off) = $iotJumpWay->getStatusShow($Device["status"]);
                         <div class="panel panel-default card-view panel-refresh">
                             <div class="panel-wrapper collapse in">
                                 <div class="panel-body">
-                                    <div class="pull-right"><a href="javascipt:void(0)" id="reset_mqtt"><i
-                                                class="fa fa-refresh"></i> Reset MQTT Password</a></div>
+                                    <div class="pull-right"><a href="javascipt:void(0)" id="reset_dvc_mqtt"><i class="fa fa-refresh"></i> Reset MQTT Password</a></div>
                                     <div class="form-group">
                                         <label class="control-label col-md-5">MQTT Username</label>
                                         <div class="col-md-9">
@@ -249,7 +247,7 @@ list($dev1On, $dev1Off) = $iotJumpWay->getStatusShow($Device["status"]);
         </div>
 
         <?php  include dirname(__FILE__) . '/../Includes/JS.php'; ?>
-        
+
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWayUI.js"></script>
@@ -259,7 +257,7 @@ list($dev1On, $dev1Off) = $iotJumpWay->getStatusShow($Device["status"]);
                 iotJumpwayUI.HideDeviceInputs();
                 iotJumpwayUI.StartDeviceLife();
             });
-            
+
             function initMap() {
 
                 var latlng = new google.maps.LatLng("<?=floatval($Device["lt"]); ?>", "<?=floatval($Device["lg"]); ?>");
@@ -275,9 +273,9 @@ list($dev1On, $dev1Off) = $iotJumpWay->getStatusShow($Device["status"]);
                     title: 'Device '
                 });
             }
-            
+
         </script>
-        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKduSuIeLzSjNwKTyNpzuefe6Np1aBcBw&callback=initMap"></script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=<?=$_GeniSys->_helpers->oDecrypt($_GeniSys->_confs["gmaps"]); ?>&callback=initMap"></script>
 
 </body>
 

@@ -6,7 +6,7 @@ $pageDetails = [
 
 include dirname(__FILE__) . '/../Classes/Core/init.php';
 include dirname(__FILE__) . '/../Classes/Core/GeniSys.php';
-include dirname(__FILE__) . '/Security/TASS/Classes/TASS.php';
+include dirname(__FILE__) . '/Security/GeniSysAI/Classes/GeniSysAI.php';
 include dirname(__FILE__) . '/Data-Analysis/COVID-19/Classes/COVID19.php';
 
 $country = "Spain";
@@ -14,7 +14,7 @@ $period = "Year";
 $stat = "Deaths";
 
 $_GeniSysAi->checkSession();
-$TDevice = $TASS->getDevice(1);
+$TDevice = $GeniSysAI->getDevice(1);
 $stats = $_GeniSysAi->getStats();
 
 $covid19d = $COVID19->getCOVID19Totals();
@@ -49,29 +49,29 @@ $weekd = $covid19d[7];
 		<link type="image/x-icon" rel="apple-touch-icon" href="<?=$domain; ?>/img/favicon.png" />
 
         <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
-        <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>		
+        <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
 		<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
 	</head>
 
     <body>
-        
+
         <div class="preloader-it">
             <div class="la-anim-1"></div>
         </div>
-        
+
         <div class="wrapper theme-6-active pimary-color-pink">
-            
+
             <?php include dirname(__FILE__) . '/Includes/Nav.php'; ?>
             <?php include dirname(__FILE__) . '/Includes/LeftNav.php'; ?>
             <?php include dirname(__FILE__) . '/Includes/RightNav.php'; ?>
 
             <div class="page-wrapper">
             <div class="container-fluid pt-25">
-            
+
             	<?php include dirname(__FILE__) . '/Includes/Stats.php'; ?>
-                
+
 				<div class="row">
 					<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
                         <div class="panel panel-default card-view panel-refresh">
@@ -91,10 +91,10 @@ $weekd = $covid19d[7];
                                     <?php include dirname(__FILE__) . '/iotJumpWay/Includes/iotJumpWay.php'; ?>
 								</div>
 							</div>
-						</div>	
+						</div>
 					</div>
 				</div>
-                
+
 				<div class="row">
 					<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
                         <div class="panel panel-default card-view panel-refresh">
@@ -119,10 +119,10 @@ $weekd = $covid19d[7];
 						<div class="panel panel-default card-view">
 							<div class="panel-wrapper collapse in">
 								<div class="panel-body">
-									<img src="<?=$domain; ?>/Security/TASS/Live/<?=$_GeniSys->_helpers->oDecrypt($TDevice["sportf"]); ?>" style="width: 100%;" />
+									<img src="<?=$domain; ?>/Security/GeniSysAI/Server/<?=$_GeniSys->_helpers->oDecrypt($TDevice["sportf"]); ?>" style="width: 100%;" />
 								</div>
 							</div>
-						</div>	
+						</div>
 					</div>
 				</div>
 				<div class="row">
@@ -140,7 +140,7 @@ $weekd = $covid19d[7];
 												<div class="col-xs-6 text-center  pl-0 pr-0 data-wrap-right">
 													<i class="fas fa-hospital-alt data-right-rep-icon txt-light"></i>
 												</div>
-											</div>	
+											</div>
 										</div>
 									</div>
 								</div>
@@ -159,7 +159,7 @@ $weekd = $covid19d[7];
 												<div class="col-xs-6 text-center  pl-0 pr-0 data-wrap-right">
 													<i class="fas fa-hospital-alt  data-right-rep-icon txt-light"></i>
 												</div>
-											</div>	
+											</div>
 										</div>
 									</div>
 								</div>
@@ -178,7 +178,7 @@ $weekd = $covid19d[7];
 												<div class="col-xs-6 text-center  pl-0 pr-0 data-wrap-right">
 													<i class="fas fa-hospital-alt data-right-rep-icon txt-light"></i>
 												</div>
-											</div>	
+											</div>
 										</div>
 									</div>
 								</div>
@@ -190,7 +190,7 @@ $weekd = $covid19d[7];
 									<h6 class="panel-title txt-light"></h6>
 								</div>
 								<div class="clearfix"></div>
-							</div>		
+							</div>
 							<div class="panel-wrapper collapse in">
 								<div class="panel-body row pa-0">
 									<div class="sm-data-box">
@@ -209,7 +209,7 @@ $weekd = $covid19d[7];
 								</div>
 								<div class="pull-right">
 									<div class="pull-left form-group mb-0 sm-bootstrap-select mr-15">
-									</div>	
+									</div>
 								</div>
 								<div class="clearfix"></div>
 							</div>
@@ -248,19 +248,19 @@ $weekd = $covid19d[7];
 					</div>
 				</div>
 			</div>
-			
+
 			<?php include dirname(__FILE__) . '/Includes/Footer.php'; ?>
-			
+
 		</div>
 
         <?php  include dirname(__FILE__) . '/Includes/JS.php'; ?>
-        
+
         <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/echarts/dist/echarts-en.min.js"></script>
         <script type="text/javascript" src="<?=$domain; ?>/vendors/echarts-liquidfill.min.js"></script>
         <script type="text/javascript">
-			
+
 			var eChart_1 = echarts.init(document.getElementById('e_chart_1'));
-			
+
 			var option = {
                 tooltip: {
                     trigger: 'axis',
@@ -317,7 +317,7 @@ $weekd = $covid19d[7];
 			eChart_1.setOption(option);
 			eChart_1.resize();
 
-			
+
 			var hos_chart_v = echarts.init(document.getElementById('hos_chart'));
 			var option = {
 				title: {
@@ -414,7 +414,7 @@ $weekd = $covid19d[7];
 						fontWeight: 'normal',
 						fontFamily: "'Montserrat', sans-serif",
 						fontSize: 12
-					}	
+					}
 				},
 				grid: [{
 						show: false,

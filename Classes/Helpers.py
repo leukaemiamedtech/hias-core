@@ -13,60 +13,64 @@
 #
 ############################################################################################
 
-import logging, json, sys, time 
+import logging
 import logging.handlers as handlers
+import json
+import os
+import sys
+import time
 
 from datetime import datetime
 
 
 class Helpers():
-    """ Helper Class
-    
-    Helper functions for the Hospital Intelligent Automation System.
-    """
+	""" Helper Class
 
-    def __init__(self, ltype, log=True):
-        """ Initializes the Helpers Class. """
+	Helper functions for the Hospital Intelligent Automation System.
+	"""
 
-        # Loads system configs
-        self.confs = {}
-        self.loadConfs()
+	def __init__(self, ltype, log=True):
+		""" Initializes the Helpers Class. """
 
-        # Sets system logging
-        self.logger = logging.getLogger(ltype)
-        self.logger.setLevel(logging.INFO)
+		# Loads system configs
+		self.confs = {}
+		self.loadConfs()
 
-        formatter = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+		# Sets system logging
+		self.logger = logging.getLogger(ltype)
+		self.logger.setLevel(logging.INFO)
 
-        allLogHandler = handlers.TimedRotatingFileHandler(
-            'Logs/all.log', when='H', interval=1, backupCount=0)
-        allLogHandler.setLevel(logging.INFO)
-        allLogHandler.setFormatter(formatter)
+		formatter = logging.Formatter(
+			'%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-        errorLogHandler = handlers.TimedRotatingFileHandler(
-            'Logs/error.log', when='H', interval=1, backupCount=0)
-        errorLogHandler.setLevel(logging.ERROR)
-        errorLogHandler.setFormatter(formatter)
+		allLogHandler = handlers.TimedRotatingFileHandler(
+			os.path.dirname(os.path.abspath(__file__)) + '/../Logs/all.log', when='H', interval=1, backupCount=0)
+		allLogHandler.setLevel(logging.INFO)
+		allLogHandler.setFormatter(formatter)
 
-        warningLogHandler = handlers.TimedRotatingFileHandler(
-            'Logs/warning.log', when='H', interval=1, backupCount=0)
-        warningLogHandler.setLevel(logging.WARNING)
-        warningLogHandler.setFormatter(formatter)
+		errorLogHandler = handlers.TimedRotatingFileHandler(
+			os.path.dirname(os.path.abspath(__file__)) + '/../Logs/error.log', when='H', interval=1, backupCount=0)
+		errorLogHandler.setLevel(logging.ERROR)
+		errorLogHandler.setFormatter(formatter)
 
-        consoleHandler = logging.StreamHandler(sys.stdout)
-        consoleHandler.setFormatter(formatter)
+		warningLogHandler = handlers.TimedRotatingFileHandler(
+			os.path.dirname(os.path.abspath(__file__)) + '/../Logs/warning.log', when='H', interval=1, backupCount=0)
+		warningLogHandler.setLevel(logging.WARNING)
+		warningLogHandler.setFormatter(formatter)
 
-        self.logger.addHandler(allLogHandler)
-        self.logger.addHandler(errorLogHandler)
-        self.logger.addHandler(warningLogHandler)
-        self.logger.addHandler(consoleHandler)
+		consoleHandler = logging.StreamHandler(sys.stdout)
+		consoleHandler.setFormatter(formatter)
 
-        if log is True:
-            self.logger.info("Helpers class initialization complete.")
+		self.logger.addHandler(allLogHandler)
+		self.logger.addHandler(errorLogHandler)
+		self.logger.addHandler(warningLogHandler)
+		self.logger.addHandler(consoleHandler)
 
-    def loadConfs(self):
-        """ Load the program configuration. """
+		if log is True:
+			self.logger.info("Helpers class initialization complete.")
 
-        with open('confs.json') as confs:
-            self.confs = json.loads(confs.read())
+	def loadConfs(self):
+		""" Load the program configuration. """
+
+		with open(os.path.dirname(os.path.abspath(__file__)) + '/../confs.json') as confs:
+			self.confs = json.loads(confs.read())

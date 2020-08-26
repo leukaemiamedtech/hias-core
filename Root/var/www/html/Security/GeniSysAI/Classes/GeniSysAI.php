@@ -1,6 +1,6 @@
 <?php
 
-    class TASS
+    class GeniSysAI
     {
         function __construct($_GeniSys)
         {
@@ -10,23 +10,23 @@
         public function getDevices()
         {
             $pdoQuery = $this->_GeniSys->_secCon->prepare("
-                SELECT tass.id,
-                    tass.name,
-                    tass.type,
-                    tass.lid,
-                    tass.zid,
-                    tass.did,
+                SELECT genisysai.id,
+                    genisysai.name,
+                    genisysai.type,
+                    genisysai.lid,
+                    genisysai.zid,
+                    genisysai.did,
                     location.name as loc,
                     zone.zn as zne,
                     device.name as dvc,
                     device.status
-                FROM tass tass
+                FROM genisysai genisysai
 				INNER JOIN mqttld device
-				ON tass.did = device.id 
+				ON genisysai.did = device.id
 				INNER JOIN mqttl location
-				ON tass.lid = location.id 
+				ON genisysai.lid = location.id
 				INNER JOIN mqttlz zone
-				ON tass.zid = zone.id 
+				ON genisysai.zid = zone.id
                 ORDER BY id DESC
             ");
             $pdoQuery->execute();
@@ -39,17 +39,18 @@
         public function getDevice($id)
         {
             $pdoQuery = $this->_GeniSys->_secCon->prepare("
-                SELECT tass.id,
-                    tass.lid,
-                    tass.zid,
-                    tass.did,
-                    tass.ip,
-                    tass.mac,
-                    tass.name,
-                    tass.sport,
-                    tass.sportf,
-                    tass.sckport,
-                    tass.strdir,
+                SELECT genisysai.id,
+                    genisysai.lid,
+                    genisysai.zid,
+                    genisysai.did,
+                    genisysai.ip,
+                    genisysai.mac,
+                    genisysai.name,
+                    genisysai.sport,
+                    genisysai.sportf,
+                    genisysai.sckport,
+                    genisysai.strdir,
+                    genisysai.type,
                     device.status,
                     device.lt,
                     device.lg,
@@ -58,11 +59,11 @@
                     device.mem,
                     device.cpu,
                     device.mqttu,
-                    device.mqttp 
-                FROM tass tass
+                    device.mqttp
+                FROM genisysai genisysai
                 INNER JOIN mqttld device
-                ON device.id = tass.did
-                WHERE tass.id = :id 
+                ON device.id = genisysai.did
+                WHERE genisysai.id = :id
             ");
             $pdoQuery->execute([
                 ":id" => $id
@@ -75,61 +76,61 @@
         {
             if(!filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING)):
                 return [
-                    "Response"=> "Failed", 
-                    "Message" => "TASS device name is required"
+                    "Response"=> "Failed",
+                    "Message" => "GeniSysAI device name is required"
                 ];
             endif;
             if(!filter_input(INPUT_POST, "type", FILTER_SANITIZE_STRING)):
                 return [
-                    "Response"=> "Failed", 
-                    "Message" => "TASS device types is required"
+                    "Response"=> "Failed",
+                    "Message" => "GeniSysAI device types is required"
                 ];
             endif;
             if(!filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT)):
                 return [
-                    "Response"=> "Failed", 
+                    "Response"=> "Failed",
                     "Message" => "iotJumpWay location id is required"
                 ];
             endif;
             if(!filter_input(INPUT_POST, "zid", FILTER_SANITIZE_NUMBER_INT)):
                 return [
-                    "Response"=> "Failed", 
+                    "Response"=> "Failed",
                     "Message" => "iotJumpWay zone id is required"
                 ];
             endif;
             if(!filter_input(INPUT_POST, "ip", FILTER_SANITIZE_STRING)):
                 return [
-                    "Response"=> "Failed", 
+                    "Response"=> "Failed",
                     "Message" => "Device IP is required"
                 ];
             endif;
             if(!filter_input(INPUT_POST, "mac", FILTER_SANITIZE_STRING)):
                 return [
-                    "Response"=> "Failed", 
+                    "Response"=> "Failed",
                     "Message" => "Device MAC is required"
                 ];
             endif;
             if(!filter_input(INPUT_POST, "sport", FILTER_SANITIZE_STRING)):
                 return [
-                    "Response"=> "Failed", 
+                    "Response"=> "Failed",
                     "Message" => "Device stream port is required"
                 ];
             endif;
             if(!filter_input(INPUT_POST, "sportf", FILTER_SANITIZE_STRING)):
                 return [
-                    "Response"=> "Failed", 
+                    "Response"=> "Failed",
                     "Message" => "Device stream file is required"
                 ];
             endif;
             if(!filter_input(INPUT_POST, "strdir", FILTER_SANITIZE_STRING)):
                 return [
-                    "Response"=> "Failed", 
+                    "Response"=> "Failed",
                     "Message" => "Device stream directory is required"
                 ];
             endif;
             if(!filter_input(INPUT_POST, "sckport", FILTER_SANITIZE_STRING)):
                 return [
-                    "Response"=> "Failed", 
+                    "Response"=> "Failed",
                     "Message" => "Device socket port is required"
                 ];
             endif;
@@ -137,10 +138,10 @@
             $mqttUser = $this->_GeniSys->_helpers->generateKey(12);
             $mqttPass = $this->_GeniSys->_helpers->password();
             $mqttHash = create_hash($mqttPass);
-    
+
             $apiKey = $this->_GeniSys->_helpers->generateKey(30);
             $apiSecretKey = $this->_GeniSys->_helpers->generateKey(35);
-			
+
 			$query = $this->_GeniSys->_secCon->prepare("
 				INSERT INTO  mqttld  (
 					`lid`,
@@ -185,7 +186,7 @@
 				':time' => time()
 			]);
             $this->did = $this->_GeniSys->_secCon->lastInsertId();
-    
+
             $query = $this->_GeniSys->_secCon->prepare("
                 INSERT INTO  mqttu  (
                     `lid`,
@@ -208,7 +209,7 @@
                 ':uname' => $mqttUser,
                 ':pw' => $mqttHash
             ]);
-    
+
             $query = $this->_GeniSys->_secCon->prepare("
                 INSERT INTO  mqttua  (
                     `lid`,
@@ -231,10 +232,10 @@
                 ':zid' => filter_input(INPUT_POST, "zid", FILTER_SANITIZE_NUMBER_INT),
                 ':did' => $this->did,
                 ':username' => $mqttUser,
-                ':topic' => filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT) . "/Device/" . filter_input(INPUT_POST, "zid", FILTER_SANITIZE_NUMBER_INT) . "/" . $this->did . "#",
+                ':topic' => filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT) . "/Devices/" . filter_input(INPUT_POST, "zid", FILTER_SANITIZE_NUMBER_INT) . "/" . $this->did . "/#",
                 ':rw' => 4
             ));
-    
+
             $query = $this->_GeniSys->_secCon->prepare("
                 UPDATE mqttl
                 SET devices = devices + 1
@@ -245,7 +246,7 @@
             ));
 
             $pdoQuery = $this->_GeniSys->_secCon->prepare("
-                INSERT INTO  tass  (
+                INSERT INTO  genisysai  (
                     `name`,
                     `type`,
                     `lid`,
@@ -289,8 +290,8 @@
             $pdoQuery = null;
 
             return [
-                "Response"=> "OK", 
-                "Message" => "Device created!", 
+                "Response"=> "OK",
+                "Message" => "Device created!",
                 "DID" => $tid
             ];
         }
@@ -299,84 +300,84 @@
         {
             if(!filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT)):
                 return [
-                    "Response"=> "Failed", 
+                    "Response"=> "Failed",
                     "Message" => "ID is required"
                 ];
             endif;
             if(!filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING)):
                 return [
-                    "Response"=> "Failed", 
-                    "Message" => "TASS device name is required"
+                    "Response"=> "Failed",
+                    "Message" => "GeniSysAI device name is required"
                 ];
             endif;
             if(!filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT)):
                 return [
-                    "Response"=> "Failed", 
+                    "Response"=> "Failed",
                     "Message" => "iotJumpWay location id is required"
                 ];
             endif;
             if(!filter_input(INPUT_POST, "zid", FILTER_SANITIZE_NUMBER_INT)):
                 return [
-                    "Response"=> "Failed", 
+                    "Response"=> "Failed",
                     "Message" => "iotJumpWay zone id is required"
                 ];
             endif;
             if(!filter_input(INPUT_POST, "did", FILTER_SANITIZE_NUMBER_INT)):
                 return [
-                    "Response"=> "Failed", 
+                    "Response"=> "Failed",
                     "Message" => "iotJumpWay device id is required"
                 ];
             endif;
             if(!filter_input(INPUT_POST, "ip", FILTER_SANITIZE_STRING)):
                 return [
-                    "Response"=> "Failed", 
+                    "Response"=> "Failed",
                     "Message" => "Device IP is required"
                 ];
             endif;
             if(!filter_input(INPUT_POST, "mac", FILTER_SANITIZE_STRING)):
                 return [
-                    "Response"=> "Failed", 
+                    "Response"=> "Failed",
                     "Message" => "Device MAC is required"
                 ];
             endif;
             if(!filter_input(INPUT_POST, "sport", FILTER_SANITIZE_STRING)):
                 return [
-                    "Response"=> "Failed", 
+                    "Response"=> "Failed",
                     "Message" => "Device stream port is required"
                 ];
             endif;
             if(!filter_input(INPUT_POST, "sportf", FILTER_SANITIZE_STRING)):
                 return [
-                    "Response"=> "Failed", 
+                    "Response"=> "Failed",
                     "Message" => "Device stream file is required"
                 ];
             endif;
             if(!filter_input(INPUT_POST, "strdir", FILTER_SANITIZE_STRING)):
                 return [
-                    "Response"=> "Failed", 
+                    "Response"=> "Failed",
                     "Message" => "Device stream directory is required"
                 ];
             endif;
             if(!filter_input(INPUT_POST, "sckport", FILTER_SANITIZE_STRING)):
                 return [
-                    "Response"=> "Failed", 
+                    "Response"=> "Failed",
                     "Message" => "Device socket port is required"
                 ];
             endif;
 
             $pdoQuery = $this->_GeniSys->_secCon->prepare("
-                UPDATE tass
+                UPDATE genisysai
                 SET name = :name,
-                    lid = :lid, 
-                    zid = :zid, 
-                    did = :did, 
-                    ip = :ip, 
-                    mac = :mac, 
-                    sport = :sport, 
-                    sportf = :sportf, 
-                    sckport = :sckport, 
+                    lid = :lid,
+                    zid = :zid,
+                    did = :did,
+                    ip = :ip,
+                    mac = :mac,
+                    sport = :sport,
+                    sportf = :sportf,
+                    sckport = :sckport,
                     strdir = :strdir
-                WHERE id = :id 
+                WHERE id = :id
             ");
             $pdoQuery->execute([
                 ":name" => filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING),
@@ -394,7 +395,7 @@
             $pdoQuery->closeCursor();
             $pdoQuery = null;
             return [
-                "Response"=> "OK", 
+                "Response"=> "OK",
                 "Message" => "Device updated!"
             ];
         }
@@ -416,22 +417,22 @@
             $mqttPass = $this->_GeniSys->_helpers->password();
             $mqttHash = create_hash($mqttPass);
 
-            #$htpasswd = new Htpasswd('/etc/nginx/tass/htpasswd');
+            #$htpasswd = new Htpasswd('/etc/nginx/genisysai/htpasswd');
             #$htpasswd->updateUser($mqtt["uname"], $mqttPass, Htpasswd::ENCTYPE_APR_MD5);
-    
+
             $query = $this->_GeniSys->_secCon->prepare("
                 UPDATE mqttld
-                SET mqttp = :mqttp 
+                SET mqttp = :mqttp
                 WHERE id = :id
             ");
             $query->execute(array(
                 ':mqttp' => $this->_GeniSys->_helpers->oEncrypt($mqttPass),
                 ':id' => filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT)
             ));
-    
+
             $query = $this->_GeniSys->_secCon->prepare("
                 UPDATE mqttu
-                SET pw = :pw 
+                SET pw = :pw
                 WHERE did = :did
             ");
             $query->execute(array(
@@ -440,12 +441,12 @@
             ));
 
             return [
-                "Response"=> "OK", 
-                "Message" => "MQTT password reset!", 
+                "Response"=> "OK",
+                "Message" => "MQTT password reset!",
                 "P" => $mqttPass
             ];
 
-        }	
+        }
 
 		public function getLife()
 		{
@@ -457,7 +458,7 @@
 					tempr,
 					status
 				FROM mqttld
-				WHERE id = :id 
+				WHERE id = :id
 			");
 			$pdoQuery->execute([
 				":id" => filter_input(INPUT_POST, "device", FILTER_SANITIZE_NUMBER_INT)
@@ -465,7 +466,7 @@
 			$response=$pdoQuery->fetch(PDO::FETCH_ASSOC);
 			$pdoQuery->closeCursor();
 			$pdoQuery = null;
-			
+
 			if($response["id"]):
 				return  [
 					'Response'=>'OK',
@@ -489,7 +490,7 @@
             endif;
 
             return [$lat, $lng];
-		}	
+		}
 
 		public function getStatusShow($status)
 		{
@@ -505,19 +506,18 @@
 		}
 
     }
-    
-    $TASS = new TASS($_GeniSys);
 
-    if(filter_input(INPUT_POST, "update_tass", FILTER_SANITIZE_NUMBER_INT)):
-        die(json_encode($TASS->updateDevice()));
+    $GeniSysAI = new GeniSysAI($_GeniSys);
+
+    if(filter_input(INPUT_POST, "update_genisysai", FILTER_SANITIZE_NUMBER_INT)):
+        die(json_encode($GeniSysAI->updateDevice()));
     endif;
-    if(filter_input(INPUT_POST, "create_tass", FILTER_SANITIZE_NUMBER_INT)):
-        die(json_encode($TASS->createDevice()));
+    if(filter_input(INPUT_POST, "create_genisysai", FILTER_SANITIZE_NUMBER_INT)):
+        die(json_encode($GeniSysAI->createDevice()));
     endif;
     if(filter_input(INPUT_POST, "reset_mqtt", FILTER_SANITIZE_NUMBER_INT)):
-        die(json_encode($TASS->resetMqtt()));
+        die(json_encode($GeniSysAI->resetMqtt()));
     endif;
 	if(filter_input(INPUT_POST, "get_tlife", FILTER_SANITIZE_NUMBER_INT)):
-		die(json_encode($TASS->getLife()));
+		die(json_encode($GeniSysAI->getLife()));
 	endif;
-	

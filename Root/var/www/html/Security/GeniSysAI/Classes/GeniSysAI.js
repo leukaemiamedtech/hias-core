@@ -1,33 +1,33 @@
-var TASS = {
+var GeniSysAI = {
     Create: function() {
-        $.post(window.location.href, $("#tass_create").serialize(), function(resp) {
+        $.post(window.location.href, $("#genisysai_create").serialize(), function(resp) {
             var resp = jQuery.parseJSON(resp);
             switch (resp.Response) {
                 case "OK":
-                    GeniSys.ResetForm("tass_create");
-                    Logging.logMessage("Core", "TASS", "TASS Create OK");
-                    window.location.replace(location.protocol + "//" + location.hostname + "/TASS/" + resp.DID + '/');
+                    GeniSys.ResetForm("genisysai_create");
+                    Logging.logMessage("Core", "GeniSysAI", "GeniSysAI Create OK");
+                    window.location.replace(location.protocol + "//" + location.hostname + "/GeniSysAI/" + resp.DID + '/');
                     break;
                 default:
-                    msg = "TASS Create Failed: " + resp.Message
-                    Logging.logMessage("Core", "TASS", msg);
+                    msg = "GeniSysAI Create Failed: " + resp.Message
+                    Logging.logMessage("Core", "GeniSysAI", msg);
                     break;
             }
         });
     },
     Update: function() {
-        $.post(window.location.href, $("#tass_update").serialize(), function(resp) {
+        $.post(window.location.href, $("#genisysai_update").serialize(), function(resp) {
             var resp = jQuery.parseJSON(resp);
             switch (resp.Response) {
                 case "OK":
-                    $('.modal-title').text('TASS Update');
-                    $('.modal-body').text("TASS Update OK");
+                    $('.modal-title').text('GeniSysAI Update');
+                    $('.modal-body').text("GeniSysAI Update OK");
                     $('#responsive-modal').modal('show');
-                    Logging.logMessage("Core", "TASS", "TASS Update OK");
+                    Logging.logMessage("Core", "GeniSysAI", "GeniSysAI Update OK");
                     break;
                 default:
-                    msg = "TASS Update Failed: " + resp.Message
-                    Logging.logMessage("Core", "TASS", msg);
+                    msg = "GeniSysAI Update Failed: " + resp.Message
+                    Logging.logMessage("Core", "GeniSysAI", msg);
                     break;
             }
         });
@@ -39,8 +39,8 @@ var TASS = {
                 switch (resp.Response) {
                     case "OK":
                         Logging.logMessage("Core", "Credentials", "Reset OK");
-                        TASS.mqttp3a = resp.P;
-                        TASS.mqttp3ae = resp.P.replace(/\S/gi, '*');
+                        GeniSysAI.mqttp3a = resp.P;
+                        GeniSysAI.mqttp3ae = resp.P.replace(/\S/gi, '*');
                         $("#mqttp3").text(resp.P)
                         break;
                     default:
@@ -57,16 +57,16 @@ var TASS = {
         $('#sportf').attr('type', 'password');
         $('#sckport').attr('type', 'password');
 
-        TASS.mqttu3a = $("#mqttut").text();
-        TASS.mqttu3ae = $("#mqttut").text().replace(/\S/gi, '*');
-        TASS.mqttp3a = $("#mqttpt").text();
-        TASS.mqttp3ae = $("#mqttpt").text().replace(/\S/gi, '*');
+        GeniSysAI.mqttu3a = $("#mqttut").text();
+        GeniSysAI.mqttu3ae = $("#mqttut").text().replace(/\S/gi, '*');
+        GeniSysAI.mqttp3a = $("#mqttpt").text();
+        GeniSysAI.mqttp3ae = $("#mqttpt").text().replace(/\S/gi, '*');
 
-        $("#mqttut").text(TASS.mqttu3ae);
-        $("#mqttpt").text(TASS.mqttp3ae);
+        $("#mqttut").text(GeniSysAI.mqttu3ae);
+        $("#mqttpt").text(GeniSysAI.mqttp3ae);
     },
     GetLife: function() {
-        $.post(window.location.href, { "get_tlife": 1, "device": $("#id").val() }, function(resp) {
+        $.post(window.location.href, { "get_tlife": 1, "device": $("#did").val() }, function(resp) {
             var resp = jQuery.parseJSON(resp);
             switch (resp.Response) {
                 case "OK":
@@ -81,11 +81,11 @@ var TASS = {
                     $("#idememU").text(resp.ResponseData.mem)
                     $("#idehddU").text(resp.ResponseData.hdd)
                     $("#idetempU").text(resp.ResponseData.tempr)
-                    Logging.logMessage("Core", "TASS", "TASS Stats Updated OK");
+                    Logging.logMessage("Core", "GeniSysAI", "GeniSysAI Stats Updated OK");
                     break;
                 default:
-                    msg = "TASS Stats Update Failed: " + resp.Message
-                    Logging.logMessage("Core", "TASS", msg);
+                    msg = "GeniSysAI Stats Update Failed: " + resp.Message
+                    Logging.logMessage("Core", "GeniSysAI", msg);
                     break;
             }
         });
@@ -99,39 +99,39 @@ $(document).ready(function() {
         $('#' + $(this).attr("id")).attr('type', 'password');
     });
 
-    $('#tass_create').validator().on('submit', function(e) {
+    $('#genisysai_create').validator().on('submit', function(e) {
         if (!e.isDefaultPrevented()) {
             e.preventDefault();
-            TASS.Create();
+            GeniSysAI.Create();
         }
     });
 
-    $('#tass_update').validator().on('submit', function(e) {
+    $('#genisysai_update').validator().on('submit', function(e) {
         if (!e.isDefaultPrevented()) {
             e.preventDefault();
-            TASS.Update();
+            GeniSysAI.Update();
         }
     });
 
     $("#GeniSysAI").on("click", "#reset_mqtt", function(e) {
         e.preventDefault();
-        TASS.ResetMqtt();
+        GeniSysAI.ResetMqtt();
     });
 
     $('#mqttut').hover(function() {
-        $("#mqttut").text(TASS.mqttu3a);
+        $("#mqttut").text(GeniSysAI.mqttu3a);
     }, function() {
-        $("#mqttut").text(TASS.mqttu3ae);
+        $("#mqttut").text(GeniSysAI.mqttu3ae);
     });
 
     $('#mqttpt').hover(function() {
-        $("#mqttpt").text(TASS.mqttp3a);
+        $("#mqttpt").text(GeniSysAI.mqttp3a);
     }, function() {
-        $("#mqttpt").text(TASS.mqttp3ae);
+        $("#mqttpt").text(GeniSysAI.mqttp3ae);
     });
 
     setInterval(function() {
-        TASS.GetLife();
+        GeniSysAI.GetLife();
     }, 5000);
 
 });
