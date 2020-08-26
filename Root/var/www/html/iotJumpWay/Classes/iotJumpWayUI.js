@@ -134,6 +134,25 @@ var iotJumpwayUI = {
                 }
             });
     },
+    ResetDvcMqtt: function() {
+        $.post(window.location.href, { "reset_mqtt_dvc": 1, "id": $("#id").val() },
+            function(resp) {
+                console.log(resp)
+                var resp = jQuery.parseJSON(resp);
+                switch (resp.Response) {
+                    case "OK":
+                        Logging.logMessage("Core", "Forms", "Reset OK");
+                        iotJumpwayUI.mqttpa = resp.P;
+                        iotJumpwayUI.mqttpae = resp.P.replace(/\S/gi, '*');
+                        $("#idmqttp").text(resp.P)
+                        break;
+                    default:
+                        msg = "Reset failed: " + resp.Message
+                        Logging.logMessage("Core", "Forms", msg);
+                        break;
+                }
+            });
+    },
     CreateSensor: function() {
         $.post(window.location.href, $("#sensor_create").serialize(), function(resp) {
             console.log(resp)
@@ -324,6 +343,11 @@ $(document).ready(function() {
     $("#GeniSysAI").on("click", "#reset_app_mqtt", function(e) {
         e.preventDefault();
         iotJumpwayUI.ResetAppMqtt();
+    });
+
+    $("#GeniSysAI").on("click", "#reset_dvc_mqtt", function(e) {
+        e.preventDefault();
+        iotJumpwayUI.ResetDvcMqtt();
     });
 
     $('.hider').hover(function() {

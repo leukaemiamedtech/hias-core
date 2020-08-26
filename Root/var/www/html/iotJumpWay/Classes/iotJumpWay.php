@@ -11,15 +11,15 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 
 		public function getLocations($limit = 0, $order = "id DESC")
 		{
-			$limiter = ""; 
-			if($limit != 0): 
+			$limiter = "";
+			if($limit != 0):
 				$limiter = "LIMIT " . $limit;
 			endif;
 
 			$pdoQuery = $this->_GeniSys->_secCon->prepare("
 				SELECT *
 				FROM mqttl
-				ORDER BY $order 
+				ORDER BY $order
 				$limiter
 			");
 			$pdoQuery->execute();
@@ -34,10 +34,10 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 			$pdoQuery = $this->_GeniSys->_secCon->prepare("
 				SELECT *
 				FROM mqttl
-				WHERE id = :id 
+				WHERE id = :id
 			");
 			$pdoQuery->execute([
-				":id" => $id 
+				":id" => $id
 			]);
 			$response=$pdoQuery->fetch(PDO::FETCH_ASSOC);
 			$pdoQuery->closeCursor();
@@ -49,25 +49,25 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 		{
 			if(!filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "ID is required"
 				];
 			endif;
 			if(!filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Name is required"
 				];
 			endif;
 			if(!filter_input(INPUT_POST, "ip", FILTER_SANITIZE_STRING)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Location IP is required"
 				];
 			endif;
 			if(!filter_input(INPUT_POST, "mac", FILTER_SANITIZE_STRING)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Location MAC is required"
 				];
 			endif;
@@ -75,9 +75,9 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 			$pdoQuery = $this->_GeniSys->_secCon->prepare("
 				UPDATE mqttl
 				SET name = :name,
-					ip = :ip, 
+					ip = :ip,
 					mac = :mac
-				WHERE id = :id 
+				WHERE id = :id
 			");
 			$pdoQuery->execute([
 				":name" => filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING),
@@ -88,15 +88,15 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 			$pdoQuery->closeCursor();
 			$pdoQuery = null;
 			return [
-				"Response"=> "OK", 
+				"Response"=> "OK",
 				"Message" => "Location updated!"
 			];
 		}
 
 		public function getZones($limit = 0, $order = "id DESC")
 		{
-			$limiter = ""; 
-			if($limit != 0): 
+			$limiter = "";
+			if($limit != 0):
 				$limiter = "LIMIT " . $limit;
 			endif;
 
@@ -105,8 +105,8 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 					location.name as loc
 				FROM mqttlz zone
 				INNER JOIN mqttl location
-				ON zone.lid = location.id 
-				ORDER BY $order 
+				ON zone.lid = location.id
+				ORDER BY $order
 				$limiter
 			");
 			$pdoQuery->execute();
@@ -121,7 +121,7 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 			$pdoQuery = $this->_GeniSys->_secCon->prepare("
 				SELECT *
 				FROM mqttlz
-				WHERE id = :id 
+				WHERE id = :id
 				ORDER BY id DESC
 			");
 			$pdoQuery->execute([
@@ -137,18 +137,18 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 		{
 			if(!filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Name is required"
 				];
 			endif;
-			
+
 			if(!filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Location ID is required"
 				];
 			endif;
-			
+
 			$query = $this->_GeniSys->_secCon->prepare("
 				INSERT INTO  mqttlz  (
 					`lid`,
@@ -166,7 +166,7 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 				':time' => time()
 			]);
 			$zid = $this->_GeniSys->_secCon->lastInsertId();
-	
+
 			$query = $this->_GeniSys->_secCon->prepare("
 				UPDATE mqttl
 				SET zones = zones + 1
@@ -177,9 +177,9 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 			));
 
 			return [
-				"Response"=> "OK", 
-				"Message" => "Zone created!", 
-				"LID" => filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT), 
+				"Response"=> "OK",
+				"Message" => "Zone created!",
+				"LID" => filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT),
 				"ZID" => $zid
 			];
 		}
@@ -188,21 +188,21 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 		{
 			if(!filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "ID is required"
 				];
 			endif;
-			
+
 			if(!filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Location ID is required"
 				];
 			endif;
 
 			if(!filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Name is required"
 				];
 			endif;
@@ -211,7 +211,7 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 				UPDATE mqttlz
 				SET zn = :zn,
 					lid = :lid
-				WHERE id = :id 
+				WHERE id = :id
 			");
 			$pdoQuery->execute([
 				":zn" => filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING),
@@ -221,15 +221,15 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 			$pdoQuery->closeCursor();
 			$pdoQuery = null;
 			return [
-				"Response"=> "OK", 
+				"Response"=> "OK",
 				"Message" => "Zone updated!"
 			];
 		}
 
 		public function getDevices($limit = 0, $order = "id DESC")
 		{
-			$limiter = ""; 
-			if($limit != 0): 
+			$limiter = "";
+			if($limit != 0):
 				$limiter = "LIMIT " . $limit;
 			endif;
 
@@ -239,11 +239,11 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 					zone.zn as zne
 				FROM mqttld device
 				INNER JOIN mqttl location
-				ON device.lid = location.id 
+				ON device.lid = location.id
 				INNER JOIN mqttlz zone
-				ON device.zid = zone.id 
+				ON device.zid = zone.id
 				ORDER BY $order
-				$limiter 
+				$limiter
 			");
 			$pdoQuery->execute();
 			$response=$pdoQuery->fetchAll(PDO::FETCH_ASSOC);
@@ -257,7 +257,7 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 			$pdoQuery = $this->_GeniSys->_secCon->prepare("
 				SELECT *
 				FROM mqttld
-				WHERE id = :id 
+				WHERE id = :id
 				ORDER BY id DESC
 			");
 			$pdoQuery->execute([
@@ -273,34 +273,34 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 		{
 			if(!filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Name is required"
 				];
 			endif;
-			
+
 			if(!filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Location ID is required"
 				];
 			endif;
-			
+
 			if(!filter_input(INPUT_POST, "zid", FILTER_SANITIZE_NUMBER_INT)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Zone ID is required"
 				];
 			endif;
 
 			if(!filter_input(INPUT_POST, "ip", FILTER_SANITIZE_STRING)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Location IP is required"
 				];
 			endif;
 			if(!filter_input(INPUT_POST, "mac", FILTER_SANITIZE_STRING)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Location MAC is required"
 				];
 			endif;
@@ -308,10 +308,10 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 			$mqttUser = $this->_GeniSys->_helpers->generateKey(12);
 			$mqttPass = $this->_GeniSys->_helpers->password();
 			$mqttHash = create_hash($mqttPass);
-	
+
 			$apiKey = $this->_GeniSys->_helpers->generateKey(30);
 			$apiSecretKey = $this->_GeniSys->_helpers->generateKey(35);
-			
+
 			$query = $this->_GeniSys->_secCon->prepare("
 				INSERT INTO  mqttld  (
 					`lid`,
@@ -356,7 +356,7 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 				':time' => time()
 			]);
 			$did = $this->_GeniSys->_secCon->lastInsertId();
-	
+
 			$query = $this->_GeniSys->_secCon->prepare("
 				INSERT INTO  mqttu  (
 					`lid`,
@@ -405,33 +405,7 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 				':topic' => filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT)."/Devices/#",
 				':rw' => 4
 			));
-	
-			$query = $this->_GeniSys->_secCon->prepare("
-				INSERT INTO  mqttua  (
-					`lid`,
-					`zid`,
-					`did`,
-					`username`,
-					`topic`,
-					`rw`
-				)  VALUES (
-					:lid,
-					:zid,
-					:did,
-					:username,
-					:topic,
-					:rw
-				)
-			");
-			$query->execute(array(
-				':lid' => filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT),
-				':zid' => filter_input(INPUT_POST, "zid", FILTER_SANITIZE_NUMBER_INT),
-				':did' => $did,
-				':username' => $mqttUser,
-				':topic' => filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT)."/Applications/#",
-				':rw' => 2
-			));
-	
+
 			$query = $this->_GeniSys->_secCon->prepare("
 				UPDATE mqttl
 				SET devices = devices + 1
@@ -442,10 +416,10 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 			));
 
 			return [
-				"Response"=> "OK", 
-				"Message" => "Application created!", 
-				"LID" => filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT), 
-				"ZID" => filter_input(INPUT_POST, "zid", FILTER_SANITIZE_NUMBER_INT), 
+				"Response"=> "OK",
+				"Message" => "Application created!",
+				"LID" => filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT),
+				"ZID" => filter_input(INPUT_POST, "zid", FILTER_SANITIZE_NUMBER_INT),
 				"DID" => $did
 			];
 		}
@@ -454,42 +428,42 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 		{
 			if(!filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "ID is required"
 				];
 			endif;
-			
+
 			if(!filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Location ID is required"
 				];
 			endif;
-			
+
 			if(!filter_input(INPUT_POST, "zid", FILTER_SANITIZE_NUMBER_INT)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Zone ID is required"
 				];
 			endif;
-			
+
 			if(!filter_input(INPUT_POST, "ip", FILTER_SANITIZE_NUMBER_INT)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "IP is required"
 				];
 			endif;
-			
+
 			if(!filter_input(INPUT_POST, "mac", FILTER_SANITIZE_NUMBER_INT)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "MAC is required"
 				];
 			endif;
 
 			if(!filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Name is required"
 				];
 			endif;
@@ -501,7 +475,7 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 					zid = :zid,
 					ip = :ip,
 					mac = :mac
-				WHERE id = :id 
+				WHERE id = :id
 			");
 			$pdoQuery->execute([
 				":name" => filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING),
@@ -514,7 +488,7 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 			$pdoQuery->closeCursor();
 			$pdoQuery = null;
 			return [
-				"Response"=> "OK", 
+				"Response"=> "OK",
 				"Message" => "Device updated!"
 			];
 		}
@@ -536,15 +510,15 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 		public function getSensors($limit = 0, $order = "id DESC")
 		{
 			$limiter = "";
-			if($limit != 0): 
+			if($limit != 0):
 				$limiter = "LIMIT " . $limit;
 			endif;
-			
+
 			$pdoQuery = $this->_GeniSys->_secCon->prepare("
 				SELECT *
-				FROM sensors 
+				FROM sensors
 				ORDER BY $order
-				$limiter 
+				$limiter
 			");
 			$pdoQuery->execute();
 			$response=$pdoQuery->fetchAll(PDO::FETCH_ASSOC);
@@ -557,8 +531,8 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 		{
 			$pdoQuery = $this->_GeniSys->_secCon->prepare("
 				SELECT *
-				FROM sensors 
-				WHERE id = :id 
+				FROM sensors
+				WHERE id = :id
 			");
 			$pdoQuery->execute([
 				":id" => $id
@@ -571,21 +545,21 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 
 		public function createSensor()
 		{
-			
+
 			if(!filter_input(INPUT_POST, "type", FILTER_SANITIZE_STRING)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Type is required"
 				];
 			endif;
 
 			if(!filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Name is required"
 				];
 			endif;
-			
+
 			$query = $this->_GeniSys->_secCon->prepare("
 				INSERT INTO  sensors  (
 					`name`,
@@ -602,8 +576,8 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 			$sensor = $this->_GeniSys->_secCon->lastInsertId();
 
 			return [
-				"Response"=> "OK", 
-				"Message" => "Sensor created!", 
+				"Response"=> "OK",
+				"Message" => "Sensor created!",
 				"SID" => $sensor
 			];
 		}
@@ -612,21 +586,21 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 		{
 			if(!filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "ID is required"
 				];
 			endif;
-			
+
 			if(!filter_input(INPUT_POST, "type", FILTER_SANITIZE_STRING)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Type is required"
 				];
 			endif;
 
 			if(!filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Name is required"
 				];
 			endif;
@@ -635,7 +609,7 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 				UPDATE sensors
 				SET name = :name,
 					type = :type
-				WHERE id = :id 
+				WHERE id = :id
 			");
 			$pdoQuery->execute([
 				":name" => filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING),
@@ -645,7 +619,7 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 			$pdoQuery->closeCursor();
 			$pdoQuery = null;
 			return [
-				"Response"=> "OK", 
+				"Response"=> "OK",
 				"Message" => "Sensor updated!"
 			];
 		}
@@ -653,7 +627,7 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 		public function getApplications($limit = 0, $order = "id DESC")
 		{
 			$limiter = "";
-			if($limit != 0): 
+			if($limit != 0):
 				$limiter = "LIMIT " . $limit;
 			endif;
 
@@ -662,9 +636,9 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 					location.name as loc
 				FROM mqtta application
 				INNER JOIN mqttl location
-				ON application.lid = location.id 
+				ON application.lid = location.id
 				ORDER BY $order
-				$limiter 
+				$limiter
 			");
 			$pdoQuery->execute();
 			$response=$pdoQuery->fetchAll(PDO::FETCH_ASSOC);
@@ -678,7 +652,7 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 			$pdoQuery = $this->_GeniSys->_secCon->prepare("
 				SELECT *
 				FROM mqtta
-				WHERE id = :id 
+				WHERE id = :id
 			");
 			$pdoQuery->execute([
 				":id" => $id
@@ -693,27 +667,27 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 		{
 			if(!filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Name is required"
 				];
 			endif;
-			
+
 			if(!filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Location ID is required"
 				];
 			endif;
 
 			if(!filter_input(INPUT_POST, "ip", FILTER_SANITIZE_STRING)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Location IP is required"
 				];
 			endif;
 			if(!filter_input(INPUT_POST, "mac", FILTER_SANITIZE_STRING)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Location MAC is required"
 				];
 			endif;
@@ -721,10 +695,10 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 			$mqttUser = $this->_GeniSys->_helpers->generateKey(12);
 			$mqttPass = $this->_GeniSys->_helpers->password();
 			$mqttHash = create_hash($mqttPass);
-	
+
 			$apiKey = $this->_GeniSys->_helpers->generateKey(30);
 			$apiSecretKey = $this->_GeniSys->_helpers->generateKey(35);
-			
+
 			$query = $this->_GeniSys->_secCon->prepare("
 				INSERT INTO  mqtta  (
 					`lid`,
@@ -769,7 +743,7 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 				':time' => time()
 			]);
 			$aid = $this->_GeniSys->_secCon->lastInsertId();
-	
+
 			$query = $this->_GeniSys->_secCon->prepare("
 				INSERT INTO  mqttu  (
 					`lid`,
@@ -812,7 +786,7 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 				':topic' => filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT)."/Devices/#",
 				':rw' => 4
 			));
-	
+
 			$query = $this->_GeniSys->_secCon->prepare("
 				INSERT INTO  mqttua  (
 					`lid`,
@@ -835,7 +809,7 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 				':topic' => filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT)."/Applications/#",
 				':rw' => 2
 			));
-	
+
 			$query = $this->_GeniSys->_secCon->prepare("
 				UPDATE mqttl
 				SET apps = apps + 1
@@ -846,9 +820,9 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 			));
 
 			return [
-				"Response"=> "OK", 
-				"Message" => "Application created!", 
-				"LID" => filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT), 
+				"Response"=> "OK",
+				"Message" => "Application created!",
+				"LID" => filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT),
 				"AID" => $aid
 			];
 		}
@@ -857,25 +831,25 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 		{
 			if(!filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "ID is required"
 				];
 			endif;
 			if(!filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Name is required"
 				];
 			endif;
 			if(!filter_input(INPUT_POST, "ip", FILTER_SANITIZE_STRING)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Location IP is required"
 				];
 			endif;
 			if(!filter_input(INPUT_POST, "mac", FILTER_SANITIZE_STRING)):
 				return [
-					"Response"=> "Failed", 
+					"Response"=> "Failed",
 					"Message" => "Location MAC is required"
 				];
 			endif;
@@ -883,9 +857,9 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 			$pdoQuery = $this->_GeniSys->_secCon->prepare("
 				UPDATE mqtta
 				SET name = :name,
-					ip = :ip, 
+					ip = :ip,
 					mac = :mac
-				WHERE id = :id 
+				WHERE id = :id
 			");
 			$pdoQuery->execute([
 				":name" => filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING),
@@ -896,7 +870,7 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 			$pdoQuery->closeCursor();
 			$pdoQuery = null;
 			return [
-				"Response"=> "OK", 
+				"Response"=> "OK",
 				"Message" => "Application updated!"
 			];
 		}
@@ -918,20 +892,20 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 
 			$mqttPass = $this->_GeniSys->_helpers->password();
 			$mqttHash = create_hash($mqttPass);
-	
+
 			$query = $this->_GeniSys->_secCon->prepare("
 				UPDATE mqtta
-				SET mqttp = :mqttp 
+				SET mqttp = :mqttp
 				WHERE id = :id
 			");
 			$query->execute(array(
 				':mqttp' => $this->_GeniSys->_helpers->oEncrypt($mqttPass),
 				':id' => filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT)
 			));
-	
+
 			$query = $this->_GeniSys->_secCon->prepare("
 				UPDATE mqttu
-				SET pw = :pw 
+				SET pw = :pw
 				WHERE aid = :aid
 			");
 			$query->execute(array(
@@ -940,26 +914,72 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 			));
 
 			return [
-				"Response"=> "OK", 
-				"Message" => "MQTT password reset!", 
+				"Response"=> "OK",
+				"Message" => "MQTT password reset!",
 				"P" => $mqttPass
 			];
 
-		}  
-		
+		}
+
+		public function resetDvcMqtt()
+		{
+			$pdoQuery = $this->_GeniSys->_secCon->prepare("
+				SELECT uid,
+					uname
+				FROM mqttu
+				WHERE did = :did
+			");
+			$pdoQuery->execute([
+				":did" => filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT)
+			]);
+			$mqtt=$pdoQuery->fetch(PDO::FETCH_ASSOC);
+			$pdoQuery->closeCursor();
+			$pdoQuery = null;
+
+			$mqttPass = $this->_GeniSys->_helpers->password();
+			$mqttHash = create_hash($mqttPass);
+
+			$query = $this->_GeniSys->_secCon->prepare("
+				UPDATE mqttld
+				SET mqttp = :mqttp
+				WHERE id = :id
+			");
+			$query->execute(array(
+				':mqttp' => $this->_GeniSys->_helpers->oEncrypt($mqttPass),
+				':id' => filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT)
+			));
+
+			$query = $this->_GeniSys->_secCon->prepare("
+				UPDATE mqttu
+				SET pw = :pw
+				WHERE did = :did
+			");
+			$query->execute(array(
+				':pw' => $mqttHash,
+				':did' => filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT)
+			));
+
+			return [
+				"Response"=> "OK",
+				"Message" => "MQTT password reset!",
+				"P" => $mqttPass
+			];
+
+		}
+
 		public function retrieveStatuses($limit = 0, $order = -1){
 
 			$mngConn = new MongoDB\Driver\Manager('mongodb://'.$this->_GeniSys->_mdbusername.':'.$this->_GeniSys->_mdbpassword.'@localhost/'.$this->_GeniSys->_mdbname.'');
-			$query = new MongoDB\Driver\Query([], ['limit' => $limit, 'sort' => ['Time' => $order]]); 
+			$query = new MongoDB\Driver\Query([], ['limit' => $limit, 'sort' => ['Time' => $order]]);
 
 			$rows = $mngConn->executeQuery($this->_GeniSys->_mdbname.".Statuses", $query);
 
 			$mngoData = [];
-			
+
 			foreach ($rows as $document):
 				$mngoData[]=$document;
 			endforeach;
-			
+
 			if(count($mngoData)):
 				return  [
 					'Response'=>'OK',
@@ -970,22 +990,22 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 					'Response'=>'FAILED'
 				];
 			endif;
-		   
-		}	 
-		
+
+		}
+
 		public function retrieveCommands($params=[]){
 
 			$mngConn = new MongoDB\Driver\Manager('mongodb://'.$this->_GeniSys->_mdbusername.':'.$this->_GeniSys->_mdbpassword.'@localhost/'.$this->_GeniSys->_mdbname.'');
-			$query = new MongoDB\Driver\Query([], ['limit' => 5, 'sort' => ['Time' => -1]]); 
+			$query = new MongoDB\Driver\Query([], ['limit' => 5, 'sort' => ['Time' => -1]]);
 
 			$rows = $mngConn->executeQuery($this->_GeniSys->_mdbname.".Commands", $query);
 
 			$mngoData = [];
-			
+
 			foreach ($rows as $document):
 				$mngoData[]=$document;
 			endforeach;
-			
+
 			if(count($mngoData)):
 				return  [
 					'Response'=>'OK',
@@ -996,22 +1016,22 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 					'Response'=>'FAILED'
 				];
 			endif;
-		   
-		}		
-		
+
+		}
+
 		public function retrieveSensors($params=[]){
 
 			$mngConn = new MongoDB\Driver\Manager('mongodb://'.$this->_GeniSys->_mdbusername.':'.$this->_GeniSys->_mdbpassword.'@localhost/'.$this->_GeniSys->_mdbname.'');
-			$query = new MongoDB\Driver\Query([], ['limit' => 5, 'sort' => ['Time' => -1]]); 
+			$query = new MongoDB\Driver\Query([], ['limit' => 5, 'sort' => ['Time' => -1]]);
 
 			$rows = $mngConn->executeQuery($this->_GeniSys->_mdbname.".Sensors", $query);
 
 			$mngoData = [];
-			
+
 			foreach ($rows as $document):
 				$mngoData[]=$document;
 			endforeach;
-			
+
 			if(count($mngoData)):
 				return  [
 					'Response'=>'OK',
@@ -1022,22 +1042,22 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 					'Response'=>'FAILED'
 				];
 			endif;
-		   
-		}		 	
-		
+
+		}
+
 		public function retrieveLife($limit = 0, $order = -1){
 
 			$mngConn = new MongoDB\Driver\Manager('mongodb://'.$this->_GeniSys->_mdbusername.':'.$this->_GeniSys->_mdbpassword.'@localhost/'.$this->_GeniSys->_mdbname.'');
-			$query = new MongoDB\Driver\Query([], ['limit' => $limit, 'sort' => ['Time' => $order]]); 
+			$query = new MongoDB\Driver\Query([], ['limit' => $limit, 'sort' => ['Time' => $order]]);
 
 			$rows = $mngConn->executeQuery($this->_GeniSys->_mdbname.".Life", $query);
 
 			$mngoData = [];
-			
+
 			foreach ($rows as $document):
 				$mngoData[]=$document;
 			endforeach;
-			
+
 			if(count($mngoData)):
 				return  [
 					'Response'=>'OK',
@@ -1048,22 +1068,22 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 					'Response'=>'FAILED'
 				];
 			endif;
-		   
-		}		 
-		
+
+		}
+
 		public function retrieveActuators($params=[]){
 
 			$mngConn = new MongoDB\Driver\Manager('mongodb://'.$this->_GeniSys->_mdbusername.':'.$this->_GeniSys->_mdbpassword.'@localhost/'.$this->_GeniSys->_mdbname.'');
-			$query = new MongoDB\Driver\Query([], ['limit' => 5, 'sort' => ['Time' => -1]]); 
+			$query = new MongoDB\Driver\Query([], ['limit' => 5, 'sort' => ['Time' => -1]]);
 
 			$rows = $mngConn->executeQuery($this->_GeniSys->_mdbname.".Actuators", $query);
 
 			$mngoData = [];
-			
+
 			foreach ($rows as $document):
 				$mngoData[]=$document;
 			endforeach;
-			
+
 			if(count($mngoData)):
 				return  [
 					'Response'=>'OK',
@@ -1074,8 +1094,8 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 					'Response'=>'FAILED'
 				];
 			endif;
-		   
-		}	
+
+		}
 
 		public function getLife()
 		{
@@ -1087,7 +1107,7 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 					tempr,
 					status
 				FROM mqttld
-				WHERE id = :id 
+				WHERE id = :id
 			");
 			$pdoQuery->execute([
 				":id" => filter_input(INPUT_POST, "device", FILTER_SANITIZE_NUMBER_INT)
@@ -1095,7 +1115,7 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 			$response=$pdoQuery->fetch(PDO::FETCH_ASSOC);
 			$pdoQuery->closeCursor();
 			$pdoQuery = null;
-			
+
 			if($response["id"]):
 				return  [
 					'Response'=>'OK',
@@ -1106,7 +1126,7 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 					'Response'=>'FAILED'
 				];
 			endif;
-		}	
+		}
 
 		public function getStatusShow($status)
 		{
@@ -1122,7 +1142,7 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 		}
 
 	}
-	
+
 	$iotJumpWay = new iotJumpWay($_GeniSys);
 
 	if(filter_input(INPUT_POST, "update_location", FILTER_SANITIZE_NUMBER_INT)):
@@ -1158,7 +1178,9 @@ include dirname(__FILE__) . '/../../iotJumpWay/Classes/pbkdf2.php';
 	if(filter_input(INPUT_POST, "reset_mqtt_app", FILTER_SANITIZE_NUMBER_INT)):
 		die(json_encode($iotJumpWay->resetAppMqtt()));
 	endif;
+	if(filter_input(INPUT_POST, "reset_mqtt_dvc", FILTER_SANITIZE_NUMBER_INT)):
+		die(json_encode($iotJumpWay->resetDvcMqtt()));
+	endif;
 	if(filter_input(INPUT_POST, "get_life", FILTER_SANITIZE_NUMBER_INT)):
 		die(json_encode($iotJumpWay->getLife()));
 	endif;
-	

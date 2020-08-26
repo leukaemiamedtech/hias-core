@@ -1,15 +1,16 @@
+#!/usr/bin/env python3
 ############################################################################################
 #
 # Project:       Peter Moss Leukemia AI Research
 # Repository:    HIAS: Hospital Intelligent Automation System
 # Project:       GeniSysAI
 #
-# Author:		 Adam Milton-Barker (AdamMiltonBarker.com)
+# Author:        Adam Milton-Barker (AdamMiltonBarker.com)
 # Contributors:
-# Title:		 GeniSysAI Class
-# Description:   The GeniSysAI Class provides the Hospital Intelligent Automation System with 
+# Title:         GeniSysAI Class
+# Description:   The GeniSysAI Class provides the Hospital Intelligent Automation System with
 #                it's intelligent functionality.
-# License:	   	 MIT License
+# License:       MIT License
 # Last Modified: 2020-06-04
 #
 ############################################################################################
@@ -26,20 +27,20 @@ from Classes.iotJumpWay import Application
 
 class iotJumpWay():
 	""" iotJumpWay Class
-	
-	The iotJumpWay Class listens for data from the network and 
+
+	The iotJumpWay Class listens for data from the network and
 	stores it in the Mongo db.
 	"""
-	
+
 	def __init__(self):
 		""" Initializes the class. """
 
 		self.Helpers = Helpers("GeniSysAI")
 		self.Helpers.logger.info("GeniSysAI Class initialization complete.")
 
-	def startIoT(self):		
+	def startIoT(self):
 		# Initiates the iotJumpWay connection class
-		
+
 		self.Application = Application({
 			"host": self.Helpers.confs["iotJumpWay"]["host"],
 			"port": self.Helpers.confs["iotJumpWay"]["port"],
@@ -50,28 +51,28 @@ class iotJumpWay():
 			"pw": self.Helpers.confs["iotJumpWay"]["ppw"]
 		})
 		self.Application.connect()
-		
+
 		self.Application.appChannelSub("#","#")
 		self.Application.appDeviceChannelSub("#", "#", "#")
 
 		self.Application.appCommandsCallback = self.appCommandsCallback
 		self.Application.appSensorCallback = self.appSensorCallback
-		self.Application.appStatusCallback = self.appStatusCallback	
+		self.Application.appStatusCallback = self.appStatusCallback
 		self.Application.appTriggerCallback = self.appTriggerCallback
 		self.Application.deviceCommandsCallback = self.deviceCommandsCallback
 		self.Application.deviceSensorCallback = self.deviceSensorCallback
-		self.Application.deviceStatusCallback = self.deviceStatusCallback	
-		self.Application.deviceTriggerCallback = self.deviceTriggerCallback   
-		self.Application.deviceLifeCallback = self.deviceLifeCallback  
+		self.Application.deviceStatusCallback = self.deviceStatusCallback
+		self.Application.deviceTriggerCallback = self.deviceTriggerCallback
+		self.Application.deviceLifeCallback = self.deviceLifeCallback
 		self.Application.appLifeCallback = self.appLifeCallback
 
 		self.Helpers.logger.info("GeniSysAI Class initialization complete.")
 
 	def startMysql(self):
 
-		self.mysqlConn = MySQLdb.connect(host=self.Helpers.confs["iotJumpWay"]["ip"], 
+		self.mysqlConn = MySQLdb.connect(host=self.Helpers.confs["iotJumpWay"]["ip"],
 											user=self.Helpers.confs["iotJumpWay"]["dbuser"],
-											passwd=self.Helpers.confs["iotJumpWay"]["dbpass"], 
+											passwd=self.Helpers.confs["iotJumpWay"]["dbpass"],
 											db=self.Helpers.confs["iotJumpWay"]["dbname"])
 		self.Helpers.logger.info("MySQL connection started")
 
@@ -79,13 +80,13 @@ class iotJumpWay():
 
 		connection = MongoClient(self.Helpers.confs["iotJumpWay"]["ip"])
 		self.mongoConn = connection[self.Helpers.confs["iotJumpWay"]["mdb"]]
-		self.mongoConn.authenticate(self.Helpers.confs["iotJumpWay"]["mdbu"], 
+		self.mongoConn.authenticate(self.Helpers.confs["iotJumpWay"]["mdbu"],
 									self.Helpers.confs["iotJumpWay"]["mdbp"])
 		self.Helpers.logger.info("Mongo connection started")
-		
+
 	def life(self):
 		""" Sends vital statistics to HIAS """
-		
+
 		cpu = psutil.cpu_percent()
 		mem = psutil.virtual_memory()[2]
 		hdd = psutil.disk_usage('/').percent
@@ -93,14 +94,14 @@ class iotJumpWay():
 		r = requests.get('http://ipinfo.io/json?token=15062dec38bfc3')
 		data = r.json()
 		location = data["loc"].split(',')
-  
+
 		self.Helpers.logger.info("GeniSysAI Life (TEMPERATURE): " + str(tmp) + "\u00b0")
 		self.Helpers.logger.info("GeniSysAI Life (CPU): " + str(cpu) + "%")
 		self.Helpers.logger.info("GeniSysAI Life (Memory): " + str(mem) + "%")
 		self.Helpers.logger.info("GeniSysAI Life (HDD): " + str(hdd) + "%")
 		self.Helpers.logger.info("GeniSysAI Life (LAT): " + str(location[0]))
 		self.Helpers.logger.info("GeniSysAI Life (LNG): " + str(location[1]))
-		
+
 		# Send iotJumpWay notification
 		self.Application.appChannelPub("Life", self.Helpers.confs["iotJumpWay"]["paid"], {
 			"CPU": cpu,
@@ -110,19 +111,19 @@ class iotJumpWay():
 			"Latitude": location[0],
 			"Longitude": location[1]
 		})
-		
+
 		threading.Timer(60.0, self.life).start()
-			
+
 	def appStatusCallback(self, topic, payload):
-		""" 
+		"""
 		iotJumpWay Application Status Callback
-		
+
 		The callback function that is triggerend in the event of an application
 		status communication from the iotJumpWay.
 		"""
-		
+
 		self.Helpers.logger.info("Recieved iotJumpWay Application Status : " + payload.decode())
-		
+
 		splitTopic=topic.split("/")
 
 		try:
@@ -155,15 +156,15 @@ class iotJumpWay():
 		except:
 			e = sys.exc_info()[0]
 			self.Helpers.logger.info("Mongo data inserted FAILED")
-			
+
 	def appLifeCallback(self, topic, payload):
-		""" 
+		"""
 		iotJumpWay Application Life Callback
-		
+
 		The callback function that is triggerend in the event of a application
 		life communication from the iotJumpWay.
 		"""
-		
+
 		self.Helpers.logger.info("Recieved iotJumpWay Application Life Data : " + payload.decode())
 		data = json.loads(payload.decode("utf-8"))
 		splitTopic=topic.split("/")
@@ -203,18 +204,18 @@ class iotJumpWay():
 		except:
 			e = sys.exc_info()[0]
 			self.Helpers.logger.info("Mongo data inserted FAILED" + str(e))
-			
+
 	def appCommandsCallback(self, topic, payload):
-		""" 
+		"""
 		iotJumpWay Application Commands Callback
-		
+
 		The callback function that is triggerend in the event of an application
 		command communication from the iotJumpWay.
 		"""
-		
+
 		self.Helpers.logger.info("Recieved iotJumpWay Application Command Data: " + payload.decode())
 		command = json.loads(payload.decode("utf-8"))
-		
+
 		splitTopic=topic.split("/")
 
 		try:
@@ -235,18 +236,18 @@ class iotJumpWay():
 		except:
 			e = sys.exc_info()[0]
 			self.Helpers.logger.info("Mongo data inserted FAILED")
-			
+
 	def appSensorCallback(self, topic, payload):
-		""" 
+		"""
 		iotJumpWay Application Sensors Callback
-		
+
 		The callback function that is triggerend in the event of an application
 		sensor communication from the iotJumpWay.
 		"""
-		
+
 		self.Helpers.logger.info("Recieved iotJumpWay Application Sensors Data : " + payload.decode())
 		command = json.loads(payload.decode("utf-8"))
-		
+
 		splitTopic=topic.split("/")
 
 		try:
@@ -268,28 +269,27 @@ class iotJumpWay():
 		except:
 			e = sys.exc_info()[0]
 			self.Helpers.logger.info("Mongo data inserted FAILED")
-			
+
 	def appTriggerCallback(self, topic, payload):
-		""" 
+		"""
 		iotJumpWay Application Trigger Callback
-		
+
 		The callback function that is triggerend in the event of an application
 		trigger communication from the iotJumpWay.
 		"""
-		
+
 		self.Helpers.logger.info("Recieved iotJumpWay Application Trigger Data : " + payload.decode())
 		command = json.loads(payload.decode("utf-8"))
-			
+
 	def deviceStatusCallback(self, topic, payload):
-		""" 
+		"""
 		iotJumpWay Device Status Callback
-		
+
 		The callback function that is triggerend in the event of an device
 		status communication from the iotJumpWay.
 		"""
-		
+
 		self.Helpers.logger.info("Recieved iotJumpWay Device Status Data : " + payload.decode())
-		
 		splitTopic=topic.split("/")
 
 		try:
@@ -322,15 +322,15 @@ class iotJumpWay():
 		except:
 			e = sys.exc_info()[0]
 			self.Helpers.logger.info("Mongo data inserted FAILED" + str(e))
-			
+
 	def deviceLifeCallback(self, topic, payload):
-		""" 
+		"""
 		iotJumpWay Device Life Callback
-		
+
 		The callback function that is triggerend in the event of a device
 		life communication from the iotJumpWay.
 		"""
-		
+
 		self.Helpers.logger.info("Recieved iotJumpWay Device Life Data : " + payload.decode())
 		data = json.loads(payload.decode("utf-8"))
 		splitTopic=topic.split("/")
@@ -370,19 +370,19 @@ class iotJumpWay():
 		except:
 			e = sys.exc_info()[0]
 			self.Helpers.logger.info("Mongo data inserted FAILED" + str(e))
-			
-			
+
+
 	def deviceCommandsCallback(self, topic, payload):
-		""" 
+		"""
 		iotJumpWay Application Commands Callback
-		
+
 		The callback function that is triggerend in the event of an device
 		command communication from the iotJumpWay.
 		"""
-		
+
 		self.Helpers.logger.info("Recieved iotJumpWay Device Command Data: " + payload.decode())
 		command = json.loads(payload.decode("utf-8"))
-		
+
 		splitTopic=topic.split("/")
 
 		try:
@@ -403,18 +403,18 @@ class iotJumpWay():
 		except:
 			e = sys.exc_info()[0]
 			self.Helpers.logger.info("Mongo data inserted FAILED")
-			
+
 	def deviceSensorCallback(self, topic, payload):
-		""" 
+		"""
 		iotJumpWay Application Sensors Callback
-		
+
 		The callback function that is triggerend in the event of an device
 		sensor communication from the iotJumpWay.
 		"""
-		
+
 		self.Helpers.logger.info("Recieved iotJumpWay Device Sensors Data : " + payload.decode())
 		command = json.loads(payload.decode("utf-8"))
-		
+
 		splitTopic=topic.split("/")
 
 		try:
@@ -436,18 +436,18 @@ class iotJumpWay():
 		except:
 			e = sys.exc_info()[0]
 			self.Helpers.logger.info("Mongo data inserted FAILED")
-			
+
 	def deviceTriggerCallback(self, topic, payload):
-		""" 
+		"""
 		iotJumpWay Application Trigger Callback
-		
+
 		The callback function that is triggerend in the event of an device
 		trigger communication from the iotJumpWay.
 		"""
-		
+
 		self.Helpers.logger.info("Recieved iotJumpWay Device Trigger Data : " + payload.decode())
 		command = json.loads(payload.decode("utf-8"))
-		
+
 iotJumpWay = iotJumpWay()
 
 def main():

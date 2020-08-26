@@ -4,16 +4,10 @@ server {
         server_name YourSubdomain.YourDomain.TLD;
         client_max_body_size 100M;
 
-        location ~* ^/Security/TASS/Live/(.*)$ {
+        location ~* ^/Security/GeniSysAI/Server/(.*)$ {
                 auth_basic "Restricted";
-                auth_basic_user_file /etc/nginx/tass/htpasswd;
+                auth_basic_user_file /etc/nginx/security/htpasswd;
                 proxy_pass http://YourTassDeviceIP:YourTassDevicePort/$1;
-        }
-
-        location ~* ^/Robotics/EMAR/Live/(.*)$ {
-                auth_basic "Restricted";
-                auth_basic_user_file /etc/nginx/tass/htpasswd;
-                proxy_pass http://YourEmarDeviceIP:YourEmarDevicePort/$1;
         }
 
         location ~ ^/Detection/COVID-19/CNN/API/(.*)$ {

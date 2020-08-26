@@ -43,7 +43,7 @@ class Core
     }
 }
 
-class TASS{
+class GeniSysAI{
 
     public function __construct(Core $core, $location, $zone, $ip, $mac)
     {
@@ -54,10 +54,10 @@ class TASS{
         $this->zn = $zone;
         $this->ip = $ip;
         $this->mac = $mac;
-    }  
-		
-    public function zone(){  
-        
+    }
+
+    public function zone(){
+
         $query = $this->conn->prepare("
             INSERT INTO  mqttlz  (
                 `lid`,
@@ -77,9 +77,9 @@ class TASS{
         $this->zid = $this->conn->lastInsertId();
 
         echo "! Zone, " . $this->zn . " has been created with ID " . $this->zid . "!";
-    }  
+    }
 
-    public function device(){ 
+    public function device(){
 
         include 'pbkdf2.php';
 
@@ -89,7 +89,7 @@ class TASS{
 
         $apiKey = $this->apiKey(30);
         $apiSecretKey = $this->apiKey(35);
-        
+
         $query = $this->conn->prepare("
             INSERT INTO  mqttld  (
                 `lid`,
@@ -118,7 +118,7 @@ class TASS{
         $query->execute([
             ':lid' => $this->lid,
             ':zid' => $this->zid,
-            ':name' => "TASS",
+            ':name' => "GeniSysAiServerCam",
             ':mqttu' =>$this->encrypt($mqttUser),
             ':mqttp' =>$this->encrypt($mqttPass),
             ':apub' => $this->encrypt($apiKey),
@@ -174,7 +174,7 @@ class TASS{
             ':zid' => $this->zid,
             ':did' => $this->did,
             ':username' => $mqttUser,
-            ':topic' => $this->lid."/Device/" . $this->zid . "/" . $this->did . "#",
+            ':topic' => $this->lid."/Device/" . $this->zid . "/" . $this->did . "/#",
             ':rw' => 4
         ));
 
@@ -188,7 +188,7 @@ class TASS{
         ));
 
         $pdoQuery = $this->conn->prepare("
-            INSERT INTO  tass  (
+            INSERT INTO  genisysai  (
                 `name`,
                 `type`,
                 `lid`,
@@ -215,15 +215,15 @@ class TASS{
             )
         ");
         $pdoQuery->execute([
-            ":name" => "TASS",
-            ":type" => "Local",
+            ":name" => "GeniSysAI",
+            ":type" => "USB Camera",
             ":lid" => $this->lid,
             ":zid" => $this->zid,
             ":did" => $this->did,
             ":ip" => $this->encrypt($this->ip),
             ":mac" => $this->encrypt($this->mac),
             ":sport" => $this->encrypt("8080"),
-            ":strdir" => $this->encrypt("Live"),
+            ":strdir" => $this->encrypt("Server"),
             ":sportf" => $this->encrypt("stream.mjpg"),
             ":sckport" => $this->encrypt("8181")
         ]);
@@ -237,7 +237,7 @@ class TASS{
         echo "!! Your device MQTT password is: " . $mqttPass . " !!\n";
         echo "";
         return True;
-    }   
+    }
 
     public	function apiKey($length = 30){
         $characters='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0987654321'.time();
@@ -249,7 +249,7 @@ class TASS{
         }
         return $randomString;
     }
-		
+
     public function password($l = 20, $c = 2, $n = 2, $s = 2) {
         $out = "";
         $count = $c + $n + $s;
@@ -301,7 +301,7 @@ class TASS{
             shuffle($tmp1);
             $out = implode('', $tmp1);
         }
-    
+
         return $out;
     }
 
@@ -316,8 +316,8 @@ class TASS{
 
 
 $Core  = new Core();
-$TASS = new TASS($Core, $argv[1], $argv[2], $argv[3], $argv[4]);
-$TASS->zone();
-$TASS->device();
+$GeniSysAI = new GeniSysAI($Core, $argv[1], $argv[2], $argv[3], $argv[4]);
+$GeniSysAI->zone();
+$GeniSysAI->device();
 
 ?>

@@ -1,8 +1,8 @@
 
-            
+
             <div class="fixed-sidebar-left">
                 <ul class="nav navbar-nav side-nav nicescroll-bar">
-                    
+
 					<li>
 						<div class="user-profile text-center">
 							<img src="<?=$domain; ?>/Team/Media/Images/Uploads/<?=$_SESSION["GeniSysAI"]["Pic"]; ?>" alt="user_auth" class="user-auth-img img-circle"/>
@@ -31,7 +31,7 @@
 											<li>
 												<a href="#"><i class="zmdi zmdi-minus-circle-outline text-danger"></i><span>offline</span></a>
 											</li>
-										</ul>	
+										</ul>
 									</li>
 									<li class="divider"></li>
 									<li>
@@ -42,7 +42,7 @@
 						</div>
 					</li>
                     <li class="navigation-header">
-                        <span>Navigation</span> 
+                        <span>Navigation</span>
                         <i class="zmdi zmdi-more"></i>
                     </li>
                     <li>
@@ -89,18 +89,18 @@
 						<a href="javascript:void(0);" data-toggle="collapse" data-target="#security" class="<?=$pageDetails["PageID"]=="Security" ? "active" : ""; ?>"><div class="pull-left"><i class="fa fa-id-card-alt fa-fw mr-20"></i><span class="right-nav-text">Security</span></div><div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
 						<ul id="security" class="<?=$pageDetails["PageID"]=="Security" ? "" : "collapse"; ?> collapse-level-1">
 							<li>
-								<a href="javascript:void(0);" data-toggle="collapse" data-target="#tass" class="<?=$pageDetails["SubPageID"]=="TASS" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-video-camera fa-fw mr-20"></i></div> TASS<div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
-								<ul id="tass" class="<?=$pageDetails["SubPageID"]=="TASS" ? "" : "collapse"; ?> collapse-level-2">
+								<a href="javascript:void(0);" data-toggle="collapse" data-target="#genisyssec" class="<?=$pageDetails["SubPageID"]=="TASS" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-video-camera fa-fw mr-20"></i></div> GeniSysAI<div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
+								<ul id="genisyssec" class="<?=$pageDetails["SubPageID"]=="GeniSysAI" ? "" : "collapse"; ?> collapse-level-2">
 									<li>
-										<a href="<?=$domain; ?>/Security/TASS/" class="<?=$pageDetails["LowPageID"]=="List" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-list fa-fw mr-20"></i></div> List<div class="pull-right"></div><div class="clearfix"></div></a>
+										<a href="<?=$domain; ?>/Security/GeniSysAI/" class="<?=$pageDetails["LowPageID"]=="List" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-list fa-fw mr-20"></i></div> List<div class="pull-right"></div><div class="clearfix"></div></a>
 									</li>
 									<li>
-										<a href="<?=$domain; ?>/Security/TASS/Create" class="<?=$pageDetails["LowPageID"]=="Create" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-plus fa-fw mr-20"></i></div> Create<div class="pull-right"></div></a>
+										<a href="<?=$domain; ?>/Security/GeniSysAI/Create" class="<?=$pageDetails["LowPageID"]=="Create" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-plus fa-fw mr-20"></i></div> Create<div class="pull-right"></div></a>
 									</li>
 								</ul>
 							</li>
 						</ul>
-                    </li> 
+                    </li>
 					<li><hr class="light-grey-hr mb-10"/></li>
                     <li>
 						<a href="javascript:void(0);" data-toggle="collapse" data-target="#hospital" class="<?=$pageDetails["PageID"]=="HIS" ? "active" : ""; ?>"><div class="pull-left"><i class="fa fa-hospital fa-fw mr-20"></i><span class="right-nav-text">HIS</span></div><div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
@@ -110,7 +110,7 @@
 								<ul id="staffdd" class="<?=$pageDetails["SubPageID"]=="Staff" ? "" : "collapse"; ?> collapse-level-2">
 									<li>
 										<a href="<?=$domain; ?>/Hospital/Staff/" class="<?=$pageDetails["LowPageID"]=="List" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-list fa-fw mr-20"></i></div> List<div class="pull-right"></div><div class="clearfix"></div></a>
-									</li> 
+									</li>
 									<li>
 										<a href="<?=$domain; ?>/Hospital/Staff/Create" class="<?=$pageDetails["LowPageID"]=="Create" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-plus fa-fw mr-20"></i></div> Create<div class="pull-right"></div></a>
 									</li>
@@ -121,7 +121,7 @@
 								<ul id="patientsdd" class="<?=$pageDetails["SubPageID"]=="Patients" ? "" : "collapse"; ?> collapse-level-2">
 									<li>
 										<a href="<?=$domain; ?>/Hospital/Patients" class="<?=$pageDetails["LowPageID"]=="List" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-list fa-fw mr-20"></i></div> List<div class="pull-right"></div><div class="clearfix"></div></a>
-									</li> 
+									</li>
 									<li>
 										<a href="<?=$domain; ?>/Hospital/Patients/Create" class="<?=$pageDetails["LowPageID"]=="Create" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-plus fa-fw mr-20"></i></div> Create<div class="pull-right"></div></a>
 									</li>
@@ -132,7 +132,7 @@
 								<ul id="bedsdd" class="<?=$pageDetails["SubPageID"]=="Beds" ? "" : "collapse"; ?>  collapse-level-2">
 									<li>
 										<a href="<?=$domain; ?>/Hospital/Beds" class="<?=$pageDetails["LowPageID"]=="List" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-list fa-fw mr-20"></i></div> List<div class="pull-right"></div><div class="clearfix"></div></a>
-									</li> 
+									</li>
 									<li>
 										<a href="<?=$domain; ?>/Hospital/Beds/Create" class="<?=$pageDetails["LowPageID"]=="Create" ? "active" : ""; ?>"><div class="pull-left"><i class="fas fa-plus fa-fw mr-20"></i></div> Create<div class="pull-right"></div></a>
 									</li>

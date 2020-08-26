@@ -1,5 +1,5 @@
-# Peter Moss Leukemia AI Research
-##  Hospital Intelligent Automation System
+# Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss
+## Hospital Intelligent Automation System
 [![Hospital Intelligent Automation System](../../Media/Images/HIAS-Hospital-Intelligent-Automation-System.png)](https://github.com/LeukemiaAiResearch/HIAS)
 
 # Table Of Contents
@@ -10,32 +10,34 @@
   - [Ubuntu Server 18.04.4 LTS](#ubuntu-server-18044-lts)
   - [Domain Name](#domain-name)
   - [Port Forwarding](#port-forwarding)
-  - [Security](#security)
+  - [Server Security](#server-security)
     - [Remote User](#remote-user)
     - [SSH Access](#ssh-access)
       - [Tips](#tips)
-    - [UFW Firewall](#ufw-firewall) 
-    - [Fail2Ban](#fail2ban) 
-  - [Attach Hard-Drive](#attach-hard-drive) 
-  - [Clone The Repository](#clone-the-repository) 
-    - [Developer Forks](#developer-forks) 
-- [Installation](#installation)  
-  - [Easy Install (Recommended)](#easy-install-recommended) 
-  - [Manual Install](#manual-install) 
-    - [NGINX](#nginx)  
-    - [Let's Encrypt](#lets-encrypt)  
-    - [PHP](#php) 
-    - [MySql](#mysql) 
-    - [phpMyAdmin](#phpmyadmin) 
+    - [UFW Firewall](#ufw-firewall)
+    - [Fail2Ban](#fail2ban)
+  - [Attach Hard-Drive](#attach-hard-drive)
+  - [Clone The Repository](#clone-the-repository)
+    - [Developer Forks](#developer-forks)
+- [Installation](#installation)
+  - [Easy Install (Recommended)](#easy-install-recommended)
+  - [Manual Install](#manual-install)
+    - [NGINX](#nginx)
+    - [Let's Encrypt](#lets-encrypt)
+    - [PHP](#php)
+    - [MySql](#mysql)
+    - [phpMyAdmin](#phpmyadmin)
     - [Mongo Database](#mongo-database)
-    - [SSL Security](#ssl-security)  
-    - [File Server](#file-server)  
+    - [SSL Security](#ssl-security)
+    - [File Server](#file-server)
     - [iotJumpWay Broker](#iotjumpway-broker)
     - [iotJumpWay Location and Application](#iotjumpway-location-and-application)
+    - [GeniSysAI (Computer Vision)](#genisysai-computer-vision)
+
     - [Create Admin User](#create-admin-user)
     - [Finalize Server Settings](#finalize-server-settings)
     - [Install COVID-19 Data Analysis System](#install-covid-19-data-analysis-system)
-- [Login To Your Server UI](#login-to-server-ui) 
+- [Login To Your Server UI](#login-to-server-ui)
 - [Final iotJumpWay Setup](#final-iotjumpway-setup)
 - [Contributing](#contributing)
     - [Contributors](#contributors)
@@ -59,7 +61,7 @@ For this tutorial I am using a [UP2 AI Vision Devkit](https://up-board.org/upkit
 
 &nbsp;
 
-# Prerequisites 
+# Prerequisites
 
 ## Ubuntu Server 18.04.4 LTS
 For this project, the operating system of choice is [Ubuntu Server 18.04.4 LTS](https://ubuntu.com/download/server "Ubuntu Server 18.04.4 LTS"). To get your operating system installed you can follow the [Create a bootable USB stick on Ubuntu](https://tutorials.ubuntu.com/tutorial/tutorial-create-a-usb-stick-on-ubuntu#0 "Create a bootable USB stick on Ubuntu") tutorial.
@@ -77,12 +79,12 @@ How you will do this will vary, but you need to find the area of your router tha
 This will open the HTTP/HTTPS ports on your router and forward the traffic to your server. In the case someone tries to access using insecure protocol (http - port 80) they will be automatically be sent to the secure port of the server (https - 443)
 
 ## Server Security
-First you will harden your server security. 
+First you will harden your server security.
 
 ### Remote User
 You will create a new user for accessing your server remotely. Use the following commands to set up a new user for your machine. Follow the instructions provided and make sure you use a secure password.
 ```
-sudo adduser YourUsername 
+sudo adduser YourUsername
 ```
 Now grant sudo priveleges to the user:
 ```
@@ -97,7 +99,7 @@ ssh YourNewUser@YourServerIP
 Now let's beef up server secuirty. Use the following command to set up your public and private keys. Make sure you carry out this step on your development machine, **not** on your server.
 
 #### Tips
-- Hit enter to confirm the default file. 
+- Hit enter to confirm the default file.
 - Hit enter twice to skip the password (Optionalm, you can use a password if you like).
 ```
 ssh-keygen
@@ -105,9 +107,9 @@ ssh-keygen
 You should end up with a screen like this:
 ```
 Generating public/private rsa key pair.
-Enter file in which to save the key (/home/genisys/.ssh/id_rsa): 
-Enter passphrase (empty for no passphrase): 
-Enter same passphrase again: 
+Enter file in which to save the key (/home/genisys/.ssh/id_rsa):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
 Your identification has been saved in /home/genisys/.ssh/id_rsa.
 Your public key has been saved in /home/genisys/.ssh/id_rsa.pub.
 The key fingerprint is:
@@ -125,7 +127,7 @@ The key's randomart image is:
 |        .o++.    |
 +----[SHA256]-----+
 ```
-Now you are going to copy your key to the server: 
+Now you are going to copy your key to the server:
 ```
 ssh-copy-id YourNewUser@YourServerIP
 ```
@@ -149,7 +151,7 @@ Then restart ssh:
 ```
 sudo systemctl restart ssh
 ```
-_If you are using ssh to do the above steps keep your current terminal connected._ Open a new terminal, attempt to login to your server. If you can login then the above steps were successful. 
+_If you are using ssh to do the above steps keep your current terminal connected._ Open a new terminal, attempt to login to your server. If you can login then the above steps were successful.
 
 The remainder of this tutorial assumes you are logged into your server. From your development machine, connect to your server using ssh or open your local terminal if working directly on your server machine.
 
@@ -338,28 +340,36 @@ UUID=YourUUID /fserver auto nosuid,nodev,nofail,x-gvfs-show 0 0
 ```
 
 ## Clone the repository
-Clone the [HIAS](https://github.com/LeukemiaAiResearch/HIAS "HIAS") repository from the [Peter Moss Acute Myeloid & Lymphoblastic Leukemia AI Research](https://github.com/COVID-19-AI-Research-Project "Peter Moss Leukemia AI Research") Github Organization.
+Clone the [HIAS](https://github.com/LeukemiaAiResearch/HIAS "HIAS") repository from the [Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss](https://github.com/LeukemiaAiResearch "Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss") Github Organization.
 
-To clone the repository and install the Hospital Intelligent Automation System, make sure you have Git installed. Now to the home directory on your server device using terminal/commandline, and then use the following command.
+To clone the repository and install this project, make sure you have Git installed. Now navigate to the home directory on your device using terminal/commandline, and then use the following command.
 
 ```
-  $ git clone -b "0.1.0" https://github.com/LeukemiaAiResearch/HIAS.git
+  git clone https://github.com/LeukemiaAiResearch/HIAS.git
 ```
 
-The **-b "0.1.0"** parameter ensures you get the code from the latest development branch. Before using the below command please check our latest development branch in the button at the top of the project README.
+Once you have used the command above you will see a directory called **HIAS** in your home directory.
 
-Once you have used the command above you will see a directory called **HIAS** in your home directory. 
 ```
-ls
+  ls
 ```
+
 Using the ls command in your home directory should show you the following.
+
 ```
-HIAS
+  HIAS
 ```
+
 The HIAS directory is your project root directory for this tutorial.
 
 ### Developer Forks
-Developers from the Github community that would like to contribute to the development of this project should first create a fork, and clone that repository. For detailed information please view the [CONTRIBUTING](../../CONTRIBUTING.md "CONTRIBUTING") guide.
+Developers from the Github community that would like to contribute to the development of this project should first create a fork, and clone that repository. For detailed information please view the [CONTRIBUTING](../../CONTRIBUTING.md "CONTRIBUTING") guide. You should pull the latest code from the development branch.
+
+```
+  git clone -b "0.7.0" https://github.com/LeukemiaAiResearch/HIAS.git
+```
+
+The **-b "0.7.0"** parameter ensures you get the code from the latest master branch. Before using the below command please check our latest master branch in the button at the top of the project README.
 
 &nbsp;
 
@@ -378,11 +388,11 @@ The easiest way to install the Medcial Support Server is to use the installation
 - [MySQL.sh](../../Scripts/Installation/Shell/MySQL.sh "MySQL.sh"): Installs MySQL.
 - [phpMyAdmin.sh](../../Scripts/Installation/Shell/phpMyAdmin.sh "phpMyAdmin.sh"): Installs phpMyAdmin.
 - [SSL.sh](../../Scripts/Installation/Shell/Finalize.sh "SSL.sh"): Removes insecure SSL libraries.
-- [Samba.sh](../../Scripts/Installation/Shell/Finalize.sh "Samba.sh"): Sets up a Samba server.
+- [Samba.sh](../../Scripts/Installation/Shell/Samba.sh "Samba.sh"): Sets up a Samba server.
 - [iotJumpWay.sh](../../Scripts/Installation/Shell/iotJumpWay.sh "iotJumpWay.sh"): installs iotJumpWay.
-- [iotJumpWayLocation.sh](../../Scripts/Installation/Shell/iotJumpWay.sh "iotJumpWayLocation.sh"): Sets up the iotJumpWay Location.
-- [TASS.sh](../../Scripts/Installation/Shell/TASS.sh "TASS.sh"): installs TASS dependencies.
-- [TASSIoT.sh](../../Scripts/Installation/Shell/iotJumpWay.sh "TASSIoT.sh"): Sets up the TASS iotJumpWay device.
+- [iotJumpWayLocation.sh](../../Scripts/Installation/Shell/iotJumpWayLocation.sh "iotJumpWayLocation.sh"): Sets up the iotJumpWay Location.
+- [GeniSysAI.sh](../../Scripts/Installation/Shell/GeniSysAI.sh "GeniSysAI.sh"): installs GeniSysAI dependencies.
+- [iotJumpWayGeniSysAI.sh](../../Scripts/Installation/Shell/iotJumpWayGeniSysAI.sh "iotJumpWayGeniSysAI.sh"): Sets up the TASS iotJumpWay device.
 - [Admin.sh](../../Scripts/Installation/Shell/Admin.sh "Admin.sh"): creates your admin account.
 - [Finalize.sh](../../Scripts/Installation/Shell/Finalize.sh "Finalize.sh"): Finalizes server setup.
 
@@ -450,7 +460,7 @@ If you have followed above correctly you should now be able to access your websi
 **Shell Script**  [letsEncrypt.sh](../../Scripts/Installation/Shell/letsEncrypt.sh "letsEncrypt.sh")
 
 ### PHP
-Now you will install PHP on your server. Follow the commands below and complete any required steps for the installation to accomplish this. You may need to swap 7.2 in the second command depending on what version of php-fpm is installed. Remember to change $YourDomain to your server domain, and $YourServer to your server IP before executing these commands.
+Now you will install PHP on your server. Follow the commands below and complete any required steps for the installation to accomplish this. You may need to swap 7.2 in the second command depending on what version of php-fpm is installed. Remember to change $YourDomain to your server domain, $ip to your server IP, and $port to the port you would like to use for the server camera stream before executing these commands.
 
 ```
 sudo apt-get install php-fpm php-mysql
@@ -458,8 +468,10 @@ sudo sed -i -- 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php/7.2/fpm/php
 sudo systemctl restart php7.2-fpm
 sudo cp Root/etc/nginx/sites-available/default /etc/nginx/sites-available/default
 sudo sed -i -- "s#root /var/www/html;#root /fserver/var/www/html;#g" /etc/nginx/sites-available/default
-sudo sed -i -- "s/proxy_pass http://###.###.#.##:8080/$1;/proxy_pass http://$YourServerIP:8080/g" /etc/nginx/sites-available/default
-sudo sed -i -- "s/YourSubdomain.YourDomain.TLD/$YourDomain/g" /etc/nginx/sites-available/default
+sudo sed -i -- "s#YourSubdomain.YourDomain.TLD#$domain#g" /etc/nginx/sites-available/default
+sudo apt install apache2-utils
+sudo touch /etc/nginx/security/htpasswd
+sudo sed -i -- "s#proxy_pass http://YourTassDeviceIP:YourTassDevicePort#proxy_pass http://$ip:$port#g" /etc/nginx/sites-available/default
 sudo nginx -t
 sudo systemctl reload nginx
 ```
@@ -532,7 +544,7 @@ sudo systemctl start mysql
 sudo systemctl status mysql
 ```
 
-Now you need to update your core configuration file with the application database credentials you created above, and a secure key that the server will use for encryption. 
+Now you need to update your core configuration file with the application database credentials you created above, and a secure key that the server will use for encryption.
 
 ```
 sudo nano /var/www/Classes/Core/confs.json
@@ -581,16 +593,16 @@ And update the MySQL database related settings:
             "allowed": [".jpg", ".JPG", ".png", ".PNG"]
         },
         "ip": "YourServerIP",
-        "data": "/fserver/models/TASS/Data/Security/",
-        "dlib": "/fserver/models/TASS/shape_predictor_68_face_landmarks.dat",
-        "dlibr": "/fserver/models/TASS/dlib_face_recognition_resnet_model_v1.dat",
-        "lid": TassLocationID,
-        "zid": TassZoneID,
-        "did": TassDeviceID,
-        "sid": TassSensorID,
+        "data": "/fserver/models/GeniSysAI/Data/Security/",
+        "dlib": "/fserver/models/GeniSysAI/shape_predictor_68_face_landmarks.dat",
+        "dlibr": "/fserver/models/GeniSysAI/dlib_face_recognition_resnet_model_v1.dat",
+        "lid": GeniSysAILocationID,
+        "zid": GeniSysAIZoneID,
+        "did": GeniSysAIDeviceID,
+        "sid": GeniSysAISensorID,
         "port": 8080,
         "socket": {
-            "ip": "TassSocketIP",
+            "ip": "GeniSysAISocketIP",
             "port": 8181
         },
         "threshold": 0.6,
@@ -635,7 +647,7 @@ wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add 
 sudo apt-get install gnupg (If required)
 echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list
 sudo apt-get update
-sudo apt-get install -y mongodb-org 
+sudo apt-get install -y mongodb-org
 sudo apt-get install php-mongodb
 sudo systemctl enable mongod.service
 sudo systemctl start mongod
@@ -721,17 +733,17 @@ And update the mongo related settings:
         "core": {
             "allowed": [".jpg", ".JPG", ".png", ".PNG"]
         },
-        "ip": "",
-        "data": "/fserver/models/TASS/Data/Security/",
-        "dlib": "/fserver/models/TASS/shape_predictor_68_face_landmarks.dat",
-        "dlibr": "/fserver/models/TASS/dlib_face_recognition_resnet_model_v1.dat",
-        "lid": 0,
-        "zid": 0,
-        "did": 0,
-        "sid": 0,
+        "ip": "YourServerIP",
+        "data": "/fserver/models/GeniSysAI/Data/Security/",
+        "dlib": "/fserver/models/GeniSysAI/shape_predictor_68_face_landmarks.dat",
+        "dlibr": "/fserver/models/GeniSysAI/dlib_face_recognition_resnet_model_v1.dat",
+        "lid": GeniSysAILocationID,
+        "zid": GeniSysAIZoneID,
+        "did": GeniSysAIDeviceID,
+        "sid": GeniSysAISensorID,
         "port": 8080,
         "socket": {
-            "ip": "",
+            "ip": "GeniSysAISocketIP",
             "port": 8181
         },
         "threshold": 0.6,
@@ -779,7 +791,7 @@ nginx: configuration file /etc/nginx/nginx.conf test is successful
 **Shell Script**  [SSL.sh](../../Scripts/Installation/Shell/SSL.sh "SSL.sh")
 
 ### File Server
-We will use Samba to create a private network file share. 
+We will use Samba to create a private network file share.
 
 ```
 sudo apt install samba
@@ -842,11 +854,11 @@ sudo systemctl status smbd
 ### iotJumpWay Broker
 We will use the [iotJumpWay](https://www.iotjumpway.com/developers/getting-started "iotJumpWay") open source broker for this project. Originally the iotJumpWay was a device built on a Rapsberry Pi that powered my home IoT network locally. In 2015/16 I turned the device into an a Platform as a Service, PaaS, and in 2016 I made the platform free to developers.
 
-For this project I am including a system based on the iotJumpWay PaaS that includes the iotJumpWay locations, zones, devices and applications functionality. This means that all of the machine to machine communication happens locally, and all data is stored locally, never leaving the server. 
+For this project I am including a system based on the iotJumpWay PaaS that includes the iotJumpWay locations, zones, devices and applications functionality. This means that all of the machine to machine communication happens locally, and all data is stored locally, never leaving the server.
 
 We will also use the iotJumpWay PaaS as a means of connecting to the outside world. This results in 2 iotJumpWay networks, a local/private one, and a network of devices and applications in the outside world..
 
-Now install the required MQTT software for our local iotJumpWay broker. 
+Now install the required MQTT software for our local iotJumpWay broker.
 
 ```
 sudo apt install mosquitto
@@ -910,8 +922,8 @@ Apr 24 20:42:49 genisysai systemd[1]: Started LSB: mosquitto MQTT v3.1 message b
 **Shell Script**  [iotJumpWay.sh](../../Scripts/Installation/Shell/iotJumpWay.sh "iotJumpWay.sh")
 
 #### iotJumpWay Location and Application
-Now setup the local iotJumpWay location and application. Replace the 
-**YourLocationName**, **YourApplicationName**, **YourApplicationIP** & **YourApplicationMac** with your chosen name for the server iotJumpWay location, your chose name for the server application and the local IP and MAC address of the device the application will run on. 
+Now setup the local iotJumpWay location and application. Replace the
+**YourLocationName**, **YourApplicationName**, **YourApplicationIP** & **YourApplicationMac** with your chosen name for the server iotJumpWay location, your chose name for the server application and the local IP and MAC address of the device the application will run on.
 
 ```
 php Scripts/Installation/PHP/Location.php YourLocationName YourApplicationName YourApplicationIP YourApplicationMac
@@ -944,8 +956,8 @@ mqttOptions: {
 
 **Shell Script**  [iotJumpWayLocation.sh](../../Scripts/Installation/Shell/iotJumpWayLocation.sh "iotJumpWayLocation.sh")
 
-### tassAI (Computer Vision)
-We will use [tassAI](https://www.facebook.com/tassAI "tassAI") open source computer vision system for the facial recognition and identification.
+### GeniSysAI (Computer Vision)
+We will use the HIAS [GeniSysAI](https://github.com/LeukemiaAiResearch/GeniSysAI "GeniSysAI") open source computer vision system for the facial recognition and identification.
 
 ```
 sudo apt install python3-pip
@@ -955,18 +967,18 @@ sudo mkdir -p /fserver/models
 pip3 install zmq
 pip3 install dlib
 pip3 install imutils
-wget http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2 -P /fserver/models/TASS/
-wget http://dlib.net/files/dlib_face_recognition_resnet_model_v1.dat.bz2 -P /fserver/models/TASS/
-sudo bzip2 /fserver/models/TASS/shape_predictor_68_face_landmarks.dat.bz2 --decompress
-sudo bzip2 /fserver/models/TASS/dlib_face_recognition_resnet_model_v1.dat.bz2 --decompress
+wget http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2 -P /fserver/models/GeniSysAI/
+wget http://dlib.net/files/dlib_face_recognition_resnet_model_v1.dat.bz2 -P /fserver/models/GeniSysAI/
+sudo bzip2 /fserver/models/GeniSysAI/shape_predictor_68_face_landmarks.dat.bz2 --decompress
+sudo bzip2 /fserver/models/GeniSysAI/dlib_face_recognition_resnet_model_v1.dat.bz2 --decompress
 ```
 
-**Shell Script**  [TASS.sh](../../Scripts/Installation/Shell/TASS.sh "TASS.sh")
+**Shell Script**  [GeniSysAI.sh](../../Scripts/Installation/Shell/GeniSysAI.sh "GeniSysAI.sh")
 
-Now you will create the iotJumpWay device on your local broker. 
+Now you will create the iotJumpWay device on your local broker.
 
 ```
-php Scripts/Installation/PHP/TASS.php YourLocationID YourZoneName YourServerIP YourServerMacAddress
+php Scripts/Installation/PHP/GeniSysAI.php YourLocationID YourZoneName YourServerIP YourServerMacAddress
 ```
 You should see similar to the following:
 
@@ -982,7 +994,7 @@ Now you need to update the related settings in the Python configuration. Assumin
 ```
 sudo nano confs.json
 ```
-And update the TASS related settings:
+And update the GeniSysAI related settings:
 ```
 {
     "iotJumpWay": {
@@ -1004,22 +1016,22 @@ And update the TASS related settings:
         "mdb": "YourMongoDatabaseName",
         "mdbu": "YourMongoDatabaseUser",
         "mdbp": "YourMongoDatabasePass",
-        "dbname": "YourMySqlDatabaseName",
-        "dbuser": "YourMySqlDatabaseUser",
-        "dbpass": "YourMySqlDatabasePass"
+        "dbname": "",
+        "dbuser": "",
+        "dbpass": ""
     },
     "tass": {
         "core": {
             "allowed": [".jpg", ".JPG", ".png", ".PNG"]
         },
         "ip": "YourServerIP",
-        "data": "/fserver/models/TASS/Data/Security/",
-        "dlib": "/fserver/models/TASS/shape_predictor_68_face_landmarks.dat",
-        "dlibr": "/fserver/models/TASS/dlib_face_recognition_resnet_model_v1.dat",
-        "lid": TassLocationID,
-        "zid": TassZoneID,
-        "did": TassDeviceID,
-        "sid": TassSensorID,
+        "data": "/fserver/models/GeniSysAI/Data/Security/",
+        "dlib": "/fserver/models/GeniSysAI/shape_predictor_68_face_landmarks.dat",
+        "dlibr": "/fserver/models/GeniSysAI/dlib_face_recognition_resnet_model_v1.dat",
+        "lid": GeniSysAILocationID,
+        "zid": GeniSysAIZoneID,
+        "did": GeniSysAIDeviceID,
+        "sid": GeniSysAISensorID,
         "port": 8080,
         "socket": {
             "ip": "YourServerIP",
@@ -1031,7 +1043,7 @@ And update the TASS related settings:
 }
 ```
 
-**Shell Script**  [TASSIoT.sh](../../Scripts/Installation/Shell/TASSIoT.sh "TASSIoT.sh")
+**Shell Script**  [iotJumpWayGeniSysAI.sh](../../Scripts/Installation/Shell/iotJumpWayGeniSysAI.sh "iotJumpWayGeniSysAI.sh")
 
 ### Create Admin User
 Finally you should create your admin user that you will use to access the network, UI and the network TASS streams. The following command executes a PHP script to add your chosen username as an admin user in the system.
@@ -1049,32 +1061,32 @@ You should see something similar to the following:
 ```
 !! NOTE THESE CREDENTIALS AND KEEP THEM IN A SAFE PLACE !!
 
-!! Admin user, YourUsername, has been created with ID 1 !! 
-!! Your Username is: YourUsername !! 
-!! Your password is: YourPassword !! 
+!! Admin user, YourUsername, has been created with ID 1 !!
+!! Your Username is: YourUsername !!
+!! Your password is: YourPassword !!
 
-!! Application,  YourUsername,  has been created with ID 2 !! 
-!! Your application public key is: YourPublicKey !! 
-!! Your application private key is: YourPrivateKey !! 
-!! Your application MQTT username is: YourMqttUser !! 
-!! Your application MQTT password is: YourMqttPass !! 
+!! Application,  YourUsername,  has been created with ID 2 !!
+!! Your application public key is: YourPublicKey !!
+!! Your application private key is: YourPrivateKey !!
+!! Your application MQTT username is: YourMqttUser !!
+!! Your application MQTT password is: YourMqttPass !!
 ```
 
 **Shell Script**  [Admin.sh](../../Scripts/Installation/Shell/Admin.sh "Admin.sh")
 
 ### Finalize Server Settings
-Now you need to finalize your server settings, to do this you need your server URL, IE: https://www.YourDomain.com, you will need to register free [Google Maps](https://developers.google.com/maps/documentation/javascript/get-api-key "Google Maps") and [Google Recaptcha](https://www.google.com/recaptcha "Google Recaptcha") site/secret keys, and you will need to provide your default latitude and longitude settings. The latitude and longitude settings will be used for the default coordinates for Google Maps in HIAS, they must be correct. 
+Now you need to finalize your server settings, to do this you need your server URL, IE: https://www.YourDomain.com, you will need to register free [Google Maps](https://developers.google.com/maps/documentation/javascript/get-api-key "Google Maps") and [Google Recaptcha](https://www.google.com/recaptcha "Google Recaptcha") site/secret keys, and you will need to provide your default latitude and longitude settings. The latitude and longitude settings will be used for the default coordinates for Google Maps in HIAS, they must be correct.
 
 ```
-php Scripts/Installation/PHP/Finalize.php YourServerURL RecaptchaSiteKey RecaptchaSecretKey GMapsKey DefaultLatitude DefaultLongitude 
+php Scripts/Installation/PHP/Finalize.php YourServerURL RecaptchaSiteKey RecaptchaSecretKey GMapsKey DefaultLatitude DefaultLongitude
 ```
 
 **Shell Script**  [Finalize.sh](../../Scripts/Installation/Shell/Finalize.sh "Finalize.sh")
 
 ### Install COVID-19 Data Analysis System
-Now you will install your COVID-19 Data Analysis System. This system collects data from the COVID-19 API, an free API that provides statistical data for COVID-19 cases, deaths and recoveries. Data is sourced from Johns Hopkins CSSE. 
+Now you will install your COVID-19 Data Analysis System. This system collects data from the COVID-19 API, an free API that provides statistical data for COVID-19 cases, deaths and recoveries. Data is sourced from Johns Hopkins CSSE.
 
-First of all you need to download the full dataset which contains all the COVID-19 data since data started to be recorded, at the time of writing this tutorial that included 383135 entries. Visit the following URL and save the file to the path **Scripts/Installation**, assuming you are in the project root. 
+First of all you need to download the full dataset which contains all the COVID-19 data since data started to be recorded, at the time of writing this tutorial that included 383135 entries. Visit the following URL and save the file to the path **Scripts/Installation**, assuming you are in the project root.
 
 Now run the following code to import the latest data to your database:
 
@@ -1085,6 +1097,59 @@ php Scripts/Installation/PHP/COVID19.php
 You can update the system with the latest data by going to **Data Analysis -> COVID-19 -> Dashboard** and clicking on the refresh button. This will pull all data since the last time you refreshed.
 
 **Shell Script**  [COVID19.sh](../../Scripts/Installation/Shell/COVID19.sh "COVID19.sh")
+
+### Set Up iotJumpWay Service
+Now you will set up a service that will automatically run the server iotJumpWay script. This script listens to the broker and stores all data it receives in the relevant databases, allowing the data to be viewed in the HIAS UI.
+
+First create a new service file using the command below:
+
+```
+  sudo nano /lib/systemd/system/iotJumpWay.service
+```
+
+Next add the following code to the file, replacing **YourUser** with the username you use to login to your UP2 with.
+
+```
+[Unit]
+Description=iotJumpWay Service
+After=multi-user.target
+
+[Service]
+User=YourUser
+Type=simple
+ExecStart=/usr/bin/python3 /home/remote/YourUser/iotJumpWay.py
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Now use the following command to restart the services daemon:
+
+```
+  sudo systemctl daemon-reload
+```
+
+Now enable, start and check your iotJumpWay service:
+
+```
+sudo systemctl enable iotJumpWay.service
+sudo systemctl start iotJumpWay.service
+sudo systemctl status iotJumpWay.service
+```
+
+You should see the following output.
+
+```
+● api.service - iotJumpWay Service
+   Loaded: loaded (/lib/systemd/system/iotJumpWay.service; enabled; vendor preset: enabled)
+   Active: active (running) since Mon 2020-08-24 19:45:31 CEST; 4s ago
+ Main PID: 3481 (python3)
+    Tasks: 4
+   Memory: 46.3M
+      CPU: 2.878s
+   CGroup: /system.slice/iotJumpWay.service
+           └─3481 /usr/bin/python3 /home/YourUser/HIAS/iotJumpWay.py
+```
 
 &nbsp;
 
@@ -1102,18 +1167,18 @@ The HIAS dashboard is your control panel for your encrypted intelligent and IoT 
 # HIAS IoT Network
 ![HIAS IoT Network](../../Media/Images/HIAS-IoT-Dashboard.png)
 
-The HIAS IoT network is powered by a new, fully open-source version of the [iotJumpWay](https://www.iotJumpWay.com "iotJumpWay"). The HIAS iotJumpway dashboard is your control panel for managing all of your network iotJumpWay zones, devices, sensors/actuators and applications. The modular systems that we build to be compatible with this network will all create their own iotJumpWay applications etc during installation, you will be able to manage all of these applications and devices through the iotJumpWay dashboard. 
+The HIAS IoT network is powered by a new, fully open-source version of the [iotJumpWay](https://www.iotJumpWay.com "iotJumpWay"). The HIAS iotJumpway dashboard is your control panel for managing all of your network iotJumpWay zones, devices, sensors/actuators and applications. The modular systems that we build to be compatible with this network will all create their own iotJumpWay applications etc during installation, you will be able to manage all of these applications and devices through the iotJumpWay dashboard.
 
 ## iotJumpWay Finalization
-There are a couple of things we need to do before we can boot up the intelligent server software. To finish up we need two additional iotJumpWay applications. 
+There are a couple of things we need to do before we can boot up the intelligent server software. To finish up we need two additional iotJumpWay applications.
 
-In the UI, navigate to **Server->Location** and click on the **+** icon in the **iotJumpWay Location Applications** section, this will bring you to the page that allows you to create iotJumpWay applications. 
+In the UI, navigate to **Server->Location** and click on the **+** icon in the **iotJumpWay Location Applications** section, this will bring you to the page that allows you to create iotJumpWay applications.
 
 ![Create iotJumpWay application](../../Media/Images/HIAS-IoT-Application.png)
 
 Fill out the information and submit the form, you will be taken to the newly created application. Note the location ID and the MQTT credentials provided to the right of the page. These credentials will be used for your core GeniSysAI Python program.
 
-Now repeat the step above and create an application for the core iotJumpWay Python application. 
+Now repeat the step above and create an application for the core iotJumpWay Python application.
 
 You also need your server domain name for the iotJumpWay broker host. You should supply the domain name without the protocol. IE: **YourSubdomain.YourDomain.YourTLD** not **https://YourSubdomain.YourDomain.YourTLD**.
 
@@ -1152,13 +1217,13 @@ And update the TASS related settings:
             "allowed": [".jpg", ".JPG", ".png", ".PNG"]
         },
         "ip": "YourServerIP",
-        "data": "/fserver/models/TASS/Data/Security/",
-        "dlib": "/fserver/models/TASS/shape_predictor_68_face_landmarks.dat",
-        "dlibr": "/fserver/models/TASS/dlib_face_recognition_resnet_model_v1.dat",
-        "lid": TassLocationID,
-        "zid": TassZoneID,
-        "did": TassDeviceID,
-        "sid": TassSensorID,
+        "data": "/fserver/models/GeniSysAI/Data/Security/",
+        "dlib": "/fserver/models/GeniSysAI/shape_predictor_68_face_landmarks.dat",
+        "dlibr": "/fserver/models/GeniSysAI/dlib_face_recognition_resnet_model_v1.dat",
+        "lid": GeniSysAILocationID,
+        "zid": GeniSysAIZoneID,
+        "did": GeniSysAIDeviceID,
+        "sid": GeniSysAISensorID,
         "port": 8080,
         "socket": {
             "ip": "YourServerIP",
@@ -1173,29 +1238,24 @@ And update the TASS related settings:
 &nbsp;
 
 # Start the system
-Now it is time to boot up your GeniSysAI & iotJumpWay software. These two programs start the facial recognition server, the NLU (Once integrated), and the core iotJumpWay functions that monitor the broker for messages and store the data in the MongoDB. 
+Now it is time to boot up your GeniSysAI software. This program starts the facial recognition stream.
 
-Assuming you are in the project, use the following commands in two separate terminals. 
+Assuming you are in the project root, use the following command:
 
 ```
 python3 GeniSysAI.py
 ```
 
-```
-python3 iotJumpWay.py
-``` 
-
 &nbsp;
 
 # Contributing
+Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss encourages and welcomes code contributions, bug fixes and enhancements from the Github community.
 
-The Peter Moss Acute Myeloid & Lymphoblastic Leukemia AI Research project encourages and welcomes code contributions, bug fixes and enhancements from the Github.
-
-Please read the [CONTRIBUTING](../../CONTRIBUTING.md "CONTRIBUTING") document for a full guide to forking your repositories and submitting your pull requests. You will also find information about your code of conduct on this page.
+Please read the [CONTRIBUTING](CONTRIBUTING.md "CONTRIBUTING") document for a full guide to forking our repositories and submitting your pull requests. You will also find information about our code of conduct on this page.
 
 ## Contributors
 
-- **AUTHOR:** [Adam Milton-Barker](https://www.leukemiaresearchassociation.ai.com/team/adam-milton-barker "Adam Milton-Barker") - [Peter Moss Leukemia AI Research](https://www.leukemiaresearchassociation.ai "Peter Moss Leukemia AI Research") Founder & Intel Software Innovator, Sabadell, Spain
+- [Adam Milton-Barker](https://www.leukemiaresearchassociation.ai.com/team/adam-milton-barker "Adam Milton-Barker") - [Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss](https://www.leukemiaresearchassociation.ai "Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss") President/Founder & Intel Software Innovator, Sabadell, Spain
 
 &nbsp;
 
