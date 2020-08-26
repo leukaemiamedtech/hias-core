@@ -2,7 +2,7 @@
 ## HIAS - Hospital Intelligent Automation System
 [![HIAS - Hospital Intelligent Automation System](Media/Images/HIAS-Hospital-Intelligent-Automation-System.png)](https://github.com/LeukemiaAiResearch/HIAS)
 
-[![VERSION](https://img.shields.io/badge/VERSION-0.6.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.6.0) [![DEV BRANCH](https://img.shields.io/badge/DEV%20BRANCH-0.7.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.7.0) [![Contributions Welcome!](https://img.shields.io/badge/Contributions-Welcome-lightgrey.svg)](CONTRIBUTING.md)  [![Issues](https://img.shields.io/badge/Issues-Welcome-lightgrey.svg)](issues) [![LICENSE](https://img.shields.io/badge/LICENSE-MIT-blue.svg)](LICENSE)
+[![VERSION](https://img.shields.io/badge/VERSION-0.7.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.7.0) [![DEV BRANCH](https://img.shields.io/badge/DEV%20BRANCH-0.8.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/0.8.0) [![Contributions Welcome!](https://img.shields.io/badge/Contributions-Welcome-lightgrey.svg)](CONTRIBUTING.md)  [![Issues](https://img.shields.io/badge/Issues-Welcome-lightgrey.svg)](issues) [![LICENSE](https://img.shields.io/badge/LICENSE-MIT-blue.svg)](LICENSE)
 
 &nbsp;
 

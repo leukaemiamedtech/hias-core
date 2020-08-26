@@ -9,12 +9,12 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
     sudo apt install python3-opencv
     sudo mkdir -p /fserver/models/GeniSysAI
     pip3 install zmq
-    pip3 install dlib
-    pip3 install imutils
-    wget http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2 -P /fserver/models/GeniSysAI/
-    wget http://dlib.net/files/dlib_face_recognition_resnet_model_v1.dat.bz2 -P /fserver/models/GeniSysAI/
-    sudo bzip2 /fserver/models/GeniSysAI/shape_predictor_68_face_landmarks.dat.bz2 --decompress
-    sudo bzip2 /fserver/models/GeniSysAI/dlib_face_recognition_resnet_model_v1.dat.bz2 --decompress
+    wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/face-detection-retail-0004/FP16/face-detection-retail-0004.bin -P /fserver/models/GeniSysAI/
+    wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/face-detection-retail-0004/FP16/face-detection-retail-0004.xml -P /fserver/models/GeniSysAI/
+    wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/face-reidentification-retail-0095/FP16/face-reidentification-retail-0095.bin -P /fserver/models/GeniSysAI/
+    wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/face-reidentification-retail-0095/FP16/face-reidentification-retail-0095.xml -P /fserver/models/GeniSysAI/
+    wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/landmarks-regression-retail-0009/FP16/landmarks-regression-retail-0009.bin -P /fserver/models/GeniSysAI/
+    wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/landmarks-regression-retail-0009/FP16/landmarks-regression-retail-0009.xml -P /fserver/models/GeniSysAI/
     echo "- Installed GeniSysAI!";
     exit 0
 else
