@@ -54,13 +54,13 @@ class CamStream(Thread):
         # Starts the socket module
         self.Socket = Socket("CamStream")
         # Subscribes to the socket server
-        capture = self.Socket.subscribe(self.Helpers.confs["tass"]["socket"]["ip"],
-                                     self.Helpers.confs["tass"]["socket"]["port"])
+        capture = self.Socket.subscribe(self.Helpers.confs["genisysai"]["socket"]["ip"],
+                                     self.Helpers.confs["genisysai"]["socket"]["port"])
 
         try:
             # Starts web server
-            server = ThreadedHTTPServer((self.Helpers.confs["tass"]["ip"], self.Helpers.confs["tass"]["port"]), CamHandler)
-            self.Helpers.logger.info("Stream server started on http://" + self.Helpers.confs["tass"]["ip"] + ":" + str(self.Helpers.confs["tass"]["port"]))
+            server = ThreadedHTTPServer((self.Helpers.confs["genisysai"]["ip"], self.Helpers.confs["genisysai"]["port"]), CamHandler)
+            self.Helpers.logger.info("Stream server started on http://" + self.Helpers.confs["genisysai"]["ip"] + ":" + str(self.Helpers.confs["genisysai"]["port"]))
             server.serve_forever()
         except KeyboardInterrupt:
             # Closes socket server

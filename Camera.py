@@ -16,7 +16,12 @@
 ############################################################################################
 
 
-import json, psutil, requests, sys, threading
+import json
+import psutil
+import requests
+import signal
+import sys
+import threading
 
 from threading import Thread
 
@@ -25,7 +30,7 @@ from Classes.iotJumpWay import Device as iot
 from Classes.CamRead import CamRead
 from Classes.CamStream import CamStream
 
-class GeniSysAI():
+class Camera():
 	""" GeniSysAI Class
 
 	The GeniSysAI Class provides the Hospital Intelligent Automation System with
@@ -35,13 +40,13 @@ class GeniSysAI():
 	def __init__(self):
 		""" Initializes the class. """
 
-		self.Helpers = Helpers("GeniSysAI")
+		self.Helpers = Helpers("Camera")
 
 		# Initiates the iotJumpWay connection class
 		self.iot = iot()
 		self.iot.connect()
 
-		self.Helpers.logger.info("GeniSysAI Class initialization complete.")
+		self.Helpers.logger.info("Camera Class initialization complete.")
 
 	def life(self):
 		""" Sends vital statistics to HIAS """
@@ -54,7 +59,8 @@ class GeniSysAI():
 		data = r.json()
 		location = data["loc"].split(',')
 
-		self.Helpers.logger.info("GeniSysAI Life (TEMPERATURE): " + str(tmp) + "\u00b0")
+		self.Helpers.logger.info(
+			"GeniSysAI Life (TEMPERATURE): " + str(tmp) + "\u00b0")
 		self.Helpers.logger.info("GeniSysAI Life (CPU): " + str(cpu) + "%")
 		self.Helpers.logger.info("GeniSysAI Life (Memory): " + str(mem) + "%")
 		self.Helpers.logger.info("GeniSysAI Life (HDD): " + str(hdd) + "%")
@@ -77,19 +83,26 @@ class GeniSysAI():
 		""" Creates required module threads. """
 
 		# Life thread
-		Thread(target = self.life, args = ()).start()
+		Thread(target=self.life, args=(), daemon=True).start()
 		threading.Timer(60.0, self.life).start()
 
 		# Camera read and stream
-		Thread(target=CamRead.run, args=(self, )).start()
-		Thread(target=CamStream.run, args=(self,)).start()
+		Thread(target=CamRead.run, args=(self, ), daemon=True).start()
+		Thread(target=CamStream.run, args=(self,), daemon=True).start()
 
-GeniSysAI = GeniSysAI()
+	def signal_handler(self, signal, frame):
+		self.Helpers.logger.info("Disconnecting")
+		self.iot.disconnect()
+		sys.exit(1)
+
+Camera = Camera()
 
 def main():
 	# Starts threading
-	GeniSysAI.threading()
-	exit()
+	signal.signal(signal.SIGINT, Camera.signal_handler)
+	signal.signal(signal.SIGTERM, Camera.signal_handler)
+	Camera.threading()
 
 if __name__ == "__main__":
+
 	main()
