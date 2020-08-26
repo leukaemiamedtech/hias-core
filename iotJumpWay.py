@@ -15,7 +15,14 @@
 #
 ############################################################################################
 
-import json, logging, MySQLdb, psutil, requests, sys, threading
+import json
+import logging
+import MySQLdb
+import psutil
+import requests
+import signal
+import sys
+import threading
 
 from threading import Thread
 
@@ -448,14 +455,25 @@ class iotJumpWay():
 		self.Helpers.logger.info("Recieved iotJumpWay Device Trigger Data : " + payload.decode())
 		command = json.loads(payload.decode("utf-8"))
 
+	def signal_handler(self, signal, frame):
+		self.Helpers.logger.info("Disconnecting")
+		self.Application.appDisconnect()
+		sys.exit(1)
+
 iotJumpWay = iotJumpWay()
 
 def main():
+
+	signal.signal(signal.SIGINT, iotJumpWay.signal_handler)
+	signal.signal(signal.SIGTERM, iotJumpWay.signal_handler)
+
 	# Starts the application
+
 	iotJumpWay.startIoT()
 	iotJumpWay.startMysql()
 	iotJumpWay.startMongo()
-	Thread(target = iotJumpWay.life, args = ()).start()
+
+	Thread(target=iotJumpWay.life, args=(), daemon=True).start()
 	while True:
 		continue
 	exit()

@@ -8,6 +8,7 @@
 - [Required Hardware](#required-hardware)
 - [Prerequisites](#prerequisites)
   - [Ubuntu Server 18.04.4 LTS](#ubuntu-server-18044-lts)
+  - [OpenVINO 2020.3](openvino-20203)
   - [Domain Name](#domain-name)
   - [Port Forwarding](#port-forwarding)
   - [Server Security](#server-security)
@@ -33,12 +34,13 @@
     - [iotJumpWay Broker](#iotjumpway-broker)
     - [iotJumpWay Location and Application](#iotjumpway-location-and-application)
     - [GeniSysAI (Computer Vision)](#genisysai-computer-vision)
-
     - [Create Admin User](#create-admin-user)
     - [Finalize Server Settings](#finalize-server-settings)
     - [Install COVID-19 Data Analysis System](#install-covid-19-data-analysis-system)
 - [Login To Your Server UI](#login-to-server-ui)
-- [Final iotJumpWay Setup](#final-iotjumpway-setup)
+- [HIAS IoT Network](hias-iot-network)
+    - [iotJumpWay Finalization](#iotjumpway-finalization)
+    - [HIAS Server Services](#hias-server-services)
 - [Contributing](#contributing)
     - [Contributors](#contributors)
 - [Versioning](#versioning)
@@ -62,11 +64,17 @@ For this tutorial I am using a [UP2 AI Vision Devkit](https://up-board.org/upkit
 &nbsp;
 
 # Prerequisites
+Before you can continue with this tutorial. Please ensure you have completed all of the following prerequisites.
 
 ## Ubuntu Server 18.04.4 LTS
 For this project, the operating system of choice is [Ubuntu Server 18.04.4 LTS](https://ubuntu.com/download/server "Ubuntu Server 18.04.4 LTS"). To get your operating system installed you can follow the [Create a bootable USB stick on Ubuntu](https://tutorials.ubuntu.com/tutorial/tutorial-create-a-usb-stick-on-ubuntu#0 "Create a bootable USB stick on Ubuntu") tutorial.
 
 **__The server installation can be run on an existing installation of Ubuntu, however we recommend using a fresh installation.__**
+
+## OpenVINO 2020.3
+You will use the Intel® Distribution of OpenVINO™ toolkit for your server camera software. OpenVINO™ is used to optimize and accelerate edge AI applications allowing lower powered devices to run fast applications without the need for cloud services.
+
+To install the Intel® Distribution of OpenVINO™ toolkit on your device, please follow [this guide](https://docs.openvinotoolkit.org/2020.3/_docs_install_guides_installing_openvino_linux.html)
 
 ## Domain Name
 Now is as good a time as any to sort out and configure a domain name. You need to have your domain already hosted on a hosting account, from there edit the DNS zone by adding an A record to your public IP, for this you need a static IP or IP software that will update the IP in the DNZ Zone each time it changes. You add your IP as an A record and save your DNS Zone.
@@ -395,6 +403,8 @@ The easiest way to install the Medcial Support Server is to use the installation
 - [iotJumpWayGeniSysAI.sh](../../Scripts/Installation/Shell/iotJumpWayGeniSysAI.sh "iotJumpWayGeniSysAI.sh"): Sets up the TASS iotJumpWay device.
 - [Admin.sh](../../Scripts/Installation/Shell/Admin.sh "Admin.sh"): creates your admin account.
 - [Finalize.sh](../../Scripts/Installation/Shell/Finalize.sh "Finalize.sh"): Finalizes server setup.
+- [COVID19.sh](../../Scripts/Installation/Shell/COVID19.sh "COVID19.sh"): Sets up the COVID-19 data analysis system.
+- [Services.sh](../../Scripts/Installation/Shell/COVID19.sh "Services.sh"): Sets up the iotJumpWay listener and GeniSysAI server camera services.
 
 To do a continuous install, use the following command from the project root:
 
@@ -563,24 +573,23 @@ Now you need to update the related settings in the Python configuration. Assumin
 sudo nano confs.json
 ```
 And update the MySQL database related settings:
-```
-{
+```{
     "iotJumpWay": {
         "channels": {
             "commands": "Commands"
         },
-        "host": "",
+        "host": "YourSubdomain.YourDomain.YourTLD",
         "port": 8883,
         "ip": "localhost",
-        "lid": 0,
-        "aid": 0,
-        "an": "",
-        "un": "",
-        "pw": "",
-        "paid": 0,
-        "pan": "",
-        "pun": "",
-        "ppw": "",
+        "lid": YourGeniSysAiLocationID,
+        "aid": YourGeniSysAiApplicationID,
+        "an": "YourGeniSysAiApplicationName",
+        "un": "YourGeniSysAiMqttUser",
+        "pw": "YourGeniSysAiMqttPass",
+        "paid": YourIotJumpWayApplicationID,
+        "pan": "YourIotJumpWayApplicationName",
+        "pun": "YourIotJumpWayMqttUser",
+        "ppw": "YourIotJumpWayMqttPass",
         "mdb": "YourMongoDatabaseName",
         "mdbu": "YourMongoDatabaseUser",
         "mdbp": "YourMongoDatabasePass",
@@ -588,21 +597,28 @@ And update the MySQL database related settings:
         "dbuser": "YourMySqlDatabaseUser",
         "dbpass": "YourMySqlDatabasePass"
     },
-    "tass": {
+    "genisysai": {
         "core": {
-            "allowed": [".jpg", ".JPG", ".png", ".PNG"]
+            "allowed": [
+                ".jpg",
+                ".JPG",
+                ".png",
+                ".PNG"
+            ]
         },
         "ip": "YourServerIP",
         "data": "/fserver/models/GeniSysAI/Data/Security/",
-        "dlib": "/fserver/models/GeniSysAI/shape_predictor_68_face_landmarks.dat",
-        "dlibr": "/fserver/models/GeniSysAI/dlib_face_recognition_resnet_model_v1.dat",
+        "detection": "/fserver/models/GeniSysAI/face-detection-retail-0004.xml",
+        "reidentification": "/fserver/models/GeniSysAI/face-reidentification-retail-0095.xml",
+        "landmarks": "/fserver/models/GeniSysAI/landmarks-regression-retail-0009.xml",
+        "runas": "CPU",
         "lid": GeniSysAILocationID,
         "zid": GeniSysAIZoneID,
         "did": GeniSysAIDeviceID,
         "sid": GeniSysAISensorID,
         "port": 8080,
         "socket": {
-            "ip": "GeniSysAISocketIP",
+            "ip": "YourServerIP",
             "port": 8181
         },
         "threshold": 0.6,
@@ -704,46 +720,52 @@ Now you need to update the related settings in the Python configuration. Assumin
 sudo nano confs.json
 ```
 And update the mongo related settings:
-```
-{
+```{
     "iotJumpWay": {
         "channels": {
             "commands": "Commands"
         },
-        "host": "",
+        "host": "YourSubdomain.YourDomain.YourTLD",
         "port": 8883,
         "ip": "localhost",
-        "lid": 0,
-        "aid": 0,
-        "an": "",
-        "un": "",
-        "pw": "",
-        "paid": 0,
-        "pan": "",
-        "pun": "",
-        "ppw": "",
+        "lid": YourGeniSysAiLocationID,
+        "aid": YourGeniSysAiApplicationID,
+        "an": "YourGeniSysAiApplicationName",
+        "un": "YourGeniSysAiMqttUser",
+        "pw": "YourGeniSysAiMqttPass",
+        "paid": YourIotJumpWayApplicationID,
+        "pan": "YourIotJumpWayApplicationName",
+        "pun": "YourIotJumpWayMqttUser",
+        "ppw": "YourIotJumpWayMqttPass",
         "mdb": "YourMongoDatabaseName",
         "mdbu": "YourMongoDatabaseUser",
         "mdbp": "YourMongoDatabasePass",
-        "dbname": "",
-        "dbuser": "",
-        "dbpass": ""
+        "dbname": "YourMySqlDatabaseName",
+        "dbuser": "YourMySqlDatabaseUser",
+        "dbpass": "YourMySqlDatabasePass"
     },
-    "tass": {
+    "genisysai": {
         "core": {
-            "allowed": [".jpg", ".JPG", ".png", ".PNG"]
+            "allowed": [
+                ".jpg",
+                ".JPG",
+                ".png",
+                ".PNG"
+            ]
         },
         "ip": "YourServerIP",
         "data": "/fserver/models/GeniSysAI/Data/Security/",
-        "dlib": "/fserver/models/GeniSysAI/shape_predictor_68_face_landmarks.dat",
-        "dlibr": "/fserver/models/GeniSysAI/dlib_face_recognition_resnet_model_v1.dat",
+        "detection": "/fserver/models/GeniSysAI/face-detection-retail-0004.xml",
+        "reidentification": "/fserver/models/GeniSysAI/face-reidentification-retail-0095.xml",
+        "landmarks": "/fserver/models/GeniSysAI/landmarks-regression-retail-0009.xml",
+        "runas": "CPU",
         "lid": GeniSysAILocationID,
         "zid": GeniSysAIZoneID,
         "did": GeniSysAIDeviceID,
         "sid": GeniSysAISensorID,
         "port": 8080,
         "socket": {
-            "ip": "GeniSysAISocketIP",
+            "ip": "YourServerIP",
             "port": 8181
         },
         "threshold": 0.6,
@@ -945,13 +967,19 @@ Now add these credentials to the iotJumpWay JS script. Use the following command
 sudo nano /var/www/html/iotJumpWay/Classes/iotJumpWay.js
 ```
 ```
-mqttOptions: {
-  locationID: YourLocationID,
-  applicationID: YourApplicationID,
-  applicationName: "YourApplicationName",
-  userName: "YourMqttUser",
-  passwd: "YourMqttPassword"
-}
+    client: null,
+    connected: false,
+    host: "YourServerDomainName",
+    port: 9001,
+    useTLS: true,
+    cleansession: true,
+    mqttOptions: {
+        locationID: YourLocationID,
+        applicationID: YourApplicationID,
+        applicationName: "YourApplicationName",
+        userName: "YourMqttUser",
+        passwd: "YourMqttPassword"
+    }
 ```
 
 **Shell Script**  [iotJumpWayLocation.sh](../../Scripts/Installation/Shell/iotJumpWayLocation.sh "iotJumpWayLocation.sh")
@@ -963,14 +991,14 @@ We will use the HIAS [GeniSysAI](https://github.com/LeukemiaAiResearch/GeniSysAI
 sudo apt install python3-pip
 sudo apt install cmake
 sudo apt install python3-opencv
-sudo mkdir -p /fserver/models
+sudo mkdir -p /fserver/models/GeniSysAI
 pip3 install zmq
-pip3 install dlib
-pip3 install imutils
-wget http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2 -P /fserver/models/GeniSysAI/
-wget http://dlib.net/files/dlib_face_recognition_resnet_model_v1.dat.bz2 -P /fserver/models/GeniSysAI/
-sudo bzip2 /fserver/models/GeniSysAI/shape_predictor_68_face_landmarks.dat.bz2 --decompress
-sudo bzip2 /fserver/models/GeniSysAI/dlib_face_recognition_resnet_model_v1.dat.bz2 --decompress
+wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/face-detection-retail-0004/FP16/face-detection-retail-0004.bin -P /fserver/models/GeniSysAI/
+wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/face-detection-retail-0004/FP16/face-detection-retail-0004.xml -P /fserver/models/GeniSysAI/
+wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/face-reidentification-retail-0095/FP16/face-reidentification-retail-0095.bin -P /fserver/models/GeniSysAI/
+wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/face-reidentification-retail-0095/FP16/face-reidentification-retail-0095.xml -P /fserver/models/GeniSysAI/
+wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/landmarks-regression-retail-0009/FP16/landmarks-regression-retail-0009.bin -P /fserver/models/GeniSysAI/
+wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/landmarks-regression-retail-0009/FP16/landmarks-regression-retail-0009.xml -P /fserver/models/GeniSysAI/
 ```
 
 **Shell Script**  [GeniSysAI.sh](../../Scripts/Installation/Shell/GeniSysAI.sh "GeniSysAI.sh")
@@ -1001,33 +1029,40 @@ And update the GeniSysAI related settings:
         "channels": {
             "commands": "Commands"
         },
-        "host": "",
+        "host": "YourSubdomain.YourDomain.YourTLD",
         "port": 8883,
         "ip": "localhost",
-        "lid": 0,
-        "aid": 0,
-        "an": "",
-        "un": "",
-        "pw": "",
-        "paid": 0,
-        "pan": "",
-        "pun": "",
-        "ppw": "",
+        "lid": YourGeniSysAiLocationID,
+        "aid": YourGeniSysAiApplicationID,
+        "an": "YourGeniSysAiApplicationName",
+        "un": "YourGeniSysAiMqttUser",
+        "pw": "YourGeniSysAiMqttPass",
+        "paid": YourIotJumpWayApplicationID,
+        "pan": "YourIotJumpWayApplicationName",
+        "pun": "YourIotJumpWayMqttUser",
+        "ppw": "YourIotJumpWayMqttPass",
         "mdb": "YourMongoDatabaseName",
         "mdbu": "YourMongoDatabaseUser",
         "mdbp": "YourMongoDatabasePass",
-        "dbname": "",
-        "dbuser": "",
-        "dbpass": ""
+        "dbname": "YourMySqlDatabaseName",
+        "dbuser": "YourMySqlDatabaseUser",
+        "dbpass": "YourMySqlDatabasePass"
     },
-    "tass": {
+    "genisysai": {
         "core": {
-            "allowed": [".jpg", ".JPG", ".png", ".PNG"]
+            "allowed": [
+                ".jpg",
+                ".JPG",
+                ".png",
+                ".PNG"
+            ]
         },
         "ip": "YourServerIP",
         "data": "/fserver/models/GeniSysAI/Data/Security/",
-        "dlib": "/fserver/models/GeniSysAI/shape_predictor_68_face_landmarks.dat",
-        "dlibr": "/fserver/models/GeniSysAI/dlib_face_recognition_resnet_model_v1.dat",
+        "detection": "/fserver/models/GeniSysAI/face-detection-retail-0004.xml",
+        "reidentification": "/fserver/models/GeniSysAI/face-reidentification-retail-0095.xml",
+        "landmarks": "/fserver/models/GeniSysAI/landmarks-regression-retail-0009.xml",
+        "runas": "CPU",
         "lid": GeniSysAILocationID,
         "zid": GeniSysAIZoneID,
         "did": GeniSysAIDeviceID,
@@ -1098,59 +1133,6 @@ You can update the system with the latest data by going to **Data Analysis -> CO
 
 **Shell Script**  [COVID19.sh](../../Scripts/Installation/Shell/COVID19.sh "COVID19.sh")
 
-### Set Up iotJumpWay Service
-Now you will set up a service that will automatically run the server iotJumpWay script. This script listens to the broker and stores all data it receives in the relevant databases, allowing the data to be viewed in the HIAS UI.
-
-First create a new service file using the command below:
-
-```
-  sudo nano /lib/systemd/system/iotJumpWay.service
-```
-
-Next add the following code to the file, replacing **YourUser** with the username you use to login to your UP2 with.
-
-```
-[Unit]
-Description=iotJumpWay Service
-After=multi-user.target
-
-[Service]
-User=YourUser
-Type=simple
-ExecStart=/usr/bin/python3 /home/remote/YourUser/iotJumpWay.py
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Now use the following command to restart the services daemon:
-
-```
-  sudo systemctl daemon-reload
-```
-
-Now enable, start and check your iotJumpWay service:
-
-```
-sudo systemctl enable iotJumpWay.service
-sudo systemctl start iotJumpWay.service
-sudo systemctl status iotJumpWay.service
-```
-
-You should see the following output.
-
-```
-● api.service - iotJumpWay Service
-   Loaded: loaded (/lib/systemd/system/iotJumpWay.service; enabled; vendor preset: enabled)
-   Active: active (running) since Mon 2020-08-24 19:45:31 CEST; 4s ago
- Main PID: 3481 (python3)
-    Tasks: 4
-   Memory: 46.3M
-      CPU: 2.878s
-   CGroup: /system.slice/iotJumpWay.service
-           └─3481 /usr/bin/python3 /home/YourUser/HIAS/iotJumpWay.py
-```
-
 &nbsp;
 
 # Login To Your Server UI
@@ -1186,7 +1168,7 @@ Now you need to update the related settings in the Python configuration. Assumin
 ```
 sudo nano confs.json
 ```
-And update the TASS related settings:
+And update the GeniSysAI related settings:
 ```
 {
     "iotJumpWay": {
@@ -1212,14 +1194,21 @@ And update the TASS related settings:
         "dbuser": "YourMySqlDatabaseUser",
         "dbpass": "YourMySqlDatabasePass"
     },
-    "tass": {
+    "genisysai": {
         "core": {
-            "allowed": [".jpg", ".JPG", ".png", ".PNG"]
+            "allowed": [
+                ".jpg",
+                ".JPG",
+                ".png",
+                ".PNG"
+            ]
         },
         "ip": "YourServerIP",
         "data": "/fserver/models/GeniSysAI/Data/Security/",
-        "dlib": "/fserver/models/GeniSysAI/shape_predictor_68_face_landmarks.dat",
-        "dlibr": "/fserver/models/GeniSysAI/dlib_face_recognition_resnet_model_v1.dat",
+        "detection": "/fserver/models/GeniSysAI/face-detection-retail-0004.xml",
+        "reidentification": "/fserver/models/GeniSysAI/face-reidentification-retail-0095.xml",
+        "landmarks": "/fserver/models/GeniSysAI/landmarks-regression-retail-0009.xml",
+        "runas": "CPU",
         "lid": GeniSysAILocationID,
         "zid": GeniSysAIZoneID,
         "did": GeniSysAIDeviceID,
@@ -1235,15 +1224,106 @@ And update the TASS related settings:
 }
 ```
 
-&nbsp;
-
-# Start the system
-Now it is time to boot up your GeniSysAI software. This program starts the facial recognition stream.
-
-Assuming you are in the project root, use the following command:
+## HIAS Server Services
+Now you will set up two services that will automatically run the iotJumpWay listener and camera stream.
 
 ```
-python3 GeniSysAI.py
+read -p "! Enter the username you use to login to your device: " username
+sudo touch /lib/systemd/system/iotJumpWay.service
+echo "[Unit]" | sudo tee -a /lib/systemd/system/iotJumpWay.service
+echo "Description=iotJumpWay Service" | sudo tee -a /lib/systemd/system/iotJumpWay.service
+echo "After=multi-user.target" | sudo tee -a /lib/systemd/system/iotJumpWay.service
+echo "" | sudo tee -a /lib/systemd/system/iotJumpWay.service
+echo "[Service]" | sudo tee -a /lib/systemd/system/iotJumpWay.service
+echo "User=$username" | sudo tee -a /lib/systemd/system/iotJumpWay.service
+echo "Type=simple" | sudo tee -a /lib/systemd/system/iotJumpWay.service
+echo "ExecStart=/usr/bin/python3 /home/$username/HIAS/iotJumpWay.py" | sudo tee -a /lib/systemd/system/iotJumpWay.service
+echo "" | sudo tee -a /lib/systemd/system/iotJumpWay.service
+echo "[Install]" | sudo tee -a /lib/systemd/system/iotJumpWay.service
+echo "WantedBy=multi-user.target" | sudo tee -a /lib/systemd/system/iotJumpWay.service
+
+sudo sed -i -- "s#YourUser#$username#g" Scripts/System/Camera.sh
+chmod u+x Scripts/System/Camera.sh
+sudo gpasswd -d $usernam video
+
+sudo touch /lib/systemd/system/GeniSysAI.service
+echo "[Unit]" | sudo tee -a /lib/systemd/system/GeniSysAI.service
+echo "Description=GeniSysAI Service" | sudo tee -a /lib/systemd/system/GeniSysAI.service
+echo "After=multi-user.target" | sudo tee -a /lib/systemd/system/GeniSysAI.service
+echo "" | sudo tee -a /lib/systemd/system/GeniSysAI.service
+echo "[Service]" | sudo tee -a /lib/systemd/system/GeniSysAI.service
+echo "User=$username" | sudo tee -a /lib/systemd/system/GeniSysAI.service
+echo "Type=simple" | sudo tee -a /lib/systemd/system/GeniSysAI.service
+echo "ExecStart=/home/$username/HIAS/Scripts/System/Camera.sh" | sudo tee -a /lib/systemd/system/GeniSysAI.service
+echo "" | sudo tee -a /lib/systemd/system/GeniSysAI.service
+echo "[Install]" | sudo tee -a /lib/systemd/system/GeniSysAI.service
+echo "WantedBy=multi-user.target" | sudo tee -a /lib/systemd/system/GeniSysAI.service
+```
+
+**Shell Script**  [Services.sh](../../Scripts/Installation/Shell/Services.sh "Services.sh")
+
+Now use the following command to restart the services daemon:
+
+```
+  sudo systemctl daemon-reload
+```
+
+Now enable, start and check your iotJumpWay service:
+
+```
+sudo systemctl enable iotJumpWay.service
+sudo systemctl start iotJumpWay.service
+sudo systemctl status iotJumpWay.service
+```
+
+You should see the following output.
+
+```
+● api.service - iotJumpWay Service
+   Loaded: loaded (/lib/systemd/system/iotJumpWay.service; enabled; vendor preset: enabled)
+   Active: active (running) since Mon 2020-08-24 19:45:31 CEST; 4s ago
+ Main PID: 3481 (python3)
+    Tasks: 4
+   Memory: 46.3M
+      CPU: 2.878s
+   CGroup: /system.slice/iotJumpWay.service
+           └─3481 /usr/bin/python3 /home/YourUser/HIAS/iotJumpWay.py
+```
+
+And finally enable, start and check your GeniSysAI service:
+
+```
+sudo systemctl enable GeniSysAI.service
+sudo systemctl start GeniSysAI.service
+sudo systemctl status GeniSysAI.service
+```
+
+You should see the following output.
+
+```
+● api.service - GeniSysAI Service
+   Loaded: loaded (/lib/systemd/system/GeniSysAI.service; enabled; vendor preset: enabled)
+   Active: active (running) since Mon 2020-08-24 19:45:31 CEST; 4s ago
+ Main PID: 3481 (python3)
+    Tasks: 4
+   Memory: 46.3M
+      CPU: 2.878s
+   CGroup: /system.slice/GeniSysAI.service
+           └─3481 /usr/bin/python3 /home/YourUser/HIAS/GeniSysAI.py
+```
+
+Your services will now load every time your server boots up. To manage the services you can use:
+
+```
+sudo systemctl restart iotJumpWay.service
+sudo systemctl start iotJumpWay.service
+sudo systemctl stop iotJumpWay.service
+sudo systemctl status iotJumpWay.service
+
+sudo systemctl restart GeniSysAI.service
+sudo systemctl start GeniSysAI.service
+sudo systemctl stop GeniSysAI.service
+sudo systemctl status GeniSysAI.service
 ```
 
 &nbsp;

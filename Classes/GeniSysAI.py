@@ -1,125 +1,183 @@
 ############################################################################################
 #
-# Project:       Peter Moss Leukemia AI Research
-# Repository:    HIAS: Hospital Intelligent Automation System
-# Project:       GeniSysAI
+# Project:      Peter Moss Leukemia AI Research
+# Repository:   HIAS: Hospital Intelligent Automation System
+# Project:      GeniSysAI
 #
 # Author:        Adam Milton-Barker (AdamMiltonBarker.com)
-# Contributors:
+#
 # Title:         GeniSysAI Class
 # Description:   GeniSysAI functions for the Hospital Intelligent Automation System.
 # License:       MIT License
-# Last Modified: 2020-06-04
+# Last Modified: 2020-08-26
 #
 ############################################################################################
 
-import cv2, dlib, os
+import cv2
+import dlib
+import os
+import os.path as osp
 
 import numpy as np
 
 from Classes.Helpers import Helpers
 
+from Classes.OpenVINO.ie_module import InferenceContext
+from Classes.OpenVINO.landmarks_detector import LandmarksDetector
+from Classes.OpenVINO.face_detector import FaceDetector
+from Classes.OpenVINO.faces_database import FacesDatabase
+from Classes.OpenVINO.face_identifier import FaceIdentifier
+
 class GeniSysAI():
 
-    def __init__(self):
-        """ GeniSysAI Class
+	def __init__(self):
+		""" GeniSysAI Class
 
-        GeniSysAI functions for the COVID-19 Hospital Intelligent Automation System.
-        """
+		GeniSysAI functions for the Hospital Intelligent Automation System.
+		"""
 
-        self.Helpers = Helpers("GeniSysAI", False)
+		self.Helpers = Helpers("GeniSysAI", False)
 
-        # Sets up DLIB features
-        self.detector = dlib.get_frontal_face_detector()
-        self.predictor = dlib.shape_predictor(self.Helpers.confs["tass"]["dlib"])
-        self.recognizer = dlib.face_recognition_model_v1(self.Helpers.confs["tass"]["dlibr"])
+		self.qs = 16
+		self.context = InferenceContext([self.Helpers.confs["genisysai"]["runas"], self.Helpers.confs["genisysai"]["runas"], self.Helpers.confs["genisysai"]["runas"]], "", "", "")
 
-        self.Helpers.logger.info("GeniSysAI Helper Class initialization complete.")
+		self.Helpers.logger.info("GeniSysAI Helper Class initialization complete.")
 
-    def connect(self):
-        """ Connects to the local GeniSysAI. """
+	def connect(self):
+		""" Connects to the local GeniSysAI camera. """
 
-        self.lcv = cv2.VideoCapture(self.Helpers.confs["tass"]["vid"])
+		self.lcv = cv2.VideoCapture(self.Helpers.confs["genisysai"]["vid"])
 
-        self.Helpers.logger.info("Connected To GeniSysAI")
+		self.Helpers.logger.info("Connected to GeniSysAI")
 
-    def processim(self, frame):
-        """ Reads & processes frame from the local GeniSysAI. """
+	def load_models(self):
+		""" Loads all models. """
 
-        # Makes a copy of the frame
-        raw = frame.copy()
-        # Resizes the frame
-        frame = cv2.resize(frame, (640, 480))
-        # Converts to grayscale
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+		face_detector_net = self.load_model(
+			self.Helpers.confs["genisysai"]["detection"])
+		face_detector_net.reshape({"data": [1, 3, 384, 672]})
 
-        return raw, frame, gray
+		landmarks_net = self.load_model(
+			self.Helpers.confs["genisysai"]["landmarks"])
 
-    def preprocess(self):
-        """ Encodes the known users images. """
+		face_reid_net = self.load_model(
+			self.Helpers.confs["genisysai"]["reidentification"])
 
-        self.encoded = []
+		self.face_detector = FaceDetector(face_detector_net,
+									confidence_threshold=0.6,
+									roi_scale_factor=1.15)
 
-        # Loops through all images in the security folder
-        for filename in os.listdir(self.Helpers.confs["tass"]["data"]):
-            # Checks file type
-            if filename.lower().endswith(tuple(self.Helpers.confs["tass"]["core"]["allowed"])):
-                fpath = os.path.join(self.Helpers.confs["tass"]["data"], filename)
-                # Gets user id from filename
-                user = os.path.splitext(filename)[0]
-                # Reads the image
-                image = cv2.imread(fpath)
-                # Gets faces and coordinates
-                faces, coords = self.faces(image)
-                # Saves the user id and encoded image to a list
-                self.encoded.append((user, self.encode(image, coords)[0]))
+		self.landmarks_detector = LandmarksDetector(landmarks_net)
 
-        self.Helpers.logger.info("Known data preprocessed!")
+		self.face_identifier = FaceIdentifier(face_reid_net,
+										match_threshold=0.3,
+										match_algo='HUNGARIAN')
 
-    def faces(self, image):
-        """ Finds faces and their coordinates in an image. """
+		self.face_detector.deploy(self.Helpers.confs["genisysai"]["runas"], self.context)
+		self.landmarks_detector.deploy(self.Helpers.confs["genisysai"]["runas"], self.context,
+										queue_size=self.qs)
+		self.face_identifier.deploy(self.Helpers.confs["genisysai"]["runas"], self.context,
+								queue_size=self.qs)
 
-        # Find faces
-        faces = self.detector(image, 1)
-        # Gets coordinates for faces
-        coords = [self.predictor(image, face) for face in faces]
+		self.Helpers.logger.info("Models loaded")
 
-        return faces, coords
+	def load_model(self, model_path):
+		""" Loads a model from path. """
 
-    def encode(self, image, coords):
-        """ Encodes an image. """
+		model_path = osp.abspath(model_path)
+		model_weights_path = osp.splitext(model_path)[0] + ".bin"
 
-        return [np.array(self.recognizer.compute_face_descriptor(image, pose, 1)) for pose in coords]
+		self.Helpers.logger.info("Loading the model from '%s'" % (model_path))
+		model = self.context.ie_core.read_network(model_path, model_weights_path)
+		self.Helpers.logger.info("Model loaded")
 
-    def compare(self, known, face):
-        """ Compares two encodings. """
+		return model
 
-        # Calculate if difference is less than or equal to threshold
-        return (np.linalg.norm(known - face, axis=1) <= self.Helpers.confs["tass"]["threshold"])
+	def load_known(self):
+		""" Loads known data. """
 
-    def match(self, frame, coords):
-        """ Checks faces for matches against known users. """
+		self.faces_database = FacesDatabase(self.Helpers.confs["genisysai"]["data"], self.face_identifier,
+											self.landmarks_detector, self.face_detector, True)
+		self.face_identifier.set_faces_database(self.faces_database)
+		self.Helpers.logger.info("Database is built, registered %s identities" %
+					(len(self.faces_database)))
 
-        person = 0
-        result = "Unknown"
+	def process(self, frame):
+		""" Processes a frame. """
 
-        i = 0
-        # Loops through known encodings
-        for enc in self.encoded:
-            # Encode current frame
-            encoded = self.encode(frame, coords[i])
-            # Calculate if difference is less than or equal to
-            matches = self.compare(enc[1], encoded)
-            # Loops through matches
-            if matches[0] == True:
-                # If known add people
-                result = "User " + str(enc[0])
-                person = int(enc[0])
-                msg = "GeniSysAI identified User #" + str(person)
-            else:
-                # If unknown add people
-                msg = "GeniSysAI identified unknown!"
-            self.Helpers.logger.info(msg)
-            i+=1
+		orig_image = frame.copy()
+		frame = frame.transpose((2, 0, 1))
+		frame = np.expand_dims(frame, axis=0)
 
-        return person, result
+		self.face_detector.clear()
+		self.landmarks_detector.clear()
+		self.face_identifier.clear()
+
+		self.face_detector.start_async(frame)
+		rois = self.face_detector.get_roi_proposals(frame)
+		if self.qs < len(rois):
+			self.Helpers.logger.info("Too many faces for processing." \
+					" Will be processed only %s of %s." % \
+					(self.qs, len(rois)))
+			rois = rois[:self.qs]
+		self.landmarks_detector.start_async(frame, rois)
+		landmarks = self.landmarks_detector.get_landmarks()
+
+		self.face_identifier.start_async(frame, rois, landmarks)
+		face_identities, unknowns = self.face_identifier.get_matches()
+
+		outputs = [rois, landmarks, face_identities]
+
+		return outputs
+
+	def draw_text_with_background(self, frame, text, origin,
+									font=cv2.FONT_HERSHEY_SIMPLEX, scale=1.0,
+									color=(0, 0, 0), thickness=1, bgcolor=(255, 255, 255)):
+		text_size, baseline = cv2.getTextSize(text, font, scale, thickness)
+		cv2.rectangle(frame,
+						tuple((origin + (0, baseline)).astype(int)),
+						tuple((origin + (text_size[0], -text_size[1])).astype(int)),
+						bgcolor, cv2.FILLED)
+		cv2.putText(frame, text,
+					tuple(origin.astype(int)),
+					font, scale, color, thickness)
+		return text_size, baseline
+
+	def draw_detection_roi(self, frame, roi, identity):
+		label = self.face_identifier.get_identity_label(identity.id)
+
+		# Draw face ROI border
+		cv2.rectangle(frame,
+					tuple(roi.position), tuple(roi.position + roi.size),
+					(0, 220, 0), 2)
+
+		# Draw identity label
+		text_scale = 0.5
+		font = cv2.FONT_HERSHEY_SIMPLEX
+		text_size = cv2.getTextSize("H1", font, text_scale, 1)
+		line_height = np.array([0, text_size[0][1]])
+		if label is "Unknown":
+			text = label
+		else:
+			text = "User #" + label
+		if identity.id != FaceIdentifier.UNKNOWN_ID:
+			text += ' %.2f%%' % (100.0 * (1 - identity.distance))
+		self.draw_text_with_background(frame, text,
+									roi.position - line_height * 0.5,
+									font, scale=text_scale)
+
+		return frame, label
+
+	def draw_detection_keypoints(self, frame, roi, landmarks):
+		keypoints = [landmarks.left_eye,
+				landmarks.right_eye,
+				landmarks.nose_tip,
+				landmarks.left_lip_corner,
+				landmarks.right_lip_corner,
+				landmarks.right_lip_corner]
+
+		for point in keypoints:
+				center = roi.position + roi.size * point
+				cv2.circle(frame, tuple(center.astype(int)), 2, (0, 255, 255), 2)
+
+		return frame

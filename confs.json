@@ -22,7 +22,7 @@
         "dbuser": "YourMySqlDatabaseUser",
         "dbpass": "YourMySqlDatabasePass"
     },
-    "tass": {
+    "genisysai": {
         "core": {
             "allowed": [
                 ".jpg",
@@ -33,8 +33,10 @@
         },
         "ip": "YourServerIP",
         "data": "/fserver/models/GeniSysAI/Data/Security/",
-        "dlib": "/fserver/models/GeniSysAI/shape_predictor_68_face_landmarks.dat",
-        "dlibr": "/fserver/models/GeniSysAI/dlib_face_recognition_resnet_model_v1.dat",
+        "detection": "/fserver/models/GeniSysAI/face-detection-retail-0004.xml",
+        "reidentification": "/fserver/models/GeniSysAI/face-reidentification-retail-0095.xml",
+        "landmarks": "/fserver/models/GeniSysAI/landmarks-regression-retail-0009.xml",
+        "runas": "CPU",
         "lid": GeniSysAILocationID,
         "zid": GeniSysAIZoneID,
         "did": GeniSysAIDeviceID,
