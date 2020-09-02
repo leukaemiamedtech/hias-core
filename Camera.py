@@ -29,6 +29,7 @@ from Classes.Helpers import Helpers
 from Classes.iotJumpWay import Device as iot
 from Classes.CamRead import CamRead
 from Classes.CamStream import CamStream
+from Classes.Socket import Socket
 
 class Camera():
 	""" GeniSysAI Class
@@ -45,6 +46,8 @@ class Camera():
 		# Initiates the iotJumpWay connection class
 		self.iot = iot()
 		self.iot.connect()
+
+		self.Sockets = Socket()
 
 		self.Helpers.logger.info("Camera Class initialization complete.")
 

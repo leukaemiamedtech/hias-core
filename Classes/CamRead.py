@@ -22,7 +22,6 @@ from threading import Thread
 
 from Classes.Helpers import Helpers
 from Classes.GeniSysAI import GeniSysAI
-from Classes.Socket import Socket
 
 from Classes.OpenVINO.ie_module import InferenceContext
 from Classes.OpenVINO.landmarks_detector import LandmarksDetector
@@ -67,10 +66,8 @@ class CamRead(Thread):
 		self.GeniSysAI.load_known()
 		self.publishes = [None] * (len(self.GeniSysAI.faces_database) + 1)
 
-		# Starts the socket module
-		self.Socket = Socket("CamRead")
 		# Starts the socket server
-		soc = self.Socket.connect(self.Helpers.confs["genisysai"]["socket"]["ip"],
+		soc = self.Sockets.connect(self.Helpers.confs["genisysai"]["socket"]["ip"],
 								  self.Helpers.confs["genisysai"]["socket"]["port"])
 
 		while True:
@@ -108,6 +105,14 @@ class CamRead(Thread):
 
 							# Send iotJumpWay notification
 							self.iot.channelPub("Sensors", {
+								"Type": "GeniSysAI",
+								"Sensor": "USB Camera",
+								"Value": label,
+								"Message": mesg
+							})
+
+							# Send iotJumpWay notification
+							self.iot.channelPub("Cameras", {
 								"Type": "GeniSysAI",
 								"Sensor": "USB Camera",
 								"Value": label,
