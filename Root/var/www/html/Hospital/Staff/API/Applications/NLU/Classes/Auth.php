@@ -9,8 +9,6 @@
 			$_Args,
 			$_application=[];
 
-		private $debug = True;
-
 		function __construct()
 		{
 			header("Access-Control-Allow-Orgin: *");
@@ -42,14 +40,8 @@
 				case 'POST':
 					if($_SERVER['CONTENT_TYPE']=='application/json'):
 						$_POST = json_decode(file_get_contents('php://input'), true);
-						if($this->debug):
-							$this->writeFile("type.txt", ["Server","JSON"]);
-						endif;
 					elseif($_SERVER['CONTENT_TYPE']=='application/x-www-form-urlencoded'):
 						$_POST  = json_decode(file_get_contents("php://input"), true);
-						if($this->debug):
-							$this->writeFile("type.txt", ["Server","URL"]);
-						endif;
 					endif;
 					break;
 				case 'GET':
@@ -78,15 +70,84 @@
 
 		}
 
-        protected static function verifyPassword($password,$hash) {
-            return password_verify($password, $hash);
-        }
+		private function getAuthHeaders()
+		{
+			return [
+				$_SERVER["PHP_AUTH_USER"],
+				$_SERVER["PHP_AUTH_PW"]
+			];
+		}
+
+		public function getApplication($username)
+		{
+			$pdoQuery = $this->_GeniSys->_secCon->prepare("
+				SELECT  aid
+				FROM users
+				WHERE username=:username
+			");
+			$pdoQuery->execute([
+				":username"=>$username
+			]);
+			$user=$pdoQuery->fetch(PDO::FETCH_ASSOC);
+
+			if(!$user["aid"]):
+				return [
+					"Response"=>"FAILED",
+					"Message"=>"No User Data Could Be Found"
+				];
+			endif;
+
+			$pdoQuery = $this->_GeniSys->_secCon->prepare("
+				SELECT  id,
+					apub,
+					aprv
+				FROM mqtta
+				WHERE id=:id
+			");
+			$pdoQuery->execute([
+				":id"=>$user["aid"]
+			]);
+			$app=$pdoQuery->fetch(PDO::FETCH_ASSOC);
+			$pdoQuery->closeCursor();
+			$pdoQuery = null;
+
+			if(!$app["id"]):
+				return [
+					"Response"=>"FAILED",
+					"Message"=>"No App Data Could Be Found"
+				];
+			else:
+				return [
+					"Response"=>"OK",
+					"Message"=>"App Data Found",
+					"Data"=>$app
+				];
+			endif;
+
+		}
+
+		protected static function verifyPassword($password,$hash) {
+			return password_verify($password, $hash);
+		}
 
 		public function process()
 		{
 			if($this->invalidMethod):
 				return $this->_response(["Response"=>"FAILED","Message"=>"Invalid Method"], 405);
 			endif;
+
+			$authHeaders = $this->getAuthHeaders();
+			if (!$authHeaders[0] || !$authHeaders[1]):
+				return $this->_response("Incomplete Authentication Header", 401);
+			endif;
+
+			$this->appResponse = $this->getApplication($authHeaders[0]);
+
+			if(!$this->appResponse || $this->appResponse["Response"]=="FAILED"):
+				return $this->_response("Invalid App ID " . $authHeaders[0], 401);
+			endif;
+
+			$this->app = $this->appResponse['Data'];
 
 			if ((int)method_exists($this, $this->_Endpoint) > 0):
 				return $this->_response($this->{$this->_Endpoint}($this->_Args));
@@ -114,12 +175,5 @@
 		{
 			header("HTTP/1.1 " . $status . " " . $this->_requestStatus($status));
 			return json_encode($data);
-		}
-
-		protected function writeFile($file,$data)
-		{
-			$fps = fopen($file, 'w');
-			fwrite($fps, print_r($data, TRUE));
-			fclose($fps);
 		}
 	}

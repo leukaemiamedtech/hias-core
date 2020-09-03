@@ -41,6 +41,7 @@ class Login extends Auth{
 			SELECT users.id,
 				users.name,
 				users.password,
+				mqtta.id as aid,
 				mqtta.mqttu,
 				mqtta.mqttp,
 				mqtta.apub,
@@ -67,6 +68,7 @@ class Login extends Auth{
 				"Response"=>"OK",
 				"Message"=>"Access granted",
 				"Data"=> [
+					"AID" => $user["aid"],
 					"UID" => $user["id"],
 					"UN" => $user["name"],
 					"APB" => $this->_GeniSys->_helpers->oDecrypt($user["apub"]),
