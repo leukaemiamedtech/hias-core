@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Aug 26, 2020 at 01:50 AM
+-- Generation Time: Sep 03, 2020 at 09:04 PM
 -- Server version: 5.7.31-0ubuntu0.18.04.1
 -- PHP Version: 7.2.24-0ubuntu0.18.04.6
 
@@ -125,6 +125,20 @@ CREATE TABLE `genisysai` (
   `sportf` varchar(255) NOT NULL DEFAULT '',
   `sckport` varchar(255) NOT NULL DEFAULT '',
   `strdir` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `genisysainlu`
+--
+
+CREATE TABLE `genisysainlu` (
+  `id` int(11) NOT NULL,
+  `lid` int(11) NOT NULL DEFAULT '0',
+  `zid` int(11) NOT NULL DEFAULT '0',
+  `did` int(11) NOT NULL DEFAULT '0',
+  `apidir` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -319,6 +333,30 @@ CREATE TABLE `sensors` (
   `image` varchar(255) NOT NULL DEFAULT 'default.png'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `sensors`
+--
+
+INSERT INTO `sensors` (`id`, `name`, `type`, `hasAction`, `hasCommand`, `image`) VALUES
+(1, 'LED', 'Actuator', 0, 1, 'led.jpg'),
+(2, 'Button', 'Actuator', 1, 0, 'button.jpg'),
+(3, 'Reed Switch', 'Sensor', 1, 0, 'reed-switch.jpg'),
+(4, 'Motion Sensor', 'Sensor', 1, 0, 'motion-sensor.jpg'),
+(5, 'Light Sensor', 'Sensor', 1, 0, 'light-sensor.jpg'),
+(6, 'Sound Sensor', 'Sensor', 1, 0, 'sound-sensor.jpg'),
+(7, 'Camera', 'Sensor', 1, 0, 'cctv.jpg'),
+(8, 'Buzzer', 'Actuator', 0, 1, 'buzzer.jpg'),
+(9, 'Moisture Sensor', 'Sensor', 1, 0, 'moisture-sensor.jpg'),
+(10, 'Rain Sensor', 'Sensor', 1, 0, 'RainSensor.jpg'),
+(11, 'Water Level Sensor', 'Sensor', 1, 0, 'WaterLevelSensor.jpg'),
+(12, 'Temperature Sensor', 'Sensor', 1, 0, 'temperature.jpg'),
+(13, 'Servo', 'Actuator', 0, 1, 'servo.jpg'),
+(14, 'Servo Controller', 'Actuator', 1, 0, 'servoController.jpg'),
+(15, 'Relay', 'Actuator', 0, 1, 'relay.jpg'),
+(16, 'NFC Scanner', 'Sensor', 1, 0, 'NFCScanner.jpg'),
+(17, 'LCD Keypad (4 Buttons)', 'Sensor', 1, 1, 'LCD-KeyPad-4.jpg'),
+(18, 'Virtual Controller', 'Sensor', 1, 0, 'virtual-controller.png');
+
 -- --------------------------------------------------------
 
 --
@@ -346,7 +384,7 @@ CREATE TABLE `settings` (
 --
 
 INSERT INTO `settings` (`id`, `aid`, `version`, `phpmyadmin`, `recaptcha`, `recaptchas`, `gmaps`, `lt`, `lg`, `meta_title`, `meta_description`, `meta_keywords`, `domainString`) VALUES
-(1, 0, '0.6.0', 'phpmyadmin', '', '', '', '', '', 'HIAS Hospital Intelligent Automation System', 'Open-source Hospital Intelligent Automation System & Hospital Information/Management System. A locally hosted web/IoT server and proxy for managing a network of open-source, modular, intelligent devices, robotics and applications.', '', '');
+(1, 0, '0.8.0', 'phpmyadmin', '', '', '', '', '', 'HIAS Hospital Intelligent Automation System', 'Open-source Hospital Intelligent Automation System & Hospital Information/Management System. A locally hosted web/IoT server and proxy for managing a network of open-source, modular, intelligent devices, robotics and applications.', '', '');
 
 -- --------------------------------------------------------
 
@@ -359,12 +397,16 @@ CREATE TABLE `users` (
   `lid` int(11) NOT NULL DEFAULT '0',
   `aid` int(11) NOT NULL DEFAULT '0',
   `admin` int(11) NOT NULL DEFAULT '0',
+  `name` varchar(255) NOT NULL,
   `username` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `pic` varchar(255) NOT NULL DEFAULT 'default.png',
   `lt` varchar(255) NOT NULL DEFAULT '',
   `lg` varchar(255) NOT NULL DEFAULT '',
   `gpstime` int(11) NOT NULL DEFAULT '0',
+  `cz` int(11) NOT NULL,
+  `czt` int(11) NOT NULL,
+  `welcomed` int(11) NOT NULL,
   `created` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -427,6 +469,15 @@ ALTER TABLE `genisysai`
   ADD KEY `did` (`did`),
   ADD KEY `aid` (`aid`),
   ADD KEY `mid` (`mid`);
+
+--
+-- Indexes for table `genisysainlu`
+--
+ALTER TABLE `genisysainlu`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `lid` (`lid`),
+  ADD KEY `zid` (`zid`),
+  ADD KEY `did` (`did`);
 
 --
 -- Indexes for table `logins`
@@ -539,7 +590,10 @@ ALTER TABLE `settings`
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD KEY `admin` (`admin`),
-  ADD KEY `gpstime` (`gpstime`);
+  ADD KEY `gpstime` (`gpstime`),
+  ADD KEY `cz` (`cz`),
+  ADD KEY `czt` (`czt`),
+  ADD KEY `welcomed` (`welcomed`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -549,7 +603,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `beds`
 --
 ALTER TABLE `beds`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
 --
 -- AUTO_INCREMENT for table `blocked`
 --
@@ -559,79 +613,84 @@ ALTER TABLE `blocked`
 -- AUTO_INCREMENT for table `covid19data`
 --
 ALTER TABLE `covid19data`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=555277;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `covid19pulls`
 --
 ALTER TABLE `covid19pulls`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `emar`
 --
 ALTER TABLE `emar`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
 --
 -- AUTO_INCREMENT for table `genisysai`
 --
 ALTER TABLE `genisysai`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+--
+-- AUTO_INCREMENT for table `genisysainlu`
+--
+ALTER TABLE `genisysainlu`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
 --
 -- AUTO_INCREMENT for table `logins`
 --
 ALTER TABLE `logins`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=221;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
 --
 -- AUTO_INCREMENT for table `loginsf`
 --
 ALTER TABLE `loginsf`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
 --
 -- AUTO_INCREMENT for table `mqtta`
 --
 ALTER TABLE `mqtta`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
 --
 -- AUTO_INCREMENT for table `mqttl`
 --
 ALTER TABLE `mqttl`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
 --
 -- AUTO_INCREMENT for table `mqttld`
 --
 ALTER TABLE `mqttld`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
 --
 -- AUTO_INCREMENT for table `mqttlz`
 --
 ALTER TABLE `mqttlz`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
 --
 -- AUTO_INCREMENT for table `mqttu`
 --
 ALTER TABLE `mqttu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
 --
 -- AUTO_INCREMENT for table `mqttua`
 --
 ALTER TABLE `mqttua`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
 --
 -- AUTO_INCREMENT for table `patients`
 --
 ALTER TABLE `patients`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
 --
 -- AUTO_INCREMENT for table `sensors`
 --
 ALTER TABLE `sensors`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
 --
 -- AUTO_INCREMENT for table `settings`
 --
 ALTER TABLE `settings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;

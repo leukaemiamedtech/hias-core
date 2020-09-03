@@ -22,11 +22,13 @@ import psutil
 import requests
 import signal
 import sys
+import time
 import threading
 
 from threading import Thread
 
 from datetime import datetime
+from datetime import timedelta
 from pymongo import MongoClient
 
 from Classes.Helpers import Helpers
@@ -70,6 +72,7 @@ class iotJumpWay():
 		self.Application.deviceSensorCallback = self.deviceSensorCallback
 		self.Application.deviceStatusCallback = self.deviceStatusCallback
 		self.Application.deviceTriggerCallback = self.deviceTriggerCallback
+		self.Application.deviceCameraCallback = self.deviceCameraCallback
 		self.Application.deviceLifeCallback = self.deviceLifeCallback
 		self.Application.appLifeCallback = self.appLifeCallback
 
@@ -378,7 +381,6 @@ class iotJumpWay():
 			e = sys.exc_info()[0]
 			self.Helpers.logger.info("Mongo data inserted FAILED" + str(e))
 
-
 	def deviceCommandsCallback(self, topic, payload):
 		"""
 		iotJumpWay Application Commands Callback
@@ -454,6 +456,111 @@ class iotJumpWay():
 
 		self.Helpers.logger.info("Recieved iotJumpWay Device Trigger Data : " + payload.decode())
 		command = json.loads(payload.decode("utf-8"))
+
+	def deviceCameraCallback(self, topic, payload):
+		"""
+		iotJumpWay Device Camera Callback
+
+		The callback function that is triggerend in the event of a camera detecting a
+		known user or intruder.
+		"""
+
+		self.Helpers.logger.info("Recieved iotJumpWay Device Camera Data: " + payload.decode())
+		data = json.loads(payload.decode("utf-8"))
+
+		splitTopic=topic.split("/")
+
+		try:
+			cur = self.mysqlConn.cursor()
+			cur.execute ("""
+							SELECT genisysainlu.did
+							FROM genisysainlu
+							INNER JOIN mqttld
+							ON genisysainlu.did = mqttld.id
+							WHERE mqttld.zid = %s
+								&& mqttld.status=%s
+					""", (splitTopic[2], "ONLINE"))
+			nlu = cur.fetchone()
+			self.Helpers.logger.info("Camera NLU details: " + str(nlu))
+		except:
+			e = sys.exc_info()[0]
+			self.Helpers.logger.info("Camera NLU details select failed " + str(e))
+
+		if data["Value"] is not 0:
+
+			try:
+				cur = self.mysqlConn.cursor()
+				cur.execute ("""
+								UPDATE users
+								SET cz=%s,
+									czt=%s
+								WHERE id=%s
+						""", (splitTopic[2], time.time(), int(data["Value"])))
+				self.mysqlConn.commit()
+				self.Helpers.logger.info("Mysql camera data updated OK")
+			except:
+				self.mysqlConn.rollback()
+				e = sys.exc_info()[0]
+				self.Helpers.logger.info("Mysql camera data updated FAILED " + str(e))
+
+			try:
+				collection = self.mongoConn.Users
+				doc = {
+					"User": int(data["Value"]),
+					"Location": splitTopic[0],
+					"Zone": splitTopic[2],
+					"Device": splitTopic[3],
+					"Time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+				}
+				collection.insert(doc)
+				self.Helpers.logger.info("Mongo camera data inserted OK")
+			except:
+				e = sys.exc_info()[0]
+				self.Helpers.logger.info("Mongo camera data inserted FAILED" + str(e))
+
+			cTime = datetime.now()
+			hb = cTime - timedelta(hours=1)
+			hbe = int(hb.timestamp())
+			print(hbe)
+
+			try:
+				cur = self.mysqlConn.cursor()
+				cur.execute ("""
+								SELECT users.name,
+									users.aid,
+									mqtta.status
+								FROM users
+								INNER JOIN mqtta
+								ON users.aid = mqtta.id
+								WHERE users.id=%s
+									&& (users.welcomed = 0 || users.welcomed <= %s)
+						""", (int(data["Value"]), hbe))
+				userDetails = cur.fetchone()
+				self.Helpers.logger.info("Camera user details: " + str(userDetails))
+			except:
+				e = sys.exc_info()[0]
+				self.Helpers.logger.info("Camera user details select failed " + str(e))
+
+			if userDetails[1] and nlu[0]:
+
+				self.Application.appDeviceChannelPub("Commands", splitTopic[2], nlu[0], {"Command": "Welcome", "Value": userDetails[0]})
+
+				try:
+					cur = self.mysqlConn.cursor()
+					cur.execute ("""
+									UPDATE users
+									SET welcomed=%s
+									WHERE id=%s
+							""", (time.time(), int(data["Value"])))
+					self.mysqlConn.commit()
+					self.Helpers.logger.info("Mysql camera welcome updated OK")
+				except:
+					self.mysqlConn.rollback()
+					e = sys.exc_info()[0]
+					self.Helpers.logger.info("Mysql camera welcome updated FAILED " + str(e))
+
+			elif userDetails[1] and userDetails[2] is "ONLINE":
+				print("SEND USER APP NOTIFICATION")
 
 	def signal_handler(self, signal, frame):
 		self.Helpers.logger.info("Disconnecting")
