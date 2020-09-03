@@ -60,6 +60,7 @@ class Application():
         self.appStatusCallback = None
         self.appTriggerCallback = None
         self.appLifeCallback = None
+        self.deviceCameraCallback = None
         self.deviceCommandsCallback = None
         self.deviceSensorCallback = None
         self.deviceStatusCallback = None
@@ -155,11 +156,11 @@ class Application():
                     print("** Device Notifications Callback Required (deviceNotificationsCallback)")
                 else:
                     self.deviceNotificationsCallback(msg.topic,msg.payload)
-            elif splitTopic[4]=='Camera':
-                if self.cameraCallback == None:
+            elif splitTopic[4]=='Cameras':
+                if self.deviceCameraCallback == None:
                     print("** Device Camera Callback Required (cameraCallback)")
                 else:
-                    self.cameraCallback(msg.topic,msg.payload)
+                    self.deviceCameraCallback(msg.topic,msg.payload)
 
     def appChannelPub(self, channel, application, data):
 

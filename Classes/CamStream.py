@@ -25,7 +25,6 @@ from io import BytesIO
 from PIL import Image
 
 from Classes.Helpers import Helpers
-from Classes.Socket import Socket
 
 capture = None
 
@@ -51,10 +50,8 @@ class CamStream(Thread):
         self.Helpers.logger.info("CamStream waiting 2 seconds for CamRead socket server.")
         time.sleep(2)
         self.Helpers.logger.info("CamStream continuing.")
-        # Starts the socket module
-        self.Socket = Socket("CamStream")
         # Subscribes to the socket server
-        capture = self.Socket.subscribe(self.Helpers.confs["genisysai"]["socket"]["ip"],
+        capture = self.Sockets.subscribe(self.Helpers.confs["genisysai"]["socket"]["ip"],
                                      self.Helpers.confs["genisysai"]["socket"]["port"])
 
         try:
