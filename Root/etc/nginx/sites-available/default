@@ -13,7 +13,7 @@ server {
         location ~* ^/Security/GeniSysAI/API/(.*)$ {
                 auth_basic "Restricted";
                 auth_basic_user_file /etc/nginx/security/htpasswd;
-                proxy_pass http://YourSecurityApiIP:YourPort/$1;
+                proxy_pass http://YourSecurityApiIP:YourSecurityApiPort/$1;
         }
 
         location / {
