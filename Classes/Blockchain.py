@@ -122,10 +122,10 @@ class Blockchain():
 
 		try:
 			tx_hash = contract.functions.deposit(self.w3.toWei(replenish, "ether")).transact({
-															"to": self.w3.toChecksumAddress(to),
-															"from": self.w3.toChecksumAddress(self.Helpers.confs["ethereum"]["haddress"]),
-															"gas": 1000000,
-															"value": self.w3.toWei(replenish, "ether")})
+													"to": self.w3.toChecksumAddress(to),
+													"from": self.w3.toChecksumAddress(self.Helpers.confs["ethereum"]["haddress"]),
+													"gas": 1000000,
+													"value": self.w3.toWei(replenish, "ether")})
 			self.Helpers.logger.info("HIAS Blockchain Replenish Transaction OK! ")
 			self.Helpers.logger.info(tx_hash)
 			tx_receipt = self.w3.eth.waitForTransactionReceipt(tx_hash)
@@ -143,9 +143,9 @@ class Blockchain():
 
 		try:
 			txh = self.iotContract.functions.registerHash(dbid, hashed, at, int(inserter), identifier,
-													self.w3.toChecksumAddress(to)).transact({
-														"from": self.w3.toChecksumAddress(self.Helpers.confs["ethereum"]["iaddress"]),
-														"gas": 1000000})
+															self.w3.toChecksumAddress(to)).transact({
+															"from": self.w3.toChecksumAddress(self.Helpers.confs["ethereum"]["iaddress"]),
+															"gas": 1000000})
 			self.Helpers.logger.info("HIAS Blockchain Data Transaction OK!")
 			self.Helpers.logger.info(txh)
 			txr = self.w3.eth.waitForTransactionReceipt(txh)
