@@ -57,20 +57,20 @@ class TassAI():
 			self.Helpers.confs["TassAI"]["reidentification"])
 
 		self.face_detector = FaceDetector(face_detector_net,
-									confidence_threshold=0.6,
-									roi_scale_factor=1.15)
+											confidence_threshold=0.6,
+											roi_scale_factor=1.15)
 
 		self.landmarks_detector = LandmarksDetector(landmarks_net)
 
 		self.face_identifier = FaceIdentifier(face_reid_net,
-										match_threshold=0.3,
-										match_algo='HUNGARIAN')
+												match_threshold=0.3,
+												match_algo='HUNGARIAN')
 
 		self.face_detector.deploy(self.Helpers.confs["TassAI"]["runas"], self.context)
 		self.landmarks_detector.deploy(self.Helpers.confs["TassAI"]["runas"], self.context,
 										queue_size=self.qs)
 		self.face_identifier.deploy(self.Helpers.confs["TassAI"]["runas"], self.context,
-								queue_size=self.qs)
+									queue_size=self.qs)
 
 		self.Helpers.logger.info("Models loaded")
 
@@ -156,8 +156,8 @@ class TassAI():
 		if identity.id != FaceIdentifier.UNKNOWN_ID:
 			text += ' %.2f%%' % (100.0 * (1 - identity.distance))
 		self.draw_text_with_background(frame, text,
-									roi.position - line_height * 0.5,
-									font, scale=text_scale)
+										roi.position - line_height * 0.5,
+										font, scale=text_scale)
 
 		return frame, label
 

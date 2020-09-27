@@ -51,10 +51,10 @@ class MySQL():
 		try:
 			cur = self.mysqlConn.cursor()
 			cur.execute("""
-							SELECT *
-							FROM mqtta
-							WHERE id=%s
-					""", (int(app),))
+					SELECT *
+					FROM mqtta
+					WHERE id=%s
+				""", (int(app),))
 			appDetails = cur.fetchone()
 			cur.close()
 			self.Helpers.logger.info("App details select OK!")
@@ -71,10 +71,10 @@ class MySQL():
 		try:
 			cur = self.mysqlConn.cursor()
 			cur.execute ("""
-				UPDATE mqtta
-				SET status=%s
-				WHERE id=%s
-			""", (str(payload), splitTopic[2]))
+					UPDATE mqtta
+					SET status=%s
+					WHERE id=%s
+				""", (str(payload), splitTopic[2]))
 			self.mysqlConn.commit()
 			cur.close()
 			self.Helpers.logger.info("Mysql Application status updated OK")
@@ -98,7 +98,7 @@ class MySQL():
 								lt=%s,
 								lg=%s
 							WHERE id=%s
-					""", (data["CPU"], data["Memory"], data["Diskspace"], data["Temperature"], data["Latitude"], data["Longitude"], splitTopic[2]))
+						""", (data["CPU"], data["Memory"], data["Diskspace"], data["Temperature"], data["Latitude"], data["Longitude"], splitTopic[2]))
 			self.mysqlConn.commit()
 			cur.close()
 			self.Helpers.logger.info("Mysql " + typeof + " application updated OK")
@@ -117,7 +117,7 @@ class MySQL():
 							SELECT *
 							FROM mqttld
 							WHERE id=%s
-					""", (int(device),))
+						""", (int(device),))
 			dvcDetails = cur.fetchone()
 			cur.close()
 			self.Helpers.logger.info("Device details select OK!")
@@ -137,7 +137,7 @@ class MySQL():
 							UPDATE mqttld
 							SET status=%s
 							WHERE id=%s
-					""", (str(payload), device))
+						""", (str(payload), device))
 			self.mysqlConn.commit()
 			cur.close()
 			self.Helpers.logger.info("Mysql Device status updated OK")
@@ -161,7 +161,7 @@ class MySQL():
 								lt=%s,
 								lg=%s
 							WHERE id=%s
-					""", (data["CPU"], data["Memory"], data["Diskspace"], data["Temperature"], data["Latitude"], data["Longitude"], device))
+						""", (data["CPU"], data["Memory"], data["Diskspace"], data["Temperature"], data["Latitude"], data["Longitude"], device))
 			self.mysqlConn.commit()
 			cur.close()
 			self.Helpers.logger.info("Mysql " + typeof + " device updated OK")
@@ -183,7 +183,7 @@ class MySQL():
 							ON genisysainlu.did = mqttld.id
 							WHERE mqttld.zid = %s
 								&& mqttld.status=%s
-					""", (splitTopic[2], "ONLINE"))
+						""", (splitTopic[2], "ONLINE"))
 			nlu = cur.fetchone()
 			cur.close()
 			self.Helpers.logger.info("Camera NLU details: " + str(nlu))
@@ -205,7 +205,7 @@ class MySQL():
 							SET cz=%s,
 								czt=%s
 							WHERE id=%s
-					""", (splitTopic[2], time.time(), int(data["Value"])))
+						""", (splitTopic[2], time.time(), int(data["Value"])))
 			self.mysqlConn.commit()
 			cur.close()
 			self.Helpers.logger.info("Mysql user location data updated OK")
@@ -233,7 +233,7 @@ class MySQL():
 							ON users.aid = mqtta.id
 							WHERE users.id=%s
 								&& (users.welcomed = 0 || users.welcomed <= %s)
-					""", (int(data["Value"]), hbe))
+						""", (int(data["Value"]), hbe))
 			userDetails = cur.fetchone()
 			cur.close()
 			self.Helpers.logger.info("User details: " + str(userDetails))
@@ -253,7 +253,7 @@ class MySQL():
 							SELECT nfc
 							FROM users
 							WHERE users.nfc=%s
-					""", (uid,))
+						""", (uid,))
 			uuid = cur.fetchone()
 			cur.close()
 			if uuid[0] is not None:
@@ -277,7 +277,7 @@ class MySQL():
 							UPDATE users
 							SET welcomed=%s
 							WHERE id=%s
-					""", (time.time(), int(data["Value"])))
+						""", (time.time(), int(data["Value"])))
 			self.mysqlConn.commit()
 			cur.close()
 			self.Helpers.logger.info("Mysql user welcome updated OK")
