@@ -6,7 +6,7 @@ pragma experimental ABIEncoderV2;
 contract HIAS {
 
 	uint compensation = 1000000000000000000;
-	address haccount = 0x1F4EFc2329a4047Bf2eCa01bb1d011382B0C355A;
+	address haccount = YourHiasApplicationAddress;
 	bool setup = false;
 
 	struct user {
