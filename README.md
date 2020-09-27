@@ -11,9 +11,9 @@
 - [Introduction](#introduction)
 - [Key Features](#key-features)
 - [HIAS Hardware](#hias-hardware)
-- [HIAS Blockchain](#hias-blockchain)
 - [HIAS Network](#hias-network)
 - [HIAS UI](#hias-ui)
+- [HIAS Blockchain](#hias-blockchain)
 - [HIAS IoT](#hias-iot-network)
     - [HIAS IoT Zones](#hias-iot-zones)
     - [HIAS IoT Devices](#hias-iot-devices)
@@ -97,10 +97,26 @@ __This project is a proof of concept, and is still a work in progress, however o
 
 HIAS has been developed on an UP2 and a 1.5TB HDD to show the potential of lower powered devices for building IoT networks. In a real world scenario such as a being used to power a hospital network, it is likely that a device with more resources and storage will be required.
 
+&nbsp;
+
+# HIAS Network
+![HIAS Network](Media/Images/HIAS-Network-Devices.png)
+
+The HIAS Network consists of a range of open-source IoT devices and applications including data analysis systems, diagnosis systems, robots, facial recognition security systems and natural language understanding engines. The network devices are designed and optimized to run on low resource devices. Devices and applications can communicate autonomously using rules and the iotJumpWay MQTT broker.
+
+&nbsp;
+
 # HIAS UI
 ![HIAS UI](Media/Images/dashboard.png)
 
 The HIAS UI is the central control panel for the server, and all of the modular devices and applications that can be installed on it. The server UI provides the capabalities to manage the network of open-soruce intelligent devices and applications.
+
+&nbsp;
+
+# HIAS Blockchain
+![HIAS Blockchain](Media/Images/HIAS-Blockchain.png)
+
+The HIAS Blockchain is a private Ethereum blockchain network that provides an immutable history of everything that happens on the HIAS network. Every user/device and application has a HIAS Blockchain address, meaning their actions can be recorded on the blockchain. Smart contracts provide additional security when it comes to verifying permissions, data hashes are stored on the blockchain providing data integrity. and each action made by staff members in the UI is recorded. The HIAS Blockchain network can be extended by installing additional full miner nodes which help to create blocks, seal transaction blocks, and also have a full copy of the entire HIAS Blockchain which remain synchronized.
 
 &nbsp;
 
