@@ -40,9 +40,9 @@ class MySQL():
 		""" Connects to MySQL database. """
 
 		self.mysqlConn = MySQLdb.connect(host=self.Helpers.confs["iotJumpWay"]["ip"],
-											user=self.Helpers.confs["iotJumpWay"]["dbuser"],
-											passwd=self.Helpers.confs["iotJumpWay"]["dbpass"],
-											db=self.Helpers.confs["iotJumpWay"]["dbname"])
+                                   user=self.Helpers.confs["iotJumpWay"]["dbuser"],
+                                   passwd=self.Helpers.confs["iotJumpWay"]["dbpass"],
+                                   db=self.Helpers.confs["iotJumpWay"]["dbname"])
 		self.Helpers.logger.info("MySQL connection started")
 
 	def getApplication(self, app):
@@ -70,7 +70,7 @@ class MySQL():
 
 		try:
 			cur = self.mysqlConn.cursor()
-			cur.execute ("""
+			cur.execute("""
 					UPDATE mqtta
 					SET status=%s
 					WHERE id=%s
@@ -89,7 +89,7 @@ class MySQL():
 
 		try:
 			cur = self.mysqlConn.cursor()
-			cur.execute ("""
+			cur.execute("""
 							UPDATE mqtta
 							SET cpu=%s,
 								mem=%s,
@@ -133,7 +133,7 @@ class MySQL():
 
 		try:
 			cur = self.mysqlConn.cursor()
-			cur.execute ("""
+			cur.execute("""
 							UPDATE mqttld
 							SET status=%s
 							WHERE id=%s
@@ -152,7 +152,7 @@ class MySQL():
 
 		try:
 			cur = self.mysqlConn.cursor()
-			cur.execute ("""
+			cur.execute("""
 							UPDATE mqttld
 							SET cpu=%s,
 								mem=%s,
