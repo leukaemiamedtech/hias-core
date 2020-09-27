@@ -21,6 +21,7 @@
     - [HIAS IoT Applications](#hias-iot-applications)
     - [HIAS IoT Data](#hias-iot-data)
     - [HIAS IoT Data Smart Contract](#hias-iot-data-smart-contract)
+- [Installation](#installation)
 - [HIAS Detection Systems](#hias-detection-systems)
     - [Acute Lymphoblastic Leukemia Detection System (CNN)](#acute-lymphoblastic-leukemia-detection-system-cnn)
     - [COVID-19 Detection System (CNN)](#covid-19-detection-system-cnn)
@@ -29,7 +30,6 @@
 - [HIAS Facial Recognition](#hias-facial-recognition)
 - [HIAS Natural Language Understanding Engines](#hias-natural-language-understanding-engines)
 - [EMAR / EMAR Mini](#emar--emar-mini)
-- [Installation](#installation)
 - [Modular Addons](#modular-addons)
 - [Acknowledgement](#acknowledgement)
 - [Contributing](#contributing)
@@ -169,6 +169,15 @@ The HIAS Blockchain hosts an iotJumpWay smart contract responsible for veryifing
 
 &nbsp;
 
+# Installation
+Installation scripts and tutorials for setting up your HIAS - Hospital Intelligent Automation System & UI are provided. To get started, please follow the installation guides provided below in the order they are given:
+
+| ORDER | GUIDE | INFORMATION | AUTHOR |
+| ----- | ----- | ----------- | ------ |
+| 1 | [Main Installation Guide](Documentation/Installation/Installation.md "Main Installation Guide") | Primary installation guide covering most of the information needed to do the core installation |  [Adam Milton-Barker](https://www.leukemiaresearchassociation.ai.com/team/adam-milton-barker "Adam Milton-Barker") |
+
+&nbsp;
+
 # HIAS Detection Systems
 Using AI models on the HIAS network, the UI can be used to classify image based samples for diseases such as COVID-19 and Leukemia.
 
@@ -223,15 +232,6 @@ Functionality to update, monitor and control [EMAR](https://github.com/COVID-19-
 ![EMAR](Media/Images/HIAS-Robotics-EMAR-Edit-2.png)
 
 ![EMAR](Media/Images/HIAS-Robotics-EMAR-Edit-3.png)
-
-&nbsp;
-
-# Installation
-Installation scripts and tutorials for setting up your HIAS - Hospital Intelligent Automation System & UI are provided. To get started, please follow the installation guides provided below in the order they are given:
-
-| ORDER | GUIDE | INFORMATION | AUTHOR |
-| ----- | ----- | ----------- | ------ |
-| 1 | [Main Installation Guide](Documentation/Installation/Installation.md "Main Installation Guide") | Primary installation guide covering most of the information needed to do the core installation |  [Adam Milton-Barker](https://www.leukemiaresearchassociation.ai.com/team/adam-milton-barker "Adam Milton-Barker") |
 
 &nbsp;
 
