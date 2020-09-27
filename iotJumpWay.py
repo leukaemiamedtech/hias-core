@@ -103,7 +103,7 @@ class iotJumpWay():
 		self.Blockchain = Blockchain()
 		self.Blockchain.startBlockchain()
 		self.Blockchain.w3.geth.personal.unlockAccount(
-			self.Helpers.confs["ethereum"]["haddress"], self.Helpers.confs["ethereum"]["ipass"], 0)
+			self.Helpers.confs["ethereum"]["haddress"], self.Helpers.confs["ethereum"]["hpass"], 0)
 
 	def life(self):
 		""" Sends vital statistics to HIAS """
@@ -113,7 +113,7 @@ class iotJumpWay():
 		hdd = psutil.disk_usage('/').percent
 		tmp = psutil.sensors_temperatures()['coretemp'][0].current
 		r = requests.get('http://ipinfo.io/json?token=' +
-		                 self.Helpers.confs["iotJumpWay"]["ipinfo"])
+							self.Helpers.confs["iotJumpWay"]["ipinfo"])
 		data = r.json()
 		location = data["loc"].split(',')
 
