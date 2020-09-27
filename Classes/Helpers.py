@@ -1,6 +1,6 @@
-############################################################################################
+######################################################################################################
 #
-# Project:       Peter Moss Leukemia AI Research
+# Organization:  Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss
 # Repository:    HIAS: Hospital Intelligent Automation System
 # Project:       GeniSysAI
 #
@@ -11,7 +11,7 @@
 # License:       MIT License
 # Last Modified: 2020-06-04
 #
-############################################################################################
+######################################################################################################
 
 import logging
 import logging.handlers as handlers

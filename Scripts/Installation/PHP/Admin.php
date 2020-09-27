@@ -57,7 +57,7 @@ class Admin{
         $this->lid = (int)$lid;
         $this->ip = $ip;
         $this->mac = $mac;
-    }     
+    }
 
     public function create()
     {
@@ -66,7 +66,7 @@ class Admin{
             $pass=$this->password(12);
             $passhash=$this->passwordHash($pass);
 
-            $htpasswd = new Htpasswd('/etc/nginx/tass/htpasswd');
+            $htpasswd = new Htpasswd('/etc/nginx/security/htpasswd');
             $htpasswd->addUser($user, $pass, Htpasswd::ENCTYPE_APR_MD5);
 
             $pdoQuery = $this->conn->prepare("
@@ -107,8 +107,8 @@ class Admin{
             return False;
         endif;
     }
-		
-    public function application(){ 
+
+    public function application(){
 
         $apiKey = $this->apiKey(30);
         $apiSecretKey = $this->apiKey(35);
@@ -116,7 +116,7 @@ class Admin{
         $mqttUser = $this->apiKey(12);
         $mqttPass = $this->password();
         $mqttHash = create_hash($mqttPass);
-        
+
         $query = $this->conn->prepare("
             INSERT INTO  mqtta  (
                 `name`,
@@ -283,7 +283,7 @@ class Admin{
         $encryption_key = base64_decode($this->key);
         list($encrypted_data, $iv) = explode("::", base64_decode($encrypted), 2);
         return openssl_decrypt($encrypted_data, "aes-256-cbc", $encryption_key, 0, $iv);
-    }   
+    }
 
     public	function apiKey($length = 30){
         $characters='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0987654321'.time();
@@ -295,7 +295,7 @@ class Admin{
         }
         return $randomString;
     }
-		
+
     public function password($l = 20, $c = 2, $n = 2, $s = 2) {
 
         $out = 0;
@@ -343,7 +343,7 @@ class Admin{
             shuffle($tmp1);
             $out = implode('', $tmp1);
         endif;
-    
+
         return $out;
     }
 

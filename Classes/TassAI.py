@@ -1,17 +1,17 @@
-############################################################################################
+######################################################################################################
 #
-# Project:      Peter Moss Leukemia AI Research
+# Organization:  Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss
 # Repository:   HIAS: Hospital Intelligent Automation System
-# Project:      GeniSysAI
+# Project:      TassAI
 #
 # Author:        Adam Milton-Barker (AdamMiltonBarker.com)
 #
-# Title:         GeniSysAI Class
-# Description:   GeniSysAI functions for the Hospital Intelligent Automation System.
+# Title:         TassAI Class
+# Description:   TassAI functions for the Hospital Intelligent Automation System.
 # License:       MIT License
 # Last Modified: 2020-08-26
 #
-############################################################################################
+######################################################################################################
 
 import cv2
 import dlib
@@ -28,40 +28,33 @@ from Classes.OpenVINO.face_detector import FaceDetector
 from Classes.OpenVINO.faces_database import FacesDatabase
 from Classes.OpenVINO.face_identifier import FaceIdentifier
 
-class GeniSysAI():
+class TassAI():
 
 	def __init__(self):
-		""" GeniSysAI Class
+		""" TassAI Class
 
-		GeniSysAI functions for the Hospital Intelligent Automation System.
+		TassAI functions for the Hospital Intelligent Automation System.
 		"""
 
-		self.Helpers = Helpers("GeniSysAI", False)
+		self.Helpers = Helpers("TassAI", False)
 
 		self.qs = 16
-		self.context = InferenceContext([self.Helpers.confs["genisysai"]["runas"], self.Helpers.confs["genisysai"]["runas"], self.Helpers.confs["genisysai"]["runas"]], "", "", "")
+		self.context = InferenceContext([self.Helpers.confs["TassAI"]["runas"], self.Helpers.confs["TassAI"]["runas"], self.Helpers.confs["TassAI"]["runas"]], "", "", "")
 
-		self.Helpers.logger.info("GeniSysAI Helper Class initialization complete.")
-
-	def connect(self):
-		""" Connects to the local GeniSysAI camera. """
-
-		self.lcv = cv2.VideoCapture(self.Helpers.confs["genisysai"]["vid"])
-
-		self.Helpers.logger.info("Connected to GeniSysAI")
+		self.Helpers.logger.info("TassAI Helper Class initialization complete.")
 
 	def load_models(self):
 		""" Loads all models. """
 
 		face_detector_net = self.load_model(
-			self.Helpers.confs["genisysai"]["detection"])
+			self.Helpers.confs["TassAI"]["detection"])
 		face_detector_net.reshape({"data": [1, 3, 384, 672]})
 
 		landmarks_net = self.load_model(
-			self.Helpers.confs["genisysai"]["landmarks"])
+			self.Helpers.confs["TassAI"]["landmarks"])
 
 		face_reid_net = self.load_model(
-			self.Helpers.confs["genisysai"]["reidentification"])
+			self.Helpers.confs["TassAI"]["reidentification"])
 
 		self.face_detector = FaceDetector(face_detector_net,
 									confidence_threshold=0.6,
@@ -73,10 +66,10 @@ class GeniSysAI():
 										match_threshold=0.3,
 										match_algo='HUNGARIAN')
 
-		self.face_detector.deploy(self.Helpers.confs["genisysai"]["runas"], self.context)
-		self.landmarks_detector.deploy(self.Helpers.confs["genisysai"]["runas"], self.context,
+		self.face_detector.deploy(self.Helpers.confs["TassAI"]["runas"], self.context)
+		self.landmarks_detector.deploy(self.Helpers.confs["TassAI"]["runas"], self.context,
 										queue_size=self.qs)
-		self.face_identifier.deploy(self.Helpers.confs["genisysai"]["runas"], self.context,
+		self.face_identifier.deploy(self.Helpers.confs["TassAI"]["runas"], self.context,
 								queue_size=self.qs)
 
 		self.Helpers.logger.info("Models loaded")
@@ -96,7 +89,7 @@ class GeniSysAI():
 	def load_known(self):
 		""" Loads known data. """
 
-		self.faces_database = FacesDatabase(self.Helpers.confs["genisysai"]["data"], self.face_identifier,
+		self.faces_database = FacesDatabase(self.Helpers.confs["TassAI"]["data"], self.face_identifier,
 											self.landmarks_detector, self.face_detector, True)
 		self.face_identifier.set_faces_database(self.faces_database)
 		self.Helpers.logger.info("Database is built, registered %s identities" %

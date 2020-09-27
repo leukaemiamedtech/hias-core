@@ -1328,6 +1328,15 @@ sudo systemctl status GeniSysAI.service
 
 &nbsp;
 
+# HIAS Etherium Blockchain
+
+```
+sudo apt-get install software-properties-common
+sudo add-apt-repository -y ppa:ethereum/ethereum
+sudo apt-get update
+sudo apt-get install ethereum
+```
+
 # Contributing
 Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss encourages and welcomes code contributions, bug fixes and enhancements from the Github community.
 

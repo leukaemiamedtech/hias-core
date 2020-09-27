@@ -1,38 +1,44 @@
 #!/usr/bin/env python3
-############################################################################################
+######################################################################################################
 #
-# Project:       Peter Moss Leukemia AI Research
+# Organization:  Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss
 # Repository:    HIAS: Hospital Intelligent Automation System
-# Project:       GeniSysAI
+# Module:        iotJumpWay
 #
 # Author:        Adam Milton-Barker (AdamMiltonBarker.com)
-# Contributors:
-# Title:         GeniSysAI Class
-# Description:   The GeniSysAI Class provides the Hospital Intelligent Automation System with
-#                it's intelligent functionality.
-# License:       MIT License
-# Last Modified: 2020-06-04
 #
-############################################################################################
+# Title:         iotJumpWay Class
+# Description:   The iotJumpWay module is used by the HIAS iotJumpWay service to collect
+#                and store all data from the iotJumpWay devices on the HIAS network.
+# License:       MIT License
+# Last Modified: 2020-09-27
+#
+######################################################################################################
 
+import base64
 import json
 import logging
-import MySQLdb
 import psutil
 import requests
 import signal
 import sys
 import time
 import threading
+import hmac
 
 from threading import Thread
 
 from datetime import datetime
 from datetime import timedelta
-from pymongo import MongoClient
+
+from requests.auth import HTTPBasicAuth
+from web3 import Web3
 
 from Classes.Helpers import Helpers
+from Classes.Blockchain import Blockchain
 from Classes.iotJumpWay import Application
+from Classes.MongoDB import MongoDB
+from Classes.MySQL import MySQL
 
 class iotJumpWay():
 	""" iotJumpWay Class
@@ -48,7 +54,7 @@ class iotJumpWay():
 		self.Helpers.logger.info("GeniSysAI Class initialization complete.")
 
 	def startIoT(self):
-		# Initiates the iotJumpWay connection class
+		""" Initiates the iotJumpWay connection class. """
 
 		self.Application = Application({
 			"host": self.Helpers.confs["iotJumpWay"]["host"],
@@ -65,34 +71,39 @@ class iotJumpWay():
 		self.Application.appDeviceChannelSub("#", "#", "#")
 
 		self.Application.appCommandsCallback = self.appCommandsCallback
+		self.Application.appLifeCallback = self.appLifeCallback
 		self.Application.appSensorCallback = self.appSensorCallback
 		self.Application.appStatusCallback = self.appStatusCallback
 		self.Application.appTriggerCallback = self.appTriggerCallback
+		self.Application.deviceCameraCallback = self.deviceCameraCallback
 		self.Application.deviceCommandsCallback = self.deviceCommandsCallback
+		self.Application.deviceNfcCallback = self.deviceNfcCallback
 		self.Application.deviceSensorCallback = self.deviceSensorCallback
 		self.Application.deviceStatusCallback = self.deviceStatusCallback
 		self.Application.deviceTriggerCallback = self.deviceTriggerCallback
-		self.Application.deviceCameraCallback = self.deviceCameraCallback
 		self.Application.deviceLifeCallback = self.deviceLifeCallback
-		self.Application.appLifeCallback = self.appLifeCallback
 
 		self.Helpers.logger.info("GeniSysAI Class initialization complete.")
 
-	def startMysql(self):
+	def mySqlConn(self):
+		""" Initiates the MySQL connection class. """
 
-		self.mysqlConn = MySQLdb.connect(host=self.Helpers.confs["iotJumpWay"]["ip"],
-											user=self.Helpers.confs["iotJumpWay"]["dbuser"],
-											passwd=self.Helpers.confs["iotJumpWay"]["dbpass"],
-											db=self.Helpers.confs["iotJumpWay"]["dbname"])
-		self.Helpers.logger.info("MySQL connection started")
+		self.MySQL = MySQL()
+		self.MySQL.startMySQL()
 
-	def startMongo(self):
+	def mongoDbConn(self):
+		""" Initiates the MongoDB connection class. """
 
-		connection = MongoClient(self.Helpers.confs["iotJumpWay"]["ip"])
-		self.mongoConn = connection[self.Helpers.confs["iotJumpWay"]["mdb"]]
-		self.mongoConn.authenticate(self.Helpers.confs["iotJumpWay"]["mdbu"],
-									self.Helpers.confs["iotJumpWay"]["mdbp"])
-		self.Helpers.logger.info("Mongo connection started")
+		self.MongoDB = MongoDB()
+		self.MongoDB.startMongoDB()
+
+	def blockchainConn(self):
+		""" Initiates the Blockchain connection class. """
+
+		self.Blockchain = Blockchain()
+		self.Blockchain.startBlockchain()
+		self.Blockchain.w3.geth.personal.unlockAccount(
+			self.Helpers.confs["ethereum"]["haddress"], self.Helpers.confs["ethereum"]["ipass"], 0)
 
 	def life(self):
 		""" Sends vital statistics to HIAS """
@@ -101,7 +112,8 @@ class iotJumpWay():
 		mem = psutil.virtual_memory()[2]
 		hdd = psutil.disk_usage('/').percent
 		tmp = psutil.sensors_temperatures()['coretemp'][0].current
-		r = requests.get('http://ipinfo.io/json?token=15062dec38bfc3')
+		r = requests.get('http://ipinfo.io/json?token=' +
+		                 self.Helpers.confs["iotJumpWay"]["ipinfo"])
 		data = r.json()
 		location = data["loc"].split(',')
 
@@ -114,15 +126,15 @@ class iotJumpWay():
 
 		# Send iotJumpWay notification
 		self.Application.appChannelPub("Life", self.Helpers.confs["iotJumpWay"]["paid"], {
-			"CPU": cpu,
-			"Memory": mem,
-			"Diskspace": hdd,
-			"Temperature": tmp,
-			"Latitude": location[0],
-			"Longitude": location[1]
+			"CPU": str(cpu),
+			"Memory": str(mem),
+			"Diskspace": str(hdd),
+			"Temperature": str(tmp),
+			"Latitude": float(location[0]),
+			"Longitude": float(location[1])
 		})
 
-		threading.Timer(60.0, self.life).start()
+		threading.Timer(300.0, self.life).start()
 
 	def appStatusCallback(self, topic, payload):
 		"""
@@ -132,40 +144,31 @@ class iotJumpWay():
 		status communication from the iotJumpWay.
 		"""
 
-		self.Helpers.logger.info("Recieved iotJumpWay Application Status : " + payload.decode())
+		self.Helpers.logger.info("Recieved iotJumpWay Application Status: " + payload.decode())
 
 		splitTopic=topic.split("/")
+		status = payload.decode()
 
-		try:
-			cur = self.mysqlConn.cursor()
-			cur.execute ("""
-				UPDATE mqtta
-				SET status=%s
-				WHERE id=%s
-			""", (str(payload.decode()), splitTopic[2]))
-			self.mysqlConn.commit()
-			self.Helpers.logger.info("Mysql data updated OK")
-		except:
-			self.mysqlConn.rollback()
-			e = sys.exc_info()[0]
-			self.Helpers.logger.info("Mysql data updated FAILED " + str(e))
+		application = self.MySQL.getApplication(splitTopic[2])
 
-		try:
-			collection = self.mongoConn.Statuses
-			doc = {
-				"Use": "Application",
-				"Location": splitTopic[0],
-				"Zone": 0,
-				"Application": splitTopic[2],
-				"Device": 0,
-				"Status": payload.decode(),
-				"Time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-			}
-			collection.insert(doc)
-			self.Helpers.logger.info("Mongo data inserted OK")
-		except:
-			e = sys.exc_info()[0]
-			self.Helpers.logger.info("Mongo data inserted FAILED")
+		if not self.Blockchain.iotJumpWayAccessCheck(application[12]):
+			return
+
+		self.MySQL.updateApplicationStatus(status, splitTopic)
+
+		_id = self.MongoDB.insertData(self.MongoDB.mongoConn.Statuses, {
+			"Use": "Application",
+			"Location": splitTopic[0],
+			"Zone": 0,
+			"Application": splitTopic[2],
+			"Device": 0,
+			"Status": status,
+			"Time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+		})
+
+		Thread(target=self.Blockchain.storeHash, args=(str(_id), self.Blockchain.hashStatus(status), int(time.time()), int(splitTopic[2]),
+														application[10], application[12], "App"),
+														daemon=True).start()
 
 	def appLifeCallback(self, topic, payload):
 		"""
@@ -175,45 +178,31 @@ class iotJumpWay():
 		life communication from the iotJumpWay.
 		"""
 
-		self.Helpers.logger.info("Recieved iotJumpWay Application Life Data : " + payload.decode())
+		self.Helpers.logger.info("Recieved iotJumpWay Application Life Data: " + payload.decode())
+
 		data = json.loads(payload.decode("utf-8"))
-		splitTopic=topic.split("/")
+		splitTopic = topic.split("/")
 
-		try:
-			cur = self.mysqlConn.cursor()
-			cur.execute ("""
-							UPDATE mqtta
-							SET cpu=%s,
-								mem=%s,
-								hdd=%s,
-								tempr=%s,
-								lt=%s,
-								lg=%s
-							WHERE id=%s
-					""", (data["CPU"], data["Memory"], data["Diskspace"], data["Temperature"], data["Latitude"], data["Longitude"], splitTopic[2]))
-			self.mysqlConn.commit()
-			self.Helpers.logger.info("Mysql LIFE data updated OK")
-		except:
-			self.mysqlConn.rollback()
-			e = sys.exc_info()[0]
-			self.Helpers.logger.info("Mysql LIFE data updated FAILED " + str(e))
+		application = self.MySQL.getApplication(splitTopic[2])
 
-		try:
-			collection = self.mongoConn.Life
-			doc = {
-				"Use": "Application",
-				"Location": splitTopic[0],
-				"Zone": 0,
-				"Application": splitTopic[2],
-				"Device": 0,
-				"Data": data,
-				"Time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-			}
-			collection.insert(doc)
-			self.Helpers.logger.info("Mongo data inserted OK")
-		except:
-			e = sys.exc_info()[0]
-			self.Helpers.logger.info("Mongo data inserted FAILED" + str(e))
+		if not self.Blockchain.iotJumpWayAccessCheck(application[12]):
+			return
+
+		self.MySQL.updateApplication("Life", data, splitTopic)
+
+		_id = self.MongoDB.insertData(self.MongoDB.mongoConn.Life, {
+			"Use": "Application",
+			"Location": splitTopic[0],
+			"Zone": 0,
+			"Application": splitTopic[2],
+			"Device": 0,
+			"Data": data,
+			"Time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+		})
+
+		Thread(target=self.Blockchain.storeHash, args=(str(_id), self.Blockchain.hashLifeData(data), int(time.time()), int(splitTopic[2]),
+														application[10], application[12], "App"),
+														daemon=True).start()
 
 	def appCommandsCallback(self, topic, payload):
 		"""
@@ -224,28 +213,21 @@ class iotJumpWay():
 		"""
 
 		self.Helpers.logger.info("Recieved iotJumpWay Application Command Data: " + payload.decode())
-		command = json.loads(payload.decode("utf-8"))
 
+		command = json.loads(payload.decode("utf-8"))
 		splitTopic=topic.split("/")
 
-		try:
-			collection = self.mongoConn.Commands
-			doc = {
-				"Use": "Application",
-				"Location": splitTopic[0],
-				"Zone": 0,
-				"From": command["From"],
-				"To": splitTopic[3],
-				"Type": command["Type"],
-				"Value": command["Value"],
-				"Message": command["Message"],
-				"Time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-			}
-			collection.insert(doc)
-			self.Helpers.logger.info("Mongo data inserted OK")
-		except:
-			e = sys.exc_info()[0]
-			self.Helpers.logger.info("Mongo data inserted FAILED")
+		self.MongoDB.insertData(self.MongoDB.mongoConn.Commands, {
+			"Use": "Application",
+			"Location": splitTopic[0],
+			"Zone": 0,
+			"From": command["From"],
+			"To": splitTopic[3],
+			"Type": command["Type"],
+			"Value": command["Value"],
+			"Message": command["Message"],
+			"Time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+		})
 
 	def appSensorCallback(self, topic, payload):
 		"""
@@ -255,30 +237,23 @@ class iotJumpWay():
 		sensor communication from the iotJumpWay.
 		"""
 
-		self.Helpers.logger.info("Recieved iotJumpWay Application Sensors Data : " + payload.decode())
+		self.Helpers.logger.info("Recieved iotJumpWay Application Sensors Data: " + payload.decode())
 		command = json.loads(payload.decode("utf-8"))
 
-		splitTopic=topic.split("/")
+		splitTopic = topic.split("/")
 
-		try:
-			collection = self.mongoConn.Sensors
-			doc = {
-				"Use": "Application",
-				"Location": splitTopic[0],
-				"Zone": 0,
-				"Application": splitTopic[2],
-				"Device": 0,
-				"Sensor": command["Sensor"],
-				"Type": command["Type"],
-				"Value": command["Value"],
-				"Message": command["Message"],
-				"Time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-			}
-			collection.insert(doc)
-			self.Helpers.logger.info("Mongo data inserted OK")
-		except:
-			e = sys.exc_info()[0]
-			self.Helpers.logger.info("Mongo data inserted FAILED")
+		self.MongoDB.insertData(self.MongoDB.mongoConn.Sensors, {
+			"Use": "Application",
+			"Location": splitTopic[0],
+			"Zone": 0,
+			"Application": splitTopic[2],
+			"Device": 0,
+			"Sensor": command["Sensor"],
+			"Type": command["Type"],
+			"Value": command["Value"],
+			"Message": command["Message"],
+			"Time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+		})
 
 	def appTriggerCallback(self, topic, payload):
 		"""
@@ -288,7 +263,7 @@ class iotJumpWay():
 		trigger communication from the iotJumpWay.
 		"""
 
-		self.Helpers.logger.info("Recieved iotJumpWay Application Trigger Data : " + payload.decode())
+		self.Helpers.logger.info("Recieved iotJumpWay Application Trigger Data: " + payload.decode())
 		command = json.loads(payload.decode("utf-8"))
 
 	def deviceStatusCallback(self, topic, payload):
@@ -299,39 +274,31 @@ class iotJumpWay():
 		status communication from the iotJumpWay.
 		"""
 
-		self.Helpers.logger.info("Recieved iotJumpWay Device Status Data : " + payload.decode())
-		splitTopic=topic.split("/")
+		self.Helpers.logger.info("Recieved iotJumpWay Device Status Data: " + payload.decode())
 
-		try:
-			cur = self.mysqlConn.cursor()
-			cur.execute ("""
-							UPDATE mqttld
-							SET status=%s
-							WHERE id=%s
-					""", (str(payload.decode()), splitTopic[3]))
-			self.mysqlConn.commit()
-			self.Helpers.logger.info("Mysql data updated OK")
-		except:
-			self.mysqlConn.rollback()
-			e = sys.exc_info()[0]
-			self.Helpers.logger.info("Mysql data updated FAILED " + str(e))
+		splitTopic = topic.split("/")
+		status = payload.decode()
 
-		try:
-			collection = self.mongoConn.Statuses
-			doc = {
-				"Use": "Device",
-				"Location": splitTopic[0],
-				"Zone": splitTopic[2],
-				"Application": 0,
-				"Device": splitTopic[3],
-				"Status": payload.decode(),
-				"Time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-			}
-			collection.insert(doc)
-			self.Helpers.logger.info("Mongo data inserted OK")
-		except:
-			e = sys.exc_info()[0]
-			self.Helpers.logger.info("Mongo data inserted FAILED" + str(e))
+		device = self.MySQL.getDevice(splitTopic[3])
+
+		if not self.Blockchain.iotJumpWayAccessCheck(device[8]):
+			return
+
+		self.MySQL.updateDeviceStatus(status, splitTopic[3])
+
+		_id = self.MongoDB.insertData(self.MongoDB.mongoConn.Statuses, {
+			"Use": "Device",
+			"Location": splitTopic[0],
+			"Zone": splitTopic[2],
+			"Application": 0,
+			"Device": splitTopic[3],
+			"Status": status,
+			"Time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+		})
+
+		Thread(target=self.Blockchain.storeHash, args=(str(_id), self.Blockchain.hashStatus(status), int(time.time()), int(splitTopic[3]),
+														device[10], device[8], "Device"),
+														daemon=True).start()
 
 	def deviceLifeCallback(self, topic, payload):
 		"""
@@ -342,44 +309,30 @@ class iotJumpWay():
 		"""
 
 		self.Helpers.logger.info("Recieved iotJumpWay Device Life Data : " + payload.decode())
+
 		data = json.loads(payload.decode("utf-8"))
-		splitTopic=topic.split("/")
+		splitTopic = topic.split("/")
 
-		try:
-			cur = self.mysqlConn.cursor()
-			cur.execute ("""
-							UPDATE mqttld
-							SET cpu=%s,
-								mem=%s,
-								hdd=%s,
-								tempr=%s,
-								lt=%s,
-								lg=%s
-							WHERE id=%s
-					""", (data["CPU"], data["Memory"], data["Diskspace"], data["Temperature"], data["Latitude"], data["Longitude"], splitTopic[3]))
-			self.mysqlConn.commit()
-			self.Helpers.logger.info("Mysql LIFE data updated OK")
-		except:
-			self.mysqlConn.rollback()
-			e = sys.exc_info()[0]
-			self.Helpers.logger.info("Mysql LIFE data updated FAILED " + str(e))
+		device = self.MySQL.getDevice(splitTopic[3])
 
-		try:
-			collection = self.mongoConn.Life
-			doc = {
-				"Use": "Device",
-				"Location": splitTopic[0],
-				"Zone": splitTopic[2],
-				"Application": 0,
-				"Device": splitTopic[3],
-				"Data": data,
-				"Time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-			}
-			collection.insert(doc)
-			self.Helpers.logger.info("Mongo data inserted OK")
-		except:
-			e = sys.exc_info()[0]
-			self.Helpers.logger.info("Mongo data inserted FAILED" + str(e))
+		if not self.Blockchain.iotJumpWayAccessCheck(device[8]):
+			return
+
+		self.MySQL.updateDevice("Life", data, splitTopic[3])
+
+		_id = self.MongoDB.insertData(self.MongoDB.mongoConn.Life, {
+			"Use": "Device",
+			"Location": splitTopic[0],
+			"Zone": splitTopic[2],
+			"Application": 0,
+			"Device": splitTopic[3],
+			"Data": data,
+			"Time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+		})
+
+		Thread(target=self.Blockchain.storeHash, args=(str(_id), self.Blockchain.hashLifeData(data), int(time.time()), int(splitTopic[3]),
+														device[10], device[8], "Device"),
+														daemon=True).start()
 
 	def deviceCommandsCallback(self, topic, payload):
 		"""
@@ -390,28 +343,80 @@ class iotJumpWay():
 		"""
 
 		self.Helpers.logger.info("Recieved iotJumpWay Device Command Data: " + payload.decode())
+
 		command = json.loads(payload.decode("utf-8"))
+		splitTopic = topic.split("/")
 
-		splitTopic=topic.split("/")
+		device = self.MySQL.getDevice(splitTopic[3])
 
-		try:
-			collection = self.mongoConn.Commands
-			doc = {
-				"Use": "Device",
-				"Location": splitTopic[0],
-				"Zone": splitTopic[2],
-				"From": command["From"],
-				"To": splitTopic[3],
-				"Type": command["Type"],
-				"Value": command["Value"],
-				"Message": command["Message"],
-				"Time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-			}
-			collection.insert(doc)
-			self.Helpers.logger.info("Mongo data inserted OK")
-		except:
-			e = sys.exc_info()[0]
-			self.Helpers.logger.info("Mongo data inserted FAILED")
+		if not self.Blockchain.iotJumpWayAccessCheck(device[8]):
+			return
+
+		_id = self.MongoDB.insertData(self.MongoDB.mongoConn.Commands, {
+			"Use": "Device",
+			"Location": splitTopic[0],
+			"Zone": splitTopic[2],
+			"From": command["From"],
+			"To": splitTopic[3],
+			"Type": command["Type"],
+			"Value": command["Value"],
+			"Message": command["Message"],
+			"Time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+		})
+
+		Thread(target=self.Blockchain.storeHash, args=(str(_id), self.Blockchain.hashCommand(command), int(time.time()), int(splitTopic[3]),
+														device[10], device[8], "Device"),
+														daemon=True).start()
+
+	def deviceNfcCallback(self, topic, payload):
+		"""
+		iotJumpWay Device NFC Callback
+
+		The callback function that is triggerend in the event of a device
+		NFC communication from the iotJumpWay.
+		"""
+
+		self.Helpers.logger.info("Recieved iotJumpWay Device NFC Data: " + payload.decode())
+		data = json.loads(payload.decode("utf-8"))
+		splitTopic = topic.split("/")
+
+		if not self.MySQL.getUserNFC(data["Value"]):
+			# Send iotJumpWay command
+			self.Application.appDeviceChannelPub("Commands", splitTopic[2], splitTopic[3], {
+				"From": str(self.Helpers.confs["iotJumpWay"]["paid"]),
+				"Type": "NFC",
+				"Value": "Not Authorized",
+				"Message": "NFC Chip Not Authorized"
+			})
+			return
+
+		device = self.MySQL.getDevice(splitTopic[3])
+
+		if not self.Blockchain.iotJumpWayAccessCheck(device[8]):
+			return
+
+		_id = self.MongoDB.insertData(self.MongoDB.mongoConn.NFC, {
+			"Use": "Device",
+			"Location": splitTopic[0],
+			"Zone": splitTopic[2],
+			"Application": 0,
+			"Device": splitTopic[3],
+			"Sensor": data["Sensor"],
+			"Value": data["Value"],
+			"Message": data["Message"],
+			"Time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+		})
+
+		self.Application.appDeviceChannelPub("Commands", splitTopic[2], splitTopic[3], {
+			"From": str(splitTopic[3]),
+			"Type": "NFC",
+			"Value": "Authorized",
+			"Message": "NFC Chip Authorized"
+		})
+
+		Thread(target=self.Blockchain.storeHash, args=(str(_id), self.Blockchain.hashNfc(data), int(time.time()), int(splitTopic[3]),
+														device[10], device[8], "Device"),
+														daemon=True).start()
 
 	def deviceSensorCallback(self, topic, payload):
 		"""
@@ -422,29 +427,30 @@ class iotJumpWay():
 		"""
 
 		self.Helpers.logger.info("Recieved iotJumpWay Device Sensors Data : " + payload.decode())
-		command = json.loads(payload.decode("utf-8"))
+		data = json.loads(payload.decode("utf-8"))
+		splitTopic = topic.split("/")
 
-		splitTopic=topic.split("/")
+		device = self.MySQL.getDevice(splitTopic[3])
 
-		try:
-			collection = self.mongoConn.Sensors
-			doc = {
-				"Use": "Device",
-				"Location": splitTopic[0],
-				"Zone": splitTopic[2],
-				"Application": 0,
-				"Device": splitTopic[3],
-				"Sensor": command["Sensor"],
-				"Type": command["Type"],
-				"Value": command["Value"],
-				"Message": command["Message"],
-				"Time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-			}
-			collection.insert(doc)
-			self.Helpers.logger.info("Mongo data inserted OK")
-		except:
-			e = sys.exc_info()[0]
-			self.Helpers.logger.info("Mongo data inserted FAILED")
+		if not self.Blockchain.iotJumpWayAccessCheck(device[8]):
+			return
+
+		_id = self.MongoDB.insertData(self.MongoDB.mongoConn.Sensors, {
+			"Use": "Device",
+			"Location": splitTopic[0],
+			"Zone": splitTopic[2],
+			"Application": 0,
+			"Device": splitTopic[3],
+			"Sensor": data["Sensor"],
+			"Type": data["Type"],
+			"Value": data["Value"],
+			"Message": data["Message"],
+			"Time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+		})
+
+		Thread(target=self.Blockchain.storeHash, args=(str(_id), self.Blockchain.hashSensorData(data), int(time.time()), int(splitTopic[3]),
+														device[10], device[8], "Device"),
+														daemon=True).start()
 
 	def deviceTriggerCallback(self, topic, payload):
 		"""
@@ -454,113 +460,50 @@ class iotJumpWay():
 		trigger communication from the iotJumpWay.
 		"""
 
-		self.Helpers.logger.info("Recieved iotJumpWay Device Trigger Data : " + payload.decode())
+		self.Helpers.logger.info("Recieved iotJumpWay Device Trigger Data: " + payload.decode())
 		command = json.loads(payload.decode("utf-8"))
 
 	def deviceCameraCallback(self, topic, payload):
 		"""
 		iotJumpWay Device Camera Callback
 
-		The callback function that is triggerend in the event of a camera detecting a
+		The callback function that is trigge105rend in the event of a camera detecting a
 		known user or intruder.
 		"""
 
 		self.Helpers.logger.info("Recieved iotJumpWay Device Camera Data: " + payload.decode())
+
 		data = json.loads(payload.decode("utf-8"))
+		splitTopic = topic.split("/")
 
-		splitTopic=topic.split("/")
+		nlu = self.MySQL.getNLU(splitTopic)
 
-		try:
-			cur = self.mysqlConn.cursor()
-			cur.execute ("""
-							SELECT genisysainlu.did
-							FROM genisysainlu
-							INNER JOIN mqttld
-							ON genisysainlu.did = mqttld.id
-							WHERE mqttld.zid = %s
-								&& mqttld.status=%s
-					""", (splitTopic[2], "ONLINE"))
-			nlu = cur.fetchone()
-			self.Helpers.logger.info("Camera NLU details: " + str(nlu))
-		except:
-			e = sys.exc_info()[0]
-			self.Helpers.logger.info("Camera NLU details select failed " + str(e))
+		if nlu is not "":
 
-		if data["Value"] is not 0:
+			if data["Value"] is not 0:
 
-			try:
-				cur = self.mysqlConn.cursor()
-				cur.execute ("""
-								UPDATE users
-								SET cz=%s,
-									czt=%s
-								WHERE id=%s
-						""", (splitTopic[2], time.time(), int(data["Value"])))
-				self.mysqlConn.commit()
-				self.Helpers.logger.info("Mysql camera data updated OK")
-			except:
-				self.mysqlConn.rollback()
-				e = sys.exc_info()[0]
-				self.Helpers.logger.info("Mysql camera data updated FAILED " + str(e))
+				self.MySQL.updateUserLocation(splitTopic, data)
 
-			try:
-				collection = self.mongoConn.Users
-				doc = {
+				self.MongoDB.insertData(self.MongoDB.mongoConn.Users, {
 					"User": int(data["Value"]),
 					"Location": splitTopic[0],
 					"Zone": splitTopic[2],
 					"Device": splitTopic[3],
 					"Time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-				}
-				collection.insert(doc)
-				self.Helpers.logger.info("Mongo camera data inserted OK")
-			except:
-				e = sys.exc_info()[0]
-				self.Helpers.logger.info("Mongo camera data inserted FAILED" + str(e))
+				})
 
-			cTime = datetime.now()
-			hb = cTime - timedelta(hours=1)
-			hbe = int(hb.timestamp())
-			print(hbe)
+				userDetails = self.MySQL.getUser(data)
 
-			try:
-				cur = self.mysqlConn.cursor()
-				cur.execute ("""
-								SELECT users.name,
-									users.aid,
-									mqtta.status
-								FROM users
-								INNER JOIN mqtta
-								ON users.aid = mqtta.id
-								WHERE users.id=%s
-									&& (users.welcomed = 0 || users.welcomed <= %s)
-						""", (int(data["Value"]), hbe))
-				userDetails = cur.fetchone()
-				self.Helpers.logger.info("Camera user details: " + str(userDetails))
-			except:
-				e = sys.exc_info()[0]
-				self.Helpers.logger.info("Camera user details select failed " + str(e))
+				if userDetails[1] and nlu[0]:
+					self.Application.appDeviceChannelPub("Commands", splitTopic[2], nlu[0], {
+										"From": str(splitTopic[3]),
+										"Type": "Welcome",
+										"Message": "Welcome " + userDetails[0],
+										"Value": userDetails[0]})
+					self.MySQL.updateUser(data)
 
-			if userDetails[1] and nlu[0]:
-
-				self.Application.appDeviceChannelPub("Commands", splitTopic[2], nlu[0], {"Command": "Welcome", "Value": userDetails[0]})
-
-				try:
-					cur = self.mysqlConn.cursor()
-					cur.execute ("""
-									UPDATE users
-									SET welcomed=%s
-									WHERE id=%s
-							""", (time.time(), int(data["Value"])))
-					self.mysqlConn.commit()
-					self.Helpers.logger.info("Mysql camera welcome updated OK")
-				except:
-					self.mysqlConn.rollback()
-					e = sys.exc_info()[0]
-					self.Helpers.logger.info("Mysql camera welcome updated FAILED " + str(e))
-
-			elif userDetails[1] and userDetails[2] is "ONLINE":
-				print("SEND USER APP NOTIFICATION")
+				elif userDetails[1] and userDetails[2] is "ONLINE":
+					print("SEND USER APP NOTIFICATION")
 
 	def signal_handler(self, signal, frame):
 		self.Helpers.logger.info("Disconnecting")
@@ -575,14 +518,15 @@ def main():
 	signal.signal(signal.SIGTERM, iotJumpWay.signal_handler)
 
 	# Starts the application
-
+	iotJumpWay.mySqlConn()
+	iotJumpWay.mongoDbConn()
+	iotJumpWay.blockchainConn()
 	iotJumpWay.startIoT()
-	iotJumpWay.startMysql()
-	iotJumpWay.startMongo()
 
 	Thread(target=iotJumpWay.life, args=(), daemon=True).start()
+
 	while True:
-		continue
+		time.sleep(1)
 	exit()
 
 if __name__ == "__main__":
