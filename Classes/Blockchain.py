@@ -142,8 +142,7 @@ class Blockchain():
 		""" Stores data hash in the iotJumpWay smart contract """
 
 		try:
-			txh = self.iotContract.functions.registerHash(dbid, hashed, at, int(inserter), identifier,
-															self.w3.toChecksumAddress(to)).transact({
+			txh = self.iotContract.functions.registerHash(dbid, hashed, at, int(inserter), identifier, self.w3.toChecksumAddress(to)).transact({
 															"from": self.w3.toChecksumAddress(self.Helpers.confs["ethereum"]["iaddress"]),
 															"gas": 1000000})
 			self.Helpers.logger.info("HIAS Blockchain Data Transaction OK!")
