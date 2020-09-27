@@ -70,60 +70,42 @@
 
 		}
 
-		private function getAuthHeaders()
-		{
-			return [
-				$_SERVER["PHP_AUTH_USER"],
-				$_SERVER["PHP_AUTH_PW"]
-			];
+		private function getAuthHeaders(){
+
+			$this->writeFile("api.txt",[
+				"p"=>$_SERVER["PHP_AUTH_USER"],
+				"pv"=>$_SERVER["PHP_AUTH_USER"],
+				"a"=>$_SERVER
+			]);
+			if(!isSet($_SERVER["PHP_AUTH_USER"]) || !isSet($_SERVER["PHP_AUTH_PW"])):
+				return False;
+			endif;
+			$this->appPub = $_SERVER["PHP_AUTH_USER"];
+			$this->appPrv = $_SERVER["PHP_AUTH_PW"];
+
+			$this->writeFile(
+				"auth.txt",
+				$this->appPub,
+				$this->appPrv);
 		}
 
-		public function getApplication($username)
+		private function checkAuth($public, $private)
 		{
 			$pdoQuery = $this->_GeniSys->_secCon->prepare("
-				SELECT  aid
-				FROM users
-				WHERE username=:username
+				SELECT aprv
+				FROM mqtta
+				WHERE apub = :apub
 			");
 			$pdoQuery->execute([
-				":username"=>$username
+				":apub" => $public
 			]);
 			$user=$pdoQuery->fetch(PDO::FETCH_ASSOC);
 
-			if(!$user["aid"]):
-				return [
-					"Response"=>"FAILED",
-					"Message"=>"No User Data Could Be Found"
-				];
-			endif;
-
-			$pdoQuery = $this->_GeniSys->_secCon->prepare("
-				SELECT  id,
-					apub,
-					aprv
-				FROM mqtta
-				WHERE id=:id
-			");
-			$pdoQuery->execute([
-				":id"=>$user["aid"]
-			]);
-			$app=$pdoQuery->fetch(PDO::FETCH_ASSOC);
-			$pdoQuery->closeCursor();
-			$pdoQuery = null;
-
-			if(!$app["id"]):
-				return [
-					"Response"=>"FAILED",
-					"Message"=>"No App Data Could Be Found"
-				];
+			if($this->verifyPassword($private, $this->_GeniSys->_helpers->oDecrypt($user["aprv"]))):
+				return True;
 			else:
-				return [
-					"Response"=>"OK",
-					"Message"=>"App Data Found",
-					"Data"=>$app
-				];
+				return False;
 			endif;
-
 		}
 
 		protected static function verifyPassword($password,$hash) {
@@ -136,18 +118,15 @@
 				return $this->_response(["Response"=>"FAILED","Message"=>"Invalid Method"], 405);
 			endif;
 
-			$authHeaders = $this->getAuthHeaders();
-			if (!$authHeaders[0] || !$authHeaders[1]):
-				return $this->_response("Incomplete Authentication Header", 401);
+			$this->getAuthHeaders();
+
+			if (!$this->appPub || !$this->appPrv):
+				return $this->_response(["Response"=>"FAILED","Message"=>"No Authorisation Provided"], 401);
 			endif;
 
-			$this->appResponse = $this->getApplication($authHeaders[0]);
-
-			if(!$this->appResponse || $this->appResponse["Response"]=="FAILED"):
-				return $this->_response("Invalid App ID " . $authHeaders[0], 401);
+			if(!$this->checkAuth($this->appPub, $this->appPrv)):
+				return $this->_response(["Response"=>"FAILED","Message"=>"Invalid Authorisation Provided"], 401);
 			endif;
-
-			$this->app = $this->appResponse['Data'];
 
 			if ((int)method_exists($this, $this->_Endpoint) > 0):
 				return $this->_response($this->{$this->_Endpoint}($this->_Args));
@@ -175,5 +154,12 @@
 		{
 			header("HTTP/1.1 " . $status . " " . $this->_requestStatus($status));
 			return json_encode($data);
+		}
+
+		protected function writeFile($file,$data)
+		{
+			$fps = fopen($file, 'w');
+			fwrite($fps, print_r($data, TRUE));
+			fclose($fps);
 		}
 	}

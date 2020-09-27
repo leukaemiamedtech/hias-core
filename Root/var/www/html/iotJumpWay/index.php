@@ -37,7 +37,7 @@ $Location = $iotJumpWay->getLocation($LId);
 		<link type="image/x-icon" rel="apple-touch-icon" href="<?=$domain; ?>/img/favicon.png" />
 
         <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
-        <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>		
+        <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
 		<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
@@ -45,13 +45,13 @@ $Location = $iotJumpWay->getLocation($LId);
 	</head>
 
     <body id="GeniSysAI">
-        
+
         <div class="preloader-it">
             <div class="la-anim-1"></div>
         </div>
-        
+
         <div class="wrapper theme-6-active pimary-color-pink">
-            
+
             <?php include dirname(__FILE__) . '/../Includes/Nav.php'; ?>
             <?php include dirname(__FILE__) . '/../Includes/LeftNav.php'; ?>
             <?php include dirname(__FILE__) . '/../Includes/RightNav.php'; ?>
@@ -60,7 +60,7 @@ $Location = $iotJumpWay->getLocation($LId);
             <div class="container-fluid pt-25">
 
 				<?php include dirname(__FILE__) . '/../Includes/Stats.php'; ?>
-                
+
 				<div class="row">
 					<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
                         <div class="panel panel-default card-view panel-refresh">
@@ -80,10 +80,10 @@ $Location = $iotJumpWay->getLocation($LId);
                                     <?php include dirname(__FILE__) . '/../iotJumpWay/Includes/iotJumpWay.php'; ?>
 								</div>
 							</div>
-						</div>	
+						</div>
 					</div>
 				</div>
-                
+
 				<div class="row">
 					<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
                         <div class="panel panel-default card-view panel-refresh">
@@ -91,7 +91,7 @@ $Location = $iotJumpWay->getLocation($LId);
 								<div class="pull-left">
 									<h6 class="panel-title txt-dark">iotJumpWay Location #<?=$LId; ?></h6>
 								</div>
-								<div class="pull-right"></div> 
+								<div class="pull-right"></div>
 								<div class="clearfix"></div>
                             </div>
                             <div class="panel-wrapper collapse in">
@@ -101,17 +101,17 @@ $Location = $iotJumpWay->getLocation($LId);
                                             <div class="form-group">
                                                 <label for="name" class="control-label mb-10">Name</label>
                                                 <input type="text" class="form-control" id="name" name="name" placeholder="iotJumpWay Location Name" required value="<?=$Location["name"]; ?>">
-                                                <span class="help-block"> Name of iotJumpWay Location</span> 
+                                                <span class="help-block"> Name of iotJumpWay Location</span>
                                             </div>
                                             <div class="form-group">
                                                 <label for="name" class="control-label mb-10">IP</label>
                                                 <input type="text" class="form-control hider" id="ip" name="ip" placeholder="iotJumpWay Location IP" required value="<?=$Location["ip"] ? $_GeniSys->_helpers->oDecrypt($Location["ip"]) : ""; ?>">
-                                                <span class="help-block"> IP of iotJumpWay Location</span> 
+                                                <span class="help-block"> IP of iotJumpWay Location</span>
                                             </div>
                                             <div class="form-group">
                                                 <label for="name" class="control-label mb-10">MAC</label>
                                                 <input type="text" class="form-control hider" id="mac" name="mac" placeholder="iotJumpWay Location MAC" required value="<?=$Location["mac"] ? $_GeniSys->_helpers->oDecrypt($Location["mac"]) : ""; ?>">
-                                                <span class="help-block"> MAC of iotJumpWay Location</span> 
+                                                <span class="help-block"> MAC of iotJumpWay Location</span>
                                             </div>
                                             <div class="form-group mb-0">
                                                 <input type="hidden" class="form-control" id="update_location" name="update_location" required value="1">
@@ -122,7 +122,7 @@ $Location = $iotJumpWay->getLocation($LId);
                                     </div>
 								</div>
 							</div>
-						</div>	
+						</div>
 					</div>
 					<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
                         <div class="panel panel-default card-view panel-refresh">
@@ -130,7 +130,7 @@ $Location = $iotJumpWay->getLocation($LId);
 								<div class="pull-left">
 									<h6 class="panel-title txt-dark">iotJumpWay Location Zones</h6>
 								</div>
-								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/Zones"><i class="fa fa-eye"></i></a> | <a href="<?=$domain; ?>/iotJumpWay/Zones/Create"><i class="fa fa-plus"></i></a></div> 
+								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/Zones"><i class="fa fa-eye"></i></a> | <a href="<?=$domain; ?>/iotJumpWay/Zones/Create"><i class="fa fa-plus"></i></a></div>
 								<div class="clearfix"></div>
                             </div>
                             <div class="panel-wrapper collapse in">
@@ -148,7 +148,7 @@ $Location = $iotJumpWay->getLocation($LId);
 												</thead>
 												<tbody>
 
-												<?php 
+												<?php
 													$Zones = $iotJumpWay->getZones(5);
 													if(count($Zones)):
 														foreach($Zones as $key => $value):
@@ -159,10 +159,10 @@ $Location = $iotJumpWay->getLocation($LId);
 													<td><a href="javascript:void(0)">#<?=$value["id"];?></a></td>
 													<td><?=$value["zn"];?></td>
 													<td>#<?=$value["lid"];?> </td>
-													<td><a href="<?=$domain; ?>/iotJumpWay/<?=$value["lid"];?>/Zones/<?=$value["id"];?>/"><i class="fa fa-edit"></i></a></a></td>
+													<td><a href="<?=$domain; ?>/iotJumpWay/<?=$value["lid"];?>/Zones/<?=$value["id"];?>"><i class="fa fa-edit"></i></a></a></td>
 												  </tr>
 
-												<?php 
+												<?php
 														endforeach;
 													endif;
 												?>
@@ -180,7 +180,7 @@ $Location = $iotJumpWay->getLocation($LId);
 								<div class="pull-left">
 									<h6 class="panel-title txt-dark">iotJumpWay Location Devices</h6>
 								</div>
-								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/Devices"><i class="fa fa-eye"></i></a> | <a href="<?=$domain; ?>/iotJumpWay/Devices/Create"><i class="fa fa-plus"></i></a></div> 
+								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/Devices"><i class="fa fa-eye"></i></a> | <a href="<?=$domain; ?>/iotJumpWay/Devices/Create"><i class="fa fa-plus"></i></a></div>
 								<div class="clearfix"></div>
                             </div>
                             <div class="panel-wrapper collapse in">
@@ -199,7 +199,7 @@ $Location = $iotJumpWay->getLocation($LId);
 												</thead>
 												<tbody>
 
-												<?php 
+												<?php
 													$Devices = $iotJumpWay->getDevices(5);
 													if(count($Devices)):
 														foreach($Devices as $key => $value):
@@ -211,10 +211,10 @@ $Location = $iotJumpWay->getLocation($LId);
 													<td><?=$value["name"];?></td>
 													<td>#<?=$value["lid"];?> </td>
 													<td>#<?=$value["zid"];?> </td>
-													<td><a href="<?=$domain; ?>/iotJumpWay/<?=$value["lid"];?>/Zones/<?=$value["zid"];?>/Devices/<?=$value["id"];?>/"><i class="fa fa-edit"></i></a></a></td>
+													<td><a href="<?=$domain; ?>/iotJumpWay/<?=$value["lid"];?>/Zones/<?=$value["zid"];?>/Devices/<?=$value["id"];?>"><i class="fa fa-edit"></i></a></a></td>
 												  </tr>
 
-												<?php 
+												<?php
 														endforeach;
 													endif;
 												?>
@@ -227,7 +227,7 @@ $Location = $iotJumpWay->getLocation($LId);
 						</div>
 					</div>
 				</div>
-                
+
 				<div class="row">
 					<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
                         <div class="panel panel-default card-view panel-refresh">
@@ -235,7 +235,7 @@ $Location = $iotJumpWay->getLocation($LId);
 								<div class="pull-left">
 									<h6 class="panel-title txt-dark">iotJumpWay Sensors/Actuators</h6>
 								</div>
-								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/Sensors"><i class="fa fa-eye"></i></a> | <a href="<?=$domain; ?>/iotJumpWay/Sensors/Create"><i class="fa fa-plus"></i></a></div> 
+								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/Sensors"><i class="fa fa-eye"></i></a> | <a href="<?=$domain; ?>/iotJumpWay/Sensors/Create"><i class="fa fa-plus"></i></a></div>
 								<div class="clearfix"></div>
                             </div>
                             <div class="panel-wrapper collapse in">
@@ -253,7 +253,7 @@ $Location = $iotJumpWay->getLocation($LId);
 												</thead>
 												<tbody>
 
-												<?php 
+												<?php
                                                     $Sensors = $iotJumpWay->getSensors(5);
 													if(count($Sensors)):
 														foreach($Sensors as $key => $value):
@@ -267,7 +267,7 @@ $Location = $iotJumpWay->getLocation($LId);
 													<td><a href="<?=$domain; ?>/iotJumpWay/Sensors/<?=$value["id"];?>/"><i class="fa fa-edit"></i></a></a></td>
 												  </tr>
 
-												<?php 
+												<?php
 														endforeach;
 													endif;
 												?>
@@ -277,7 +277,7 @@ $Location = $iotJumpWay->getLocation($LId);
 									</div>
 								</div>
 							</div>
-						</div>	
+						</div>
 					</div>
 					<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
                         <div class="panel panel-default card-view panel-refresh">
@@ -285,7 +285,7 @@ $Location = $iotJumpWay->getLocation($LId);
 								<div class="pull-left">
 									<h6 class="panel-title txt-dark">iotJumpWay Location Applications</h6>
 								</div>
-								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/Applications"><i class="fa fa-eye"></i></a> | <a href="<?=$domain; ?>/iotJumpWay/Applications/Create"><i class="fa fa-plus"></i></a></div> 
+								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/Applications"><i class="fa fa-eye"></i></a> | <a href="<?=$domain; ?>/iotJumpWay/Applications/Create"><i class="fa fa-plus"></i></a></div>
 								<div class="clearfix"></div>
                             </div>
                             <div class="panel-wrapper collapse in">
@@ -303,7 +303,7 @@ $Location = $iotJumpWay->getLocation($LId);
 												</thead>
 												<tbody>
 
-												<?php 
+												<?php
 													$Applications = $iotJumpWay->getApplications(5);
 													if(count($Applications)):
 														foreach($Applications as $key => $value):
@@ -314,10 +314,10 @@ $Location = $iotJumpWay->getLocation($LId);
 													<td><a href="javascript:void(0)">#<?=$value["id"];?></a></td>
 													<td><?=$value["name"];?></td>
 													<td>#<?=$value["lid"];?> </td>
-													<td><a href="<?=$domain; ?>/iotJumpWay/<?=$value["lid"];?>/Applications/<?=$value["id"];?>/"><i class="fa fa-edit"></i></a></a></td>
+													<td><a href="<?=$domain; ?>/iotJumpWay/<?=$value["lid"];?>/Applications/<?=$value["id"];?>"><i class="fa fa-edit"></i></a></a></td>
 												  </tr>
 
-												<?php 
+												<?php
 														endforeach;
 													endif;
 												?>
@@ -327,20 +327,20 @@ $Location = $iotJumpWay->getLocation($LId);
 									</div>
 								</div>
 							</div>
-						</div>	
+						</div>
 					</div>
 					<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
 					</div>
 				</div>
-				
+
 			</div>
-			
+
 			<?php include dirname(__FILE__) . '/../Includes/Footer.php'; ?>
-			
+
 		</div>
 
 		<?php  include dirname(__FILE__) . '/../Includes/JS.php'; ?>
-		
+
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWayUI.js"></script>

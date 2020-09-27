@@ -9,11 +9,13 @@ $pageDetails = [
 include dirname(__FILE__) . '/../../Classes/Core/init.php';
 include dirname(__FILE__) . '/../../Classes/Core/GeniSys.php';
 include dirname(__FILE__) . '/../iotJumpWay/Classes/iotJumpWay.php';
+include dirname(__FILE__) . '/../Blockchain/Classes/Blockchain.php';
 
 $_GeniSysAi->checkSession();
 
 $LId = 1;
 $Location = $iotJumpWay->getLocation($LId);
+$blockchainConf = $Blockchain->getBlockchainConf();
 
 
 ?>
@@ -106,6 +108,7 @@ $Location = $iotJumpWay->getLocation($LId);
 													<th>Device/Application Details</th>
 													<th>Data</th>
 													<th>Time</th>
+													<th>ACTION</th>
 												  </tr>
 												</thead>
 												<tbody>
@@ -119,6 +122,8 @@ $Location = $iotJumpWay->getLocation($LId);
 															$device = $iotJumpWay->getDevice($value->Device);
 															$zone = $iotJumpWay->getZone($value->Zone);
 															$application = $iotJumpWay->getApplication($value->Application);
+															$hashString = (string)$value->Data->CPU . (string)$value->Data->Memory . (string)$value->Data->Diskspace . (string)$value->Data->Temperature . (string)$value->Data->Latitude . (string)$value->Data->Longitude;
+
 												?>
 
 												  <tr>
@@ -138,6 +143,7 @@ $Location = $iotJumpWay->getLocation($LId);
 														<strong>Longitude</strong>: <?=$value->Data->Longitude;?><br />
 													</td>
 													<td><?=$value->Time;?> </td>
+													<td><a href="javascript:void(0);" class="btn btn-success btn-anim verify" data-user="<?=$_SESSION["GeniSysAI"]["BC"]["BCUser"];?>" data-key="<?=$value->_id;?>" data-hash="<?=$hashString; ?>"><span class="btn-text">VERIFY</span></button></td>
 												  </tr>
 
 												<?php
@@ -161,7 +167,7 @@ $Location = $iotJumpWay->getLocation($LId);
 								<div class="pull-left">
 									<h6 class="panel-title txt-dark">iotJumpWay Location Device/Application Statuses</h6>
 								</div>
-								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/Data/Life"><i class="fa fa-eye pull-left"></i> View All Status Data</a></div>
+								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/Data/Statuses"><i class="fa fa-eye pull-left"></i> View All Status Data</a></div>
 								<div class="clearfix"></div>
 							</div>
 							<div class="panel-wrapper collapse in">
@@ -176,6 +182,7 @@ $Location = $iotJumpWay->getLocation($LId);
 													<th>Details</th>
 													<th>Status</th>
 													<th>Time</th>
+													<th>ACTION</th>
 												  </tr>
 												</thead>
 												<tbody>
@@ -189,6 +196,7 @@ $Location = $iotJumpWay->getLocation($LId);
 															$device = $iotJumpWay->getDevice($value->Device);
 															$zone = $iotJumpWay->getZone($value->Zone);
 															$application = $iotJumpWay->getApplication($value->Application);
+															$hashString = (string)$value->Status;
 												?>
 
 												  <tr>
@@ -201,12 +209,14 @@ $Location = $iotJumpWay->getLocation($LId);
 													</td>
 													<td><?=$value->Status;?></td>
 													<td><?=$value->Time;?> </td>
+													<td><a href="javascript:void(0);" class="btn btn-success btn-anim verify" data-user="<?=$_SESSION["GeniSysAI"]["BC"]["BCUser"];?>" data-key="<?=$value->_id;?>" data-hash="<?=$hashString; ?>"><span class="btn-text">VERIFY</span></button></td>
 												  </tr>
 
 												<?php
 														endforeach;
 													endif;
 												?>
+
 												</tbody>
 											</table>
 										</div>
@@ -224,7 +234,7 @@ $Location = $iotJumpWay->getLocation($LId);
 								<div class="pull-left">
 									<h6 class="panel-title txt-dark">iotJumpWay Location Device/Application Commmands</h6>
 								</div>
-								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/Data/Life"><i class="fa fa-eye pull-left"></i> View All Commmand Data</a></div>
+								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/Data/Commands"><i class="fa fa-eye pull-left"></i> View All Commmand Data</a></div>
 								<div class="clearfix"></div>
 							</div>
 							<div class="panel-wrapper collapse in">
@@ -241,6 +251,7 @@ $Location = $iotJumpWay->getLocation($LId);
 													<th>Value</th>
 													<th>Message</th>
 													<th>Time</th>
+													<th>ACTION</th>
 												  </tr>
 												</thead>
 												<tbody>
@@ -254,6 +265,7 @@ $Location = $iotJumpWay->getLocation($LId);
 															$device = $iotJumpWay->getDevice($value->From);
 															$devicet = $iotJumpWay->getDevice($value->To);
 															$zone = $iotJumpWay->getZone($value->Zone);
+															$hashString = (string)$value->From . (string)$value->Type . (string)$value->Value . (string)$value->Message ;
 												?>
 
 												  <tr>
@@ -268,6 +280,7 @@ $Location = $iotJumpWay->getLocation($LId);
 													<td><?=$value->Value;?></td>
 													<td><?=$value->Message;?></td>
 													<td><?=$value->Time;?> </td>
+													<td><a href="javascript:void(0);" class="btn btn-success btn-anim verify" data-user="<?=$_SESSION["GeniSysAI"]["BC"]["BCUser"];?>" data-key="<?=$value->_id;?>" data-hash="<?=$hashString; ?>"><span class="btn-text">VERIFY</span></button></td>
 												  </tr>
 
 												<?php
@@ -292,7 +305,7 @@ $Location = $iotJumpWay->getLocation($LId);
 								<div class="pull-left">
 									<h6 class="panel-title txt-dark">iotJumpWay Location Device/Application Sensors</h6>
 								</div>
-								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/Data/Life"><i class="fa fa-eye pull-left"></i> View All Sensor Data</a></div>
+								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/Data/Sensors"><i class="fa fa-eye pull-left"></i> View All Sensor Data</a></div>
 								<div class="clearfix"></div>
 							</div>
 							<div class="panel-wrapper collapse in">
@@ -310,6 +323,7 @@ $Location = $iotJumpWay->getLocation($LId);
 													<th>Value</th>
 													<th>Message</th>
 													<th>Time</th>
+													<th>ACTION</th>
 												  </tr>
 												</thead>
 												<tbody>
@@ -318,6 +332,7 @@ $Location = $iotJumpWay->getLocation($LId);
 													$Sensors = $iotJumpWay->retrieveSensors();
 													if($Sensors["Response"] == "OK"):
 														foreach($Sensors["ResponseData"] as $key => $value):
+															$hashString = (string)$value->Sensor . (string)$value->Type . (string)$value->Value . (string)$value->Message;
 												?>
 
 												  <tr>
@@ -345,6 +360,7 @@ $Location = $iotJumpWay->getLocation($LId);
 													</td>
 													<td><?=$value->Message;?></td>
 													<td><?=$value->Time;?> </td>
+													<td><a href="javascript:void(0);" class="btn btn-success btn-anim verify" data-user="<?=$_SESSION["GeniSysAI"]["BC"]["BCUser"];?>" data-key="<?=$value->_id;?>" data-hash="<?=$hashString; ?>"><span class="btn-text">VERIFY</span></button></td>
 												  </tr>
 
 												<?php
@@ -368,10 +384,28 @@ $Location = $iotJumpWay->getLocation($LId);
 
 		</div>
 
+		<div id="abi" class="hide"><?=$blockchainConf["iabi"]; ?></div>
+		<div id="address" class="hide"><?=$Blockchain->_GeniSys->_helpers->oDecrypt($blockchainConf["icontract"]); ?></div>
+
 		<?php  include dirname(__FILE__) . '/../Includes/JS.php'; ?>
 
 		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
 		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
+		<script type="text/javascript" src="<?=$domain; ?>/Blockchain/Classes/Blockchain.js"></script>
+		<script type="text/javascript" src="<?=$domain; ?>/Blockchain/Classes/web3.js"></script>
+		<script type="text/javascript">
+
+			window.addEventListener('load', function () {
+				Blockchain.connect("<?=$domain; ?>/Blockchain/API/");
+				if(Blockchain.isConnected()){
+					msg = "Connected to HIAS Blockchain!";
+					Logging.logMessage("Core", "Blockchain", msg);
+				} else {
+					msg = "Connection to HIAS Blockchain failed!";
+					Logging.logMessage("Core", "Blockchain", msg);
+				}
+			});
+		</script>
 
 	</body>
 

@@ -39,7 +39,7 @@ $Devices = $iotJumpWay->getDevices();
 		<link type="image/x-icon" rel="apple-touch-icon" href="<?=$domain; ?>/img/favicon.png" />
 
         <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
-        <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>		
+        <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
 		<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
@@ -47,13 +47,13 @@ $Devices = $iotJumpWay->getDevices();
 	</head>
 
     <body id="GeniSysAI">
-        
+
         <div class="preloader-it">
             <div class="la-anim-1"></div>
         </div>
-        
+
         <div class="wrapper theme-6-active pimary-color-pink">
-            
+
             <?php include dirname(__FILE__) . '/../Includes/Nav.php'; ?>
             <?php include dirname(__FILE__) . '/../Includes/LeftNav.php'; ?>
             <?php include dirname(__FILE__) . '/../Includes/RightNav.php'; ?>
@@ -62,7 +62,7 @@ $Devices = $iotJumpWay->getDevices();
             <div class="container-fluid pt-25">
 
 				<?php include dirname(__FILE__) . '/../Includes/Stats.php'; ?>
-                
+
 				<div class="row">
 					<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
                         <div class="panel panel-default card-view panel-refresh">
@@ -82,10 +82,10 @@ $Devices = $iotJumpWay->getDevices();
                                     <?php include dirname(__FILE__) . '/../iotJumpWay/Includes/iotJumpWay.php'; ?>
 								</div>
 							</div>
-						</div>	
+						</div>
 					</div>
 				</div>
-                
+
 				<div class="row">
 					<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
                         <div class="panel panel-default card-view panel-refresh">
@@ -93,7 +93,7 @@ $Devices = $iotJumpWay->getDevices();
 								<div class="pull-left">
 									<h6 class="panel-title txt-dark">iotJumpWay Location Zones</h6>
 								</div>
-								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/Zones/Create"><i class="fa fa-plus"></i></a></div> 
+								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/Zones/Create"><i class="fa fa-plus"></i></a></div>
 								<div class="clearfix"></div>
                             </div>
                             <div class="panel-wrapper collapse in">
@@ -110,7 +110,7 @@ $Devices = $iotJumpWay->getDevices();
 												</thead>
 												<tbody>
 
-												<?php 
+												<?php
 													if(count($Zones)):
 														foreach($Zones as $key => $value):
 
@@ -121,12 +121,12 @@ $Devices = $iotJumpWay->getDevices();
 													<td>
 														<strong>Name:</strong> <?=$value["zn"];?><br />
 														<strong>Location:</strong> #<?=$value["lid"];?> - <?=$value["loc"];?>
-													
+
 													</td>
-													<td><a href="<?=$domain; ?>/iotJumpWay/<?=$value["lid"];?>/Zones/<?=$value["id"];?>/"><i class="fa fa-edit"></i> Edit</a></td>
+													<td><a href="<?=$domain; ?>/iotJumpWay/<?=$value["lid"];?>/Zones/<?=$value["id"];?>"><i class="fa fa-edit"></i> Edit</a></td>
 												  </tr>
 
-												<?php 
+												<?php
 														endforeach;
 													endif;
 												?>
@@ -139,37 +139,37 @@ $Devices = $iotJumpWay->getDevices();
 						</div>
 					</div>
 				</div>
-				
+
 			</div>
-			
+
 			<?php include dirname(__FILE__) . '/../Includes/Footer.php'; ?>
-			
+
 		</div>
 
         <?php  include dirname(__FILE__) . '/../Includes/JS.php'; ?>
-        
+
         <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/moment/min/moment.min.js"></script>
         <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/simpleWeather/jquery.simpleWeather.min.js"></script>
         <script type="text/javascript" src="<?=$domain; ?>/dist/js/simpleweather-data.js"></script>
-        
+
         <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/waypoints/lib/jquery.waypoints.min.js"></script>
         <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/jquery.counterup/jquery.counterup.min.js"></script>
-        
+
         <script type="text/javascript" src="<?=$domain; ?>/dist/js/dropdown-bootstrap-extended.js"></script>
-        
+
         <script type="text/javascript" src="<?=$domain; ?>/vendors/jquery.sparkline/dist/jquery.sparkline.min.js"></script>
-        
+
         <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/owl.carousel/dist/owl.carousel.min.js"></script>
-        
+
         <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.js"></script>
-        
+
         <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/echarts/dist/echarts-en.min.js"></script>
         <script type="text/javascript" src="<?=$domain; ?>/vendors/echarts-liquidfill.min.js"></script>
-        
+
         <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/switchery/dist/switchery.min.js"></script>
 		<script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
 		<script type="text/javascript" src="<?=$domain; ?>/dist/js/fullcalendar-data.js"></script>
-        
+
         <script type="text/javascript" src="<?=$domain; ?>/dist/js/init.js"></script>
         <script type="text/javascript" src="<?=$domain; ?>/dist/js/dashboard-data.js"></script>
 
