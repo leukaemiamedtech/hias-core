@@ -101,16 +101,6 @@ $_GeniSysAi->checkSession();
 															<input type="text" class="form-control" id="pw" name="pw" placeholder="HIAS Blockchain Account Password" required value="<?=$Blockchain->_GeniSys->_helpers->oDecrypt($Blockchain->configs["pw"]); ?>" autocomplete="false">
 															<span class="help-block">HIAS Blockchain password</span>
 														</div>
-														<div class="form-group">
-															<label for="name" class="control-label mb-10">HIAS User Account</label>
-															<input type="text" class="form-control" id="un" name="un" placeholder="HIAS User Account" required value="<?=$Blockchain->_GeniSys->_helpers->oDecrypt($Blockchain->configs["un"]); ?>">
-															<span class="help-block">HIAS User Account</span>
-														</div>
-														<div class="form-group">
-															<label for="name" class="control-label mb-10">HIAS User Account Password</label>
-															<input type="text" class="form-control" id="up" name="up" placeholder="HIAS User Account Password" required value="<?=$Blockchain->_GeniSys->_helpers->oDecrypt($Blockchain->configs["up"]); ?>">
-															<span class="help-block">HIAS User Account Password</span>
-														</div>
 														<div class="form-group mb-0">
 															<input type="hidden" class="form-control" id="update_bc" name="update_bc" required value="1">
 															<button type="submit" class="btn btn-success btn-anim" id="update_blockchain"><i class="icon-rocket"></i><span class="btn-text">Update Settings</span></button>
@@ -215,7 +205,7 @@ $_GeniSysAi->checkSession();
 		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
 		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
 		<script type="text/javascript" src="<?=$domain; ?>/Blockchain/Classes/Blockchain.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.34/dist/web3.js"></script>
+		<script type="text/javascript" src="<?=$domain; ?>/Blockchain/Classes/web3.js"></script>
 		<script type="text/javascript">
 			window.addEventListener('load', function () {
 				Blockchain.connect("<?=$domain; ?>/Blockchain/API/");

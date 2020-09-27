@@ -158,5 +158,6 @@ $contract = $Blockchain->getContract(filter_input(INPUT_GET, "contract", FILTER_
 		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
 		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
 		<script type="text/javascript" src="<?=$domain; ?>/Blockchain/Classes/Blockchain.js"></script>
+		<script type="text/javascript" src="<?=$domain; ?>/Blockchain/Classes/web3.js"></script>
 	</body>
 </html>

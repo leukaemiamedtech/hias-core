@@ -261,32 +261,14 @@ use Web3\Utils;
 				];
 			endif;
 
-			if(!filter_input(INPUT_POST, "un", FILTER_SANITIZE_STRING)):
-				return [
-					"Response"=> "Failed",
-					"Message" => "HIAS account username is required"
-				];
-			endif;
-
-			if(!filter_input(INPUT_POST, "up", FILTER_SANITIZE_STRING)):
-				return [
-					"Response"=> "Failed",
-					"Message" => "HIAS account password is required"
-				];
-			endif;
-
 			$query = $this->_GeniSys->_secCon->prepare("
 				UPDATE blockchain
-				SET address = :address,
-					pw = :pw,
-					un = :un,
-					up = :up
+				SET bcaddress = :bcaddress,
+					pw = :pw
 			");
 			$query->execute([
-				':address' => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "address", FILTER_SANITIZE_STRING)),
-				':pw' => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "pw", FILTER_SANITIZE_STRING)),
-				':un' => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "un", FILTER_SANITIZE_STRING)),
-				':up' => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "up", FILTER_SANITIZE_STRING))
+				':bcaddress' => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "address", FILTER_SANITIZE_STRING)),
+				':pw' => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "pw", FILTER_SANITIZE_STRING))
 			]);
 			$id = $this->_GeniSys->_secCon->lastInsertId();
 

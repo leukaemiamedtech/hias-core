@@ -150,7 +150,7 @@ $_GeniSysAi->checkSession();
 		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
 		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
 		<script type="text/javascript" src="<?=$domain; ?>/Blockchain/Classes/Blockchain.js"></script>
-		<script src="<?=$domain; ?>/Blockchain/Classes/web3.js"></script>
+		<script type="text/javascript" src="<?=$domain; ?>/Blockchain/Classes/web3.js"></script>
 		<script type="text/javascript">
 			window.addEventListener('load', function () {
 				Blockchain.connect("<?=$domain; ?>/Blockchain/API/");
