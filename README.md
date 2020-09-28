@@ -45,7 +45,7 @@
 &nbsp;
 
 # Introduction
-The **Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss** is an open-source Hospital Intelligent Automation System. The HIAS server powers an intelligent network providing secure access to devices on the network via a proxy. These devices/applications and databases all run and communicate on the local network. This means that premises have more control and security when it comes to their hardware, data and storage.
+The **Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss HIAS Network** is an open-source Hospital Intelligent Automation System. The HIAS server powers an intelligent network providing secure access to devices on the network via a proxy. These devices/applications and databases all run and communicate on the local network. This means that premises have more control and security when it comes to their hardware, data and storage.
 
 Devices and applications on the HIAS network communicate with the server and each other using a local MQTT broker.
 
