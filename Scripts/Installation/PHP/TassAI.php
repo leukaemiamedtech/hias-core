@@ -1,7 +1,6 @@
 <?php
 
 include 'pbkdf2.php';
-include 'Htpasswd.php';
 
 class Core
 {
@@ -46,46 +45,43 @@ class Core
 	}
 }
 
-class Location{
+class TassAI{
 
-	public function __construct(Core $core)
+	public function __construct(Core $core, , )
 	{
 		$this->confs = $core->confs;
 		$this->key = $core->key;
 		$this->conn = $core->dbcon;
-		$this->lid = 0;
+		$this->lid = $location;
+		$this->zn = $zone;
+		$this->ip = $ip;
+		$this->mac = $mac;
 	}
 
-	public function location($location){
+	public function zone($zone){
 
 		$query = $this->conn->prepare("
-			INSERT INTO  mqttl  (
-				`name`,
-				`apps`,
+			INSERT INTO  mqttlz  (
+				`lid`,
+				`zn`,
 				`time`
 			)  VALUES (
-				:name,
-				:apps,
+				:lid,
+				:zn,
 				:time
 			)
 		");
-		$query->execute(array(
-			':name' => $location,
-			':apps' => 0,
+		$query->execute([
+			':lid' => 1,
+			':zn' => $zone,
 			':time' => time()
-		));
-		$this->lid = $this->conn->lastInsertId();
+		]);
+		$zid = $this->conn->lastInsertId();
 
-		echo "! Location, " . $location . " has been created with ID " . $this->lid . "!";
-		return True;
+		echo "! Zone, " . $zone . ", has been created with ID " . $zid . "!";
 	}
 
-	public function applications($application, $bcuser, $ip, $mac, $application2, $bcuser2, $ip2, $mac2){
-		$this->application($application, $bcuser, $ip, $mac);
-		$this->application($application2, $bcuser2, $ip2, $mac2);
-	}
-
-	public function application($application, $bcuser, $ip, $mac){
+	public function device($ip, $mac){
 
 		$mqttUser = $this->generate_uuid();
 		$mqttPass = $this->password();
@@ -95,73 +91,73 @@ class Location{
 		$privKey = $this->generateKey(32);
 		$privKeyHash = $this->createPasswordHash($privKey);
 
-		$htpasswd = new Htpasswd('/etc/nginx/security/htpasswd');
-		$htpasswd->addUser($pubKey, $privKey, Htpasswd::ENCTYPE_APR_MD5);
-
 		$query = $this->conn->prepare("
-			INSERT INTO  mqtta  (
+			INSERT INTO  mqttld  (
 				`lid`,
+				`zid`,
 				`name`,
-				`bcaddress`,
 				`mqttu`,
 				`mqttp`,
+				`bcaddress`,
 				`apub`,
 				`aprv`,
 				`ip`,
 				`mac`,
 				`lt`,
 				`lg`,
-				`status`,
 				`time`
 			)  VALUES (
 				:lid,
+				:zid,
 				:name,
-				:bcaddress,
 				:mqttu,
 				:mqttp,
+				:bcaddress,
 				:apub,
 				:aprv,
 				:ip,
 				:mac,
 				:lt,
 				:lg,
-				:status,
 				:time
 			)
 		");
 		$query->execute([
-			':lid' => $this->lid,
-			':name' => $application,
-			':bcaddress' => $bcuser,
-			':mqttu' => $this->encrypt($mqttUser),
-			':mqttp' => $this->encrypt($mqttPass),
+			':lid' => 1,
+			':zid' => 1,
+			':name' => "Server Security API",
+			':mqttu' =>$this->encrypt($mqttUser),
+			':mqttp' =>$this->encrypt($mqttPass),
+			':bcaddress' => $newBcUser,
 			':apub' => $pubKey,
 			':aprv' => $this->encrypt($privKeyHash),
-			':ip' => $this->encrypt($ip),
+			':ip' => $this->encrypt(filter_input($ip),
 			':mac' => $this->encrypt($mac),
 			':lt' => "",
 			':lg' => "",
-			':status' => "OFFLINE",
 			':time' => time()
 		]);
-		$aid = $this->conn->lastInsertId();
+		$did = $this->conn->lastInsertId();
 
 		$query = $this->conn->prepare("
 			INSERT INTO  mqttu  (
 				`lid`,
-				`aid`,
+				`zid`,
+				`did`,
 				`uname`,
 				`pw`
 			)  VALUES (
 				:lid,
-				:aid,
+				:zid,
+				:did,
 				:uname,
 				:pw
 			)
 		");
 		$query->execute([
-			':lid' => $this->lid,
-			':aid' => $aid,
+			':lid' => 1,
+			':zid' => 1,
+			':did' => $did,
 			':uname' => $mqttUser,
 			':pw' => $mqttHash
 		]);
@@ -169,65 +165,86 @@ class Location{
 		$query = $this->conn->prepare("
 			INSERT INTO  mqttua  (
 				`lid`,
-				`aid`,
+				`zid`,
+				`did`,
 				`username`,
 				`topic`,
 				`rw`
 			)  VALUES (
 				:lid,
-				:aid,
+				:zid,
+				:did,
 				:username,
 				:topic,
 				:rw
 			)
 		");
 		$query->execute(array(
-			':lid' => $this->lid,
-			':aid' => $aid,
+			':lid' => 1,
+			':zid' => 1,
+			':did' => $did,
 			':username' => $mqttUser,
-			':topic' => $this->lid."/Devices/#",
-			':rw' => 4
-		));
-
-		$query = $this->conn->prepare("
-			INSERT INTO  mqttua  (
-				`lid`,
-				`aid`,
-				`username`,
-				`topic`,
-				`rw`
-			)  VALUES (
-				:lid,
-				:aid,
-				:username,
-				:topic,
-				:rw
-			)
-		");
-		$query->execute(array(
-			':lid' => $this->lid,
-			':aid' => $aid,
-			':username' => $mqttUser,
-			':topic' => $this->lid."/Applications/#",
+			':topic' => "1/Device/1/".$did."/#",
 			':rw' => 4
 		));
 
 		$query = $this->conn->prepare("
 			UPDATE mqttl
-			SET apps = apps + 1
+			SET devices = devices + 1
 			WHERE id = :id
 		");
 		$query->execute(array(
-			':id'=> $this->lid
+			':id'=>1
 		));
+
+		$pdoQuery = $this->conn->prepare("
+			INSERT INTO  genisysai  (
+				`name`,
+				`type`,
+				`lid`,
+				`zid`,
+				`did`,
+				`ip`,
+				`mac`,
+				`sport`,
+				`strdir`,
+				`sportf`,
+				`sckport`
+			)  VALUES (
+				:name,
+				:type,
+				:lid,
+				:zid,
+				:did,
+				:ip,
+				:mac,
+				:sport,
+				:strdir,
+				:sportf,
+				:sckport
+			)
+		");
+		$pdoQuery->execute([
+			":name" => "Server Security API",
+			":type" => "API",
+			":lid" => 1,
+			":zid" => 1,
+			":did" => 1,
+			":ip" => $this->encrypt($ip),
+			":mac" => $this->encrypt($mac),
+			":sport" => $this->encrypt("8080"),
+			":strdir" => $this->encrypt("Server"),
+			":sportf" => $this->encrypt("stream.mjpg"),
+			":sckport" => $this->encrypt("8181")
+		]);
 
 		echo "";
 		echo "!! NOTE THESE CREDENTIALS AND KEEP THEM IN A SAFE PLACE !!\n";
-		echo "! Application, " . $application . ", has been created with ID " . $aid . "!\n";
-		echo "!! Your application public key is: " . $pubKey . "!\n";
-		echo "!! Your application private key is: " . $privKey . "\n";
-		echo "!! Your application MQTT username is: " . $mqttUser . "\n";
-		echo "!! Your application MQTT password is: " . $mqttPass . "\n";
+		echo "! Device, Server Security API, has been created with ID " . $did . "!\n";
+		echo "!! Your device public key is: " . $pubKey . " !!\n";
+		echo "!! Your device private key is: " . $privKey . " !!\n";
+		echo "!! Your device MQTT username is: " . $mqttUser . " !!\n";
+		echo "!! Your device MQTT password is: " . $mqttPass . " !!\n";
 		echo "";
 		return True;
 	}
@@ -326,8 +343,8 @@ class Location{
 
 
 $Core  = new Core();
-$Location = new Location($Core);
-$Location->location($argv[1]);
-$Location->applications($argv[2], $argv[3], $argv[4], $argv[5], $argv[6], $argv[7], $argv[8], $argv[9]);
+$TassAI = new TassAI($Core);
+$TassAI->zone($argv[1]);
+$TassAI->device($argv[2], $argv[3);
 
 ?>

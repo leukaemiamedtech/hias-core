@@ -3,7 +3,7 @@
 
 FMSG="- NGINX installation terminated"
 
-read -p "? This script will install NGINX on your device. Are you ready (y/n)? " cmsg
+read -p "? This script will install NGINX on your HIAS Server. Are you ready (y/n)? " cmsg
 
 if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
     echo "- Installing NGINX"

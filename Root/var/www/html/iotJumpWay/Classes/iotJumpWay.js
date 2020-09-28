@@ -1,7 +1,7 @@
 var iotJumpWay = {
     client: null,
     connected: false,
-    host: "hias.leukemiaresearchassociation.ai",
+    host: "",
     port: 9001,
     useTLS: true,
     cleansession: true,

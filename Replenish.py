@@ -3,11 +3,11 @@
 #
 # Organization:  Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss
 # Repository:    HIAS: Hospital Intelligent Automation System
-# Module:        Repleish
+# Module:        Replenish
 #
 # Author:        Adam Milton-Barker (AdamMiltonBarker.com)
 #
-# Title:         Repleish Class
+# Title:         Replenish Class
 # Description:   The replenish module is used to replenish HIAS Smart Contracts with Ether so that they
 #                can function.
 # License:       MIT License
