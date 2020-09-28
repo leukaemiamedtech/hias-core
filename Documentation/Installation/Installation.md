@@ -31,16 +31,16 @@
     - [Mongo Database](#mongo-database)
     - [SSL Security](#ssl-security)
     - [File Server](#file-server)
+    - [Private Ethereum Blockchain](#private-ethereum-blockchain)
     - [iotJumpWay Broker](#iotjumpway-broker)
-    - [iotJumpWay Location and Application](#iotjumpway-location-and-application)
-    - [GeniSysAI (Computer Vision)](#genisysai-computer-vision)
+    - [iotJumpWay Location and Applications](#iotjumpway-location-and-applications)
+    - [TassAI (Computer Vision)](#tassai-computer-vision)
     - [Create Admin User](#create-admin-user)
     - [Finalize Server Settings](#finalize-server-settings)
     - [Install COVID-19 Data Analysis System](#install-covid-19-data-analysis-system)
+    - [HIAS Server Services](#hias-server-services)
 - [Login To Your Server UI](#login-to-server-ui)
 - [HIAS IoT Network](hias-iot-network)
-    - [iotJumpWay Finalization](#iotjumpway-finalization)
-    - [HIAS Server Services](#hias-server-services)
 - [Contributing](#contributing)
     - [Contributors](#contributors)
 - [Versioning](#versioning)
@@ -1235,27 +1235,7 @@ You can update the system with the latest data by going to **Data Analysis -> CO
 
 **Shell Script**  [COVID19.sh](../../Scripts/Installation/Shell/COVID19.sh "COVID19.sh")
 
-&nbsp;
-
-# Login To Your Server UI
-![Login To Your Server UI](../../Media/Images/UI.png)
-
-Congratulations, you have the basics of the server installed!! Visit your domain name and you should see the above page. You can then login with your username and password you created earlier.
-
-![HIAS Dashboard](../../Media/Images/dashboard.png)
-
-The HIAS dashboard is your control panel for your encrypted intelligent and IoT connected  Hospital Intelligent Automation System.
-
-&nbsp;
-
-# HIAS IoT Network
-![HIAS IoT Network](../../Media/Images/HIAS-IoT-Dashboard.png)
-
-The HIAS IoT network is powered by a new, fully open-source version of the [iotJumpWay](https://www.iotJumpWay.com "iotJumpWay"). The HIAS iotJumpway dashboard is your control panel for managing all of your network iotJumpWay zones, devices, sensors/actuators and applications. The modular systems that we build to be compatible with this network will all create their own iotJumpWay applications etc during installation, you will be able to manage all of these applications and devices through the iotJumpWay dashboard.
-
-**PLEASE NOTE:** The camera view you see in this screen shot is on of the modular addons for the HIAS Network.
-
-## HIAS Server Services
+### HIAS Server Services
 Now you will set up two services that will automatically run the iotJumpWay listener and camera stream.
 
 ```
@@ -1395,6 +1375,26 @@ sudo systemctl start Replenish.service
 sudo systemctl stop Replenish.service
 sudo systemctl status Replenish.service
 ```
+
+&nbsp;
+
+# Login To Your Server UI
+![Login To Your Server UI](../../Media/Images/UI.png)
+
+Congratulations, you have the basics of the server installed!! Visit your domain name and you should see the above page. You can then login with your username and password you created earlier.
+
+![HIAS Dashboard](../../Media/Images/dashboard.png)
+
+The HIAS dashboard is your control panel for your encrypted intelligent and IoT connected  Hospital Intelligent Automation System.
+
+&nbsp;
+
+# HIAS IoT Network
+![HIAS IoT Network](../../Media/Images/HIAS-IoT-Dashboard.png)
+
+The HIAS IoT network is powered by a new, fully open-source version of the [iotJumpWay](https://www.iotJumpWay.com "iotJumpWay"). The HIAS iotJumpway dashboard is your control panel for managing all of your network iotJumpWay zones, devices, sensors/actuators and applications. The modular systems that we build to be compatible with this network will all create their own iotJumpWay applications etc during installation, you will be able to manage all of these applications and devices through the iotJumpWay dashboard.
+
+**PLEASE NOTE:** The camera view you see in this screen shot is on of the modular addons for the HIAS Network.
 
 &nbsp;
 
