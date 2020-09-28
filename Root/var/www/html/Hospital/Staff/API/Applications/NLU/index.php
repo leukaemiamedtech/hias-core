@@ -37,20 +37,6 @@ class NLU extends Auth{
 			];
 		endif;
 
-		if(!isset($_POST["uname"])):
-			return [
-				"Response"=>"FAILED",
-				"Message"=>"Username must be provided"
-			];
-		endif;
-
-		if(!isset($_POST["upass"])):
-			return [
-				"Response"=>"FAILED",
-				"Message"=>"User password must be provided"
-			];
-		endif;
-
 		$pdoQuery = $this->_GeniSys->_secCon->prepare("
 			SELECT users.id,
 				users.name,
@@ -71,7 +57,7 @@ class NLU extends Auth{
 			];
 		endif;
 
-		$basicAuth = $_POST["uname"] . ":" . $_POST["upass"];
+		$basicAuth = $this->appPub . ":" . $this->appPrv;
 		$basicAuth = base64_encode($basicAuth);
 
 		$headers = [
@@ -104,7 +90,7 @@ class NLU extends Auth{
 			else:
 				$nlu = $this->checkNLU();
 				if($nlu["id"] != null):
-					$endpoint = "Infer";
+					$endpoint = "Api";
 					$audio = false;
 				else:
 					return [
@@ -116,7 +102,7 @@ class NLU extends Auth{
 		else:
 			$nlu = $this->checkNLU();
 			if($nlu["id"] != null):
-				$endpoint = "Infer";
+				$endpoint = "Api";
 				$audio = false;
 			else:
 				return [
@@ -130,7 +116,7 @@ class NLU extends Auth{
 
 		return [
 			"Response" => "OK",
-			"Message" => "NLU request successful!wtf",
+			"Message" => "NLU request successful!",
 			"Audio" => $audio,
 			"Data" => json_decode($response, true)
 		];

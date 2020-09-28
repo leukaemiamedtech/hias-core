@@ -1,9 +1,8 @@
-#!/bin/bash
-
-read -p "? This script will install the iotJumpWay on your server. Are you ready (y/n)? " cmsg
+read -p "? This script will install the iotJumpWay on your HIAS Server. Are you ready (y/n)? " cmsg
 
 if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
     echo "- Installing iotJumpWay...."
+    pip3 install paho-mqtt
     sudo apt install mosquitto
     sudo apt install libmosquitto-dev
     sudo mkdir -p /fserver/libraries/mosquitto
@@ -47,8 +46,6 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
     nano /etc/mosquitto/mosquitto.conf
     cd ../
     sudo systemctl status mosquitto.service
-    pip3 install JumpWayMQTT
-    pip3 install paho-mqtt
     echo "- Installed iotJumpWay!";
     exit 0
 else

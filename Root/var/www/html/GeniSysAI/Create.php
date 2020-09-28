@@ -1,8 +1,8 @@
 <?php session_start();
 
 $pageDetails = [
-    "PageID" => "NLU",
-    "SubPageID" => "Create"
+	"PageID" => "NLU",
+	"SubPageID" => "Create"
 ];
 
 include dirname(__FILE__) . '/../../Classes/Core/init.php';
@@ -41,40 +41,40 @@ $Devices = $iotJumpWay->getDevices();
 		<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
 	</head>
 
-    <body id="GeniSysAI">
+	<body id="GeniSysAI">
 
-        <div class="preloader-it">
-            <div class="la-anim-1"></div>
-        </div>
+		<div class="preloader-it">
+			<div class="la-anim-1"></div>
+		</div>
 
-        <div class="wrapper theme-6-active pimary-color-pink">
+		<div class="wrapper theme-6-active pimary-color-pink">
 
-            <?php include dirname(__FILE__) . '/../Includes/Nav.php'; ?>
-            <?php include dirname(__FILE__) . '/../Includes/LeftNav.php'; ?>
-            <?php include dirname(__FILE__) . '/../Includes/RightNav.php'; ?>
+			<?php include dirname(__FILE__) . '/../Includes/Nav.php'; ?>
+			<?php include dirname(__FILE__) . '/../Includes/LeftNav.php'; ?>
+			<?php include dirname(__FILE__) . '/../Includes/RightNav.php'; ?>
 
-            <div class="page-wrapper">
-            <div class="container-fluid pt-25">
+			<div class="page-wrapper">
+			<div class="container-fluid pt-25">
 
 				<?php include dirname(__FILE__) . '/../Includes/Stats.php'; ?>
 
 				<div class="row">
 					<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
-                        <div class="panel panel-default card-view panel-refresh">
-                            <div class="panel-heading">
-                            </div>
-                            <div class="panel-wrapper collapse in">
-                                <div class="panel-body">
-                                    <?php include dirname(__FILE__) . '/../Includes/Weather.php'; ?>
-                                </div>
-                            </div>
+						<div class="panel panel-default card-view panel-refresh">
+							<div class="panel-heading">
+							</div>
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
+									<?php include dirname(__FILE__) . '/../Includes/Weather.php'; ?>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
 						<div class="panel panel-default card-view">
 							<div class="panel-wrapper collapse in">
 								<div class="panel-body">
-                                    <?php include dirname(__FILE__) . '/../iotJumpWay/Includes/iotJumpWay.php'; ?>
+									<?php include dirname(__FILE__) . '/../iotJumpWay/Includes/iotJumpWay.php'; ?>
 								</div>
 							</div>
 						</div>
@@ -83,93 +83,93 @@ $Devices = $iotJumpWay->getDevices();
 
 				<div class="row">
 					<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
-                        <div class="panel panel-default card-view panel-refresh">
-                            <div class="panel-heading">
+						<div class="panel panel-default card-view panel-refresh">
+							<div class="panel-heading">
 								<div class="pull-left">
 									<h6 class="panel-title txt-dark">Create GeniSysAI NLU Device</h6>
 								</div>
 								<div class="pull-right"></div>
 								<div class="clearfix"></div>
-                            </div>
-                            <div class="panel-wrapper collapse in">
-                                <div class="panel-body">
-                                    <div class="form-wrap">
-                                        <form data-toggle="validator" role="form" id="genisysai_create">
-                                        <div class="row">
-                                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-                                                    <div class="form-group">
-                                                        <label for="name" class="control-label mb-10">Name</label>
-                                                        <input type="text" class="form-control" id="name" name="name" placeholder="GeniSysAI Device Name" required value="">
-                                                        <span class="help-block"> Name of GeniSysAI NLU device</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="control-label mb-10">Location</label>
-                                                        <select class="form-control" id="lid" name="lid" required>
-                                                            <option value="">PLEASE SELECT</option>
+							</div>
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
+									<div class="form-wrap">
+										<form data-toggle="validator" role="form" id="genisysai_create">
+										<div class="row">
+											<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Name</label>
+														<input type="text" class="form-control" id="name" name="name" placeholder="GeniSysAI Device Name" required value="">
+														<span class="help-block"> Name of GeniSysAI NLU device</span>
+													</div>
+													<div class="form-group">
+														<label class="control-label mb-10">Location</label>
+														<select class="form-control" id="lid" name="lid" required>
+															<option value="">PLEASE SELECT</option>
 
-                                                            <?php
-                                                                $Locations = $iotJumpWay->getLocations(0, "id ASC");
-                                                                if(count($Locations)):
-                                                                    foreach($Locations as $key => $value):
-                                                            ?>
+															<?php
+																$Locations = $iotJumpWay->getLocations(0, "id ASC");
+																if(count($Locations)):
+																	foreach($Locations as $key => $value):
+															?>
 
-                                                            <option value="<?=$value["id"]; ?>">#<?=$value["id"]; ?>: <?=$value["name"]; ?></option>
+															<option value="<?=$value["id"]; ?>">#<?=$value["id"]; ?>: <?=$value["name"]; ?></option>
 
-                                                            <?php
-                                                                    endforeach;
-                                                                endif;
-                                                            ?>
+															<?php
+																	endforeach;
+																endif;
+															?>
 
-                                                        </select>
-                                                        <span class="help-block"> Location of GeniSysAI NLU device</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="control-label mb-10">Zone</label>
-                                                        <select class="form-control" id="zid" name="zid" required>
-                                                            <option value="">PLEASE SELECT</option>
+														</select>
+														<span class="help-block"> Location of GeniSysAI NLU device</span>
+													</div>
+													<div class="form-group">
+														<label class="control-label mb-10">Zone</label>
+														<select class="form-control" id="zid" name="zid" required>
+															<option value="">PLEASE SELECT</option>
 
-                                                            <?php
-                                                                if(count($Zones)):
-                                                                    foreach($Zones as $key => $value):
-                                                            ?>
+															<?php
+																if(count($Zones)):
+																	foreach($Zones as $key => $value):
+															?>
 
-                                                            <option value="<?=$value["id"]; ?>">#<?=$value["id"]; ?>: <?=$value["zn"]; ?></option>
+															<option value="<?=$value["id"]; ?>">#<?=$value["id"]; ?>: <?=$value["zn"]; ?></option>
 
-                                                            <?php
-                                                                    endforeach;
-                                                                endif;
-                                                            ?>
+															<?php
+																	endforeach;
+																endif;
+															?>
 
-                                                        </select>
-                                                        <span class="help-block"> Zone of GeniSysAI NLU device</span>
-                                                    </div>
-                                                    <div class="form-group mb-0">
-                                                        <input type="hidden" class="form-control" id="create_genisysai" name="create_genisysai" required value="1">
-                                                        <button type="submit" class="btn btn-success btn-anim" id="genisysai_create"><i class="icon-rocket"></i><span class="btn-text">submit</span></button>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-                                                    <div class="form-group">
-                                                        <label for="name" class="control-label mb-10">IP</label>
-                                                        <input type="text" class="form-control" id="ip" name="ip" placeholder="GeniSysAI Device IP" required value="">
-                                                        <span class="help-block"> IP of GeniSysAI NLU device</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="name" class="control-label mb-10">MAC</label>
-                                                        <input type="text" class="form-control" id="mac" name="mac" placeholder="GeniSysAI Device MAC" required value="">
-                                                        <span class="help-block"> MAC of GeniSysAI NLU device</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="name" class="control-label mb-10">API Path</label>
-                                                        <input type="text" class="form-control" id="apidir" name="apidir" placeholder="Nginx server proxy path" required value="">
-                                                        <span class="help-block">Nginx server proxy path</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
+														</select>
+														<span class="help-block"> Zone of GeniSysAI NLU device</span>
+													</div>
+													<div class="form-group mb-0">
+														<input type="hidden" class="form-control" id="create_genisysai" name="create_genisysai" required value="1">
+														<button type="submit" class="btn btn-success btn-anim" id="genisysai_create"><i class="icon-rocket"></i><span class="btn-text">submit</span></button>
+													</div>
+												</div>
+												<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">IP</label>
+														<input type="text" class="form-control" id="ip" name="ip" placeholder="GeniSysAI Device IP" required value="">
+														<span class="help-block"> IP of GeniSysAI NLU device</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">MAC</label>
+														<input type="text" class="form-control" id="mac" name="mac" placeholder="GeniSysAI Device MAC" required value="">
+														<span class="help-block"> MAC of GeniSysAI NLU device</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">API Path</label>
+														<input type="text" class="form-control" id="apidir" name="apidir" placeholder="Nginx server proxy path" required value="">
+														<span class="help-block">Nginx server proxy path</span>
+													</div>
+												</div>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
@@ -182,12 +182,12 @@ $Devices = $iotJumpWay->getDevices();
 
 		</div>
 
-        <?php  include dirname(__FILE__) . '/../Includes/JS.php'; ?>
+		<?php  include dirname(__FILE__) . '/../Includes/JS.php'; ?>
 
-        <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/GeniSysAI/Classes/NLU.js"></script>
+		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
+		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
+		<script type="text/javascript" src="<?=$domain; ?>/GeniSysAI/Classes/NLU.js"></script>
 
-    </body>
+	</body>
 
 </html>

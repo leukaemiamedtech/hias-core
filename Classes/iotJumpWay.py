@@ -1,6 +1,6 @@
-############################################################################################
+######################################################################################################
 #
-# Project:       Peter Moss Leukemia AI Research
+# Organization:  Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss
 # Repository:    HIAS: Hospital Intelligent Automation System
 # Project:       GeniSysAI
 #
@@ -12,7 +12,7 @@
 # License:       MIT License
 # Last Modified: 2020-06-04
 #
-############################################################################################
+######################################################################################################
 
 import inspect, json, os
 
@@ -62,10 +62,11 @@ class Application():
         self.appLifeCallback = None
         self.deviceCameraCallback = None
         self.deviceCommandsCallback = None
+        self.deviceLifeCallback = None
+        self.deviceNfcCallback = None
         self.deviceSensorCallback = None
         self.deviceStatusCallback = None
         self.deviceTriggerCallback = None
-        self.deviceLifeCallback = None
 
         self.Helpers.logger.info("JumpWayMQTT Application Initiated.")
 
@@ -106,59 +107,64 @@ class Application():
 
     def on_message(self, client, obj, msg):
 
-        print("JumpWayMQTT Message Received")
+        self.Helpers.logger.info("JumpWayMQTT Message Received")
         splitTopic=msg.topic.split("/")
 
         if splitTopic[1]=='Applications':
             if splitTopic[3]=='Status':
                 if self.appStatusCallback == None:
-                    print("** Application Status Callback Required (appStatusCallback)")
+                    self.Helpers.logger.info("** Application Status Callback Required (appStatusCallback)")
                 else:
                     self.appStatusCallback(msg.topic,msg.payload)
             elif splitTopic[3]=='Command':
                 if self.cameraCallback == None:
-                    print("** Application Camera Callback Required (cameraCallback)")
+                    self.Helpers.logger.info("** Application Camera Callback Required (cameraCallback)")
                 else:
                     self.cameraCallback(msg.topic,msg.payload)
             elif splitTopic[3]=='Life':
                 if self.appLifeCallback == None:
-                    print("** Application Life Callback Required (appLifeCallback)")
+                    self.Helpers.logger.info("** Application Life Callback Required (appLifeCallback)")
                 else:
                     self.appLifeCallback(msg.topic,msg.payload)
-        elif splitTopic[1]=='Devices':
-            if splitTopic[4]=='Status':
-                if self.deviceStatusCallback == None:
-                    print("** Device Status Callback Required (deviceStatusCallback)")
-                else:
-                    self.deviceStatusCallback(msg.topic,msg.payload)
-            elif splitTopic[4]=='Life':
-                if self.deviceLifeCallback == None:
-                    print("** Device Life Callback Required (deviceLifeCallback)")
-                else:
-                    self.deviceLifeCallback(msg.topic,msg.payload)
-            elif splitTopic[4]=='Sensors':
-                if self.deviceSensorCallback == None:
-                    print("** Device Sensors Callback Required (deviceSensorCallback)")
-                else:
-                    self.deviceSensorCallback(msg.topic,msg.payload)
-            elif splitTopic[4]=='Actuators':
+        elif splitTopic[1] == 'Devices':
+            if splitTopic[4] == 'Actuators':
                 if self.deviceActuatorCallback == None:
-                    print("** Device Actuator Callback Required (deviceActuatorCallback)")
+                    self.Helpers.logger.info("** Device Actuator Callback Required (deviceActuatorCallback)")
                 else:
-                    self.deviceActuatorCallback(msg.topic,msg.payload)
+                    self.deviceActuatorCallback(msg.topic, msg.payload)
             elif splitTopic[4]=='Commands':
                 if self.deviceCommandsCallback == None:
-                    print("** Device Commands Callback Required (deviceCommandsCallback)")
+                    self.Helpers.logger.info("** Device Commands Callback Required (deviceCommandsCallback)")
                 else:
                     self.deviceCommandsCallback(msg.topic,msg.payload)
+            elif splitTopic[4]=='Life':
+                if self.deviceLifeCallback == None:
+                    self.Helpers.logger.info("** Device Life Callback Required (deviceLifeCallback)")
+                else:
+                    self.deviceLifeCallback(msg.topic, msg.payload)
+            elif splitTopic[4]=='NFC':
+                if self.deviceNfcCallback == None:
+                    self.Helpers.logger.info("** Device NFC Callback Required (deviceNfcCallback)")
+                else:
+                    self.deviceNfcCallback(msg.topic, msg.payload)
+            elif splitTopic[4] == 'Status':
+                if self.deviceStatusCallback == None:
+                    self.Helpers.logger.info("** Device Status Callback Required (deviceStatusCallback)")
+                else:
+                    self.deviceStatusCallback(msg.topic, msg.payload)
+            elif splitTopic[4]=='Sensors':
+                if self.deviceSensorCallback == None:
+                    self.Helpers.logger.info("** Device Sensors Callback Required (deviceSensorCallback)")
+                else:
+                    self.deviceSensorCallback(msg.topic,msg.payload)
             elif splitTopic[4]=='Notifications':
                 if self.deviceNotificationsCallback == None:
-                    print("** Device Notifications Callback Required (deviceNotificationsCallback)")
+                    self.Helpers.logger.info("** Device Notifications Callback Required (deviceNotificationsCallback)")
                 else:
                     self.deviceNotificationsCallback(msg.topic,msg.payload)
             elif splitTopic[4]=='Cameras':
                 if self.deviceCameraCallback == None:
-                    print("** Device Camera Callback Required (cameraCallback)")
+                    self.Helpers.logger.info("** Device Camera Callback Required (cameraCallback)")
                 else:
                     self.deviceCameraCallback(msg.topic,msg.payload)
 

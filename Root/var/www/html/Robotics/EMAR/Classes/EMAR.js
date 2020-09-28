@@ -1,8 +1,8 @@
 var EMAR = {
-    location: 0,
-    zone: 0,
-    device: 0,
-    controller: 0,
+    location: 1,
+    zone: 1,
+    device: 5,
+    controller: 4,
     LifeDevice: 1,
     Create: function() {
         $.post(window.location.href, $("#emar_create").serialize(), function(resp) {
@@ -10,8 +10,10 @@ var EMAR = {
             switch (resp.Response) {
                 case "OK":
                     GeniSys.ResetForm("emar_create");
-                    Logging.logMessage("Core", "EMAR", "EMAR Create OK");
-                    window.location.replace(location.protocol + "//" + location.hostname + "/Robotics/EMAR/" + resp.DID + '/');
+                    $('.modal-title').text('EMAR Devices');
+                    $('.modal-body').html("EMAR Device ID #" + resp.EDID + " created! Please save the API keys safely. The device's credentials are provided below. The credentials can be reset in the GeniSyAI Security Devices area.<br /><br /><strong>Device ID:</strong> " + resp.DID + "<br /><strong>MQTT User:</strong> " + resp.MU + "<br /><strong>MQTT Password:</strong> " + resp.MP + "<br /><br /><strong>Blockchain User:</strong> " + resp.BU + "<br /><strong>Blockchain Pass:</strong> " + resp.BP + "<br /><br /><strong>App ID:</strong> " + resp.AppID + "<br /><strong>App Key:</strong> " + resp.AppKey + "<br /><br />" + resp.Message);
+                    $('#responsive-modal').modal('show');
+                    Logging.logMessage("Core", "Forms", "Device ID #" + resp.DID + " created!");
                     break;
                 default:
                     msg = "EMAR Create Failed: " + resp.Message
@@ -22,6 +24,7 @@ var EMAR = {
     },
     Update: function() {
         $.post(window.location.href, $("#emar_update").serialize(), function(resp) {
+            console.log(resp)
             var resp = jQuery.parseJSON(resp);
             switch (resp.Response) {
                 case "OK":
@@ -38,37 +41,46 @@ var EMAR = {
         });
     },
     ResetMqtt: function() {
-
-        var id = 1;
-        var conta = "#mqttp";
-
-        if ($(this).attr("id") == 1) {
-            id = $("#did").val();
-            conta = "#mqttp"
-        } else if ($(this).attr("id") == 2) {
-            id = $("#did2").val();
-            conta = "#mqttp2"
-        } else if ($(this).attr("id") == 3) {
-            id = $("#did3").val();
-            conta = "#mqttp3"
-        }
-
-        $.post(window.location.href, { "reset_mqtt": 1, "id": id }, function(resp) {
-            var resp = jQuery.parseJSON(resp);
-            switch (resp.Response) {
-                case "OK":
-                    Logging.logMessage("Core", "EMAR", "MQTT Reset OK");
-                    $(conta).text(resp.P)
-                    break;
-                default:
-                    msg = "MQTT Reset Failed: " + resp.Message
-                    Logging.logMessage("Core", "EMAR", msg);
-                    break;
-            }
-        });
+        $.post(window.location.href, { "reset_mqtt": 1, "id": $("#did").val(), "lid": $("#lid").val(), "zid": $("#zid").val() },
+            function(resp) {
+                var resp = jQuery.parseJSON(resp);
+                switch (resp.Response) {
+                    case "OK":
+                        Logging.logMessage("Core", "Forms", "Reset OK");
+                        GeniSysAI.mqttpa = resp.P;
+                        GeniSysAI.mqttpae = resp.P.replace(/\S/gi, '*');
+                        $("#idmqttp").text(GeniSysAI.mqttpae);
+                        $('.modal-title').text('New MQTT Password');
+                        $('.modal-body').text("This device's new MQTT password is: " + resp.P);
+                        $('#responsive-modal').modal('show');
+                        break;
+                    default:
+                        msg = "Credentials reset failed: " + resp.Message
+                        Logging.logMessage("Core", "Credentials", msg);
+                        break;
+                }
+            });
+    },
+    ResetDvcKey: function() {
+        $.post(window.location.href, { "reset_key": 1, "id": $("#did").val(), "lid": $("#lid").val(), "zid": $("#zid").val() },
+            function(resp) {
+                var resp = jQuery.parseJSON(resp);
+                switch (resp.Response) {
+                    case "OK":
+                        Logging.logMessage("Core", "Forms", "Reset OK");
+                        $('.modal-title').text('New Device Key');
+                        $('.modal-body').text("This device's new key is: " + resp.P);
+                        $('#responsive-modal').modal('show');
+                        break;
+                    default:
+                        msg = "Reset failed: " + resp.Message
+                        Logging.logMessage("Core", "Forms", msg);
+                        break;
+                }
+            });
     },
     wheels: function(direction) {
-        iotJumpWayWebSoc.publishToDeviceCommands({
+        iotJumpWay.publishToDeviceCommands({
             "loc": EMAR.location,
             "zne": EMAR.zone,
             "dvc": EMAR.device,
@@ -81,7 +93,7 @@ var EMAR = {
         });
     },
     arm: function(direction) {
-        iotJumpWayWebSoc.publishToDeviceCommands({
+        iotJumpWay.publishToDeviceCommands({
             "loc": EMAR.location,
             "zne": EMAR.zone,
             "dvc": EMAR.device,
@@ -94,7 +106,7 @@ var EMAR = {
         });
     },
     cams: function(direction) {
-        iotJumpWayWebSoc.publishToDeviceCommands({
+        iotJumpWay.publishToDeviceCommands({
             "loc": EMAR.location,
             "zne": EMAR.zone,
             "dvc": EMAR.device,
@@ -118,9 +130,20 @@ var EMAR = {
         EMAR.mqttuae = $("#mqttu").text().replace(/\S/gi, '*');
         EMAR.mqttpa = $("#mqttp").text();
         EMAR.mqttpae = $("#mqttp").text().replace(/\S/gi, '*');
+        EMAR.idappida = $("#idappid").text();
+        EMAR.idappidae = $("#idappid").text().replace(/\S/gi, '*');
+        EMAR.bcida = $("#bcid").text();
+        EMAR.bcidae = $("#bcid").text().replace(/\S/gi, '*');
+
+        $("#mqttut").text(GeniSysAI.mqttu3ae);
+        $("#mqttpt").text(GeniSysAI.mqttp3ae);
+        $("#idappid").text(GeniSysAI.idappidae);
+        $("#bcid").text(GeniSysAI.bcidae);
 
         $("#mqttu").text(EMAR.mqttuae);
         $("#mqttp").text(EMAR.mqttpae);
+        $("#idappid").text(EMAR.idappidae);
+        $("#bcid").text(EMAR.bcidae);
     },
     GetLifes: function() {
         $.post(window.location.href, { "get_lifes": 1, "device": $("#id").val() }, function(resp) {
@@ -231,9 +254,14 @@ $(document).ready(function() {
         EMAR.cams("CENTER");
     });
 
-    $("#GeniSysAI").on("click", ".reset_mqtt", function(e) {
+    $("#GeniSysAI").on("click", "#reset_mqtt", function(e) {
         e.preventDefault();
         EMAR.ResetMqtt();
+    });
+
+    $("#GeniSysAI").on("click", "#reset_apriv", function(e) {
+        e.preventDefault();
+        EMAR.ResetDvcKey();
     });
 
     $('.hider').hover(function() {
@@ -252,6 +280,18 @@ $(document).ready(function() {
         $("#mqttp").text(EMAR.mqttpa);
     }, function() {
         $("#mqttp").text(EMAR.mqttpae);
+    });
+
+    $('#idappid').hover(function() {
+        $("#idappid").text(EMAR.idappida);
+    }, function() {
+        $("#idappid").text(EMAR.idappidae);
+    });
+
+    $('#bcid').hover(function() {
+        $("#bcid").text(EMAR.bcida);
+    }, function() {
+        $("#bcid").text(EMAR.bcidae);
     });
 
 });

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-read -p "? This script will update the SSL security on your server. Are you ready (y/n)? " cmsg
+read -p "? This script will update the SSL security on your HIAS Server. Are you ready (y/n)? " cmsg
 
 if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
     echo "- Updating SSL security...."

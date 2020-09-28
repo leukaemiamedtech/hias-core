@@ -31,16 +31,16 @@
     - [Mongo Database](#mongo-database)
     - [SSL Security](#ssl-security)
     - [File Server](#file-server)
+    - [Private Ethereum Blockchain](#private-ethereum-blockchain)
     - [iotJumpWay Broker](#iotjumpway-broker)
-    - [iotJumpWay Location and Application](#iotjumpway-location-and-application)
-    - [GeniSysAI (Computer Vision)](#genisysai-computer-vision)
+    - [iotJumpWay Location and Applications](#iotjumpway-location-and-applications)
+    - [TassAI (Computer Vision)](#tassai-computer-vision)
     - [Create Admin User](#create-admin-user)
     - [Finalize Server Settings](#finalize-server-settings)
     - [Install COVID-19 Data Analysis System](#install-covid-19-data-analysis-system)
+    - [HIAS Server Services](#hias-server-services)
 - [Login To Your Server UI](#login-to-server-ui)
 - [HIAS IoT Network](hias-iot-network)
-    - [iotJumpWay Finalization](#iotjumpway-finalization)
-    - [HIAS Server Services](#hias-server-services)
 - [Contributing](#contributing)
     - [Contributors](#contributors)
 - [Versioning](#versioning)
@@ -48,14 +48,14 @@
 - [Bugs/Issues](#bugs-issues)
 
 # Introduction
-The following guide will take you through setting up and installing the  [ Hospital Intelligent Automation System](https://github.com/LeukemiaAiResearch/HIAS " Hospital Intelligent Automation System").
+The following guide will take you through setting up and installing the  [Hospital Intelligent Automation System](https://github.com/LeukemiaAiResearch/HIAS " Hospital Intelligent Automation System").
 
 &nbsp;
 
 # Required Hardware
-For this tutorial I am using a [UP2 AI Vision Devkit](https://up-board.org/upkits/up-squared-ai-vision-kit/ "UP2 AI Vision Devkit") and a 1.5TB hard-drive for the core server hardware, but you can use any linux machine and hard-drive.
+For this tutorial I am using a [UP2 AI Vision Devkit](https://up-board.org/upkits/up-squared-ai-vision-kit/ "UP2 AI Vision Devkit") and a 1.5TB hard-drive for the core server hardware, but you can use any linux machine and hard-drive. For real-world usage in medical centers and hospitals it is suggested to use a device with more resources.
 
-![Required Hardware](../../Media/Images/GeniSysAiHardware.jpg)
+![Required Hardware](../../Media/Images/HIAS-Hardware.png)
 
 - 1 x Linux machine (Server)
 - 1 x 1TB (Or more) HDD
@@ -180,7 +180,11 @@ sudo ufw allow 22
 sudo ufw allow 80
 sudo ufw allow 443
 sudo ufw allow 8883
+sudo ufw allow 8545
 sudo ufw allow 9001
+sudo ufw allow 27017
+sudo ufw allow 30303/udp
+sudo ufw allow 30303/tcp
 sudo ufw allow OpenSSH
 sudo ufw allow Samba
 ```
@@ -200,15 +204,25 @@ OpenSSH                    ALLOW       Anywhere
 80                         ALLOW       Anywhere
 443                        ALLOW       Anywhere
 Samba                      ALLOW       Anywhere
-8883                       ALLOW       Anywhere
 9001                       ALLOW       Anywhere
+8883                       ALLOW       Anywhere
+8080                       ALLOW       Anywhere
+27017                      ALLOW       Anywhere
+30303/udp                  ALLOW       Anywhere
+30303/tcp                  ALLOW       Anywhere
+8545                       ALLOW       Anywhere
 OpenSSH (v6)               ALLOW       Anywhere (v6)
 22 (v6)                    ALLOW       Anywhere (v6)
 80 (v6)                    ALLOW       Anywhere (v6)
 443 (v6)                   ALLOW       Anywhere (v6)
 Samba (v6)                 ALLOW       Anywhere (v6)
-8883 (v6)                  ALLOW       Anywhere (v6)
 9001 (v6)                  ALLOW       Anywhere (v6)
+8883 (v6)                  ALLOW       Anywhere (v6)
+8080 (v6)                  ALLOW       Anywhere (v6)
+27017 (v6)                 ALLOW       Anywhere (v6)
+30303/udp (v6)             ALLOW       Anywhere (v6)
+30303/tcp (v6)             ALLOW       Anywhere (v6)
+8545 (v6)                  ALLOW       Anywhere (v6)
 ```
 **Shell Script**  [UFW.sh](../../Scripts/Installation/Shell/UFW.sh "UFW.sh")
 
@@ -374,39 +388,18 @@ The HIAS directory is your project root directory for this tutorial.
 Developers from the Github community that would like to contribute to the development of this project should first create a fork, and clone that repository. For detailed information please view the [CONTRIBUTING](../../CONTRIBUTING.md "CONTRIBUTING") guide. You should pull the latest code from the development branch.
 
 ```
-  git clone -b "0.7.0" https://github.com/LeukemiaAiResearch/HIAS.git
+  git clone -b "1.0.1" https://github.com/LeukemiaAiResearch/HIAS.git
 ```
 
-The **-b "0.7.0"** parameter ensures you get the code from the latest master branch. Before using the below command please check our latest master branch in the button at the top of the project README.
+The **-b "1.0.1"** parameter ensures you get the code from the latest master branch. Before using the below command please check our latest development branch in the button at the top of the project README.
 
 &nbsp;
 
 # Installation
-Now you need to install the GeniSysAI server.
+Now you need to install the HIAS server.
 
 ## Easy Install (Recommended)
-The easiest way to install the Medcial Support Server is to use the installation scripts. You will find Shell, PHP & Python scripts designed for modular installation of the server. If one part of the installation fails during an easy installation, you can find it's related shell file in the **Scripts/Installation/Shell** directory and then execute it.
-
-- [Install.sh](../../Scripts/Installation/Shell/Install.sh "Install.sh"): Installs all software.
-- [UFW.sh](../../Scripts/Installation/Shell/UFW.sh "UFW.sh"): Installs UFW firewal.
-- [Fail2Ban.sh](../../Scripts/Installation/Shell/UFW.sh "Fail2Ban.sh"): Installs Fail2Ban.
-- [NGINX.sh](../../Scripts/Installation/Shell/NGINX.sh "NGINX.sh"): Installs NGINX server software.
-- [LetsEncrypt.sh](../../Scripts/Installation/Shell/LetsEncrypt.sh "LetsEncrypt.sh"): Installs LetsEncrypt.
-- [PHP.sh](../../Scripts/Installation/Shell/PHP.sh "PHP.sh"): Installs PHP 7.2.
-- [MySQL.sh](../../Scripts/Installation/Shell/MySQL.sh "MySQL.sh"): Installs MySQL.
-- [phpMyAdmin.sh](../../Scripts/Installation/Shell/phpMyAdmin.sh "phpMyAdmin.sh"): Installs phpMyAdmin.
-- [SSL.sh](../../Scripts/Installation/Shell/Finalize.sh "SSL.sh"): Removes insecure SSL libraries.
-- [Samba.sh](../../Scripts/Installation/Shell/Samba.sh "Samba.sh"): Sets up a Samba server.
-- [iotJumpWay.sh](../../Scripts/Installation/Shell/iotJumpWay.sh "iotJumpWay.sh"): installs iotJumpWay.
-- [iotJumpWayLocation.sh](../../Scripts/Installation/Shell/iotJumpWayLocation.sh "iotJumpWayLocation.sh"): Sets up the iotJumpWay Location.
-- [GeniSysAI.sh](../../Scripts/Installation/Shell/GeniSysAI.sh "GeniSysAI.sh"): installs GeniSysAI dependencies.
-- [iotJumpWayGeniSysAI.sh](../../Scripts/Installation/Shell/iotJumpWayGeniSysAI.sh "iotJumpWayGeniSysAI.sh"): Sets up the TASS iotJumpWay device.
-- [Admin.sh](../../Scripts/Installation/Shell/Admin.sh "Admin.sh"): creates your admin account.
-- [Finalize.sh](../../Scripts/Installation/Shell/Finalize.sh "Finalize.sh"): Finalizes server setup.
-- [COVID19.sh](../../Scripts/Installation/Shell/COVID19.sh "COVID19.sh"): Sets up the COVID-19 data analysis system.
-- [Services.sh](../../Scripts/Installation/Shell/COVID19.sh "Services.sh"): Sets up the iotJumpWay listener and GeniSysAI server camera services.
-
-To do a continuous install, use the following command from the project root:
+The easiest way to install the HIAS Server is to use the installation scripts. You will find Shell, PHP & Python scripts designed for modular installation of the server. If one part of the installation fails during an easy installation, you can find it's related shell file in the **Scripts/Installation/Shell** directory and then execute it. To do an easy install, use the following command from the project root:
 
 ```
 sh Scripts/Installation/Shell/Install.sh
@@ -425,7 +418,7 @@ If you would like to manually install everything for more understanding, you can
 
 ### NGINX
 
-Use the following commands to install NGINX.
+Use the following commands to install NGINX. Change **YourSubdomain.YourDomain.TLD** to your full server domain name.
 
 ```
 sudo apt-get install nginx
@@ -440,7 +433,7 @@ sudo systemctl reload nginx
 - Installs Nginx
 - Makes a copy of the default Nginx configuration named default.backup
 - Makes the **var** directory on the mounted hard-drive.
-- Copies the GeniSys files structure to the var directory from the cloned repository.
+- Copies the HIAS files structure to the var directory from the cloned repository.
 - Changes the server name to your domain name. replace **YourSubdomain.YourDomain.TLD**.
 - Checks the NGINX confirguration.
 - Reloads NGINX
@@ -472,6 +465,12 @@ If you have followed above correctly you should now be able to access your websi
 ### PHP
 Now you will install PHP on your server. Follow the commands below and complete any required steps for the installation to accomplish this. You may need to swap 7.2 in the second command depending on what version of php-fpm is installed. Remember to change $YourDomain to your server domain, $ip to your server IP, and $port to the port you would like to use for the server camera stream before executing these commands.
 
+You need to change the following:
+
+- **YourSubdomain.YourDomain.TLD** The full HIAS Server domain name including subdomain or www.
+- **YourSecurityApiIP** The IP of your HIAS Server.
+- **YourSecurityApiPort** The port you will use for your Facial Recognition Security API.
+
 ```
 sudo apt-get install php-fpm php-mysql
 sudo sed -i -- 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php/7.2/fpm/php.ini
@@ -481,7 +480,12 @@ sudo sed -i -- "s#root /var/www/html;#root /fserver/var/www/html;#g" /etc/nginx/
 sudo sed -i -- "s#YourSubdomain.YourDomain.TLD#$domain#g" /etc/nginx/sites-available/default
 sudo apt install apache2-utils
 sudo touch /etc/nginx/security/htpasswd
-sudo sed -i -- "s#proxy_pass http://YourTassDeviceIP:YourTassDevicePort#proxy_pass http://$ip:$port#g" /etc/nginx/sites-available/default
+sudo chown www-data:www-data /etc/nginx/security/htpasswd
+sudo touch /etc/nginx/security/patients
+sudo chown www-data:www-data /etc/nginx/security/patients
+sudo touch /etc/nginx/security/beds
+sudo chown www-data:www-data /etc/nginx/security/beds
+sudo sed -i -- "s#proxy_pass http://YourSecurityApiIP:YourSecurityApiPort#proxy_pass http://$ip:$port#g" /etc/nginx/sites-available/default
 sudo nginx -t
 sudo systemctl reload nginx
 ```
@@ -561,70 +565,20 @@ sudo nano /var/www/Classes/Core/confs.json
 ```
 
 ```
-{
   "dbname": "YourMySqlDatabaseName",
   "dbusername": "YourMySqlDatabaseUser",
   "dbpassword": "YourMySqlDatabasePass",
   "key": "YourEncryptionKey"
-}
 ```
 Now you need to update the related settings in the Python configuration. Assuming you are in the project root:
 ```
 sudo nano confs.json
 ```
 And update the MySQL database related settings:
-```{
-    "iotJumpWay": {
-        "channels": {
-            "commands": "Commands"
-        },
-        "host": "YourSubdomain.YourDomain.YourTLD",
-        "port": 8883,
-        "ip": "localhost",
-        "lid": YourGeniSysAiLocationID,
-        "aid": YourGeniSysAiApplicationID,
-        "an": "YourGeniSysAiApplicationName",
-        "un": "YourGeniSysAiMqttUser",
-        "pw": "YourGeniSysAiMqttPass",
-        "paid": YourIotJumpWayApplicationID,
-        "pan": "YourIotJumpWayApplicationName",
-        "pun": "YourIotJumpWayMqttUser",
-        "ppw": "YourIotJumpWayMqttPass",
-        "mdb": "YourMongoDatabaseName",
-        "mdbu": "YourMongoDatabaseUser",
-        "mdbp": "YourMongoDatabasePass",
-        "dbname": "YourMySqlDatabaseName",
-        "dbuser": "YourMySqlDatabaseUser",
-        "dbpass": "YourMySqlDatabasePass"
-    },
-    "genisysai": {
-        "core": {
-            "allowed": [
-                ".jpg",
-                ".JPG",
-                ".png",
-                ".PNG"
-            ]
-        },
-        "ip": "YourServerIP",
-        "data": "/fserver/models/GeniSysAI/Data/Security/",
-        "detection": "/fserver/models/GeniSysAI/face-detection-retail-0004.xml",
-        "reidentification": "/fserver/models/GeniSysAI/face-reidentification-retail-0095.xml",
-        "landmarks": "/fserver/models/GeniSysAI/landmarks-regression-retail-0009.xml",
-        "runas": "CPU",
-        "lid": GeniSysAILocationID,
-        "zid": GeniSysAIZoneID,
-        "did": GeniSysAIDeviceID,
-        "sid": GeniSysAISensorID,
-        "port": 8080,
-        "socket": {
-            "ip": "YourServerIP",
-            "port": 8181
-        },
-        "threshold": 0.6,
-        "vid": 0
-    }
-}
+```
+"dbname": "YourMySqlDatabaseName",
+"dbuser": "YourMySqlDatabaseUser",
+"dbpass": "YourMySqlDatabasePass"
 ```
 
 **Shell Script**  [MySQL.sh](../../Scripts/Installation/Shell/MySQL.sh "MySQL.sh")
@@ -682,6 +636,8 @@ You should see the following:
 May 02 05:11:02 genisysai systemd[1]: Started MongoDB Database Server.
 ```
 
+**Shell Script**  [phpMyAdmin.sh](../../Scripts/Installation/Shell/phpMyAdmin.sh "phpMyAdmin.sh")
+
 You now need to start the Mongo client:
 ```
 mongo
@@ -720,58 +676,10 @@ Now you need to update the related settings in the Python configuration. Assumin
 sudo nano confs.json
 ```
 And update the mongo related settings:
-```{
-    "iotJumpWay": {
-        "channels": {
-            "commands": "Commands"
-        },
-        "host": "YourSubdomain.YourDomain.YourTLD",
-        "port": 8883,
-        "ip": "localhost",
-        "lid": YourGeniSysAiLocationID,
-        "aid": YourGeniSysAiApplicationID,
-        "an": "YourGeniSysAiApplicationName",
-        "un": "YourGeniSysAiMqttUser",
-        "pw": "YourGeniSysAiMqttPass",
-        "paid": YourIotJumpWayApplicationID,
-        "pan": "YourIotJumpWayApplicationName",
-        "pun": "YourIotJumpWayMqttUser",
-        "ppw": "YourIotJumpWayMqttPass",
-        "mdb": "YourMongoDatabaseName",
-        "mdbu": "YourMongoDatabaseUser",
-        "mdbp": "YourMongoDatabasePass",
-        "dbname": "YourMySqlDatabaseName",
-        "dbuser": "YourMySqlDatabaseUser",
-        "dbpass": "YourMySqlDatabasePass"
-    },
-    "genisysai": {
-        "core": {
-            "allowed": [
-                ".jpg",
-                ".JPG",
-                ".png",
-                ".PNG"
-            ]
-        },
-        "ip": "YourServerIP",
-        "data": "/fserver/models/GeniSysAI/Data/Security/",
-        "detection": "/fserver/models/GeniSysAI/face-detection-retail-0004.xml",
-        "reidentification": "/fserver/models/GeniSysAI/face-reidentification-retail-0095.xml",
-        "landmarks": "/fserver/models/GeniSysAI/landmarks-regression-retail-0009.xml",
-        "runas": "CPU",
-        "lid": GeniSysAILocationID,
-        "zid": GeniSysAIZoneID,
-        "did": GeniSysAIDeviceID,
-        "sid": GeniSysAISensorID,
-        "port": 8080,
-        "socket": {
-            "ip": "YourServerIP",
-            "port": 8181
-        },
-        "threshold": 0.6,
-        "vid": 0
-    }
-}
+```
+"mdb": "YourMongoDatabaseName",
+"mdbu": "YourMongoDatabaseUser",
+"mdbp": "YourMongoDatabasePass",
 ```
 Now you need to update the related settings in the PHP configuration. Assuming you are in the project root:
 ```
@@ -779,15 +687,9 @@ sudo nano /fserver/var/www/Classes/Core/confs.json
 ```
 And update the mongo related settings:
 ```
-{
-    "dbname": "",
-    "dbusername": "",
-    "dbpassword": "",
-    "mdbname": "",
-    "mdbusername": "",
-    "mdbpassword": "",
-    "key": ""
-}
+"mdbname": "",
+"mdbusername": "",
+"mdbpassword": ""
 ```
 
 ### SSL Security
@@ -873,16 +775,209 @@ sudo systemctl status smbd
 
 **Shell Script**  [Samba.sh](../../Scripts/Installation/Shell/Samba.sh "Samba.sh")
 
+### Private Ethereum Blockchain
+We will use Ethereum to set up a private Blockchain for the HIAS network. Start by installing Ethereum:
+
+```
+  sudo apt-get install software-properties-common
+  sudo add-apt-repository -y ppa:ethereum/ethereum
+  sudo apt-get update
+  sudo apt-get install ethereum
+```
+
+Now you need to create three accounts, one for the core HIAS application, one for the iotJumpWay service and one for your own HIAS account.
+
+You will now create the first of the 3 required HIAS Blockchain accounts. Follow the instructions given to create the account for your core HIAS Blockchain user. Make sure you save the information given to you and keep it safe. You will need this information for configuring your HIAS Blockchain and if you lose these details you will have to create a new installation.
+
+```
+  geth account new --datadir /fserver/ethereum/HIAS
+```
+You will be asked to enter a new password:
+```
+Your new account is locked with a password. Please give a password. Do not forget this password.
+```
+You should see something like the following output:
+```
+  Password:
+  Repeat password:
+
+  Your new key was generated
+
+  Public address of the key:   0x9B3FEE4aa9A5B5F4422C6a2222A06FDE07Ad5513
+  Path of the secret key file: HIAS/Data/keystore/UTC--2020-09-24T22-29-31.527923214Z--9b3fee4aa9a5b5f4422c6a2222a06fde07ad5513
+
+  - You can share your public address with anyone. Others need it to interact with you.
+  - You must NEVER share the secret key with anyone! The key controls access to your funds!
+  - You must BACKUP your key file! Without the key, it's impossible to access account funds!
+  - You must REMEMBER your password! Without the password, it's impossible to decrypt the key!
+```
+You will now create the second of the 3 required HIAS Blockchain accounts. Follow the instructions given to create the account for your iotJumpWay HIAS Blockchain user. Make sure you save the information given to you and keep it safe. You will need this information for configuring your HIAS Blockchain and if you lose these details you will have to create a new installation.
+```
+  geth account new --datadir /fserver/ethereum/HIAS
+```
+You will now create the third of the 3 required HIAS Blockchain accounts. Follow the instructions given to create the account for your personal HIAS Blockchain user. Make sure you save the information given to you and keep it safe. You will need this information for configuring your HIAS Blockchain and if you lose these details you will have to create a new installation.
+```
+  geth account new --datadir /fserver/ethereum/HIAS
+```
+Remember to save the information given to you.
+
+You will now install Solidity:
+
+```
+  sudo apt-get install solc
+```
+You now need to update the smart contracts with your HIAS Blockchain user account address:
+
+```
+  read -p "! Enter your HIAS Blockchain user account address: " haddress
+  sudo sed -i -- "s/address haccount = YourHiasApplicationAddress;/address haccount = $haddress;/g" /fserver/ethereum/Contracts/HIAS.sol
+  sudo sed -i -- "s/address haccount = YourHiasApplicationAddress;/address haccount = $haddress;/g" /fserver/ethereum/Contracts/iotJumpWay.sol
+  sudo sed -i -- "s/address haccount = YourHiasApplicationAddress;/address haccount = $haddress;/g" /fserver/ethereum/Contracts/HIASPatients.sol
+```
+You now need to compile the smart contracts, the overwrite parameter is provided by default incase you need to recompile:
+```
+  solc --abi /fserver/ethereum/Contracts/HIAS.sol -o /fserver/ethereum/Contracts/build --overwrite
+  solc --bin /fserver/ethereum/Contracts/HIAS.sol -o /fserver/ethereum/Contracts/build --overwrite
+  solc --abi /fserver/ethereum/Contracts/iotJumpWay.sol -o /fserver/ethereum/Contracts/build --overwrite
+  solc --bin /fserver/ethereum/Contracts/iotJumpWay.sol -o /fserver/ethereum/Contracts/build --overwrite
+  solc --abi /fserver/ethereum/Contracts/HIASPatients.sol -o /fserver/ethereum/Contracts/build --overwrite
+  solc --bin /fserver/ethereum/Contracts/HIASPatients.sol -o /fserver/ethereum/Contracts/build --overwrite
+```
+Now you will update HIAS configuration file:
+```
+  read -p "! Enter your HIAS domain name: " domain
+  sudo sed -i 's/\"bchost\":.*/\"bchost\": \"https://'$domain'/Blockchain/API/\",/g' "confs.json"
+  habi=$(cat /fserver/ethereum/Contracts/build/HIAS.abi)
+  sudo sed -i "s/\"authAbi\":.*/\"authAbi\": $habi,/g" "confs.json"
+  iabi=$(cat /fserver/ethereum/Contracts/build/iotJumpWay.abi)
+  sudo sed -i "s/\"iotAbi\":.*/\"iotAbi\": $iabi,/g" "confs.json"
+  pabi=$(cat /fserver/ethereum/Contracts/build/HIASPatients.abi)
+  sudo sed -i "s/\"patientsAbi\":.*/\"patientsAbi\": $pabi,/g" "confs.json"
+  read -p "! Enter your HIAS Blockchain user account address: " haddress
+  read -p "! Enter your HIAS Blockchain user account password: " hpass
+  sudo sed -i 's/\"haddress\":.*/\"haddress\": \"'$haddress'\",/g' "confs.json"
+  sudo sed -i 's/\"hpass\":.*/\"hpass\": \"'$hpass'\",/g' "confs.json"
+  read -p "! Enter your iotJumpWay HIAS Blockchain user account address: " iaddress
+  read -p "! Enter your iotJumpWay HIAS Blockchain user account password: " ipass
+  sudo sed -i 's/\"iaddress\":.*/\"iaddress\": \"'$iaddress'\",/g' "confs.json"
+  sudo sed -i 's/\"ipass\":.*/\"ipass\": \"'$ipass'\",/g' "confs.json"
+  read -p "! Enter your personal HIAS Blockchain user account address: " paddress
+```
+Now you will update the Genesis file:
+```
+  read -p "! Enter your HIAS Blockchain chain ID: " chainid
+  sudo sed -i 's/\"chainId\":.*/\"chainId\": '$chainid',/g' "/fserver/ethereum/genesis.json"
+  sudo sed -i 's/\"YourHiasApplicationAddress\"/\"'$haddress'\",/g' "/fserver/ethereum/genesis.json"
+  sudo sed -i 's/\"YourIoTJumpWayApplicationAddress\"/\"'$iaddress'\",/g' "/fserver/ethereum/genesis.json"
+  sudo sed -i 's/\"YourUserAddress\"/\"'$paddress'\",/g' "/fserver/ethereum/genesis.json"
+```
+The Genesis file will allocate the highest amount of HIAS Ether possible. HIAS Ether is used on the HIAS Blockchain to reward automated and human users for actions they carry out on the HIAS network.
+
+Now you will start your blockchain server so that you can deploy your contracts and complete the configuration. If you have been using the automatic installation, you will have been instructed to follow this tutorial for deploying the smart contracts. Follow these steps until you are told to return to the automatic installation:
+
+```
+  read -p "! Enter your HIAS Server IP: " ip
+  geth --mine --http --networkid $chainid -datadir /fserver/ethereum/HIAS --http.addr $ip --http.corsdomain "*" --miner.etherbase $haddress --http.api "eth,net,web3,personal" --allow-insecure-unlock console
+  miner.start()
+```
+You will now be in geth console. Now you will deploy the smart contracts. For this you need the contents of:
+
+- **/fserver/ethereum/Contracts/build/HIAS.abi**
+- **/fserver/ethereum/Contracts/build/HIAS.bin**
+- **/fserver/ethereum/Contracts/build/iotJumpWay.abi**
+- **/fserver/ethereum/Contracts/build/iotJumpWay.bin**
+- **/fserver/ethereum/Contracts/build/HIASPatients.abi**
+- **/fserver/ethereum/Contracts/build/HIASPatients.bin**
+
+First deploy the HIAS Smart Contract. Note that **0x** in the hbin variable is crucial:
+```
+  var habi = ContentsOfHIAS.abi
+  var hbin = "0xContentsOfHIAS.bin"
+  var haddress = HiasUserAddress
+  var hpass = HiasUserPassword
+  personal.unlockAccount(haddress, hpass, 1200)
+  var newContract = eth.contract(habi)
+  var deploy = {from:haddress, data:hbin, gas: 2000000}
+  var contractInstance = newContract.new(deploy)
+```
+Now you have started the deployment process, you can monitor the progress using the following command, keep doing this until the address field is not undefined, once you have the address of the contract, your smart contract has been deployed. Make sure to note down the smart contract address, you will need it in following steps.
+
+```
+  contractInstance
+```
+Repeat the process for the iotJumpWay Smart Contract:
+```
+  var iabi = ContentsOfiotJumpWay.abi
+  var ibin = "0xContentsOfiotJumpWay.bin"
+  var newContract = eth.contract(iabi)
+  var deploy = {from:haddress, data:ibin, gas: 2000000}
+  var contractInstance = newContract.new(deploy)
+  contractInstance
+```
+Finally repeat the process for the Patients Smart Contract:
+```
+  var pabi = ContentsOfHIASPatients.abi
+  var pbin = "0xContentsOfHIASPatients.bin"
+  var newContract = eth.contract(pabi)
+  var deploy = {from:haddress, data:pbin, gas: 2000000}
+  var contractInstance = newContract.new(deploy)
+  contractInstance
+```
+Now you can stop mining and exit geth:
+
+```
+miner.stop()
+exit
+```
+If you were running the auto install it will now continue.
+
+Now you will update the configuration and store the contract information in the HIAS MySQL database:
+
+```
+  read -p "! Enter your HIAS Smart Contract address: " hcaddress
+  read -p "! Enter your HIAS Smart Contract transaction: " hctransaction
+  read -p "! Enter your HIAS iotJumpWay Smart Contract address: " icaddress
+  read -p "! Enter your HIAS iotJumpWay Smart Contract transaction: " ictransaction
+  read -p "! Enter your HIAS Patients Smart Contract address: " pcaddress
+  read -p "! Enter your HIAS Patients Smart Contract transaction: " pctransaction
+  sudo sed -i 's/\"authContract\":.*/\"authContract\": \"'$hcaddress'\",/g' "confs.json"
+  sudo sed -i 's/\"iotContract\":.*/\"iotContract\": \"'$icaddress'\",/g' "confs.json"
+  php Scripts/Installation/PHP/Blockchain.php "Contract" "$hcaddress" "HIAS" "$haddress" "$hctransaction" "$habi"
+  php Scripts/Installation/PHP/Blockchain.php "Contract" "$icaddress" "HIAS" "$haddress" "$ictransaction" "$iabi"
+  php Scripts/Installation/PHP/Blockchain.php "Contract" "$pcaddress" "HIAS" "$haddress" "$pctransaction" "$pabi"
+  php Scripts/Installation/PHP/Blockchain.php "Config" "$iaddress" "$ipass"
+```
+Now you will install composer and the web3 PHP and Python libraries:
+```
+  sudo apt install web3
+  sudo apt install composer
+  cd /fserver/var/www
+  composer require sc0vu/web3.php dev-master
+  cd ~/HIAS
+  cp Scripts/Installation/PHP/Web3PHP/Web3.php /fserver/var/www/vendor/sc0vu/web3.php/src
+  cp Scripts/Installation/PHP/Web3PHP/RequestManager.php /fserver/var/www/vendor/sc0vu/web3.php/src/RequestManagers
+  cp Scripts/Installation/PHP/Web3PHP/HttpRequestManager.php /fserver/var/www/vendor/sc0vu/web3.php/src/RequestManagers
+```
+
+You now need to log directly into your HIAS server and start the HIAS Blockchain and miner. Ensuring you are in the HIAS server console, use the following commands:
+```
+  read -p "! Enter your HIAS Blockchain chain ID: " chainid
+  read -p "! Enter your HIAS Blockchain user address: " haddress
+  read -p "! Enter your HIAS Server IP: " ip
+  geth --mine --http --networkid $chainid -datadir /fserver/ethereum/HIAS --http.addr $ip --http.corsdomain "*" --miner.etherbase $haddress --http.api "eth,net,web3,personal" --allow-insecure-unlock console
+  miner.start()
+```
+This needs to be running at all times which is why you logged directly into your HIAS device, if you do not have your Blockchain running, you will not be able to log in to the HIAS UI, if the Blockchain goes down, you will be logged out instantly. Now you can go back to your remote terminal to continue the installation.
+
 ### iotJumpWay Broker
 We will use the [iotJumpWay](https://www.iotjumpway.com/developers/getting-started "iotJumpWay") open source broker for this project. Originally the iotJumpWay was a device built on a Rapsberry Pi that powered my home IoT network locally. In 2015/16 I turned the device into an a Platform as a Service, PaaS, and in 2016 I made the platform free to developers.
 
 For this project I am including a system based on the iotJumpWay PaaS that includes the iotJumpWay locations, zones, devices and applications functionality. This means that all of the machine to machine communication happens locally, and all data is stored locally, never leaving the server.
 
-We will also use the iotJumpWay PaaS as a means of connecting to the outside world. This results in 2 iotJumpWay networks, a local/private one, and a network of devices and applications in the outside world..
-
 Now install the required MQTT software for our local iotJumpWay broker.
 
 ```
+pip3 install paho-mqtt
 sudo apt install mosquitto
 sudo apt install libmosquitto-dev
 sudo mkdir -p /fserver/libraries/mosquitto
@@ -941,156 +1036,156 @@ Apr 24 20:42:49 genisysai mosquitto[1398]:    ...done.
 Apr 24 20:42:49 genisysai systemd[1]: Started LSB: mosquitto MQTT v3.1 message broker.
 ```
 
+Now you need to add the MQTT broker host to the HIAS iotJumpWay configuration. Assuming you are in the project root:
+```
+sudo nano confs.json
+```
+And update the iotJumpWay host:
+```
+  "host": "YourSubdomain.YourDomain.YourTLD",
+```
+
 **Shell Script**  [iotJumpWay.sh](../../Scripts/Installation/Shell/iotJumpWay.sh "iotJumpWay.sh")
 
-#### iotJumpWay Location and Application
-Now setup the local iotJumpWay location and application. Replace the
-**YourLocationName**, **YourApplicationName**, **YourApplicationIP** & **YourApplicationMac** with your chosen name for the server iotJumpWay location, your chose name for the server application and the local IP and MAC address of the device the application will run on.
+#### iotJumpWay Location and Applications
+Now setup the local iotJumpWay location and application. Replace the **YourLocationName**, **YourApplicationName**, **YourApplicationIP** & **YourApplicationMac** with your chosen name for the server iotJumpWay location, your chose name for the server application and the local IP and MAC address of the device the application will run on.
 
 ```
-php Scripts/Installation/PHP/Location.php YourLocationName YourApplicationName YourApplicationIP YourApplicationMac
+  read -p "! Enter your default location name. This field represents the physical location that your server is installed in, ie: Home, Office, Hospital, Center etc: " location
+  read -p "! Enter your HIAS Blockchain user address: " haddress
+  read -p "! Enter the IP of your HIAS Server: " ip
+  read -p "! Enter the MAC address of your HIAS Server: " mac
+  read -p "! Enter your HIAS iotJumpWay Blockchain user address: " iaddress
+  php Scripts/Installation/PHP/Location.php "$location" "HIAS" "$haddress" "$ip" "$mac" "iotJumpWay" "$iaddress" "$ip" "$mac"
 ```
 You should see similar to the following:
 ```
 ! Location, HQ has been created with ID 1!!! NOTE THESE CREDENTIALS AND KEEP THEM IN A SAFE PLACE !!
-! Application, WebSockets has been created with ID 1 !
+! Application, HIAS, has been created with ID 1 !
 !! Your application public key is: AppPublicKey !!
 !! Your application private key is: AppPrivateKey !!
 !! Your application MQTT username is: MqttUsername !!
 !! Your application MQTT password is: MqttPassword !!
-- Installed iotJumpWay location, application and devices!
+! Application, iotJumpWay, has been created with ID 2 !
+!! Your application public key is: AppPublicKey !!
+!! Your application private key is: AppPrivateKey !!
+!! Your application MQTT username is: MqttUsername !!
+!! Your application MQTT password is: MqttPassword !!
+- Installed iotJumpWay location and applications!
 ```
-
-Now add these credentials to the iotJumpWay JS script. Use the following command to open the file then update your iotJumpWay credentials.
-
-```
-sudo nano /var/www/html/iotJumpWay/Classes/iotJumpWay.js
-```
-```
-    client: null,
-    connected: false,
-    host: "YourServerDomainName",
-    port: 9001,
-    useTLS: true,
-    cleansession: true,
-    mqttOptions: {
-        locationID: YourLocationID,
-        applicationID: YourApplicationID,
-        applicationName: "YourApplicationName",
-        userName: "YourMqttUser",
-        passwd: "YourMqttPassword"
-    }
-```
-
-**Shell Script**  [iotJumpWayLocation.sh](../../Scripts/Installation/Shell/iotJumpWayLocation.sh "iotJumpWayLocation.sh")
-
-### GeniSysAI (Computer Vision)
-We will use the HIAS [GeniSysAI](https://github.com/LeukemiaAiResearch/GeniSysAI "GeniSysAI") open source computer vision system for the facial recognition and identification.
-
-```
-sudo apt install python3-pip
-sudo apt install cmake
-sudo apt install python3-opencv
-sudo mkdir -p /fserver/models/GeniSysAI
-pip3 install zmq
-wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/face-detection-retail-0004/FP16/face-detection-retail-0004.bin -P /fserver/models/GeniSysAI/
-wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/face-detection-retail-0004/FP16/face-detection-retail-0004.xml -P /fserver/models/GeniSysAI/
-wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/face-reidentification-retail-0095/FP16/face-reidentification-retail-0095.bin -P /fserver/models/GeniSysAI/
-wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/face-reidentification-retail-0095/FP16/face-reidentification-retail-0095.xml -P /fserver/models/GeniSysAI/
-wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/landmarks-regression-retail-0009/FP16/landmarks-regression-retail-0009.bin -P /fserver/models/GeniSysAI/
-wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/landmarks-regression-retail-0009/FP16/landmarks-regression-retail-0009.xml -P /fserver/models/GeniSysAI/
-```
-
-**Shell Script**  [GeniSysAI.sh](../../Scripts/Installation/Shell/GeniSysAI.sh "GeniSysAI.sh")
-
-Now you will create the iotJumpWay device on your local broker.
-
-```
-php Scripts/Installation/PHP/GeniSysAI.php YourLocationID YourZoneName YourServerIP YourServerMacAddress
-```
-You should see similar to the following:
-
-```
-! Device has been created with ID 1 !
-!! Your device public key is: DevicePublicKey !!
-!! Your device private key is: DevicePrivateKey !!
-!! Your device MQTT username is: MqttUsername !!
-!! Your device MQTT password is: MqttPassword !!
-! Installed iotJumpWay device !
-```
-Now you need to update the related settings in the Python configuration. Assuming you are in the project root:
+Now you need to update the iotJumpWay application settings in the HIAS configuration. Assuming you are in the project root:
 ```
 sudo nano confs.json
 ```
 And update the GeniSysAI related settings:
 ```
-{
-    "iotJumpWay": {
-        "channels": {
-            "commands": "Commands"
-        },
-        "host": "YourSubdomain.YourDomain.YourTLD",
-        "port": 8883,
-        "ip": "localhost",
-        "lid": YourGeniSysAiLocationID,
-        "aid": YourGeniSysAiApplicationID,
-        "an": "YourGeniSysAiApplicationName",
-        "un": "YourGeniSysAiMqttUser",
-        "pw": "YourGeniSysAiMqttPass",
-        "paid": YourIotJumpWayApplicationID,
-        "pan": "YourIotJumpWayApplicationName",
-        "pun": "YourIotJumpWayMqttUser",
-        "ppw": "YourIotJumpWayMqttPass",
-        "mdb": "YourMongoDatabaseName",
-        "mdbu": "YourMongoDatabaseUser",
-        "mdbp": "YourMongoDatabasePass",
-        "dbname": "YourMySqlDatabaseName",
-        "dbuser": "YourMySqlDatabaseUser",
-        "dbpass": "YourMySqlDatabasePass"
-    },
-    "genisysai": {
-        "core": {
-            "allowed": [
-                ".jpg",
-                ".JPG",
-                ".png",
-                ".PNG"
-            ]
-        },
-        "ip": "YourServerIP",
-        "data": "/fserver/models/GeniSysAI/Data/Security/",
-        "detection": "/fserver/models/GeniSysAI/face-detection-retail-0004.xml",
-        "reidentification": "/fserver/models/GeniSysAI/face-reidentification-retail-0095.xml",
-        "landmarks": "/fserver/models/GeniSysAI/landmarks-regression-retail-0009.xml",
-        "runas": "CPU",
-        "lid": GeniSysAILocationID,
-        "zid": GeniSysAIZoneID,
-        "did": GeniSysAIDeviceID,
-        "sid": GeniSysAISensorID,
-        "port": 8080,
-        "socket": {
-            "ip": "YourServerIP",
-            "port": 8181
-        },
-        "threshold": 0.6,
-        "vid": 0
-    }
-}
+  "paid": YourIotJumpWayApplicationID,
+  "pan": "YourIotJumpWayApplicationName",
+  "pun": "YourIotJumpWayMqttUser",
+  "ppw": "YourIotJumpWayMqttPass",
 ```
 
-**Shell Script**  [iotJumpWayGeniSysAI.sh](../../Scripts/Installation/Shell/iotJumpWayGeniSysAI.sh "iotJumpWayGeniSysAI.sh")
+**Shell Script**  [iotJumpWayLocation.sh](../../Scripts/Installation/Shell/iotJumpWayLocation.sh "iotJumpWayLocation.sh")
+
+Now update the host field in the the iotJumpWay JS script with your HIAS domain name. You should not add the protocol when updating this field. The system will load the rest of the configuration for this script on page load, you only need to update the **host** field. Use the following command to open the file:
+
+```
+sudo nano /var/www/html/iotJumpWay/Classes/iotJumpWay.js
+```
+```
+  client: null,
+  connected: false,
+  host: "YourHIASServerDomainName",
+  port: 9001,
+  useTLS: true,
+  cleansession: true,
+  bc: {
+      id: "",
+      addr: ""
+  },
+  mqttOptions: {
+      lid: 0,
+      aid: 0,
+      an: "",
+      un: "",
+      uc: ""
+  },
+```
+
+### TassAI (Computer Vision)
+We will use the [HIAS TassAI](https://github.com/LeukemiaAiResearch/TassAI "HIAS TassAI") Facial Recognition Security System API to provide the ability for HIAS device and applications to carry out remote facial recognition requests using HTTP requests.
+
+```
+  sudo apt install python3-pip
+  sudo apt install cmake
+  sudo apt install python3-opencv
+  sudo mkdir -p /fserver/models/TassAI
+  pip3 install flask
+  pip3 install requests
+  pip3 install jsonpickle
+  wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/face-detection-retail-0004/FP16/face-detection-retail-0004.bin -P /fserver/models/TassAI/
+  wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/face-detection-retail-0004/FP16/face-detection-retail-0004.xml -P /fserver/models/TassAI/
+  wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/face-reidentification-retail-0095/FP16/face-reidentification-retail-0095.bin -P /fserver/models/TassAI/
+  wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/face-reidentification-retail-0095/FP16/face-reidentification-retail-0095.xml -P /fserver/models/TassAI/
+  wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/landmarks-regression-retail-0009/FP16/landmarks-regression-retail-0009.bin -P /fserver/models/TassAI/
+  wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/landmarks-regression-retail-0009/FP16/landmarks-regression-retail-0009.xml -P /fserver/models/TassAI/
+  read -p "! Enter your zone name (No spaces or special characters). This field represents the zone that this device is installed in, ie: Office, Study, Lounge, Kitchen etc: " zone
+  read -p "! Enter local IP address of the HIAS Server device (IE: 192.168.1.98): " ip
+  read -p "! Enter MAC address of HIAS Server device: " mac
+  php Scripts/Installation/PHP/TassAI.php "$zone" "$ip" "$mac"
+```
+You should see similar to the following:
+
+```
+!! NOTE THESE CREDENTIALS AND KEEP THEM IN A SAFE PLACE !!
+! Device, Server Security API, has been created with ID 1 !
+!! Your device public key is: DevicePublicKey !!
+!! Your device private key is: DevicePrivateKey !!
+!! Your device MQTT username is: MqttUsername !!
+!! Your device MQTT password is: MqttPassword !!
+```
+
+**Shell Script**  [TassAI.sh](../../Scripts/Installation/Shell/TassAI.sh "TassAI.sh")
+
+Now you need to update the related settings in the HIAS configuration. Assuming you are in the project root:
+```
+sudo nano confs.json
+```
+And update the TassAI related settings:
+```
+  "lid": YourLocationID,
+  "zid": YourZoneID,
+  "did": YourDeviceId,
+  "dn": "YourDeviceName",
+  "gun": "YourDeviceMqttUsername",
+  "gpw": "YourDeviceMqttPass",
+```
 
 ### Create Admin User
-Finally you should create your admin user that you will use to access the network, UI and the network TASS streams. The following command executes a PHP script to add your chosen username as an admin user in the system.
+Now you should create your admin user that you will use to access the network, UI and the network TassAI streams. The following command executes a PHP script to add your chosen username as an admin user in the system.
 
 The script will create an admin account and provide your with the password, make sure to copy and save the password and your username somewhere safe. Replace **YourUsername** with the username of your choice, no special characters or spaces.
 
-The script will also use your password the with Apache HTPassword system that protects the camera streams. When you create a new user through this script or the UI, credentials are added or updated for the camera stream authentication system.
+The script will also save your password with the Apache HTPassword system that protects the camera streams and APIs.
 
-The script will also create a local iotJumpWay application, allowing you to authenticate to the broker as your self. This can be useful for personal applications such as smart phone applications etc.
+The script will also create an iotJumpWay application, allowing you to authenticate to the broker as your self. This can be used with the HIAS Staff Android Application.
 
 ```
-php Scripts/Installation/PHP/Admin.php YourUsername YourLocationId YourApplicationIP YourApplicationMac
+  read -p "! Enter your name: " name
+  read -p "! Enter your email: " email
+  read -p "! Enter your desired username (No spaces or special characters): " username
+  read -p "! Enter your desired personal HIAS Blockchain account address: " paddress
+  read -p "! Enter your desired personal HIAS Blockchain account password: " ppass
+  read -p "! Enter local IP address of the device that the application will run on (IE: 192.168.1.98): " ip
+  read -p "! Enter MAC address of the device that the application will run on: " mac
+  sudo apt install apache2-utils
+  sudo touch /etc/nginx/security/htpasswd
+  sudo chown www-data:www-data /etc/nginx/security/htpasswd
+  sudo touch /etc/nginx/security/patients
+  sudo chown www-data:www-data /etc/nginx/security/patients
+  sudo touch /etc/nginx/security/beds
+  sudo chown www-data:www-data /etc/nginx/security/beds
+  php Scripts/Installation/PHP/Admin.php "$name" "$email" "$username" "$paddress" "$ppass" "$ip" "$mac"
 ```
 You should see something similar to the following:
 ```
@@ -1099,8 +1194,9 @@ You should see something similar to the following:
 !! Admin user, YourUsername, has been created with ID 1 !!
 !! Your Username is: YourUsername !!
 !! Your password is: YourPassword !!
+!! THESE CREDENTIALS ARE ALSO USED FOR THE TASS STREAM AUTHENTICATION POP UP YOU WILL FACE WHEN YOU FIRST LOGIN !!
 
-!! Application,  YourUsername,  has been created with ID 2 !!
+!! Application,  YourUsername,  has been created with ID 3 !!
 !! Your application public key is: YourPublicKey !!
 !! Your application private key is: YourPrivateKey !!
 !! Your application MQTT username is: YourMqttUser !!
@@ -1113,7 +1209,13 @@ You should see something similar to the following:
 Now you need to finalize your server settings, to do this you need your server URL, IE: https://www.YourDomain.com, you will need to register free [Google Maps](https://developers.google.com/maps/documentation/javascript/get-api-key "Google Maps") and [Google Recaptcha](https://www.google.com/recaptcha "Google Recaptcha") site/secret keys, and you will need to provide your default latitude and longitude settings. The latitude and longitude settings will be used for the default coordinates for Google Maps in HIAS, they must be correct.
 
 ```
-php Scripts/Installation/PHP/Finalize.php YourServerURL RecaptchaSiteKey RecaptchaSecretKey GMapsKey DefaultLatitude DefaultLongitude
+  read -p "! Enter your server URL. IE: https://www.YourDomain.com. This should match the domain used in the NGINX configuration: " domain
+  read -p "! Enter your site Recaptcha key: " pub
+  read -p "! Enter your secret Recaptcha key: " prv
+  read -p "! Enter your Google Maps key: " gmaps
+  read -p "! Enter your default latitude: " lat
+  read -p "! Enter your default longitude: " lng
+  php Scripts/Installation/PHP/Finalize.php "$domain" "$pub" "$prv" "$gmaps" "$lat" "$lng"
 ```
 
 **Shell Script**  [Finalize.sh](../../Scripts/Installation/Shell/Finalize.sh "Finalize.sh")
@@ -1133,98 +1235,7 @@ You can update the system with the latest data by going to **Data Analysis -> CO
 
 **Shell Script**  [COVID19.sh](../../Scripts/Installation/Shell/COVID19.sh "COVID19.sh")
 
-&nbsp;
-
-# Login To Your Server UI
-![Login To Your Server UI](../../Media/Images/UI.png)
-
-Congratulations, you have the basics of the server installed!! Visit your domain name and you should see the above page. You can then login with your username and password you created earlier.
-
-![HIAS Dashboard](../../Media/Images/dashboard.png)
-
-The HIAS dashboard is your control panel for your encrypted intelligent and IoT connected  Hospital Intelligent Automation System.
-
-&nbsp;
-
-# HIAS IoT Network
-![HIAS IoT Network](../../Media/Images/HIAS-IoT-Dashboard.png)
-
-The HIAS IoT network is powered by a new, fully open-source version of the [iotJumpWay](https://www.iotJumpWay.com "iotJumpWay"). The HIAS iotJumpway dashboard is your control panel for managing all of your network iotJumpWay zones, devices, sensors/actuators and applications. The modular systems that we build to be compatible with this network will all create their own iotJumpWay applications etc during installation, you will be able to manage all of these applications and devices through the iotJumpWay dashboard.
-
-## iotJumpWay Finalization
-There are a couple of things we need to do before we can boot up the intelligent server software. To finish up we need two additional iotJumpWay applications.
-
-In the UI, navigate to **Server->Location** and click on the **+** icon in the **iotJumpWay Location Applications** section, this will bring you to the page that allows you to create iotJumpWay applications.
-
-![Create iotJumpWay application](../../Media/Images/HIAS-IoT-Application.png)
-
-Fill out the information and submit the form, you will be taken to the newly created application. Note the location ID and the MQTT credentials provided to the right of the page. These credentials will be used for your core GeniSysAI Python program.
-
-Now repeat the step above and create an application for the core iotJumpWay Python application.
-
-You also need your server domain name for the iotJumpWay broker host. You should supply the domain name without the protocol. IE: **YourSubdomain.YourDomain.YourTLD** not **https://YourSubdomain.YourDomain.YourTLD**.
-
-Now you need to update the related settings in the Python configuration. Assuming you are in the project root:
-```
-sudo nano confs.json
-```
-And update the GeniSysAI related settings:
-```
-{
-    "iotJumpWay": {
-        "channels": {
-            "commands": "Commands"
-        },
-        "host": "YourSubdomain.YourDomain.YourTLD",
-        "port": 8883,
-        "ip": "localhost",
-        "lid": YourGeniSysAiLocationID,
-        "aid": YourGeniSysAiApplicationID,
-        "an": "YourGeniSysAiApplicationName",
-        "un": "YourGeniSysAiMqttUser",
-        "pw": "YourGeniSysAiMqttPass",
-        "paid": YourIotJumpWayApplicationID,
-        "pan": "YourIotJumpWayApplicationName",
-        "pun": "YourIotJumpWayMqttUser",
-        "ppw": "YourIotJumpWayMqttPass",
-        "mdb": "YourMongoDatabaseName",
-        "mdbu": "YourMongoDatabaseUser",
-        "mdbp": "YourMongoDatabasePass",
-        "dbname": "YourMySqlDatabaseName",
-        "dbuser": "YourMySqlDatabaseUser",
-        "dbpass": "YourMySqlDatabasePass"
-    },
-    "genisysai": {
-        "core": {
-            "allowed": [
-                ".jpg",
-                ".JPG",
-                ".png",
-                ".PNG"
-            ]
-        },
-        "ip": "YourServerIP",
-        "data": "/fserver/models/GeniSysAI/Data/Security/",
-        "detection": "/fserver/models/GeniSysAI/face-detection-retail-0004.xml",
-        "reidentification": "/fserver/models/GeniSysAI/face-reidentification-retail-0095.xml",
-        "landmarks": "/fserver/models/GeniSysAI/landmarks-regression-retail-0009.xml",
-        "runas": "CPU",
-        "lid": GeniSysAILocationID,
-        "zid": GeniSysAIZoneID,
-        "did": GeniSysAIDeviceID,
-        "sid": GeniSysAISensorID,
-        "port": 8080,
-        "socket": {
-            "ip": "YourServerIP",
-            "port": 8181
-        },
-        "threshold": 0.6,
-        "vid": 0
-    }
-}
-```
-
-## HIAS Server Services
+### HIAS Server Services
 Now you will set up two services that will automatically run the iotJumpWay listener and camera stream.
 
 ```
@@ -1242,22 +1253,34 @@ echo "" | sudo tee -a /lib/systemd/system/iotJumpWay.service
 echo "[Install]" | sudo tee -a /lib/systemd/system/iotJumpWay.service
 echo "WantedBy=multi-user.target" | sudo tee -a /lib/systemd/system/iotJumpWay.service
 
-sudo sed -i -- "s#YourUser#$username#g" Scripts/System/Camera.sh
-chmod u+x Scripts/System/Camera.sh
-sudo gpasswd -d $usernam video
+sudo sed -i -- "s#YourUser#$username#g" Scripts/System/Security.sh
+chmod u+x Scripts/System/Security.sh
 
-sudo touch /lib/systemd/system/GeniSysAI.service
-echo "[Unit]" | sudo tee -a /lib/systemd/system/GeniSysAI.service
-echo "Description=GeniSysAI Service" | sudo tee -a /lib/systemd/system/GeniSysAI.service
-echo "After=multi-user.target" | sudo tee -a /lib/systemd/system/GeniSysAI.service
-echo "" | sudo tee -a /lib/systemd/system/GeniSysAI.service
-echo "[Service]" | sudo tee -a /lib/systemd/system/GeniSysAI.service
-echo "User=$username" | sudo tee -a /lib/systemd/system/GeniSysAI.service
-echo "Type=simple" | sudo tee -a /lib/systemd/system/GeniSysAI.service
-echo "ExecStart=/home/$username/HIAS/Scripts/System/Camera.sh" | sudo tee -a /lib/systemd/system/GeniSysAI.service
-echo "" | sudo tee -a /lib/systemd/system/GeniSysAI.service
-echo "[Install]" | sudo tee -a /lib/systemd/system/GeniSysAI.service
-echo "WantedBy=multi-user.target" | sudo tee -a /lib/systemd/system/GeniSysAI.service
+sudo touch /lib/systemd/system/Security.service
+echo "[Unit]" | sudo tee -a /lib/systemd/system/Security.service
+echo "Description=Security Service" | sudo tee -a /lib/systemd/system/Security.service
+echo "After=multi-user.target" | sudo tee -a /lib/systemd/system/Security.service
+echo "" | sudo tee -a /lib/systemd/system/Security.service
+echo "[Service]" | sudo tee -a /lib/systemd/system/Security.service
+echo "User=$username" | sudo tee -a /lib/systemd/system/Security.service
+echo "Type=simple" | sudo tee -a /lib/systemd/system/Security.service
+echo "ExecStart=/home/$username/HIAS/Scripts/System/Security.sh" | sudo tee -a /lib/systemd/system/Security.service
+echo "" | sudo tee -a /lib/systemd/system/Security.service
+echo "[Install]" | sudo tee -a /lib/systemd/system/Security.service
+echo "WantedBy=multi-user.target" | sudo tee -a /lib/systemd/system/Security.service
+
+sudo touch /lib/systemd/system/Replenish.service
+echo "[Unit]" | sudo tee -a /lib/systemd/system/Replenish.service
+echo "Description=Replenish Service" | sudo tee -a /lib/systemd/system/Replenish.service
+echo "After=multi-user.target" | sudo tee -a /lib/systemd/system/Replenish.service
+echo "" | sudo tee -a /lib/systemd/system/Replenish.service
+echo "[Service]" | sudo tee -a /lib/systemd/system/Replenish.service
+echo "User=$username" | sudo tee -a /lib/systemd/system/Replenish.service
+echo "Type=simple" | sudo tee -a /lib/systemd/system/Replenish.service
+echo "ExecStart=/usr/bin/python3 /home/$username/HIAS/Replenish.py" | sudo tee -a /lib/systemd/system/Replenish.service
+echo "" | sudo tee -a /lib/systemd/system/Replenish.service
+echo "[Install]" | sudo tee -a /lib/systemd/system/Replenish.service
+echo "WantedBy=multi-user.target" | sudo tee -a /lib/systemd/system/Replenish.service
 ```
 
 **Shell Script**  [Services.sh](../../Scripts/Installation/Shell/Services.sh "Services.sh")
@@ -1290,26 +1313,48 @@ You should see the following output.
            └─3481 /usr/bin/python3 /home/YourUser/HIAS/iotJumpWay.py
 ```
 
-And finally enable, start and check your GeniSysAI service:
+Now enable, start and check your Security service:
 
 ```
-sudo systemctl enable GeniSysAI.service
-sudo systemctl start GeniSysAI.service
-sudo systemctl status GeniSysAI.service
+sudo systemctl enable Security.service
+sudo systemctl start Security.service
+sudo systemctl status Security.service
 ```
 
 You should see the following output.
 
 ```
-● api.service - GeniSysAI Service
-   Loaded: loaded (/lib/systemd/system/GeniSysAI.service; enabled; vendor preset: enabled)
+● api.service - Security Service
+   Loaded: loaded (/lib/systemd/system/Security.service; enabled; vendor preset: enabled)
    Active: active (running) since Mon 2020-08-24 19:45:31 CEST; 4s ago
  Main PID: 3481 (python3)
     Tasks: 4
    Memory: 46.3M
       CPU: 2.878s
-   CGroup: /system.slice/GeniSysAI.service
-           └─3481 /usr/bin/python3 /home/YourUser/HIAS/GeniSysAI.py
+   CGroup: /system.slice/Security.service
+           └─3481 /home/YourUser/HIAS/Scripts/System/Security.sh
+```
+
+Finally enable, start and check your Replenish service:
+
+```
+sudo systemctl enable Replenish.service
+sudo systemctl start Replenish.service
+sudo systemctl status Replenish.service
+```
+
+You should see the following output.
+
+```
+● api.service - Replenish Service
+   Loaded: loaded (/lib/systemd/system/Replenish.service; enabled; vendor preset: enabled)
+   Active: active (running) since Mon 2020-08-24 19:45:31 CEST; 4s ago
+ Main PID: 3481 (python3)
+    Tasks: 4
+   Memory: 46.3M
+      CPU: 2.878s
+   CGroup: /system.slice/Replenish.service
+           └─3481 /usr/bin/python3 /home/YourUser/HIAS/Replenish.py
 ```
 
 Your services will now load every time your server boots up. To manage the services you can use:
@@ -1320,18 +1365,43 @@ sudo systemctl start iotJumpWay.service
 sudo systemctl stop iotJumpWay.service
 sudo systemctl status iotJumpWay.service
 
-sudo systemctl restart GeniSysAI.service
-sudo systemctl start GeniSysAI.service
-sudo systemctl stop GeniSysAI.service
-sudo systemctl status GeniSysAI.service
+sudo systemctl restart Security.service
+sudo systemctl start Security.service
+sudo systemctl stop Security.service
+sudo systemctl status Security.service
+
+sudo systemctl restart Replenish.service
+sudo systemctl start Replenish.service
+sudo systemctl stop Replenish.service
+sudo systemctl status Replenish.service
 ```
+
+&nbsp;
+
+# Login To Your Server UI
+![Login To Your Server UI](../../Media/Images/UI.png)
+
+Congratulations, you have the basics of the server installed!! Visit your domain name and you should see the above page. You can then login with your username and password you created earlier.
+
+![HIAS Dashboard](../../Media/Images/dashboard.png)
+
+The HIAS dashboard is your control panel for your encrypted intelligent and IoT connected  Hospital Intelligent Automation System.
+
+**PLEASE NOTE:** The camera view you see in this screen shot is on of the modular addons for the HIAS Network.
+
+&nbsp;
+
+# HIAS IoT Network
+![HIAS IoT Network](../../Media/Images/HIAS-IoT-Dashboard.png)
+
+The HIAS IoT network is powered by a new, fully open-source version of the [iotJumpWay](https://www.iotJumpWay.com "iotJumpWay"). The HIAS iotJumpway dashboard is your control panel for managing all of your network iotJumpWay zones, devices, sensors/actuators and applications. The modular systems that we build to be compatible with this network will all create their own iotJumpWay applications etc during installation, you will be able to manage all of these applications and devices through the iotJumpWay dashboard.
 
 &nbsp;
 
 # Contributing
 Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss encourages and welcomes code contributions, bug fixes and enhancements from the Github community.
 
-Please read the [CONTRIBUTING](CONTRIBUTING.md "CONTRIBUTING") document for a full guide to forking our repositories and submitting your pull requests. You will also find information about our code of conduct on this page.
+Please read the [CONTRIBUTING](../../CONTRIBUTING.md "CONTRIBUTING") document for a full guide to forking our repositories and submitting your pull requests. You will also find information about our code of conduct on this page.
 
 ## Contributors
 

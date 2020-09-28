@@ -1,38 +1,48 @@
 server {
 
-        root /fserver/var/www/html;
         server_name YourSubdomain.YourDomain.TLD;
-        client_max_body_size 100M;
+        root /fserver/var/www/html;
+	client_max_body_size 100M;
 
-        location ~* ^/Security/GeniSysAI/Server/(.*)$ {
+        location /Blockchain/API/ {
                 auth_basic "Restricted";
                 auth_basic_user_file /etc/nginx/security/htpasswd;
-                proxy_pass http://YourTassDeviceIP:YourTassDevicePort/$1;
+                proxy_pass http://YourBlockchainApiIP:8545/;
         }
 
-        location ~ ^/Detection/COVID-19/CNN/API/(.*)$ {
-                proxy_pass http://YourCovid19CnnIP:YourCovid19CnnPort/$1;
-        }
-
-        location ~ ^/Detection/ALL/CNN/API/(.*)$ {
-                proxy_pass http://YourAllCnnIP:YourAllCnnPort/$1;
+        location ~* ^/Security/GeniSysAI/API/(.*)$ {
+                auth_basic "Restricted";
+                auth_basic_user_file /etc/nginx/security/htpasswd;
+                proxy_pass http://YourSecurityApiIP:YourSecurityApiPort/$1;
         }
 
         location / {
-                rewrite ^/Data-Analysis/COVID-19/([A-Za-z]+)/([A-Za-z]+)/([A-Za-z]+)$ /Data-Analysis/COVID-19/index.php?country=$1&period=$2&stat=$3 last;
-                rewrite ^/Robotics/EMAR/([0-9]+)/$ /Robotics/EMAR/Device.php?emar=$1 last;
-                rewrite ^/iotJumpWay/Sensors/([0-9]+)/$ /iotJumpWay/Sensor.php?sensor=$1 last;
+                rewrite ^/Blockchain/Contracts/Create$ /Blockchain/CCreate.php last;
+                rewrite ^/Blockchain/Contracts/([0-9]+)/Transaction/([0-9]+)$ /Blockchain/Transaction.php?contract=$1&transaction=$2 last;
+                rewrite ^/Blockchain/Contracts/Contract/([0-9]+)$ /Blockchain/Contract.php?contract=$1 last;
+                rewrite ^/Data-Analysis/COVID-19/(.+)/([A-Za-z]+)/([A-Za-z]+)$ /Data-Analysis/COVID-19/index.php?country=$1&period=$2&stat=$3 last;
+                rewrite ^/Robotics/EMAR/([0-9]+)$ /Robotics/EMAR/Device.php?emar=$1 last;
+                rewrite ^/iotJumpWay/Sensors/([0-9]+)$ /iotJumpWay/Sensor.php?sensor=$1 last;
+                rewrite ^/iotJumpWay/Sensors/Update$ /iotJumpWay/SensorUpdate.php last;
+                rewrite ^/iotJumpWay/Sensors/Upload$ /iotJumpWay/SensorUpload.php last;
                 rewrite ^/iotJumpWay/Sensors/Create$ /iotJumpWay/CreateSensor.php last;
                 rewrite ^/iotJumpWay/Devices/Create$ /iotJumpWay/CreateDevice.php last;
-                rewrite ^/iotJumpWay/([0-9]+)/Zones/([0-9]+)/Devices/([0-9]+)/$ /iotJumpWay/Device.php?location=$1&zone=$2&device=$3 last;
+                rewrite ^/iotJumpWay/([0-9]+)/Zones/([0-9]+)/Devices/([0-9]+)/Transaction/([0-9]+)$ /iotJumpWay/DeviceTransaction.php?location=$1&zone=$2&device=$3&transaction=$4 last;
+                rewrite ^/iotJumpWay/([0-9]+)/Zones/([0-9]+)/Devices/([0-9]+)$ /iotJumpWay/Device.php?location=$1&zone=$2&device=$3 last;
                 rewrite ^/iotJumpWay/Zones/Create$ /iotJumpWay/CreateZone.php last;
-                rewrite ^/iotJumpWay/([0-9]+)/Zones/([0-9]+)/$ /iotJumpWay/Zone.php?location=$1&zone=$2 last;
+                rewrite ^/iotJumpWay/([0-9]+)/Zones/([0-9]+)$ /iotJumpWay/Zone.php?location=$1&zone=$2 last;
                 rewrite ^/iotJumpWay/Applications/Create$ /iotJumpWay/CreateApp.php last;
-                rewrite ^/iotJumpWay/([0-9]+)/Applications/([0-9]+)/$ /iotJumpWay/Application.php?location=$1&application=$2 last;
-                rewrite ^/Hospital/Patients/([0-9]+)/$ /Hospital/Patients/Patient.php?patient=$1 last;
+                rewrite ^/iotJumpWay/([0-9]+)/Applications/([0-9]+)/Transaction/([0-9]+)$ /iotJumpWay/ApplicationTransaction.php?location=$1&application=$2&transaction=$3 last;
+                rewrite ^/iotJumpWay/([0-9]+)/Applications/([0-9]+)$ /iotJumpWay/Application.php?location=$1&application=$2 last;
+                rewrite ^/Hospital/Patients/([0-9]+)$ /Hospital/Patients/Patient.php?patient=$1 last;
+                rewrite ^/Hospital/Patients/([0-9]+)/Transaction/([0-9]+)$ /Hospital/Patients/Transaction.php?patient=$1&transaction=$2 last;
                 rewrite ^/Hospital/Beds/([0-9]+)/$ /Hospital/Beds/Bed.php?bed=$1 last;
-                rewrite ^/Hospital/Staff/([0-9]+)/$ /Hospital/Staff/Staff.php?staff=$1 last;
-                rewrite ^/Security/TASS/([0-9]+)/$ /Security/TASS/Device.php?tass=$1 last;
+                rewrite ^/Hospital/Beds/([0-9]+)/Transaction/([0-9]+)$ /Hospital/Beds/Transaction.php?bed=$1&transaction=$2 last;
+                rewrite ^/Hospital/Staff/API/Applications/NLU/([A-Za-z]+)$ /Hospital/Staff/API/Applications/NLU/index.php?params=$1 last;
+                rewrite ^/Hospital/Staff/API/Applications/User/([A-Za-z]+)$ /Hospital/Staff/API/Applications/User/index.php?params=$1 last;
+                rewrite ^/Hospital/Staff/([0-9]+)$ /Hospital/Staff/Staff.php?staff=$1 last;
+                rewrite ^/Security/GeniSysAI/([0-9]+)$ /Security/GeniSysAI/Device.php?genisysai=$1 last;
+                rewrite ^/GeniSysAI/([0-9]+)$ /GeniSysAI/Device.php?genisysai=$1 last;
                 try_files $uri $uri.html $uri/ @extensionless-php;
                 index index.php index.html index.htm index.nginx-debian.html;
         }
@@ -52,17 +62,17 @@ server {
                 deny all;
         }
 
-    listen [::]:443 ssl ipv6only=on; # managed by Certbot
-    listen 443 ssl; # managed by Certbot
-    ssl_certificate /etc/letsencrypt/live/YourSubdomain.YourDomain.TLD/fullchain.pem; # managed by Certbot
-    ssl_certificate_key /etc/letsencrypt/live/YourSubdomain.YourDomain.TLD/privkey.pem; # managed by Certbot
-    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+        listen [::]:443 ssl ipv6only=on; # managed by Certbot
+        listen 443 ssl; # managed by Certbot
+        ssl_certificate /etc/letsencrypt/live/YourSubdomain.YourDomain.TLD/fullchain.pem; # managed by Certbot
+        ssl_certificate_key /etc/letsencrypt/live/YourSubdomain.YourDomain.TLD/privkey.pem; # managed by Certbot
+        include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+        ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
 }
 server {
-    listen      80;
-    server_name "";
-    return      444;
+        listen      80;
+        server_name "";
+        return      444;
 }
 server {
 
@@ -78,4 +88,3 @@ server {
         return 404; # managed by Certbot
 
 }
-

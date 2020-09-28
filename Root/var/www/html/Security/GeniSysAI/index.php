@@ -7,6 +7,7 @@ $pageDetails = [
 
 include dirname(__FILE__) . '/../../../Classes/Core/init.php';
 include dirname(__FILE__) . '/../../../Classes/Core/GeniSys.php';
+include dirname(__FILE__) . '/../../iotJumpWay/Classes/iotJumpWay.php';
 include dirname(__FILE__) . '/../../Security/GeniSysAI/Classes/GeniSysAI.php';
 
 $_GeniSysAi->checkSession();
@@ -33,16 +34,12 @@ $TDevices = $GeniSysAI->getDevices();
     <link type="image/x-icon" rel="shortcut icon" href="<?=$domain; ?>/img/favicon.png" />
     <link type="image/x-icon" rel="apple-touch-icon" href="<?=$domain; ?>/img/favicon.png" />
 
-    <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet"
-        type="text/css" />
-    <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet"
-        type="text/css" />
-    <link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet"
-        type="text/css">
+    <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
     <link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
     <link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
-    <link href="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.css" rel="stylesheet"
-        type="text/css" />
+    <link href="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -86,6 +83,33 @@ $TDevices = $GeniSysAI->getDevices();
                 </div>
 
                 <div class="row">
+
+                    <?php
+                        if(count($TDevices)):
+                            foreach($TDevices as $key => $value):
+                                if($value["type"] != "API"):
+
+                    ?>
+
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                        <div class="panel panel-default card-view panel-refresh">
+                            <div class="panel-wrapper collapse in">
+                                <div class="panel-body">
+                                    <img src="<?=$domain; ?>/Security/GeniSysAI/<?=$_GeniSys->_helpers->oDecrypt($value["strdir"]); ?>/<?=$_GeniSys->_helpers->oDecrypt($value["sportf"]); ?>" style="width: 100%;" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <?php
+                                endif;
+                            endforeach;
+                        endif;
+                    ?>
+
+                </div>
+
+                <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <div class="panel panel-default card-view panel-refresh">
                             <div class="panel-heading">
@@ -111,7 +135,7 @@ $TDevices = $GeniSysAI->getDevices();
                                                 </thead>
                                                 <tbody>
 
-                                                    <?php
+                                                <?php
 													if(count($TDevices)):
 														foreach($TDevices as $key => $value):
 
@@ -131,13 +155,14 @@ $TDevices = $GeniSysAI->getDevices();
                                                                 <?=$value["status"] == "OFFLINE" ? "OFFLINE" : "ONLINE"; ?>
                                                             </div>
                                                         </td>
-                                                        <td><a href="<?=$domain; ?>/Security/GeniSysAI/<?=$value["id"];?>/"><i class="fa fa-edit"></i></a></a></td>
+                                                        <td><a href="<?=$domain; ?>/Security/GeniSysAI/<?=$value["id"];?>"><i class="fa fa-edit"></i></a></a></td>
                                                     </tr>
 
                                                     <?php
 														endforeach;
 													endif;
-												?>
+                                                ?>
+
                                                 </tbody>
                                             </table>
                                         </div>

@@ -7,8 +7,7 @@
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
-                                    <span class="txt-light block counter">CPU<br /><span
-                                            class="up_cpu"><?=$stats["cpu"]; ?></span>%</span>
+                                    <span class="txt-light block counter">CPU<br /><span class="up_cpu"><?=$stats["cpu"]; ?></span>%</span>
                                     <span class="weight-500 uppercase-font block font-13 txt-light">SERVER</span>
                                 </div>
                                 <div class="col-xs-6 text-center  txt-light  pl-0 pr-0 pt-25 data-wrap-right">
@@ -29,8 +28,7 @@
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-xs-6 text-center pl-0 pr-0 txt-light data-wrap-left">
-                                    <span class="block counter">Memory<br /><span
-                                            class="up_mem"><?=$stats["mem"]; ?></span>%</span>
+                                    <span class="block counter">Memory<br /><span class="up_mem"><?=$stats["mem"]; ?></span>%</span>
                                     <span class="weight-500 uppercase-font block">SERVER</span>
                                 </div>
                                 <div class="col-xs-6 text-center  pl-0 pr-0 txt-light data-wrap-right">

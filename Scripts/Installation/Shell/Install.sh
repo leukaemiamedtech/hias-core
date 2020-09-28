@@ -1,11 +1,11 @@
 #!/bin/bash
 
-FMSG="- GeniSysAI installation terminated"
+FMSG="- HIAS Server installation terminated"
 
-read -p "? This script will install the GeniSysAI network server on your device. Are you ready (y/n)? " cmsg
+read -p "? This script will install the HIAS Server on your device. Are you ready (y/n)? " cmsg
 
 if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
-    echo "- Installing GeniSysAI Server"
+    echo "- Installing HIAS Server"
     sh Scripts/Installation/Shell/UFW.sh
     if [ $? -ne 0 ]; then
         echo $FMSG;
@@ -41,12 +41,22 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
         echo $FMSG;
         exit
     fi
+    sh Scripts/Installation/Shell/MongoDB.sh
+    if [ $? -ne 0 ]; then
+        echo $FMSG;
+        exit
+    fi
     sh Scripts/Installation/Shell/SSL.sh
     if [ $? -ne 0 ]; then
         echo $FMSG;
         exit
     fi
     sh Scripts/Installation/Shell/Samba.sh
+    if [ $? -ne 0 ]; then
+        echo $FMSG;
+        exit
+    fi
+    sh Scripts/Installation/Shell/Blockchain.sh
     if [ $? -ne 0 ]; then
         echo $FMSG;
         exit
@@ -71,12 +81,12 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
         echo $FMSG;
         exit
     fi
-    sh Scripts/Installation/Shell/GeniSysAI.sh
+    sh Scripts/Installation/Shell/TassAI.sh
     if [ $? -ne 0 ]; then
         echo $FMSG;
         exit
     fi
-    sh Scripts/Installation/Shell/iotJumpWayGeniSysAI.sh
+    sh Scripts/Installation/Shell/Services.sh
     if [ $? -ne 0 ]; then
         echo $FMSG;
         exit

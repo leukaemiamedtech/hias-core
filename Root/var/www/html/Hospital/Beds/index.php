@@ -33,16 +33,12 @@ $Bedsa = $Beds->getBeds();
     <link type="image/x-icon" rel="shortcut icon" href="<?=$domain; ?>/img/favicon.png" />
     <link type="image/x-icon" rel="apple-touch-icon" href="<?=$domain; ?>/img/favicon.png" />
 
-    <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet"
-        type="text/css" />
-    <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet"
-        type="text/css" />
-    <link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet"
-        type="text/css">
+    <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
     <link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
     <link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
-    <link href="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.css" rel="stylesheet"
-        type="text/css" />
+    <link href="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -109,7 +105,7 @@ $Bedsa = $Beds->getBeds();
                                                 </thead>
                                                 <tbody>
 
-                                                <?php 
+                                                <?php
 													if(count($Bedsa)):
 														foreach($Bedsa as $key => $value):
 
@@ -124,11 +120,11 @@ $Bedsa = $Beds->getBeds();
                                                         <td><a href="<?=$domain; ?>/Hospital/Beds/<?=$value["id"];?>/"><i class="fa fa-edit"></i> Edit</a></td>
                                                     </tr>
 
-                                                <?php 
+                                                <?php
 														endforeach;
 													endif;
                                                 ?>
-                                                
+
                                                 </tbody>
                                             </table>
                                         </div>
@@ -150,6 +146,5 @@ $Bedsa = $Beds->getBeds();
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
 
-</body>
-
+    </body>
 </html>

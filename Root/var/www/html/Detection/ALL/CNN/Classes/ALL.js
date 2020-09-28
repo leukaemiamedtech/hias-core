@@ -70,7 +70,6 @@ var ALL = {
         $("#imClass").html("<strong>Diagnosis:</strong> WAITING FOR RESPONSE");
         $("#imResult").html("<strong>Result:</strong> WAITING FOR RESPONSE");
         $.post(window.location.href, { "classifyData": 1, "im": im }, function(resp) {
-            console.log(resp)
             var resp = jQuery.parseJSON(resp);
             switch (resp.Response) {
                 case "OK":

@@ -36,16 +36,12 @@ $Zones = $iotJumpWay->getZones(0, "id ASC");
     <link type="image/x-icon" rel="shortcut icon" href="<?=$domain; ?>/img/favicon.png" />
     <link type="image/x-icon" rel="apple-touch-icon" href="<?=$domain; ?>/img/favicon.png" />
 
-    <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet"
-        type="text/css" />
-    <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet"
-        type="text/css" />
-    <link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet"
-        type="text/css">
+    <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
     <link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
     <link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
-    <link href="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.css" rel="stylesheet"
-        type="text/css" />
+    <link href="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body id="GeniSysAI">
@@ -110,7 +106,7 @@ $Zones = $iotJumpWay->getZones(0, "id ASC");
                                                         <select class="form-control" id="lid" name="lid" required>
                                                             <option value="">PLEASE SELECT</option>
 
-                                                            <?php 
+                                                            <?php
                                                                 if(count($Locations)):
                                                                     foreach($Locations as $key => $value):
                                                             ?>
@@ -118,7 +114,7 @@ $Zones = $iotJumpWay->getZones(0, "id ASC");
                                                             <option value="<?=$value["id"]; ?>">#<?=$value["id"]; ?>:
                                                                 <?=$value["name"]; ?></option>
 
-                                                            <?php 
+                                                            <?php
                                                                     endforeach;
                                                                 endif;
                                                             ?>
@@ -131,7 +127,7 @@ $Zones = $iotJumpWay->getZones(0, "id ASC");
                                                         <select class="form-control" id="zid" name="zid" required>
                                                             <option value="">PLEASE SELECT</option>
 
-                                                            <?php 
+                                                            <?php
                                                                 if(count($Zones)):
                                                                     foreach($Zones as $key => $value):
                                                             ?>
@@ -139,7 +135,7 @@ $Zones = $iotJumpWay->getZones(0, "id ASC");
                                                             <option value="<?=$value["id"]; ?>">#<?=$value["id"]; ?>:
                                                                 <?=$value["zn"]; ?></option>
 
-                                                            <?php 
+                                                            <?php
                                                                     endforeach;
                                                                 endif;
                                                             ?>
@@ -185,49 +181,9 @@ $Zones = $iotJumpWay->getZones(0, "id ASC");
 
         <?php  include dirname(__FILE__) . '/../../Includes/JS.php'; ?>
 
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/moment/min/moment.min.js"></script>
-        <script type="text/javascript"
-            src="<?=$domain; ?>/vendors/bower_components/simpleWeather/jquery.simpleWeather.min.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/simpleweather-data.js"></script>
-
-        <script type="text/javascript"
-            src="<?=$domain; ?>/vendors/bower_components/waypoints/lib/jquery.waypoints.min.js"></script>
-        <script type="text/javascript"
-            src="<?=$domain; ?>/vendors/bower_components/jquery.counterup/jquery.counterup.min.js"></script>
-
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/dropdown-bootstrap-extended.js"></script>
-
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/jquery.sparkline/dist/jquery.sparkline.min.js">
-        </script>
-
-        <script type="text/javascript"
-            src="<?=$domain; ?>/vendors/bower_components/owl.carousel/dist/owl.carousel.min.js"></script>
-
-        <script type="text/javascript"
-            src="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.js"></script>
-
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/echarts/dist/echarts-en.min.js">
-        </script>
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/echarts-liquidfill.min.js"></script>
-
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/switchery/dist/switchery.min.js">
-        </script>
-        <script type="text/javascript"
-            src="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/fullcalendar-data.js"></script>
-
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/init.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/dashboard-data.js"></script>
-
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
-
-        <script type="text/javascript" src="<?=$domain; ?>/TASS/Classes/TASS.js"></script>
-
         <script type="text/javascript" src="<?=$domain; ?>/Hospital/Beds/Classes/Beds.js"></script>
 
-        <script src="<?=$domain; ?>/vendors/bower_components/bootstrap-validator/dist/validator.min.js"></script>
-
-</body>
-
+    </body>
 </html>

@@ -34,12 +34,9 @@ $Staffs = $Staff->getStaffs();
     <link type="image/x-icon" rel="shortcut icon" href="<?=$domain; ?>/img/favicon.png" />
     <link type="image/x-icon" rel="apple-touch-icon" href="<?=$domain; ?>/img/favicon.png" />
 
-    <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet"
-        type="text/css" />
-    <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet"
-        type="text/css" />
-    <link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet"
-        type="text/css">
+    <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
     <link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
     <link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
     <link href="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.css" rel="stylesheet"
@@ -113,7 +110,7 @@ $Staffs = $Staff->getStaffs();
                                                 </thead>
                                                 <tbody>
 
-                                                <?php 
+                                                <?php
 													if(count($Staffs)):
 														foreach($Staffs as $key => $value):
 												?>
@@ -130,14 +127,14 @@ $Staffs = $Staff->getStaffs();
                                                                 <?=$value["status"] == "OFFLINE" ? "OFFLINE" : "ONLINE"; ?>
                                                             </div>
                                                         </td>
-                                                        <td><a href="<?=$domain; ?>/Hospital/Staff/<?=$value["id"];?>/"><i class="fa fa-edit"></i> Edit</a></a></td>
+                                                        <td><a href="<?=$domain; ?>/Hospital/Staff/<?=$value["id"];?>"><i class="fa fa-edit"></i> Edit</a></a></td>
                                                     </tr>
 
-                                                <?php 
+                                                <?php
 														endforeach;
 													endif;
                                                 ?>
-                                                
+
                                                 </tbody>
                                             </table>
                                         </div>
@@ -155,40 +152,6 @@ $Staffs = $Staff->getStaffs();
         </div>
 
         <?php  include dirname(__FILE__) . '/../../Includes/JS.php'; ?>
-
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/moment/min/moment.min.js"></script>
-        <script type="text/javascript"
-            src="<?=$domain; ?>/vendors/bower_components/simpleWeather/jquery.simpleWeather.min.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/simpleweather-data.js"></script>
-
-        <script type="text/javascript"
-            src="<?=$domain; ?>/vendors/bower_components/waypoints/lib/jquery.waypoints.min.js"></script>
-        <script type="text/javascript"
-            src="<?=$domain; ?>/vendors/bower_components/jquery.counterup/jquery.counterup.min.js"></script>
-
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/dropdown-bootstrap-extended.js"></script>
-
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/jquery.sparkline/dist/jquery.sparkline.min.js">
-        </script>
-
-        <script type="text/javascript"
-            src="<?=$domain; ?>/vendors/bower_components/owl.carousel/dist/owl.carousel.min.js"></script>
-
-        <script type="text/javascript"
-            src="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.js"></script>
-
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/echarts/dist/echarts-en.min.js">
-        </script>
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/echarts-liquidfill.min.js"></script>
-
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/switchery/dist/switchery.min.js">
-        </script>
-        <script type="text/javascript"
-            src="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/fullcalendar-data.js"></script>
-
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/init.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/dashboard-data.js"></script>
 
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>

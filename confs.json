@@ -6,11 +6,13 @@
         "host": "YourSubdomain.YourDomain.YourTLD",
         "port": 8883,
         "ip": "localhost",
-        "lid": YourGeniSysAiLocationID,
-        "aid": YourGeniSysAiApplicationID,
-        "an": "YourGeniSysAiApplicationName",
-        "un": "YourGeniSysAiMqttUser",
-        "pw": "YourGeniSysAiMqttPass",
+        "ipinfo": "YourIpInfoApiKey",
+        "lid": YourLocationID,
+        "zid": YourZoneID,
+        "did": YourDeviceId,
+        "dn": "YourDeviceName",
+        "gun": "YourDeviceMqttUsername",
+        "gpw": "YourDeviceMqttPass",
         "paid": YourIotJumpWayApplicationID,
         "pan": "YourIotJumpWayApplicationName",
         "pun": "YourIotJumpWayMqttUser",
@@ -22,7 +24,22 @@
         "dbuser": "YourMySqlDatabaseUser",
         "dbpass": "YourMySqlDatabasePass"
     },
-    "genisysai": {
+    "ethereum": {
+        "authAbi": [],
+        "authContract": "YourAuthContractAddress",
+        "bchost": "https://YourSubdomain.YourDomain.YourTLD/Blockchain/API/",
+        "iotAbi": [],
+        "iotContract": "YourIotContractAddress",
+        "haddress": "YourHiasBlockhainUserAddress",
+        "hpass": "YourHiasBlockhainUserPass",
+        "iaddress": "YourIotBlockhainUserAddress",
+        "ipass": "YourIotBlockhainUserPass",
+        "user": "YourIotUserIdentifier",
+        "pass": "YourIotUserPass",
+        "patientsAbi": [],
+        "patientsContract": "YourPatientsContractAddress"
+    },
+    "TassAI": {
         "core": {
             "allowed": [
                 ".jpg",
@@ -31,21 +48,16 @@
                 ".PNG"
             ]
         },
-        "ip": "YourServerIP",
-        "data": "/fserver/models/GeniSysAI/Data/Security/",
-        "detection": "/fserver/models/GeniSysAI/face-detection-retail-0004.xml",
-        "reidentification": "/fserver/models/GeniSysAI/face-reidentification-retail-0095.xml",
-        "landmarks": "/fserver/models/GeniSysAI/landmarks-regression-retail-0009.xml",
+        "ip": "YourCameraApiIP",
+        "data": "/fserver/models/TassAI/Data/Security/",
+        "detection": "/fserver/models/TassAI/face-detection-retail-0004.xml",
+        "dlib": "/fserver/models/TassAI/shape_predictor_68_face_landmarks.dat",
+        "dlibr": "/fserver/models/TassAI/dlib_face_recognition_resnet_model_v1.dat",
+        "reidentification": "/fserver/models/TassAI/face-reidentification-retail-0095.xml",
+        "landmarks": "/fserver/models/TassAI/landmarks-regression-retail-0009.xml",
         "runas": "CPU",
-        "lid": GeniSysAILocationID,
-        "zid": GeniSysAIZoneID,
-        "did": GeniSysAIDeviceID,
-        "sid": GeniSysAISensorID,
+        "test": "Test/",
         "port": 8080,
-        "socket": {
-            "ip": "YourServerIP",
-            "port": 8181
-        },
         "threshold": 0.6,
         "vid": 0
     }

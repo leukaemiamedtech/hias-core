@@ -1,17 +1,18 @@
 #!/bin/bash
 
-read -p "? This script will install your iotJumpWay location and core application on your server. Are you ready (y/n)? " cmsg
+read -p "? This script will install your iotJumpWay location and core application on your HIAS Server. Are you ready (y/n)? " cmsg
 
 if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
     echo "- Installing iotJumpWay location...."
-    read -p "! Enter your default location name (No spaces or special characters). This field represents the physical location that your server is installed in, ie: Home, Office, Hospital, Center etc: " location
-    read -p "! Enter your default application name (No spaces or special characters). This field represents the server application that will provide websocket services to the UI allowing it to communicate with the network via the UI, ie: WebSockets, Server etc: " application
-    read -p "! Enter local IP address of the device that the application will run on (IE: 192.168.1.98): " ip
-    read -p "! Enter MAC address of the device that the application will run on: " mac
-    php Scripts/Installation/PHP/Location.php "$location" "$application" "$ip" "$mac"
-    echo "- Installed iotJumpWay location, application and devices!";
+    read -p "! Enter your default location name. This field represents the physical location that your server is installed in, ie: Home, Office, Hospital, Center etc: " location
+    read -p "! Enter your HIAS Blockchain user address: " haddress
+    read -p "! Enter the IP of your HIAS Server: " ip
+    read -p "! Enter the MAC address of your HIAS Server: " mac
+    read -p "! Enter your HIAS iotJumpWay Blockchain user address: " iaddress
+    php Scripts/Installation/PHP/Location.php "$location" "HIAS" "$haddress" "$ip" "$mac" "iotJumpWay" "$iaddress" "$ip" "$mac"
+    echo "- Installed iotJumpWay location and applications!";
     exit 0
 else
-    echo "- iotJumpWay location and application installation terminated!";
+    echo "- iotJumpWay location and applications installation terminated!";
     exit 1
 fi

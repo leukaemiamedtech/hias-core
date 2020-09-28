@@ -1,8 +1,8 @@
 <?php session_start();
 
 $pageDetails = [
-    "PageID" => "DataAnalysis",
-    "SubPageID" => "COVID19"
+	"PageID" => "DataAnalysis",
+	"SubPageID" => "COVID19"
 ];
 
 include dirname(__FILE__) . '/../../../Classes/Core/init.php';
@@ -43,58 +43,58 @@ $weekd = $covid19d[7];
 		<link type="image/x-icon" rel="shortcut icon" href="<?=$domain; ?>/img/favicon.png" />
 		<link type="image/x-icon" rel="apple-touch-icon" href="<?=$domain; ?>/img/favicon.png" />
 
-        <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
-        <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>		
+		<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
+		<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
 		<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.css" rel="stylesheet" type="text/css"/>
 	</head>
 
-    <body id="GeniSysAI">
-        
-        <div class="preloader-it">
-            <div class="la-anim-1"></div>
-        </div>
-        
-        <div class="wrapper theme-6-active pimary-color-pink">
-            
-            <?php include dirname(__FILE__) . '/../../Includes/Nav.php'; ?>
-            <?php include dirname(__FILE__) . '/../../Includes/LeftNav.php'; ?>
-            <?php include dirname(__FILE__) . '/../../Includes/RightNav.php'; ?>
+	<body id="GeniSysAI">
 
-            <div class="page-wrapper">
-            <div class="container-fluid pt-25">
-            
-            	<?php include dirname(__FILE__) . '/../../Includes/Stats.php'; ?>
-                
+		<div class="preloader-it">
+			<div class="la-anim-1"></div>
+		</div>
+
+		<div class="wrapper theme-6-active pimary-color-pink">
+
+			<?php include dirname(__FILE__) . '/../../Includes/Nav.php'; ?>
+			<?php include dirname(__FILE__) . '/../../Includes/LeftNav.php'; ?>
+			<?php include dirname(__FILE__) . '/../../Includes/RightNav.php'; ?>
+
+			<div class="page-wrapper">
+			<div class="container-fluid pt-25">
+
+				<?php include dirname(__FILE__) . '/../../Includes/Stats.php'; ?>
+
 				<div class="row">
 					<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
-                        <div class="panel panel-default card-view panel-refresh">
-                            <div class="panel-heading">
-                            </div>
-                            <div class="panel-wrapper collapse in">
-                                <div class="panel-body">
-                                    <?php include dirname(__FILE__) . '/../../Includes/Weather.php'; ?>
-                                </div>
-                            </div>
+						<div class="panel panel-default card-view panel-refresh">
+							<div class="panel-heading">
+							</div>
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
+									<?php include dirname(__FILE__) . '/../../Includes/Weather.php'; ?>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
 						<div class="panel panel-default card-view">
 							<div class="panel-wrapper collapse in">
 								<div class="panel-body">
-                                    <?php include dirname(__FILE__) . '/../../iotJumpWay/Includes/iotJumpWay.php'; ?>
+									<?php include dirname(__FILE__) . '/../../iotJumpWay/Includes/iotJumpWay.php'; ?>
 								</div>
 							</div>
-						</div>	
+						</div>
 					</div>
 				</div>
-                
+
 				<div class="row">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="panel panel-default card-view panel-refresh">
-                            <div class="panel-heading">
+						<div class="panel panel-default card-view panel-refresh">
+							<div class="panel-heading">
 								<div class="pull-left">
 									<h6 class="panel-title txt-dark">COVID-19 <?=$COVID19->stat; ?> this last <?=$COVID19->period; ?> in <?=$COVID19->country; ?></h6>
 								</div>
@@ -104,12 +104,12 @@ $weekd = $covid19d[7];
 									</div>
 								</div>
 								<div class="clearfix"></div>
-                            </div>
-                            <div class="panel-wrapper collapse in">
-                                <div class="panel-body">
+							</div>
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
 									<div id="e_chart_1" class="" style="height: 375px;"></div>
-                                </div>
-                            </div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -129,7 +129,7 @@ $weekd = $covid19d[7];
 												<div class="col-xs-6 text-center  pl-0 pr-0 data-wrap-right">
 													<i class="fas fa-hospital-alt data-right-rep-icon txt-light"></i>
 												</div>
-											</div>	
+											</div>
 										</div>
 									</div>
 								</div>
@@ -148,7 +148,7 @@ $weekd = $covid19d[7];
 												<div class="col-xs-6 text-center  pl-0 pr-0 data-wrap-right">
 													<i class="fas fa-hospital-alt  data-right-rep-icon txt-light"></i>
 												</div>
-											</div>	
+											</div>
 										</div>
 									</div>
 								</div>
@@ -167,7 +167,7 @@ $weekd = $covid19d[7];
 												<div class="col-xs-6 text-center  pl-0 pr-0 data-wrap-right">
 													<i class="fas fa-hospital-alt data-right-rep-icon txt-light"></i>
 												</div>
-											</div>	
+											</div>
 										</div>
 									</div>
 								</div>
@@ -179,7 +179,7 @@ $weekd = $covid19d[7];
 									<h6 class="panel-title txt-light"></h6>
 								</div>
 								<div class="clearfix"></div>
-							</div>		
+							</div>
 							<div class="panel-wrapper collapse in">
 								<div class="panel-body row pa-0">
 									<div class="sm-data-box">
@@ -198,7 +198,53 @@ $weekd = $covid19d[7];
 								</div>
 								<div class="pull-right">
 									<div class="pull-left form-group mb-0 sm-bootstrap-select mr-15">
-									</div>	
+
+										<div class="row">
+											<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+
+												<select class="form-control" name="country" id="country">
+
+													<?php
+														$countries = $COVID19->getCOVID19Countries();
+														foreach($countries AS $key => $val):
+													?>
+
+													<option value="<?=$val["country"]; ?>" <?=$val["country"]==$COVID19->country ? " selected " : ""; ?>><?=$val["country"]; ?></option>
+
+													<?php
+														endforeach;
+													?>
+
+												</select>
+
+											</div>
+											<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+
+												<select class="form-control" name="year" id="year">
+
+													<option value="Year">Year</option>
+													<option value="Month">Month</option>
+													<option value="Day">Day</option>
+
+												</select>
+
+											</div>
+											<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+
+												<select class="form-control" name="stat" id="stat">
+
+													<option value="Active" <?=$COVID19->stat == "Active" ? " selected " : ""; ?>>Active</option>
+													<option value="Confirmed" <?=$COVID19->stat == "Confirmed" ? " selected " : ""; ?>>Confirmed</option>
+													<option value="Deaths" <?=$COVID19->stat == "Deaths" ? " selected " : ""; ?>>Deaths</option>
+													<option value="Recovered" <?=$COVID19->stat == "Recovered" ? " selected " : ""; ?>>Recovered</option>
+
+												</select>
+
+											</div>
+										</div>
+
+
+									</div>
 								</div>
 								<div class="clearfix"></div>
 							</div>
@@ -237,67 +283,51 @@ $weekd = $covid19d[7];
 					</div>
 				</div>
 			</div>
-			
+
 			<?php include dirname(__FILE__) . '/../../Includes/Footer.php'; ?>
-			
+
 		</div>
 
-        <?php  include dirname(__FILE__) . '/../../Includes/JS.php'; ?>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/moment/min/moment.min.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/simpleWeather/jquery.simpleWeather.min.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/simpleweather-data.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/waypoints/lib/jquery.waypoints.min.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/jquery.counterup/jquery.counterup.min.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/dropdown-bootstrap-extended.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/jquery.sparkline/dist/jquery.sparkline.min.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/owl.carousel/dist/owl.carousel.min.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/echarts/dist/echarts-en.min.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/echarts-liquidfill.min.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/switchery/dist/switchery.min.js"></script>
-		<script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
-		<script type="text/javascript" src="<?=$domain; ?>/dist/js/fullcalendar-data.js"></script>
-        
-        <script type="text/javascript" src="<?=$domain; ?>/dist/js/init.js"></script>
-        <script type="text/javascript">
-			
+		<?php  include dirname(__FILE__) . '/../../Includes/JS.php'; ?>
+
+		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
+		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
+		<script type="text/javascript" src="<?=$domain; ?>/Data-Analysis/COVID-19/Classes/COVID19.js"></script>
+
+		<script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/echarts/dist/echarts-en.min.js"></script>
+		<script type="text/javascript" src="<?=$domain; ?>/vendors/echarts-liquidfill.min.js"></script>
+
+		<script type="text/javascript">
+
 			var eChart_1 = echarts.init(document.getElementById('e_chart_1'));
-			
+
 			var option = {
-                tooltip: {
-                    trigger: 'axis',
-                    backgroundColor: 'rgba(33,33,33,1)',
-                    borderRadius: 0,
-                    padding: 10,
-                    axisPointer: {
-                        type: 'cross',
-                        label: {
-                            backgroundColor: 'rgba(33,33,33,1)'
-                        }
-                    },
-                    textStyle: {
-                        color: '#fff',
-                        fontStyle: 'normal',
-                        fontWeight: 'normal',
-                        fontFamily: "'Montserrat', sans-serif",
-                        fontSize: 12
-                    }
-                },
-                color: ['#635bd6'],
+				tooltip: {
+					trigger: 'axis',
+					backgroundColor: 'rgba(33,33,33,1)',
+					borderRadius: 0,
+					padding: 10,
+					axisPointer: {
+						type: 'cross',
+						label: {
+							backgroundColor: 'rgba(33,33,33,1)'
+						}
+					},
+					textStyle: {
+						color: '#fff',
+						fontStyle: 'normal',
+						fontWeight: 'normal',
+						fontFamily: "'Montserrat', sans-serif",
+						fontSize: 12
+					}
+				},
+				color: ['#635bd6'],
 				xAxis: {
 					type: 'category',
 					axisLabel: {
-                        textStyle: {
-                            color: '#ffffff'
-                        },
+						textStyle: {
+							color: '#ffffff'
+						},
 						interval: 1,
 						rotate: 45
 					},
@@ -305,16 +335,16 @@ $weekd = $covid19d[7];
 				},
 				yAxis: {
 					axisLabel: {
-                        textStyle: {
-                            color: '#ffffff'
-                        }
+						textStyle: {
+							color: '#ffffff'
+						}
 					},
 					type: 'value'
 				},
-                grid: {
-                    top: 10,
-                    left: 0,
-                    right: 0,
+				grid: {
+					top: 10,
+					left: 0,
+					right: 0,
 					bottom: 100,
 					containLabel: true
 				},
@@ -327,7 +357,7 @@ $weekd = $covid19d[7];
 			eChart_1.setOption(option);
 			eChart_1.resize();
 
-			
+
 			var hos_chart_v = echarts.init(document.getElementById('hos_chart'));
 			var option = {
 				title: {
@@ -424,7 +454,7 @@ $weekd = $covid19d[7];
 						fontWeight: 'normal',
 						fontFamily: "'Montserrat', sans-serif",
 						fontSize: 12
-					}	
+					}
 				},
 				grid: [{
 						show: false,
@@ -652,12 +682,18 @@ $weekd = $covid19d[7];
 			}
 			hos_chart_v.setOption(option);
 			hos_chart_v.resize();
+
+			$('#country').change(function(){
+				url = "/Data-Analysis/COVID-19/" + encodeURIComponent($(this).val()) + "/" + $("#year").val() + "/" + $("#stat").val();
+				window.location.replace(url);
+			});
+
+			$('#stat').change(function(){
+				url = "/Data-Analysis/COVID-19/" + $("#country").val() + "/" + $("#year").val() + "/" + encodeURIComponent($("#stat").val());
+				window.location.replace(url);
+			});
 		</script>
 
-		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/Data-Analysis/COVID-19/Classes/COVID19.js"></script>
-
-    </body>
+	</body>
 
 </html>
