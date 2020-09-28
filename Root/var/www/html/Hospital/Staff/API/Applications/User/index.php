@@ -23,36 +23,26 @@ class Login extends Auth{
 
 	public function Login()
 	{
-		if(!isset($_POST["uname"])):
+		if(!isset($_POST["apub"])):
 			return [
 				"Response"=>"FAILED",
-				"Message"=>"Username must be provided"
-			];
-		endif;
-
-		if(!isset($_POST["upass"])):
-			return [
-				"Response"=>"FAILED",
-				"Message"=>"Password must be provided"
+				"Message"=>"Public key must be provided"
 			];
 		endif;
 
 		$pdoQuery = $this->_GeniSys->_secCon->prepare("
 			SELECT users.id,
 				users.name,
-				users.password,
 				mqtta.id as aid,
 				mqtta.mqttu,
-				mqtta.mqttp,
-				mqtta.apub,
-				mqtta.aprv
-			FROM users users
-			INNER JOIN mqtta mqtta
+				mqtta.mqttp
+			FROM mqtta mqtta
+			INNER JOIN users users
 			ON users.id = mqtta.uid
-			WHERE users.username = :username
+			WHERE mqtta.apub = :apub
 		");
 		$pdoQuery->execute([
-			":username" => $_POST["uname"]
+			":apub" => $_POST["apub"]
 		]);
 		$user=$pdoQuery->fetch(PDO::FETCH_ASSOC);
 
@@ -61,24 +51,15 @@ class Login extends Auth{
 				"Response"=>"FAILED",
 				"ResponseMessage"=>"Invalid user"
 			];
-		elseif($this->verifyPassword($_POST["upass"],
-			$this->_GeniSys->_helpers->oDecrypt($user["password"]))):
-
+		else:
 			return [
 				"Response"=>"OK",
 				"Message"=>"Access granted",
 				"Data"=> [
 					"AID" => $user["aid"],
 					"UID" => $user["id"],
-					"UN" => $user["name"],
-					"APB" => $this->_GeniSys->_helpers->oDecrypt($user["apub"]),
-					"APV" => $this->_GeniSys->_helpers->oDecrypt($user["aprv"])
+					"UN" => $user["name"]
 				]
-			];
-		else:
-			return [
-				"Response"=>"FAILED",
-				"Message"=>"Access denied"
 			];
 		endif;
 	}

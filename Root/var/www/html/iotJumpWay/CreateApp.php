@@ -35,7 +35,7 @@ $Locations = $iotJumpWay->getLocations(0, "id ASC");
 		<link type="image/x-icon" rel="apple-touch-icon" href="<?=$domain; ?>/img/favicon.png" />
 
         <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
-        <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>		
+        <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
 		<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
@@ -43,13 +43,13 @@ $Locations = $iotJumpWay->getLocations(0, "id ASC");
 	</head>
 
     <body id="GeniSysAI">
-        
+
         <div class="preloader-it">
             <div class="la-anim-1"></div>
         </div>
-        
+
         <div class="wrapper theme-6-active pimary-color-pink">
-            
+
             <?php include dirname(__FILE__) . '/../Includes/Nav.php'; ?>
             <?php include dirname(__FILE__) . '/../Includes/LeftNav.php'; ?>
             <?php include dirname(__FILE__) . '/../Includes/RightNav.php'; ?>
@@ -58,7 +58,7 @@ $Locations = $iotJumpWay->getLocations(0, "id ASC");
             <div class="container-fluid pt-25">
 
 				<?php include dirname(__FILE__) . '/../Includes/Stats.php'; ?>
-				
+
 				<div class="row">
 					<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
                         <div class="panel panel-default card-view panel-refresh">
@@ -78,10 +78,10 @@ $Locations = $iotJumpWay->getLocations(0, "id ASC");
                                     <?php include dirname(__FILE__) . '/../iotJumpWay/Includes/iotJumpWay.php'; ?>
 								</div>
 							</div>
-						</div>	
+						</div>
 					</div>
 				</div>
-                
+
 				<div class="row">
 					<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
                         <div class="panel panel-default card-view panel-refresh">
@@ -102,28 +102,38 @@ $Locations = $iotJumpWay->getLocations(0, "id ASC");
                                                     <div class="form-group">
                                                         <label for="name" class="control-label mb-10">Name</label>
                                                         <input type="text" class="form-control" id="name" name="name" placeholder="Application Name" required value="">
-                                                        <span class="help-block"> Name of application</span> 
+                                                        <span class="help-block"> Name of application</span>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="control-label mb-10">Location</label>
                                                         <select class="form-control" id="lid" name="lid" required>
                                                             <option value="">PLEASE SELECT</option>
-                                                        
-                                                            <?php 
+
+                                                            <?php
                                                                 if(count($Locations)):
                                                                     foreach($Locations as $key => $value):
                                                             ?>
 
                                                             <option value="<?=$value["id"]; ?>">#<?=$value["id"]; ?>: <?=$value["name"]; ?></option>
 
-                                                            <?php 
+                                                            <?php
                                                                     endforeach;
                                                                 endif;
                                                             ?>
 
                                                         </select>
-                                                        <span class="help-block"> Location of application</span> 
+                                                        <span class="help-block"> Location of application</span>
                                                     </div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Is Admin:</label>
+														<input type="checkbox" class="" id="admin" name="admin" value="1">
+														<span class="help-block"> Is application an admin?</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Is Cancelled:</label>
+														<input type="checkbox" class="" id="cancelled" name="cancelled" value="1">
+														<span class="help-block"> Is application cancelled?</span>
+													</div>
                                                     <div class="form-group mb-0">
                                                         <input type="hidden" class="form-control" id="create_application" name="create_application" required value="1">
                                                         <button type="submit" class="btn btn-success btn-anim"><i class="icon-rocket"></i><span class="btn-text">submit</span></button>
@@ -133,12 +143,12 @@ $Locations = $iotJumpWay->getLocations(0, "id ASC");
                                                     <div class="form-group">
                                                         <label for="name" class="control-label mb-10">IP</label>
                                                         <input type="text" class="form-control" id="ip" name="ip" placeholder="Application IP" required value="">
-                                                        <span class="help-block"> IP of application</span> 
+                                                        <span class="help-block"> IP of application</span>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="name" class="control-label mb-10">MAC</label>
                                                         <input type="text" class="form-control" id="mac" name="mac" placeholder="Application MAC" required value="">
-                                                        <span class="help-block"> MAC of application</span> 
+                                                        <span class="help-block"> MAC of application</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -151,11 +161,11 @@ $Locations = $iotJumpWay->getLocations(0, "id ASC");
 					<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
 					</div>
 				</div>
-				
+
 			</div>
-			
+
 			<?php include dirname(__FILE__) . '/../Includes/Footer.php'; ?>
-			
+
 		</div>
 
         <?php  include dirname(__FILE__) . '/../Includes/JS.php'; ?>

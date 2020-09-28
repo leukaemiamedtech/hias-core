@@ -27,7 +27,6 @@ var GeniSys = {
 
         if (submit) {
             $.post(window.location.href, $("#Login").serialize(), function(arsep) {
-                console.log(arsep);
                 var arsep = jQuery.parseJSON(arsep);
                 switch (arsep.Response) {
                     case "OK":
@@ -62,7 +61,6 @@ var GeniSys = {
     ResetPass: function() {
         $.post(window.location.href, $("#form").serialize(),
             function(resp) {
-                console.log(resp)
                 var resp = jQuery.parseJSON(resp);
                 switch (resp.Response) {
                     case "OK":
@@ -114,7 +112,6 @@ var GeniSys = {
     },
     Update: function() {
         $.post(window.location.href, $("#server_update").serialize(), function(resp) {
-            console.log(resp)
             var resp = jQuery.parseJSON(resp);
             switch (resp.Response) {
                 case "OK":

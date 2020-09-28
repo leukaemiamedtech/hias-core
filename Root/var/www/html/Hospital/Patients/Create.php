@@ -35,12 +35,9 @@ $Locations = $iotJumpWay->getLocations(0, "id ASC");
     <link type="image/x-icon" rel="shortcut icon" href="<?=$domain; ?>/img/favicon.png" />
     <link type="image/x-icon" rel="apple-touch-icon" href="<?=$domain; ?>/img/favicon.png" />
 
-    <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet"
-        type="text/css" />
-    <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet"
-        type="text/css" />
-    <link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet"
-        type="text/css">
+    <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
     <link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
     <link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
     <link href="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.css" rel="stylesheet"
@@ -107,20 +104,17 @@ $Locations = $iotJumpWay->getLocations(0, "id ASC");
                                                 <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
                                                     <div class="form-group">
                                                         <label for="name" class="control-label mb-10">Name</label>
-                                                        <input type="text" class="form-control" id="name" name="name"
-                                                            placeholder="Name of patient" required value="">
+                                                        <input type="text" class="form-control" id="name" name="name" placeholder="Name of patient" required value="">
                                                         <span class="help-block"> Name of patient</span>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="name" class="control-label mb-10">Email</label>
-                                                        <input type="email" class="form-control" id="email" name="email"
-                                                            placeholder="Email of patient" required value="">
+                                                        <input type="email" class="form-control" id="email" name="email" placeholder="Email of patient" required value="">
                                                         <span class="help-block"> Email of patient</span>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="name" class="control-label mb-10">Username</label>
-                                                        <input type="text" class="form-control" id="username" name="username"
-                                                            placeholder="Username of patient" required value="">
+                                                        <input type="text" class="form-control" id="username" name="username" placeholder="Username of patient" required value="">
                                                         <span class="help-block"> Username of patient</span>
                                                     </div>
                                                     <div class="form-group mb-0">
@@ -134,7 +128,7 @@ $Locations = $iotJumpWay->getLocations(0, "id ASC");
                                                         <select class="form-control" id="lid" name="lid" required>
                                                             <option value="">PLEASE SELECT</option>
 
-                                                            <?php 
+                                                            <?php
                                                                 if(count($Locations)):
                                                                     foreach($Locations as $key => $value):
                                                             ?>
@@ -142,7 +136,7 @@ $Locations = $iotJumpWay->getLocations(0, "id ASC");
                                                             <option value="<?=$value["id"]; ?>">#<?=$value["id"]; ?>:
                                                                 <?=$value["name"]; ?></option>
 
-                                                            <?php 
+                                                            <?php
                                                                     endforeach;
                                                                 endif;
                                                             ?>
@@ -174,7 +168,6 @@ $Locations = $iotJumpWay->getLocations(0, "id ASC");
 
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
         <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
-
         <script type="text/javascript" src="<?=$domain; ?>/Hospital/Patients/Classes/Patients.js"></script>
 
     </body>

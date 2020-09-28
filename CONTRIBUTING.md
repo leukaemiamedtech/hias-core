@@ -1,5 +1,7 @@
 # Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss
-## Contributing to the Hospital Intelligent Automation System projectWe encourage bug fixes and enhancements submitted by the community and there are a number of ways you can contribute towards this repository.
+## Contributing to the Hospital Intelligent Automation System project
+
+We encourage bug fixes and enhancements submitted by the community and there are a number of ways you can contribute towards this repository.
 
 The first step is to head to our repository issues tab and decide how you would like to contribute.
 
@@ -8,7 +10,7 @@ The first step is to head to our repository issues tab and decide how you would 
 # Bug reports
 ![Bug Reports](Media/Images/bug-report.png)
 
-If you would like to contribute bug fixes or make the team aware of bugs you have identified in the project, please raise a **Bug report** issue in the [Issues](https://github.com/LeukemiaAiResearch/GeniSysAI/issues/new/choose) section. A template is provided that will allow you to provide your suggestions for your bug report / bug fix(es) which will be reviewed by the team who will communicate with you through your issue.
+If you would like to contribute bug fixes or make the team aware of bugs you have identified in the project, please raise a **Bug report** issue in the [Issues](issues/new/choose) section. A template is provided that will allow you to provide your suggestions for your bug report / bug fix(es) which will be reviewed by the team who will communicate with you through your issue.
 
 Bug fix issues are the first step to creating a pull request for bug fixes, once you have created your issue and it has been approved you can proceed with your bug fixes.
 
@@ -17,14 +19,14 @@ Bug fix issues are the first step to creating a pull request for bug fixes, once
 # Feature requests
 ![Bug Reports](Media/Images/feature-request.png)
 
-If you would like to suggest a new feature/ new features for this project, please raise a **Feature request** issue in the [HIAS - Hospital Intelligent Automation System](https://github.com/LeukemiaAiResearch/GeniSysAI/issues/new) section. A template is provided that will allow you to provide your suggestions for your feature request which will be reviewed by the team who will communicate through your issue.
+If you would like to suggest a new feature/ new features for this project, please raise a **Feature request** issue in the [HIAS - Hospital Intelligent Automation System](issues/new) section. A template is provided that will allow you to provide your suggestions for your feature request which will be reviewed by the team who will communicate through your issue.
 
 &nbsp;
 
 # Feature proposals
 ![Feature proposals](Media/Images/feature-proposal.png)
 
-If you would like to contribute new features to the project, please raise a **Feature proposal** issue in the [HIAS - Hospital Intelligent Automation System](https://github.com/LeukemiaAiResearch/GeniSysAI/issues/new) section. A template is provided that will allow you to provide your suggestions for your feature proposal which will be reviewed by the team who will communicate through your issue.
+If you would like to contribute new features to the project, please raise a **Feature proposal** issue in the [HIAS - Hospital Intelligent Automation System](issues/new) section. A template is provided that will allow you to provide your suggestions for your feature proposal which will be reviewed by the team who will communicate through your issue.
 
 Feature proposals are the first step to creating a pull request for new features, once you have created your issue and it has been approved you can proceed with your feature proposal.
 

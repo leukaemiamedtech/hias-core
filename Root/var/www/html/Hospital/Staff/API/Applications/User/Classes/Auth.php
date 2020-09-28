@@ -78,9 +78,36 @@
 
 		}
 
-        protected static function verifyPassword($password,$hash) {
-            return password_verify($password, $hash);
-        }
+		protected static function verifyPassword($password, $hash) {
+			return password_verify($password, $hash);
+		}
+
+		private function getAuthHeaders(){
+			if(!isSet($_SERVER["PHP_AUTH_USER"]) || !isSet($_SERVER["PHP_AUTH_PW"])):
+				return False;
+			endif;
+			$authParts=[$_SERVER["PHP_AUTH_USER"], $_SERVER["PHP_AUTH_PW"]];
+			return $authParts;
+		}
+
+		private function checkAuth($public, $private)
+		{
+			$pdoQuery = $this->_GeniSys->_secCon->prepare("
+				SELECT aprv
+				FROM mqtta
+				WHERE apub = :apub
+			");
+			$pdoQuery->execute([
+				":apub" => $public
+			]);
+			$user=$pdoQuery->fetch(PDO::FETCH_ASSOC);
+
+			if($this->verifyPassword($private, $this->_GeniSys->_helpers->oDecrypt($user["aprv"]))):
+				return True;
+			else:
+				return False;
+			endif;
+		}
 
 		public function process()
 		{
@@ -88,12 +115,21 @@
 				return $this->_response(["Response"=>"FAILED","Message"=>"Invalid Method"], 405);
 			endif;
 
+			$authHeaders=$this->getAuthHeaders();
+
+			if (!$authHeaders || !$authHeaders[0] || !$authHeaders[1]):
+				return $this->_response(["Response"=>"FAILED","Message"=>"No Authorisation Provided"], 401);
+			endif;
+
+			if(!$this->checkAuth($authHeaders[0], $authHeaders[1])):
+				return $this->_response(["Response"=>"FAILED","Message"=>"Invalid Authorisation Provided"], 401);
+			endif;
+
 			if ((int)method_exists($this, $this->_Endpoint) > 0):
 				return $this->_response($this->{$this->_Endpoint}($this->_Args));
 			endif;
 
-			return $this->_response("No Endpoint: ".$this->_Endpoint, 404);
-
+			return $this->_response(["Response"=>"FAILED","Message"=>"No Matching API Endpoint: ".$this->_Endpoint], 404);
 		}
 
 		private function _requestStatus($code) {
@@ -107,7 +143,6 @@
 			];
 
 			return ($status[$code])?$status[$code]:$status[500];
-
 		}
 
 		private function _response($data, $status = 200)

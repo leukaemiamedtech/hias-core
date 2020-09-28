@@ -6,8 +6,10 @@ var Patients = {
             switch (resp.Response) {
                 case "OK":
                     GeniSys.ResetForm("patient_create");
-                    Logging.logMessage("Core", "Patients", "Patient Created OK");
-                    window.location.replace(location.protocol + "//" + location.hostname + "/Hospital/Patients/" + resp.UID + '/');
+                    $('.modal-title').text('HIAS Patient');
+                    $('.modal-body').html("HIAS Patient ID #" + resp.UID + " created! The patient's credentials are provided below, please provide them to the new patient. The credentials can be reset in the patient area.<br /><br /><strong>User ID:</strong> " + resp.UID + "<br /><strong>Username:</strong> " + resp.Uname + "<br /><strong>User Password:</strong> " + resp.Upass + "<br /><br /><strong>MQTT User:</strong> " + resp.MU + "<br /><strong>MQTT Password:</strong> " + resp.MP + "<br /><br /><strong>Blockchain User:</strong> " + resp.BCU + "<br /><strong>Blockchain Pass:</strong> " + resp.BCP + "<br /><br /><strong>App ID:</strong> " + resp.AppID + "<br /><strong>App Key:</strong> " + resp.AppKey + "<br />");
+                    $('#responsive-modal').modal('show');
+                    Logging.logMessage("Core", "Forms", "Patient ID #" + resp.UID + " created!");
                     break;
                 default:
                     msg = "Patient Create Failed: " + resp.Message
@@ -23,7 +25,7 @@ var Patients = {
             switch (resp.Response) {
                 case "OK":
                     $('.modal-title').text('Patient Update');
-                    $('.modal-body').text("Patient Updated OK");
+                    $('.modal-body').text(resp.Message);
                     $('#responsive-modal').modal('show');
                     Logging.logMessage("Core", "Patients", "Patient Updated OK");
                     break;
@@ -38,17 +40,42 @@ var Patients = {
         });
     },
     ResetMqtt: function() {
-        $.post(window.location.href, { "reset_mqtt_patient": 1, "id": $("#id").val() },
+        $.post(window.location.href, { "reset_mqtt_patient": 1, "identifier": $("#identifier").val(), "pid": $("#id").val(), "id": $("#aid").val() },
             function(resp) {
+                console.log(resp)
                 var resp = jQuery.parseJSON(resp);
                 switch (resp.Response) {
                     case "OK":
-                        Logging.logMessage("Core", "Patients", "Patient MQTT Reset OK");
-                        $("#pntmqttp").text(resp.P)
+                        Patients.mqttpa = resp.P;
+                        Patients.mqttpae = resp.P.replace(/\S/gi, '*');
+                        $("#pntmqttp").text(Patients.mqttpae)
+                        Logging.logMessage("Core", "MQTT", "Patient MQTT Password Reset OK");
+                        $('.modal-title').text('New Password');
+                        $('.modal-body').text("This patient's new MQTT password is: " + resp.P);
+                        $('#responsive-modal').modal('show');
                         break;
                     default:
-                        msg = "Patient MQTT Reset Failed: " + resp.Message
-                        Logging.logMessage("Core", "Forms", msg);
+                        msg = "Patient MQTT Password Reset Failed: " + resp.Message
+                        Logging.logMessage("Core", "MQTT", msg);
+                        break;
+                }
+            });
+    },
+    ResetAppKey: function() {
+        $.post(window.location.href, { "reset_pt_apriv": 1, "identifier": $("#identifier").val(), "pid": $("#id").val(), "id": $("#aid").val() },
+            function(resp) {
+                console.log
+                var resp = jQuery.parseJSON(resp);
+                switch (resp.Response) {
+                    case "OK":
+                        Logging.logMessage("Core", "API", "User API Key Reset OK");
+                        $('.modal-title').text('New API Key');
+                        $('.modal-body').text("This user's new API Key is: " + resp.P);
+                        $('#responsive-modal').modal('show');
+                        break;
+                    default:
+                        msg = "User API Key Reset Failed: " + resp.Message
+                        Logging.logMessage("Core", "API", msg);
                         break;
                 }
             });
@@ -62,9 +89,15 @@ var Patients = {
         Patients.mqttuae = $("#pntmqttu").text().replace(/\S/gi, '*');
         Patients.mqttpa = $("#pntmqttp").text();
         Patients.mqttpae = $("#pntmqttp").text().replace(/\S/gi, '*');
+        Patients.idappida = $("#idappid").text();
+        Patients.idappidae = $("#idappid").text().replace(/\S/gi, '*');
+        Patients.bcida = $("#bcid").text();
+        Patients.bcidae = $("#bcid").text().replace(/\S/gi, '*');
 
         $("#pntmqttu").text(Patients.mqttuae);
         $("#pntmqttp").text(Patients.mqttpae);
+        $("#idappid").text(Patients.idappidae);
+        $("#bcid").text(Patients.bcidae);
     },
 };
 $(document).ready(function() {
@@ -87,6 +120,18 @@ $(document).ready(function() {
         $("#pntmqttp").text(Patients.mqttpae);
     });
 
+    $('#idappid').hover(function() {
+        $("#idappid").text(Patients.idappida);
+    }, function() {
+        $("#idappid").text(Patients.idappidae);
+    });
+
+    $('#bcid').hover(function() {
+        $("#bcid").text(Patients.bcida);
+    }, function() {
+        $("#bcid").text(Patients.bcidae);
+    });
+
     $('#patient_create').validator().on('submit', function(e) {
         if (!e.isDefaultPrevented()) {
             e.preventDefault();
@@ -101,9 +146,14 @@ $(document).ready(function() {
         }
     });
 
-    $("#GeniSysAI").on("click", "#reset_patients_mqtt", function(e) {
+    $("#GeniSysAI").on("click", "#reset_patient_mqtt", function(e) {
         e.preventDefault();
         Patients.ResetMqtt();
+    });
+
+    $("#GeniSysAI").on("click", "#reset_pt_apriv", function(e) {
+        e.preventDefault();
+        Patients.ResetAppKey();
     });
 
 });

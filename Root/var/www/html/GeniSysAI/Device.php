@@ -44,16 +44,12 @@ list($lat, $lng) = $NLU->getMapMarkers($TDevice);
 	<link type="image/x-icon" rel="shortcut icon" href="<?=$domain; ?>/img/favicon.png" />
 	<link type="image/x-icon" rel="apple-touch-icon" href="<?=$domain; ?>/img/favicon.png" />
 
-	<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet"
-		type="text/css" />
-	<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet"
-		type="text/css" />
-	<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet"
-		type="text/css">
+	<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+	<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+	<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 	<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
 	<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
-	<link href="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.css" rel="stylesheet"
-		type="text/css" />
+	<link href="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body id="GeniSysAI">
@@ -150,8 +146,7 @@ list($lat, $lng) = $NLU->getMapMarkers($TDevice);
 															?>
 
 															<option value="<?=$value["id"]; ?>"
-																<?=$TDevice["zid"] == $value["id"] ? " selected " : ""; ?>>
-																#<?=$value["id"]; ?>: <?=$value["zn"]; ?></option>
+																<?=$TDevice["zid"] == $value["id"] ? " selected " : ""; ?>>#<?=$value["id"]; ?>: <?=$value["zn"]; ?></option>
 
 															<?php
 																	endforeach;
@@ -172,8 +167,7 @@ list($lat, $lng) = $NLU->getMapMarkers($TDevice);
 															?>
 
 															<option value="<?=$value["id"]; ?>"
-																<?=$TDevice["did"] == $value["id"] ? " selected " : ""; ?>>
-																#<?=$value["id"]; ?>: <?=$value["name"]; ?></option>
+																<?=$TDevice["did"] == $value["id"] ? " selected " : ""; ?>>#<?=$value["id"]; ?>: <?=$value["name"]; ?></option>
 
 															<?php
 																	endforeach;
@@ -185,6 +179,8 @@ list($lat, $lng) = $NLU->getMapMarkers($TDevice);
 													</div>
 													<div class="form-group mb-0">
 														<input type="hidden" class="form-control" id="update_genisysai" name="update_genisysai" required value="1">
+														<input type="hidden" class="form-control" id="status" name="status" required value="<?=$TDevice["status"]; ?>">
+														<input type="hidden" class="form-control" id="identifier" name="identifier" required value="<?=$TDevice["apub"]; ?>">
 														<input type="hidden" class="form-control" id="id" name="id" required value="<?=$TDevice["id"]; ?>">
 														<input type="hidden" class="form-control" id="did" name="did" required value="<?=$TDevice["did"]; ?>">
 														<button type="submit" class="btn btn-success btn-anim" id="genisysai_update"><i class="icon-rocket"></i><span class="btn-text">Submit</span></button>
@@ -198,7 +194,7 @@ list($lat, $lng) = $NLU->getMapMarkers($TDevice);
 													</div>
 													<div class="form-group">
 														<label for="name" class="control-label mb-10">MAC</label>
-														<input type="text" class="form-control hider" id="mac" name="mac" placeholder="GeniSysAI Device MAC" required value="<?=$TDevice["ip"] ? $_GeniSys->_helpers->oDecrypt($TDevice["ip"]) : ""; ?>">
+														<input type="text" class="form-control hider" id="mac" name="mac" placeholder="GeniSysAI Device MAC" required value="<?=$TDevice["mac"] ? $_GeniSys->_helpers->oDecrypt($TDevice["mac"]) : ""; ?>">
 														<span class="help-block"> MAC of GeniSysAI NLU device</span>
 													</div>
 													<div class="form-group">
@@ -209,6 +205,358 @@ list($lat, $lng) = $NLU->getMapMarkers($TDevice);
 												</div>
 											</div>
 										</form>
+									</div>
+								</div>
+							</div>
+						</div><br />
+						<div class="panel panel-default card-view panel-refresh">
+							<div class="panel-heading">
+								<div class="pull-left">
+									<h6 class="panel-title txt-dark">Device History</h6>
+								</div>
+								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/<?=$TDevice["lid"]; ?>/Zones/<?=$TDevice["zid"]; ?>/Devices/<?=$TDevice["did"]; ?>/History"><i class="fa fa-eye pull-left"></i> View All Device History</a></div>
+								<div class="clearfix"></div>
+							</div>
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
+									<div class="table-wrap mt-40">
+										<div class="table-responsive">
+											<table class="table mb-0">
+												<thead>
+												  <tr>
+													<th>ID</th>
+													<th>Action</th>
+													<th>Receipt</th>
+													<th>Time</th>
+												  </tr>
+												</thead>
+												<tbody>
+
+												<?php
+													$userDetails = "";
+													$history = $iotJumpWay->retrieveDeviceHistory($TDevice["did"], 5);
+													if(count($history)):
+														foreach($history as $key => $value):
+																if($value["uid"]):
+																	$user = $_GeniSysAi->getUser($value["uid"]);
+																	$userDetails = "User ID #" . $value["uid"] . " (" . $user["name"] . ") ";
+																endif;
+												?>
+
+												  <tr>
+													<td>#<?=$value["id"];?></td>
+													<td><?=$userDetails;?><?=$value["action"];?></td>
+													<td>
+
+														<?php
+															if($value["hash"]):
+														?>
+															<a href="<?=$domain; ?>/iotJumpWay/<?=$TDevice["lid"]; ?>/Zones/<?=$TDevice["zid"]; ?>/Devices/<?=$TDevice["did"]; ?>/Transaction/<?=$value["hash"];?>">#<?=$value["hash"];?></a>
+														<?php
+															else:
+														?>
+															NA
+														<?php
+															endif;
+														?>
+
+
+
+													</td>
+													<td><?=date("Y-m-d H:i:s", $value["time"]);?></td>
+												  </tr>
+
+												<?php
+														endforeach;
+													endif;
+												?>
+
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div><br />
+						<div class="panel panel-default card-view panel-refresh">
+							<div class="panel-heading">
+								<div class="pull-left">
+									<h6 class="panel-title txt-dark">Device Transactions</h6>
+								</div>
+								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/<?=$TDevice["lid"]; ?>/Zones/<?=$TDevice["zid"]; ?>/Devices/<?=$TDevice["did"]; ?>/Transactions"><i class="fa fa-eye pull-left"></i> View All Device Transactions</a></div>
+								<div class="clearfix"></div>
+							</div>
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
+									<div class="table-wrap mt-40">
+										<div class="table-responsive">
+											<table class="table mb-0">
+												<thead>
+												  <tr>
+													<th>ID</th>
+													<th>Action</th>
+													<th>Receipt</th>
+													<th>Time</th>
+												  </tr>
+												</thead>
+												<tbody>
+
+												<?php
+													$transactions = $iotJumpWay->retrieveDeviceTransactions($TDevice["did"], 5);
+													if(count($transactions)):
+														foreach($transactions as $key => $value):
+															if($value["uid"]):
+																$user = $_GeniSysAi->getUser($value["uid"]);
+																$userDetails = "User ID #" . $value["uid"] . " (" . $user["name"] . ") ";
+															endif;
+												?>
+
+												  <tr>
+													<td>#<?=$value["id"];?></td>
+													<td><?=$userDetails;?><?=$value["action"];?></td>
+													<td><a href="<?=$domain; ?>/iotJumpWay/<?=$TDevice["lid"]; ?>/Zones/<?=$TDevice["zid"]; ?>/Devices/<?=$TDevice["did"]; ?>/Transaction/<?=$value["id"];?>">#<?=$value["id"];?></a></td>
+													<td><?=date("Y-m-d H:i:s", $value["time"]);?></td>
+												  </tr>
+
+												<?php
+														endforeach;
+													endif;
+												?>
+
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div><br />
+						<div class="panel panel-default card-view panel-refresh">
+							<div class="panel-heading">
+								<div class="pull-left">
+									<h6 class="panel-title txt-dark">Device iotJumpWay Statuses</h6>
+								</div>
+								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/<?=$TDevice["lid"]; ?>/Zones/<?=$TDevice["zid"]; ?>/Devices/<?=$TDevice["did"]; ?>Statuses"><i class="fa fa-eye pull-left"></i> View All Device Status Data</a></div>
+								<div class="clearfix"></div>
+							</div>
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
+									<div class="table-wrap mt-40">
+										<div class="table-responsive">
+											<table class="table mb-0">
+												<thead>
+												  <tr>
+													<th>ID</th>
+													<th>Status</th>
+													<th>Time</th>
+												  </tr>
+												</thead>
+												<tbody>
+
+												<?php
+													$Statuses = $iotJumpWay->retrieveDeviceStatuses($TDevice["did"], 5);
+													if($Statuses["Response"] == "OK"):
+														foreach($Statuses["ResponseData"] as $key => $value):
+												?>
+
+												  <tr>
+													<td>#<?=$value->_id;?></td>
+													<td><?=$value->Status;?></td>
+													<td><?=$value->Time;?> </td>
+												  </tr>
+
+												<?php
+														endforeach;
+													endif;
+												?>
+
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div><br />
+						<div class="panel panel-default card-view panel-refresh">
+							<div class="panel-heading">
+								<div class="pull-left">
+									<h6 class="panel-title txt-dark">Device iotJumpWay Life</h6>
+								</div>
+								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/<?=$TDevice["lid"]; ?>/Zones/<?=$TDevice["zid"]; ?>/Devices/<?=$TDevice["did"]; ?>/Life"><i class="fa fa-eye pull-left"></i> View All Device Life Data</a></div>
+								<div class="clearfix"></div>
+							</div>
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
+									<div class="table-wrap mt-40">
+										<div class="table-responsive">
+											<table class="table mb-0">
+												<thead>
+												  <tr>
+													<th>ID</th>
+													<th>Details</th>
+													<th>Time</th>
+												  </tr>
+												</thead>
+												<tbody>
+
+												<?php
+													$Statuses = $iotJumpWay->retrieveDeviceLife($TDevice["did"], 5);
+													if($Statuses["Response"] == "OK"):
+														foreach($Statuses["ResponseData"] as $key => $value):
+												?>
+
+												  <tr>
+													<td>#<?=$value->_id;?></td>
+													<td>
+														<strong>CPU</strong>: <?=$value->Data->CPU;?>%<br />
+														<strong>Memory</strong>: <?=$value->Data->Memory;?>%<br />
+														<strong>Diskspace</strong>: <?=$value->Data->Diskspace;?>%<br />
+														<strong>Temperature</strong>: <?=$value->Data->Temperature;?>°C<br />
+														<strong>Latitude</strong>: <?=$value->Data->Latitude;?><br />
+														<strong>Longitude</strong>: <?=$value->Data->Longitude;?><br />
+													</td>
+													<td><?=$value->Time;?> </td>
+												  </tr>
+
+												<?php
+														endforeach;
+													endif;
+												?>
+
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div><br />
+						<div class="panel panel-default card-view panel-refresh">
+							<div class="panel-heading">
+								<div class="pull-left">
+									<h6 class="panel-title txt-dark">Device iotJumpWay Sensors</h6>
+								</div>
+								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/<?=$TDevice["lid"]; ?>/Zones/<?=$TDevice["zid"]; ?>/Devices/<?=$TDevice["did"]; ?>/Sensors"><i class="fa fa-eye pull-left"></i> View All Device Sensors Data</a></div>
+								<div class="clearfix"></div>
+							</div>
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
+									<div class="table-wrap mt-40">
+										<div class="table-responsive">
+											<table class="table mb-0">
+												<thead>
+												  <tr>
+													<th>ID</th>
+													<th>Type</th>
+													<th>Sensor</th>
+													<th>Value</th>
+													<th>Message</th>
+													<th>Time</th>
+												  </tr>
+												</thead>
+												<tbody>
+
+												<?php
+													$Statuses = $iotJumpWay->retrieveDeviceSensors($TDevice["did"], 5);
+													if($Statuses["Response"] == "OK"):
+														foreach($Statuses["ResponseData"] as $key => $value):
+															$location = $iotJumpWay->getLocation($value->Location);
+												?>
+												  <tr>
+													<td>#<?=$value->_id;?></td>
+													<td><?=$value->Type;?></td>
+													<td><?=$value->Sensor;?></td>
+													<td>
+														<?php
+															if(($value->Sensor == "Facial API" || $value->Sensor == "Foscam Camera" || $value->Sensor == "USB Camera") && is_array($value->Value)):
+																foreach($value->Value AS $key => $val):
+																	 echo  $val[0] == 0 ? "<strong>Identification: </strong> Intruder<br />" :"<strong>Identification: </strong> User #" . $val[0] . "<br />";
+																	echo "<strong>Distance: </strong> " . $val[1] . "<br />";
+																	echo "<strong>Message: </strong> " . $val[2] . "<br /><br />";
+																endforeach;
+															else:
+																echo $value->Value;
+															endif;
+														?>
+
+													</td>
+													<td><?=$value->Message;?></td>
+													<td><?=$value->Time;?> </td>
+												  </tr>
+
+												<?php
+														endforeach;
+													endif;
+												?>
+
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div><br />
+						<div class="panel panel-default card-view panel-refresh">
+							<div class="panel-heading">
+								<div class="pull-left">
+									<h6 class="panel-title txt-dark">Device iotJumpWay Commands</h6>
+								</div>
+								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/<?=$TDevice["lid"]; ?>/Zones/<?=$TDevice["zid"]; ?>/Devices/<?=$TDevice["did"]; ?>/Commands"><i class="fa fa-eye pull-left"></i> View All Device Commands Data</a></div>
+								<div class="clearfix"></div>
+							</div>
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
+									<div class="table-wrap mt-40">
+										<div class="table-responsive">
+											<table class="table mb-0">
+												<thead>
+													<tr>
+														<th>ID</th>
+														<th>Location</th>
+														<th>Info</th>
+														<th>Time</th>
+													</tr>
+												</thead>
+												<tbody>
+
+												<?php
+													$Statuses = $iotJumpWay->retrieveDeviceCommands($TDevice["did"], 5);
+													if($Statuses["Response"] == "OK"):
+														foreach($Statuses["ResponseData"] as $key => $value):
+															$location = $iotJumpWay->getLocation($value->Location);
+															$device = $iotJumpWay->getDevice($value->From);
+															$devicet = $iotJumpWay->getDevice($value->To);
+															$zone = $iotJumpWay->getZone($value->Zone);
+															if(!$device["name"]):
+																$type = "App";
+																$application = $iotJumpWay->getApplication($value->From);
+																$name = $application["name"];
+															else:
+																$type = "Device";
+																$name = $device["name"];
+															endif;
+												?>
+
+												<tr>
+													<td>#<?=$value->_id;?></td>
+													<td>Location #<?=$value->Location;?>: <?=$location["name"]; ?><br />
+														Zone <?=$value->Zone != 0 ? "#" . $value->Zone . ": " . $zone["zn"] : "NA"; ?><br />
+														From <?=$type; ?> <?=$value->From != 0 ? "#" . $value->From . ": " . $name : "NA"; ?><br />
+													</td>
+													<td>
+														Type: <?=$value->Type;?><br />
+														Value: <?=$value->Value;?><br />
+														Message: <?=$value->Message;?>
+													</td>
+													<td><?=$value->Time;?></td>
+												</tr>
+
+												<?php
+														endforeach;
+													endif;
+												?>
+
+												</tbody>
+											</table>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -231,9 +579,6 @@ list($lat, $lng) = $NLU->getMapMarkers($TDevice);
 								</div>
 							</div>
 						</div>
-
-
-						<div class="panel panel-default card-view panel-refresh <?=$TDevice["type"] == "API" ? "hide" : ""; ?>">
 						<div class="panel panel-default card-view panel-refresh">
 							<div class="panel-wrapper collapse in">
 								<div class="panel-body">
@@ -241,6 +586,32 @@ list($lat, $lng) = $NLU->getMapMarkers($TDevice);
 									<div class="form-group">
 										<div class="col-md-12">
   											<div id="map1" class="map" style="height: 300px;"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="panel panel-default card-view panel-refresh">
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
+									<div class="pull-right"><a href="javascipt:void(0)" id="reset_apriv"><i class="fa fa-refresh"></i> Reset API Key</a></div>
+									<div class="form-group">
+										<label class="control-label col-md-5">Identifier</label>
+										<div class="col-md-9">
+											<p class="form-control-static" id="idappid"><?=$TDevice["apub"]; ?></p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="panel panel-default card-view panel-refresh">
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
+									<div class="pull-right"></div>
+									<div class="form-group">
+										<label class="control-label col-md-5">Blockchain Address</label>
+										<div class="col-md-9">
+											<p class="form-control-static" id="bcid"><?=$TDevice["bcaddress"]; ?></p>
 										</div>
 									</div>
 								</div>
