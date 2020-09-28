@@ -1387,14 +1387,14 @@ Congratulations, you have the basics of the server installed!! Visit your domain
 
 The HIAS dashboard is your control panel for your encrypted intelligent and IoT connected  Hospital Intelligent Automation System.
 
+**PLEASE NOTE:** The camera view you see in this screen shot is on of the modular addons for the HIAS Network.
+
 &nbsp;
 
 # HIAS IoT Network
 ![HIAS IoT Network](../../Media/Images/HIAS-IoT-Dashboard.png)
 
 The HIAS IoT network is powered by a new, fully open-source version of the [iotJumpWay](https://www.iotJumpWay.com "iotJumpWay"). The HIAS iotJumpway dashboard is your control panel for managing all of your network iotJumpWay zones, devices, sensors/actuators and applications. The modular systems that we build to be compatible with this network will all create their own iotJumpWay applications etc during installation, you will be able to manage all of these applications and devices through the iotJumpWay dashboard.
-
-**PLEASE NOTE:** The camera view you see in this screen shot is on of the modular addons for the HIAS Network.
 
 &nbsp;
 
