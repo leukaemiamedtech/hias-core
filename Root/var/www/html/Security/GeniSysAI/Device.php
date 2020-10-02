@@ -118,6 +118,9 @@ list($lat, $lng) = $GeniSysAI->getMapMarkers($TDevice);
 	 	 	 	 	 	 	 	 	 	 	 	 	 	 <select class="form-control" id="type" name="type" required>
 	 	 	 	 	 	 	 	 	 	 	 	 	 	 	 <option value="">PLEASE SELECT</option>
 	 	 	 	 	 	 	 	 	 	 	 	 	 	 	 <option value="API" <?=$TDevice["type"] == "API" ? " selected " : ""; ?>>API</option>
+                                                            <option value="Realsense D415" <?=$TDevice["type"] == "Realsense D415" ? " selected " : ""; ?>>Realsense D415</option>
+                                                            <option value="Realsense F200" <?=$TDevice["type"] == "Realsense F200" ? " selected " : ""; ?>>Realsense F200</option>
+                                                            <option value="Realsense R200" <?=$TDevice["type"] == "Realsense R200" ? " selected " : ""; ?>>Realsense R200</option>
 	 	 	 	 	 	 	 	 	 	 	 	 	 	 	 <option value="Foscam Camera" <?=$TDevice["type"] == "Foscam Camera" ? " selected " : ""; ?>>Foscam Camera</option>
 	 	 	 	 	 	 	 	 	 	 	 	 	 	 	 <option value="USB Camera" <?=$TDevice["type"] == "USB Camera" ? " selected " : ""; ?>>USB Camera</option>
 	 	 	 	 	 	 	 	 	 	 	 	 	 	 </select>
