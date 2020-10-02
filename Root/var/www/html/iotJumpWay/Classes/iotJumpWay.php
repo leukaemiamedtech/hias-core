@@ -12,11 +12,14 @@ use Web3\Utils;
 		function __construct($_GeniSys)
 		{
 			$this->_GeniSys = $_GeniSys;
-			$this->bcc = $this->getBlockchainConf();
-			$this->web3 = $this->blockchainConnection();
-			$this->contract = new Contract($this->web3->provider, $this->bcc["abi"]);
-			$this->icontract = new Contract($this->web3->provider, $this->bcc["iabi"]);
-			$this->checkBlockchainPermissions();
+
+			if(isSet($_SESSION["GeniSysAI"]["Active"])):
+				$this->bcc = $this->getBlockchainConf();
+				$this->web3 = $this->blockchainConnection();
+				$this->contract = new Contract($this->web3->provider, $this->bcc["abi"]);
+				$this->icontract = new Contract($this->web3->provider, $this->bcc["iabi"]);
+				$this->checkBlockchainPermissions();
+			endif;
 		}
 
 		public function getBlockchainConf()
@@ -1419,7 +1422,7 @@ use Web3\Utils;
 			$htpasswd = new Htpasswd('/etc/nginx/security/htpasswd');
 			$htpasswd->addUser($pubKey, $privKey, Htpasswd::ENCTYPE_APR_MD5);
 
-			$newBcUser = $this->createBlockchainUser($this->web3, $bcPass);
+			$newBcUser = $this->createBlockchainUser($bcPass);
 
 			$allowed = filter_input(INPUT_POST, "cancelled", FILTER_SANITIZE_STRING) ? False : True;
 			$admin = filter_input(INPUT_POST, "admin", FILTER_SANITIZE_STRING) ? True : False;
@@ -1519,7 +1522,7 @@ use Web3\Utils;
 			if($hash == "FAILED"):
 				$actionMsg .= " HIAS Blockchain registerAuthorized failed! " . $msg;
 			else:
-				$txid = $this->storeBlockchainTransaction("iotJumpWay Register Authorized", $hash, $did);
+				$txid = $this->storeBlockchainTransaction("iotJumpWay Register Authorized", $hash, 0, $aid);
 				$this->storeUserHistory("Register Authorized", $txid, $lid, 0, 0, 0, $aid);
 				$balance = $this->getBlockchainBalance();
 				if($balanceMessage == ""):

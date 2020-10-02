@@ -10,11 +10,13 @@ use Web3\Utils;
 	{
 		function __construct($_GeniSys)
 		{
-			$this->_GeniSys = $_GeniSys;
-			$this->bcc = $this->getBlockchainConf();
-			$this->web3 = $this->blockchainConnection();
-			$this->contract = new Contract($this->web3->provider, $this->bcc["abi"]);
-			$this->icontract = new Contract($this->web3->provider, $this->bcc["iabi"]);
+			if(isSet($_SESSION["GeniSysAI"]["Active"])):
+				$this->_GeniSys = $_GeniSys;
+				$this->bcc = $this->getBlockchainConf();
+				$this->web3 = $this->blockchainConnection();
+				$this->contract = new Contract($this->web3->provider, $this->bcc["abi"]);
+				$this->icontract = new Contract($this->web3->provider, $this->bcc["iabi"]);
+			endif;
 		}
 
 		public function getBlockchainConf()
@@ -40,9 +42,12 @@ use Web3\Utils;
 
 		private function blockchainConnection()
 		{
-			$web3 = new Web3($this->_GeniSys->_helpers->oDecrypt($this->_GeniSys->_confs["domainString"]) . "/Blockchain/API/", 30, $_SESSION["GeniSysAI"]["User"], $this->_GeniSys->_helpers->oDecrypt($_SESSION["GeniSysAI"]["Pass"]));
 
-			return $web3;
+			if(isSet($_SESSION["GeniSysAI"]["Active"])):
+				$web3 = new Web3($this->_GeniSys->_helpers->oDecrypt($this->_GeniSys->_confs["domainString"]) . "/Blockchain/API/", 30, $_SESSION["GeniSysAI"]["User"], $this->_GeniSys->_helpers->oDecrypt($_SESSION["GeniSysAI"]["Pass"]));
+
+				return $web3;
+			endif;
 		}
 
 		private function checkBlockchainPermissions()
@@ -387,7 +392,7 @@ use Web3\Utils;
 				':name' => filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING),
 				':mqttu' =>$this->_GeniSys->_helpers->oEncrypt($mqttUser),
 				':mqttp' =>$this->_GeniSys->_helpers->oEncrypt($mqttPass),
-				':bcaddress' => $this->_GeniSys->_helpers->oEncrypt($newBcUser),
+				':bcaddress' => $newBcUser,
 				':bcpw' => $this->_GeniSys->_helpers->oEncrypt($bcPass),
 				':apub' => $pubKey,
 				':aprv' => $this->_GeniSys->_helpers->oEncrypt($privKeyHash),
@@ -643,6 +648,7 @@ use Web3\Utils;
 			$lid = filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT);
 			$zid = filter_input(INPUT_POST, "zid", FILTER_SANITIZE_NUMBER_INT);
 			$did = filter_input(INPUT_POST, "did", FILTER_SANITIZE_NUMBER_INT);
+			$id = filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT);
 
 			$pdoQuery = $this->_GeniSys->_secCon->prepare("
 				UPDATE genisysai
@@ -669,7 +675,7 @@ use Web3\Utils;
 				":sportf" => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "sportf", FILTER_SANITIZE_STRING)),
 				":sckport" => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "sckport", FILTER_SANITIZE_STRING)),
 				":strdir" => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "strdir", FILTER_SANITIZE_STRING)),
-				":id" => $did
+				":id" => $id
 			]);
 			$pdoQuery->closeCursor();
 			$pdoQuery = null;

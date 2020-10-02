@@ -191,7 +191,6 @@ $blockchainConf = $Blockchain->getBlockchainConf();
 													$Statuses = $iotJumpWay->retrieveStatuses(5);
 													if($Statuses["Response"] == "OK"):
 														foreach($Statuses["ResponseData"] as $key => $value):
-
 															$location = $iotJumpWay->getLocation($value->Location);
 															$device = $iotJumpWay->getDevice($value->Device);
 															$zone = $iotJumpWay->getZone($value->Zone);
@@ -332,32 +331,24 @@ $blockchainConf = $Blockchain->getBlockchainConf();
 													$Sensors = $iotJumpWay->retrieveSensors();
 													if($Sensors["Response"] == "OK"):
 														foreach($Sensors["ResponseData"] as $key => $value):
+															$location = $iotJumpWay->getLocation($value->Location);
+															$device = $iotJumpWay->getDevice($value->Device);
+															$zone = $iotJumpWay->getZone($value->Zone);
+															$application = $iotJumpWay->getApplication($value->Application);
 															$hashString = (string)$value->Sensor . (string)$value->Type . (string)$value->Value . (string)$value->Message;
 												?>
 
 												  <tr>
 													<td>#<?=$value->_id;?></td>
 													<td><?=$value->Use;?></td>
-													<td>Location #<?=$value->Location;?>: <?=$location["name"]; ?><br />
-														Zone <?=$value->Zone != 0 ? "#" . $value->Zone . ": " . $zone["zn"] : "NA"; ?><br />
-														Device <?=$value->Device != 0 ? "#" . $value->Device . ": " . $device["name"] : "NA"; ?><br />
+													<td><strong>Location:</strong> #<?=$value->Location;?> - <?=$location["name"]; ?><br />
+														<strong>Zone:</strong> <?=$value->Zone != 0 ? "#" . $value->Zone . " - " . $zone["zn"] : "NA"; ?><br />
+														<strong>Device</strong> <?=$value->Device != 0 ? "#" . $value->Device . " - " . $device["name"] : "NA"; ?><br />
+														<strong>Application</strong> <?=$value->Application != 0 ? "#" . $value->Application . " - " . $application["name"] : "NA";?>
 													</td>
 													<td><?=$value->Type;?></td>
 													<td><?=$value->Sensor;?></td>
-													<td>
-														<?php
-															if(($value->Sensor == "Facial API" || $value->Sensor == "Foscam Camera" || $value->Sensor == "USB Camera") && is_array($value->Value)):
-																foreach($value->Value AS $key => $val):
-																	 echo  $val[0] == 0 ? "<strong>Identification: </strong> Intruder<br />" :"<strong>Identification: </strong> User #" . $val[0] . "<br />";
-																	echo "<strong>Distance: </strong> " . $val[1] . "<br />";
-																	echo "<strong>Message: </strong> " . $val[2] . "<br /><br />";
-																endforeach;
-															else:
-																echo $value->Value;
-															endif;
-														?>
-
-													</td>
+													<td><?=$value->Value; ?></td>
 													<td><?=$value->Message;?></td>
 													<td><?=$value->Time;?> </td>
 													<td><a href="javascript:void(0);" class="btn btn-success btn-anim verify" data-user="<?=$_SESSION["GeniSysAI"]["BC"]["BCUser"];?>" data-key="<?=$value->_id;?>" data-hash="<?=$hashString; ?>"><span class="btn-text">VERIFY</span></button></td>
