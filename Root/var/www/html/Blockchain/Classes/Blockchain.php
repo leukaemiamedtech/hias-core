@@ -53,7 +53,6 @@ use Web3\Utils;
 		private function blockchainConnection()
 		{
 			$web3 = new Web3($this->_GeniSys->_helpers->oDecrypt($this->_GeniSys->_confs["domainString"]) . "/Blockchain/API/", 30, $_SESSION["GeniSysAI"]["User"], $this->_GeniSys->_helpers->oDecrypt($_SESSION["GeniSysAI"]["Pass"]));
-
 			return $web3;
 		}
 
@@ -263,11 +262,11 @@ use Web3\Utils;
 
 			$query = $this->_GeniSys->_secCon->prepare("
 				UPDATE blockchain
-				SET bcaddress = :bcaddress,
+				SET bcaddress = :address,
 					pw = :pw
 			");
 			$query->execute([
-				':bcaddress' => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "address", FILTER_SANITIZE_STRING)),
+				':address' => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "address", FILTER_SANITIZE_STRING)),
 				':pw' => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "pw", FILTER_SANITIZE_STRING))
 			]);
 			$id = $this->_GeniSys->_secCon->lastInsertId();

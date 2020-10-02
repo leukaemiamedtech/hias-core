@@ -107,8 +107,11 @@ $Devices = $iotJumpWay->getDevices();
                                                         <select class="form-control" id="type" name="type" required>
                                                             <option value="">PLEASE SELECT</option>
                                                             <option value="API">API</option>
-                                                            <option value="USB Camera">USB Camera</option>
                                                             <option value="Foscam Camera">Foscam Camera</option>
+                                                            <option value="Realsense D415">Realsense D415</option>
+                                                            <option value="Realsense F200">Realsense F200</option>
+                                                            <option value="Realsense R200">Realsense R200</option>
+                                                            <option value="USB Camera">USB Camera</option>
                                                         </select>
                                                         <span class="help-block"> Type of GeniSysAI camera device</span>
                                                     </div>

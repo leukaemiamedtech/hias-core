@@ -13,10 +13,12 @@ use Web3\Utils;
 		{
 			$this->_GeniSys = $_GeniSys;
 
-			$this->bcc = $this->getBlockchainConf();
-			$this->web3 = $this->blockchainConnection();
-			$this->contract = new Contract($this->web3->provider, $this->bcc["abi"]);
-			$this->checkBlockchainPermissions();
+			if(isSet($_SESSION["GeniSysAI"]["Active"])):
+				$this->bcc = $this->getBlockchainConf();
+				$this->web3 = $this->blockchainConnection();
+				$this->contract = new Contract($this->web3->provider, $this->bcc["abi"]);
+				$this->checkBlockchainPermissions();
+			endif;
 
 			$this->country = filter_input(INPUT_GET, "country", FILTER_SANITIZE_STRING) ?
 urldecode(filter_input(INPUT_GET, "country", FILTER_SANITIZE_STRING)) : "Spain";
@@ -45,8 +47,10 @@ urldecode(filter_input(INPUT_GET, "country", FILTER_SANITIZE_STRING)) : "Spain";
 
 		private function blockchainConnection()
 		{
-			$web3 = new Web3($this->_GeniSys->_helpers->oDecrypt($this->_GeniSys->_confs["domainString"]) . "/Blockchain/API/", 30, $_SESSION["GeniSysAI"]["User"], $this->_GeniSys->_helpers->oDecrypt($_SESSION["GeniSysAI"]["Pass"]));
-			return $web3;
+			if(isSet($_SESSION["GeniSysAI"]["Active"])):
+				$web3 = new Web3($this->_GeniSys->_helpers->oDecrypt($this->_GeniSys->_confs["domainString"]) . "/Blockchain/API/", 30, $_SESSION["GeniSysAI"]["User"], $this->_GeniSys->_helpers->oDecrypt($_SESSION["GeniSysAI"]["Pass"]));
+				return $web3;
+			endif;
 		}
 
 		private function checkBlockchainPermissions()
