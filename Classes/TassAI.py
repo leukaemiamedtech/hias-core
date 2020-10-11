@@ -1,8 +1,7 @@
 ######################################################################################################
 #
-# Organization:  Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss
-# Repository:   HIAS: Hospital Intelligent Automation System
-# Project:      TassAI
+# Organization:  Peter Moss Leukemia AI Research
+# Repository:    HIAS: Hospital Intelligent Automation System
 #
 # Author:        Adam Milton-Barker (AdamMiltonBarker.com)
 #
@@ -14,7 +13,6 @@
 ######################################################################################################
 
 import cv2
-import dlib
 import os
 import os.path as osp
 

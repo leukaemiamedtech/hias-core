@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 ######################################################################################################
 #
-# Organization:  Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss
+# Organization:  Peter Moss Leukemia AI Research
 # Repository:    HIAS: Hospital Intelligent Automation System
-# Module:        iotJumpWay
 #
 # Author:        Adam Milton-Barker (AdamMiltonBarker.com)
 #
@@ -104,6 +103,8 @@ class iotJumpWay():
 		self.Blockchain.startBlockchain()
 		self.Blockchain.w3.geth.personal.unlockAccount(
 			self.Helpers.confs["ethereum"]["haddress"], self.Helpers.confs["ethereum"]["hpass"], 0)
+		self.Blockchain.w3.geth.personal.unlockAccount(
+			self.Helpers.confs["ethereum"]["iaddress"], self.Helpers.confs["ethereum"]["ipass"], 0)
 
 	def life(self):
 		""" Sends vital statistics to HIAS """

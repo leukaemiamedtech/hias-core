@@ -15,9 +15,7 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
     echo "  actioncheck =" | sudo tee -a /etc/fail2ban/action.d/ufw.conf
     echo "  actionban = ufw insert 1 deny from <ip> to any" | sudo tee -a /etc/fail2ban/action.d/ufw.conf
     echo "  actionunban = ufw delete deny from <ip> to any" | sudo tee -a /etc/fail2ban/action.d/ufw.conf
-    sudo nano /etc/fail2ban/action.d/ufw.conf
     sudo sed -i -- "s#banaction = iptables-multiport#banaction = ufw#g" /etc/fail2ban/jail.local
-    sudo nano /etc/fail2ban/jail.local
     sudo fail2ban-client restart
     sudo fail2ban-client status
     echo "Installed Fail2Ban"

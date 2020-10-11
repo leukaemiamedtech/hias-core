@@ -1,8 +1,7 @@
 ######################################################################################################
 #
-# Organization:  Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss
+# Organization:  Peter Moss Leukemia AI Research
 # Repository:    HIAS: Hospital Intelligent Automation System
-# Module:        Blockchain
 #
 # Author:        Adam Milton-Barker (AdamMiltonBarker.com)
 #
@@ -46,9 +45,12 @@ class Blockchain():
 		self.w3 = Web3(Web3.HTTPProvider(self.Helpers.confs["ethereum"]["bchost"], request_kwargs={
 						'auth': HTTPBasicAuth(self.Helpers.confs["ethereum"]["user"], self.Helpers.confs["ethereum"]["pass"])}))
 
-		self.authContract = self.w3.eth.contract(self.Helpers.confs["ethereum"]["authContract"], abi=json.dumps(self.Helpers.confs["ethereum"]["authAbi"]))
-		self.iotContract = self.w3.eth.contract(self.Helpers.confs["ethereum"]["iotContract"], abi=json.dumps(self.Helpers.confs["ethereum"]["iotAbi"]))
-		self.patientsContract = self.w3.eth.contract(self.Helpers.confs["ethereum"]["patientsContract"], abi=json.dumps(self.Helpers.confs["ethereum"]["patientsAbi"]))
+		self.authContract = self.w3.eth.contract(self.w3.toChecksumAddress(
+			self.Helpers.confs["ethereum"]["authContract"]), abi=json.dumps(self.Helpers.confs["ethereum"]["authAbi"]))
+		self.iotContract = self.w3.eth.contract(self.w3.toChecksumAddress(
+			self.Helpers.confs["ethereum"]["iotContract"]), abi=json.dumps(self.Helpers.confs["ethereum"]["iotAbi"]))
+		self.patientsContract = self.w3.eth.contract(self.w3.toChecksumAddress(
+			self.Helpers.confs["ethereum"]["patientsContract"]), abi=json.dumps(self.Helpers.confs["ethereum"]["patientsAbi"]))
 		self.Helpers.logger.info("Blockchain connections started")
 
 	def hiasAccessCheck(self, typeof, identifier):

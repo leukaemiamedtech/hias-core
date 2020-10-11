@@ -7,13 +7,13 @@ server {
         location /Blockchain/API/ {
                 auth_basic "Restricted";
                 auth_basic_user_file /etc/nginx/security/htpasswd;
-                proxy_pass http://YourBlockchainApiIP:8545/;
+                proxy_pass http://HiasServerIp:8545/;
         }
 
-        location ~* ^/Security/GeniSysAI/API/(.*)$ {
+        location /Security/API/ {
                 auth_basic "Restricted";
                 auth_basic_user_file /etc/nginx/security/htpasswd;
-                proxy_pass http://YourSecurityApiIP:YourSecurityApiPort/$1;
+                proxy_pass http://HiasServerIp:8080/;
         }
 
         location / {
