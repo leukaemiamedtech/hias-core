@@ -5,7 +5,7 @@
 
 					<li>
 						<div class="user-profile text-center">
-							<img src="<?=$domain; ?>/Team/Media/Images/Uploads/<?=$_SESSION["GeniSysAI"]["Pic"]; ?>" alt="user_auth" class="user-auth-img img-circle"/>
+							<img src="<?=$domain; ?>/Hospital/Staff/Media/Images/Uploads/<?=$_SESSION["GeniSysAI"]["Pic"]; ?>" alt="user_auth" class="user-auth-img img-circle"/>
 							<div class="dropdown mt-5">
 								<a href="#" class="dropdown-toggle pr-0 bg-transparent" data-toggle="dropdown"><?=$_SESSION["GeniSysAI"]["User"]; ?> <span class="caret"></span></a>
 								<ul class="dropdown-menu user-auth-dropdown" data-dropdown-in="flipInX" data-dropdown-out="flipOutX">

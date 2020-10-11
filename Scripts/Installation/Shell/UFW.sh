@@ -19,7 +19,6 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
     sudo ufw allow 30303/udp
     sudo ufw allow 30303/tcp
     sudo ufw allow OpenSSH
-    sudo ufw allow Samba
     echo "Enabling UFW"
     sudo ufw enable
     echo "Checking UFW"

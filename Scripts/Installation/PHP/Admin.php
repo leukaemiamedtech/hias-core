@@ -2,6 +2,11 @@
 
 include 'pbkdf2.php';
 include 'Htpasswd.php';
+require '/fserver/var/www/vendor/autoload.php';
+
+use Web3\Web3;
+use Web3\Contract;
+use Web3\Utils;
 
 class Core
 {
@@ -12,7 +17,7 @@ class Core
 	{
 		$config = json_decode(file_get_contents("/fserver/var/www/Classes/Core/confs.json", true));
 
-		$this->confs = $confs;
+		$this->confs = $config;
 		$this->key = $config->key;
 		$this->dbname = $config->dbname;
 		$this->dbusername = $config->dbusername;
@@ -53,14 +58,154 @@ class Admin{
 		$this->confs = $core->confs;
 		$this->key = $core->key;
 		$this->conn = $core->dbcon;
+		$this->bcc = $this->getBlockchainConf();
 	}
 
-	public function create($name, $email, $user, $paddress, $ppass, $ip, $mac)
+	public function getBlockchainConf()
+	{
+		$pdoQuery = $this->conn->prepare("
+			SELECT blockchain.*,
+				contracts.contract,
+				contracts.abi,
+				icontracts.contract as icontract,
+				icontracts.abi as iabi
+			FROM blockchain blockchain
+			INNER JOIN contracts contracts
+			ON contracts.id = blockchain.dc
+			INNER JOIN contracts icontracts
+			ON icontracts.id = blockchain.ic
+		");
+		$pdoQuery->execute();
+		$response=$pdoQuery->fetch(PDO::FETCH_ASSOC);
+		$pdoQuery->closeCursor();
+		$pdoQuery = null;
+		return $response;
+	}
+
+	private function blockchainConnection($domain, $pub, $prv)
+	{
+		$web3 = new Web3($domain . "/Blockchain/API/", 30, $pub, $prv);
+		return $web3;
+	}
+
+	private function unlockBlockchainAccount($web3, $account, $pass)
+	{
+		$response = "";
+		$personal = $web3->personal;
+		$personal->unlockAccount($account, $pass, function ($err, $unlocked) use (&$response) {
+			if ($err !== null) {
+				$response = "FAILED! " . $err;
+				return;
+			}
+			if ($unlocked) {
+				$response = "OK";
+			} else {
+				$response = "FAILED";
+			}
+		});
+		return $response;
+	}
+
+	private function getBlockchainBalance($web3, $account)
+	{
+		$nbalance = "";
+		$web3->eth->getBalance($account, function ($err, $balance) use (&$nbalance) {
+			if ($err !== null) {
+				$response = "FAILED! " . $err;
+				return;
+			}
+			$nbalance = $balance->toString();
+		});
+		return Utils::fromWei($nbalance, 'ether')[0];
+	}
+
+	private function storeBlockchainTransaction($action, $hash, $device = 0, $name = 0)
+	{
+		$pdoQuery = $this->conn->prepare("
+			INSERT INTO  transactions (
+				`uid`,
+				`did`,
+				`aid`,
+				`action`,
+				`hash`,
+				`time`
+			)  VALUES (
+				:uid,
+				:did,
+				:aid,
+				:action,
+				:hash,
+				:time
+			)
+		");
+		$pdoQuery->execute([
+			":uid" => 1,
+			":did" => $device,
+			":aid" => $name,
+			":action" => $action,
+			':hash' => $this->encrypt($hash),
+			":time" => time()
+		]);
+		$txid = $this->conn->lastInsertId();
+		$pdoQuery->closeCursor();
+		$pdoQuery = null;
+		return $txid;
+	}
+
+	private function storeUserHistory($action, $hash, $location = 0, $zone = 0, $device = 0, $sensor = 0, $name = 0)
+	{
+		$pdoQuery = $this->conn->prepare("
+			INSERT INTO  history (
+				`uid`,
+				`tuid`,
+				`tlid`,
+				`tzid`,
+				`tdid`,
+				`tsid`,
+				`taid`,
+				`action`,
+				`hash`,
+				`time`
+			)  VALUES (
+				:uid,
+				:tuid,
+				:tlid,
+				:tzid,
+				:tdid,
+				:tsid,
+				:taid,
+				:action,
+				:hash,
+				:time
+			)
+		");
+		$pdoQuery->execute([
+			":uid" => 1,
+			":tuid" => 1,
+			":tlid" => $location,
+			":tzid" => $zone,
+			":tdid" => $device,
+			":tsid" => $sensor,
+			":taid" => $name,
+			":action" => $action,
+			":hash" => $hash,
+			":time" => time()
+		]);
+		$txid = $this->conn->lastInsertId();
+		$pdoQuery->closeCursor();
+		$pdoQuery = null;
+		return $txid;
+	}
+
+	public function create($name, $email, $user, $paddress, $ppass, $ip, $mac, $domain, $haddress, $hpass)
 	{
 		if(!$this->checkUser($user)):
 
 			$pass=$this->password(12);
-			$passhash=$this->passwordHash($pass);
+			$passhash=$this->createPasswordHash($pass);
+
+			$htpasswd = new Htpasswd('/etc/nginx/security/htpasswd');
+			$htpasswd->addUser($user, $pass, Htpasswd::ENCTYPE_APR_MD5);
 
 			$pdoQuery = $this->conn->prepare("
 				INSERT INTO users (
@@ -71,6 +216,7 @@ class Admin{
 					`password`,
 					`bcaddress`,
 					`bcpw`,
+					`nfc`,
 					`created`
 				)  VALUES (
 					:username,
@@ -80,6 +226,7 @@ class Admin{
 					:password,
 					:bcaddress,
 					:bcpw,
+					:nfc,
 					:created
 				)
 			");
@@ -89,8 +236,9 @@ class Admin{
 				":email"=>$email,
 				":admin"=>1,
 				":password"=>$this->encrypt($passhash),
-				":bcaddress"=>$this->encrypt($paddress),
+				":bcaddress"=>$paddress,
 				":bcpw"=>$this->encrypt($ppass),
+				":nfc"=>"",
 				':created' => time()
 			]);
 			$uid = $this->conn->lastInsertId();
@@ -104,7 +252,7 @@ class Admin{
 			echo "!! Your username is: " . $user . " !!\n";
 			echo "!! Your password is: " . $pass . " !!\n";
 			echo "!! THESE CREDENTIALS ARE ALSO USED FOR THE TASS STREAM AUTHENTICATION POP UP YOU WILL FACE WHEN YOU FIRST LOGIN !!\n";
-			$this->application($name, $uid, $paddress, $ip, $mac);
+			$this->application($name, $uid, $paddress, $ip, $mac, $domain, $haddress, $hpass);
 			return True;
 		else:
 			echo "! A user with this username already exists!\n";
@@ -112,7 +260,7 @@ class Admin{
 		endif;
 	}
 
-	public function application($name, $uid, $paddress, $ip, $mac){
+	public function application($name, $uid, $paddress, $ip, $mac, $domain, $haddress, $hpass){
 
 		$mqttUser = $this->generate_uuid();
 		$mqttPass = $this->password();
@@ -238,7 +386,7 @@ class Admin{
 			':lid' => 1,
 			':aid' => $aid,
 			':username' => $mqttUser,
-			':topic' => $this->lid."/Applications/#",
+			':topic' => "1/Applications/#",
 			':rw' => 4
 		));
 
@@ -251,10 +399,98 @@ class Admin{
 			':id'=> 1
 		));
 
+		$web3 = $this->blockchainConnection($domain, $pubKey, $privKey);
+		$unlocked =  $this->unlockBlockchainAccount($web3, $haddress, $hpass);
+
+		if($unlocked == "FAILED"):
+			echo "Unlocking HIAS Blockhain Account Failed!\n";
+			return False;
+		endif;
+
+		$contract = new Contract($web3->provider, $this->bcc["abi"]);
+		$icontract = new Contract($web3->provider, $this->bcc["iabi"]);
+
+		$hash = "";
+		$msg = "";
+		$contract->at($this->decrypt($this->bcc["contract"]))->send("deposit", 9000000000000000000, ["from" => $haddress, "value" => 9000000000000000000], function ($err, $resp) use (&$hash, &$msg) {
+			if ($err !== null) {
+				$hash = "FAILED";
+				$msg = $err . "\n";
+				return;
+			}
+			$hash = $resp;
+		});
+
+		if($hash == "FAILED"):
+			echo " HIAS Blockchain deposit failed! \n";
+			return False;
+		else:
+			$txid = $this->storeBlockchainTransaction("Deposit", $hash, 0, $aid);
+			$this->storeUserHistory("Deposit", $txid, 1, 0, 0, 0, $aid);
+			echo " HIAS Blockchain deposit ok!\n";
+			$hash = "";
+			$msg = "";
+			$contract->at($this->decrypt($this->bcc["contract"]))->send("registerUser", $pubKey, $paddress, true, 1, $name, 1, $aid, time(), 1, ["from" => $haddress], function ($err, $resp) use (&$hash, &$msg) {
+				if ($err !== null) {
+					$hash = "FAILED";
+					$msg = $err . "\n";
+					return;
+				}
+				$hash = $resp;
+			});
+
+			if($hash == "FAILED"):
+				echo " HIAS Blockchain registerUser failed!\n";
+				return False;
+			else:
+				$txid = $this->storeBlockchainTransaction("Register User", $hash, 0, $aid);
+				$this->storeUserHistory("Register User", $txid, 1, 0, 0, 0, $aid);
+				$balance = $this->getBlockchainBalance($web3, $haddress);
+				echo "Register user completed! You were rewarded for this action! Your balance is now: " . $balance . " HIAS Ether!\n";
+			endif;
+		endif;
+
+		$hash = "";
+		$msg = "";
+		$icontract->at($this->decrypt($this->bcc["icontract"]))->send("deposit", 9000000000000000000, ["from" => $haddress, "value" => 9000000000000000000], function ($err, $resp) use (&$hash, &$msg) {
+			if ($err !== null) {
+				$hash = "FAILED";
+				$msg = $err . "\n";
+				return;
+			}
+			$hash = $resp;
+		});
+
+		if($hash == "FAILED"):
+			echo " HIAS Blockchain deposit failed!\n";
+			return False;
+		else:
+			$txid = $this->storeBlockchainTransaction("Deposit", $hash, 0, $aid);
+			$this->storeUserHistory("Deposit", $txid, 1, 0, 0, 0, $aid);
+			echo " HIAS Blockchain deposit ok!\n";
+			$icontract->at($this->decrypt($this->bcc["icontract"]))->send("registerAuthorized", $paddress, ["from" => $haddress], function ($err, $resp) use (&$hash, &$msg) {
+				if ($err !== null) {
+					$hash = "FAILED";
+					$msg = $err . "\n";
+					return;
+				}
+				$hash = $resp;
+			});
+
+			if($hash == "FAILED"):
+				echo " HIAS Blockchain registerAuthorized failed!\n";
+			else:
+				$txid = $this->storeBlockchainTransaction("iotJumpWay Register Authorized", $hash, 0, $aid);
+				$this->storeUserHistory("Register Authorized", $txid, 1, 0, 0, 0, $aid);
+				$balance = $this->getBlockchainBalance($web3, $haddress);
+				echo "iotJumpWay register authorized You were rewarded for this action! Your balance is now: " . $balance . " HIAS Ether!\n";
+			endif;
+		endif;
+
 		echo "";
 		echo "!! NOTE THESE CREDENTIALS AND KEEP THEM IN A SAFE PLACE !!\n";
-		echo "! Application, " . $name . ", has been created with ID " . $aid . "!\n";
-		echo "!! Your application public key is: " . $pubKey . "!\n";
+		echo "! Application, " . $name . ", has been created with ID " . $aid . " !\n";
+		echo "!! Your application public key is: " . $pubKey . " !\n";
 		echo "!! Your application private key is: " . $privKey . "\n";
 		echo "!! Your application MQTT username is: " . $mqttUser . "\n";
 		echo "!! Your application MQTT password is: " . $mqttPass . "\n";
@@ -352,8 +588,11 @@ class Admin{
 		return $out;
 	}
 
-	private static function passwordHash($password) {
-		return password_hash($password, PASSWORD_DEFAULT);
+	public static function createPasswordHash($password)
+	{
+		return password_hash(
+			$password,
+			PASSWORD_DEFAULT);
 	}
 
 	private function encrypt($value)
@@ -364,10 +603,17 @@ class Admin{
 		return base64_encode($encrypted . "::" . $iv);
 	}
 
+	public function decrypt($encrypted)
+	{
+		$encryption_key = base64_decode($this->key);
+		list($encrypted_data, $iv) = explode("::", base64_decode($encrypted), 2);
+		return openssl_decrypt($encrypted_data, "aes-256-cbc", $encryption_key, 0, $iv);
+	}
+
 }
 
 $Core  = new Core();
 $Admin = new Admin($Core);
-$Admin->create($argv[1], $argv[2], $argv[3], $argv[4]);
+$Admin->create($argv[1], $argv[2], $argv[3], $argv[4], $argv[5], $argv[6], $argv[7], $argv[8], $argv[9], $argv[10]);
 
 ?>

@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 ######################################################################################################
 #
-# Organization:  Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss
+# Organization:  Peter Moss Leukemia AI Research
 # Repository:    HIAS: Hospital Intelligent Automation System
-# Module:        TassAI
 #
 # Author:        Adam Milton-Barker (AdamMiltonBarker.com)
 #

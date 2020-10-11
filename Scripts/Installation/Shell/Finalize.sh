@@ -9,7 +9,8 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
     read -p "! Enter your Google Maps key: " gmaps
     read -p "! Enter your default latitude: " lat
     read -p "! Enter your default longitude: " lng
-    php Scripts/Installation/PHP/Finalize.php "$domain" "$pub" "$prv" "$gmaps" "$lat" "$lng"
+    read -p "! Enter the application ID for your iotJumpWay application: " app
+    php Scripts/Installation/PHP/Finalize.php "$domain" "$pub" "$prv" "$gmaps" "$lat" "$lng" "$app"
 else
     echo "- Server database finalization terminated";
     exit

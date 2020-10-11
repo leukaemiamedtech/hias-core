@@ -55,15 +55,17 @@ class Database{
         $this->conn = $core->dbcon;
     }
 
-    public function finalize($domain, $pub, $prv, $gmaps, $lat, $lng){
+    public function finalize($domain, $pub, $prv, $gmaps, $lat, $lng, $app){
 
         $pdoQuery = $this->conn->prepare("
-            UPDATE settings 
+            UPDATE settings
             SET domainString = :domain,
                 recaptcha = :recaptcha,
+                recaptchas = :recaptchas,
                 gmaps = :gmaps,
                 lt = :lt,
-                lg = :lg 
+                lg = :lg,
+                aid = :aid
         ");
         $pdoQuery->execute([
             ":domain"=>$this->encrypt($domain),
@@ -71,7 +73,8 @@ class Database{
             ":recaptchas"=>$this->encrypt($prv),
             ":gmaps"=>$this->encrypt($gmaps),
             ":lt"=>$this->encrypt($lat),
-            ":lg"=>$this->encrypt($lng)
+            ":lg"=>$this->encrypt($lng),
+            ":aid"=>$app
         ]);
         $pdoQuery->closeCursor();
         $pdoQuery = null;
@@ -93,6 +96,6 @@ class Database{
 
 $Core  = new Core();
 $Database = new Database($Core);
-$Database->finalize($argv[1], $argv[2], $argv[3], $argv[4], $argv[5], $argv[6]);
+$Database->finalize($argv[1], $argv[2], $argv[3], $argv[4], $argv[5], $argv[6], $argv[7]);
 
 ?>
