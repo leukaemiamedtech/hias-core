@@ -12,7 +12,7 @@ class Core
 	{
 		$config = json_decode(file_get_contents("/fserver/var/www/Classes/Core/confs.json", true));
 
-		$this->confs = $confs;
+		$this->confs = $config;
 		$this->key = $config->key;
 		$this->dbname = $config->dbname;
 		$this->dbusername = $config->dbusername;
@@ -55,28 +55,23 @@ class Blockchain{
 		$this->conn = $core->dbcon;
 	}
 
-	public function createConfig($bcaddress, $pw)
+	public function createConfig()
 	{
 		$pdoQuery = $this->conn->prepare("
-			INSERT INTO  contracts  (
+			INSERT INTO  blockchain  (
 				`dc`,
 				`ic`,
-				`pc`,
-				`bcaddress`,
-				`pw`
+				`pc`
 			)  VALUES (
 				:dc,
 				:ic,
-				:pc,
-				:pw
+				:pc
 			)
 		");
 		$pdoQuery->execute([
 			':dc' => 1,
 			':ic' => 2,
-			':pc' => 3,
-			':bcaddress' => $this->encrypt($bcaddress),
-			':pw' => $this->encrypt($pw)
+			':pc' => 3
 		]);
 
 		return True;
@@ -138,11 +133,11 @@ class Blockchain{
 			':hash' => $this->encrypt($txn),
 			":time" => time()
 		]);
-		$txid = $this->con->lastInsertId();
+		$txid = $this->conn->lastInsertId();
 		$pdoQuery->closeCursor();
 		$pdoQuery = null;
 
-		$pdoQuery = $this->con->prepare("
+		$pdoQuery = $this->conn->prepare("
 			INSERT INTO  history (
 				`uid`,
 				`tcid`,
@@ -164,7 +159,7 @@ class Blockchain{
 			":hash" => $txid,
 			":time" => time()
 		]);
-		$txid = $this->con->lastInsertId();
+		$txid = $this->conn->lastInsertId();
 		$pdoQuery->closeCursor();
 		$pdoQuery = null;
 
@@ -187,7 +182,7 @@ if($argv[1]=="Contract"):
 	$Blockchain->createContract($argv[2], $argv[3], $argv[4], $argv[5], $argv[6]);
 endif;
 if($argv[1]=="Config"):
-	$Blockchain->createConfig($argv[2], $argv[3]);
+	$Blockchain->createConfig();
 endif;
 
 ?>

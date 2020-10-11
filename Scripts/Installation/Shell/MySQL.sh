@@ -7,8 +7,12 @@ read -p "? This script will install MySQL on your HIAS Server. Are you ready (y/
 if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
     echo "- Installing MySQL"
     echo "! Make sure you keep note of all passwords etc you create."
+    sudo apt-get install python3-pip
     sudo apt install mysql-server
     sudo mysql_secure_installation
+    sudo apt-get install libmysqlclient-dev
+    pip3 install pymysql
+    pip3 install mysqlclient
     read -p "! Enter your mysql root password specified during set up: " rpassword
     read -p "! Enter a new phpMyAdmin database user: " dbusername
     read -p "! Enter a new phpMyAdmin database password: " dbpassword
@@ -24,6 +28,15 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
     sudo mysql -uroot -p$rpassword -e 'show databases;'
     sudo mysql -uroot -p$rpassword -e "use $dbname;"
     sudo mysql -uroot  -p$rpassword $dbname < Scripts/Installation/SQL.sql;
+    sudo sed -i "s/\"dbname\":.*/\"dbname\": \"$dbname\",/g" "confs.json"
+    sudo sed -i "s/\"dbuser\":.*/\"dbuser\": \"$adbusername\",/g" "confs.json"
+    sudo sed -i "s/\"dbpass\":.*/\"dbpass\": \"${adbpassword//&/\\&}\"/g" "confs.json"
+    sudo sed -i "s/\"dbname\":.*/\"dbname\": \"$dbname\",/g" "/fserver/var/www/Classes/Core/confs.json"
+    sudo sed -i "s/\"dbusername\":.*/\"dbusername\": \"$adbusername\",/g" "/fserver/var/www/Classes/Core/confs.json"
+    sudo sed -i "s/\"dbpassword\":.*/\"dbpassword\": \"${adbpassword//&/\\&}\",/g" "/fserver/var/www/Classes/Core/confs.json"
+    read -p "! Enter a new encryption key, this key should be 32 characters: " ekey
+    sudo sed -i "s/\"key\":.*/\"key\": \"$ekey\"/g" "/fserver/var/www/Classes/Core/confs.json"
+    echo "! Updated MySql configuration."
     echo "! Moving MySql to hard-drive."
     sudo systemctl stop mysql
     sudo systemctl status mysql
@@ -37,17 +50,9 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
     sudo rm -Rf /var/lib/mysql
     sudo systemctl start mysql
     sudo systemctl status mysql
+    sudo systemctl reload nginx
     echo "! Moved MySql to hard-drive."
-    read -p "! Now you will add the application credentials you just created to the server core configuration file. Are you ready (y/n)? " cmsg
-    if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
-        sudo nano /var/www/Classes/Core/confs.json
-        sudo systemctl reload nginx
-        echo "- Installed MySQL and configured database";
-        exit 0
-    else
-        echo $FMSG;
-        exit 1
-    fi
+    exit 0
 else
     echo $FMSG;
     exit 1

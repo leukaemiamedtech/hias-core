@@ -14,13 +14,14 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
     sudo mkdir -p /fserver/samba
     sudo chgrp sambashare /fserver/samba
     echo "Creating Samba admins group & directory"
+    sudo groupadd sambashare
     sudo groupadd smbadmins
     sudo mkdir -p /fserver/samba/smbadmins
     sudo chgrp smbadmins /fserver/samba/smbadmins
     sudo chmod -R 770 /fserver/samba/smbadmins
     echo "Creating Samba admin user"
     read -p "! Enter a new Samba username for your admin account: " sauser
-    sudo useradd -M -d /fserver/samba/users -s /usr/sbin/nologin -G sambashare, smbadmins "$sauser"
+    sudo useradd -M -d /fserver/samba/users -s /usr/sbin/nologin -G sambashare,smbadmins "$sauser"
     sudo smbpasswd -a "$sauser"
     sudo smbpasswd -e "$sauser"
     sudo mkdir /fserver/samba/users

@@ -12,10 +12,13 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
     sudo mkdir -p /fserver/var
     sudo cp -a Root/var/www/ /fserver/var/
     sudo chown -R www-data:www-data /fserver/var/www/html
+    sudo usermod -a -G www-data $USER
     echo ""
     read -p "? Please provide the full domain name of your server, including subdomain: " domain
+    read -p "? Please provide the IP of your HIAS server: " ip
     if [ "$domain" != "" ]; then
         sudo sed -i -- "s/server_name _;/server_name $domain;/g" /etc/nginx/sites-available/default
+        sudo sed -i -- "s/HiasServerIp/$ip;/g" /etc/nginx/sites-available/default
         sudo nginx -t
         sudo systemctl reload nginx
         echo "- Installed NGINX";

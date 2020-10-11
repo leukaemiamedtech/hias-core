@@ -1,4 +1,4 @@
-# Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss
+# Peter Moss Leukemia AI Research
 ## Contributing to the Hospital Intelligent Automation System project
 
 We encourage bug fixes and enhancements submitted by the community and there are a number of ways you can contribute towards this repository.
@@ -137,7 +137,7 @@ Each .md file in the repository should use the same header. An example of this i
 ![Peter Moss Acute Myeloid & Lymphoblastic Leukemia AI Research Project](Media/Images/Peter-Moss-Acute-Myeloid-Lymphoblastic-Leukemia-Research-Project.png)
 ```
 
-Each .md file in the repository should also use the same footer, with the excpetions of the contributors. If you contribute directly to the code or documentation you should update this area with your details.
+Each .md file in the repository should also use the same footer, with the excpetions of the contributors. If you contribute directly to the code or documentation you should update this area with your details. Below is an example of how the contributing list should be.
 
 ```
 &nbsp;
@@ -150,7 +150,7 @@ Please read the [CONTRIBUTING](CONTRIBUTING.md "CONTRIBUTING") document for a fu
 
 ## Contributors
 
-- [Adam Milton-Barker](https://www.leukemiaresearchassociation.ai/team/adam-milton-barker "Adam Milton-Barker") - [Asociacion De Investigation En Inteligencia Artificial Para La Leucemia Peter Moss](https://www.leukemiaresearchassociation.ai "Asociacion De Investigation En Inteligencia Artificial Para La Leucemia Peter Moss") President & Lead Developer, Sabadell, Spain
+- [Adam Milton-Barker](https://www.leukemiaairesearch.com/team/adam-milton-barker "Adam Milton-Barker") - [Asociacion De Investigation En Inteligencia Artificial Para La Leucemia Peter Moss](https://www.leukemiaairesearch.com "Asociacion De Investigation En Inteligencia Artificial Para La Leucemia Peter Moss") President & Lead Developer, Sabadell, Spain
 
 &nbsp;
 
@@ -177,7 +177,7 @@ The project README contributors should contain a list of all contributors in the
 
 # Push changes to forked repository
 
-![Push changes to forked repository](https://www.leukemiaresearchfoundation.ai/github/media/images/Contributing-Commit-Push.jpg)
+![Push changes to forked repository](https://www.leukemiaairesearch.com/github/media/images/Contributing-Commit-Push.jpg)
 
 When you have made your changes, you need to push them to your forked repository. This process requires a commit with a message about what your commit is, and then finally a push to the repository which will place your changes or created files to your forked repository.
 
@@ -273,7 +273,7 @@ This Code of Conduct applies both within project spaces and in public spaces whe
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project team at github@leukemiaresearchassociation.ai All complaints will be reviewed and investigated and will result in a response that is deemed necessary and appropriate to the circumstances. The project team is obligated to maintain confidentiality with regard to the reporter of an incident. Further details of specific enforcement policies may be posted separately.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project team at github@leukemiaairesearch.com All complaints will be reviewed and investigated and will result in a response that is deemed necessary and appropriate to the circumstances. The project team is obligated to maintain confidentiality with regard to the reporter of an incident. Further details of specific enforcement policies may be posted separately.
 
 Project maintainers who do not follow or enforce the Code of Conduct in good faith may face temporary or permanent repercussions as determined by other members of the project's leadership.
 
