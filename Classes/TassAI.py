@@ -1,7 +1,8 @@
 ######################################################################################################
 #
-# Organization:  Peter Moss Leukemia AI Research
-# Repository:    HIAS: Hospital Intelligent Automation System
+# Organization:  Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss
+# Repository:   HIAS: Hospital Intelligent Automation System
+# Project:      TassAI
 #
 # Author:        Adam Milton-Barker (AdamMiltonBarker.com)
 #
@@ -37,7 +38,7 @@ class TassAI():
 		self.Helpers = Helpers("TassAI", False)
 
 		self.qs = 16
-		self.context = InferenceContext([self.Helpers.confs["TassAI"]["runas"], self.Helpers.confs["TassAI"]["runas"], self.Helpers.confs["TassAI"]["runas"]], "", "", "")
+		self.context = InferenceContext([self.Helpers.confs["iotJumpWay"]["MQTT"]["TassAI"]["runas"], self.Helpers.confs["iotJumpWay"]["MQTT"]["TassAI"]["runas"], self.Helpers.confs["iotJumpWay"]["MQTT"]["TassAI"]["runas"]], "", "", "")
 
 		self.Helpers.logger.info("TassAI Helper Class initialization complete.")
 
@@ -45,30 +46,30 @@ class TassAI():
 		""" Loads all models. """
 
 		face_detector_net = self.load_model(
-			self.Helpers.confs["TassAI"]["detection"])
+			self.Helpers.confs["iotJumpWay"]["MQTT"]["TassAI"]["detection"])
 		face_detector_net.reshape({"data": [1, 3, 384, 672]})
 
 		landmarks_net = self.load_model(
-			self.Helpers.confs["TassAI"]["landmarks"])
+			self.Helpers.confs["iotJumpWay"]["MQTT"]["TassAI"]["landmarks"])
 
 		face_reid_net = self.load_model(
-			self.Helpers.confs["TassAI"]["reidentification"])
+			self.Helpers.confs["iotJumpWay"]["MQTT"]["TassAI"]["reidentification"])
 
 		self.face_detector = FaceDetector(face_detector_net,
-											confidence_threshold=0.6,
-											roi_scale_factor=1.15)
+									confidence_threshold=0.6,
+									roi_scale_factor=1.15)
 
 		self.landmarks_detector = LandmarksDetector(landmarks_net)
 
 		self.face_identifier = FaceIdentifier(face_reid_net,
-												match_threshold=0.3,
-												match_algo='HUNGARIAN')
+										match_threshold=0.3,
+										match_algo='HUNGARIAN')
 
-		self.face_detector.deploy(self.Helpers.confs["TassAI"]["runas"], self.context)
-		self.landmarks_detector.deploy(self.Helpers.confs["TassAI"]["runas"], self.context,
+		self.face_detector.deploy(self.Helpers.confs["iotJumpWay"]["MQTT"]["TassAI"]["runas"], self.context)
+		self.landmarks_detector.deploy(self.Helpers.confs["iotJumpWay"]["MQTT"]["TassAI"]["runas"], self.context,
 										queue_size=self.qs)
-		self.face_identifier.deploy(self.Helpers.confs["TassAI"]["runas"], self.context,
-									queue_size=self.qs)
+		self.face_identifier.deploy(self.Helpers.confs["iotJumpWay"]["MQTT"]["TassAI"]["runas"], self.context,
+								queue_size=self.qs)
 
 		self.Helpers.logger.info("Models loaded")
 
@@ -87,7 +88,7 @@ class TassAI():
 	def load_known(self):
 		""" Loads known data. """
 
-		self.faces_database = FacesDatabase(self.Helpers.confs["TassAI"]["data"], self.face_identifier,
+		self.faces_database = FacesDatabase(self.Helpers.confs["iotJumpWay"]["MQTT"]["TassAI"]["data"], self.face_identifier,
 											self.landmarks_detector, self.face_detector, True)
 		self.face_identifier.set_faces_database(self.faces_database)
 		self.Helpers.logger.info("Database is built, registered %s identities" %
@@ -154,8 +155,8 @@ class TassAI():
 		if identity.id != FaceIdentifier.UNKNOWN_ID:
 			text += ' %.2f%%' % (100.0 * (1 - identity.distance))
 		self.draw_text_with_background(frame, text,
-										roi.position - line_height * 0.5,
-										font, scale=text_scale)
+									roi.position - line_height * 0.5,
+									font, scale=text_scale)
 
 		return frame, label
 
