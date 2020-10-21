@@ -34,7 +34,7 @@ $contract = $Blockchain->getContract(filter_input(INPUT_GET, "contract", FILTER_
 
 		<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
-		<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
+		<link href="<?=$domain; ?>/AI/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
 	</head>
 	<body id="GeniSysAI">
 

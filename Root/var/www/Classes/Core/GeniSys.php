@@ -20,6 +20,68 @@ use Web3\Utils;
 				$this->web3 = $this->blockchainConnection();
 				$this->contract = new Contract($this->web3->provider, $this->bcc["abi"]);
 			endif;
+			$this->cb = $this->getContextBrokerConf();
+		}
+
+		public function getContextBrokerConf()
+		{
+			$pdoQuery = $this->_GeniSys->_secCon->prepare("
+				SELECT *
+				FROM contextbroker
+			");
+			$pdoQuery->execute();
+			$response=$pdoQuery->fetch(PDO::FETCH_ASSOC);
+			$pdoQuery->closeCursor();
+			$pdoQuery = null;
+			return $response;
+		}
+
+		private function createContextHeaders($username = "", $password = "")
+		{
+			if($username):
+				$basicAuth = $username . ":" . $password;
+			else:
+				$basicAuth = $_SESSION["GeniSysAI"]["User"] . ":" . $this->_GeniSys->_helpers->oDecrypt($_SESSION["GeniSysAI"]["Pass"]);
+			endif;
+			$basicAuth = base64_encode($basicAuth);
+
+			return [
+				"Content-Type: application/json",
+				'Authorization: Basic '. $basicAuth
+			];
+		}
+
+		private function contextBrokerRequest($method, $url, $headers, $json)
+		{
+			$path = $this->_GeniSys->_helpers->oDecrypt($this->_GeniSys->_confs["domainString"]) . "/" . $this->cb["url"] . "/" . $url;
+
+			if($method == "GET"):
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+				curl_setopt($ch, CURLOPT_HEADER, 1);
+				curl_setopt($ch, CURLOPT_URL, $path);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				$response = curl_exec($ch);
+				$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+				$header = substr($response, 0, $header_size);
+				$body = substr($response, $header_size);
+				curl_close($ch);
+			elseif($method == "POST"):
+				$ch = curl_init($path);
+				curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+				curl_setopt($ch, CURLOPT_HEADER, 1);
+				curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+				$response = curl_exec($ch);
+				$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+				$header = substr($response, 0, $header_size);
+				$body = substr($response, $header_size);
+				curl_close($ch);
+			endif;
+
+			return $body;
 		}
 
 		public function getBlockchainConf()
@@ -138,14 +200,14 @@ use Web3\Utils;
 				endif;
 			endif;
 
-			$gsysuser = $this->getUserByName(filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING));
+			$gsysuser = $this->getUserByName(filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING), filter_input(INPUT_POST,'password',FILTER_SANITIZE_STRING));
 
 			if($gsysuser["id"]):
 				if($this->verifyPassword(filter_input(INPUT_POST,'password',FILTER_SANITIZE_STRING),
 					$this->_GeniSys->_helpers->oDecrypt($gsysuser["password"]))):  session_regenerate_id();
 
 					$_SESSION["GeniSysAI"]=[
-						"Active"=>true,
+						"Active"=>True,
 						"Uid"=>$gsysuser["id"],
 						"Identifier"=>$gsysuser["apub"],
 						"User"=>filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING),
@@ -153,7 +215,7 @@ use Web3\Utils;
 						"Pic"=>$gsysuser["pic"],
 						"Mqtt"=> [
 							"Location" => $gsysuser["lid"],
-							"Application" => $gsysuser["aid"],
+							"Application" => $gsysuser["apub"],
 							"ApplicationName" => $gsysuser["name"],
 							"User" => $gsysuser["mqttu"],
 							"Pass" => $gsysuser["mqttp"]
@@ -405,49 +467,60 @@ use Web3\Utils;
 			$this->checkBlockchainPermissions();
 
 			$pdoQuery = $this->_GeniSys->_secCon->prepare("
-				SELECT id,
-					name,
-					password
-				FROM users
-				WHERE id = :id
+				SELECT users.id,
+					users.password,
+					mqtt.id as aid,
+					mqtt.apub
+				FROM users users
+				INNER JOIN mqtta mqtt
+				ON users.aid = mqtt.id
+				WHERE users.id = :id
 			");
 			$pdoQuery->execute([
 				":id"=> $userId
 			]);
-			$response=$pdoQuery->fetch(PDO::FETCH_ASSOC);
+			$user=$pdoQuery->fetch(PDO::FETCH_ASSOC);
 			$pdoQuery->closeCursor();
 			$pdoQuery = null;
+			$context =  json_decode($this->contextBrokerRequest("GET", $this->cb["entities_url"] . "/" . $user["apub"] . "?attrs=name&type=Staff", $this->createContextHeaders(), []), true);
+			$user["name"] = $context["Data"]["name"]["value"];
 
-			return $response;
+			return $user;
 		}
 
-		public function getUserByName($username)
+		public function getUserByName($username = "", $password = "")
 		{
 			$pdoQuery = $this->_GeniSys->_secCon->prepare("
 				SELECT users.id,
 					users.bcaddress,
 					users.bcpw,
 					users.password,
-					users.pic,
-					mqtt.lid,
 					mqtt.id as aid,
-					mqtt.name,
-					mqtt.mqttu,
-					mqtt.apub,
-					mqtt.mqttp
+					mqtt.apub
 				FROM users users
 				INNER JOIN mqtta mqtt
-				ON users.id = mqtt.uid
+				ON users.aid = mqtt.id
 				WHERE users.username = :username
 			");
 			$pdoQuery->execute([
 				":username"=> $username
 			]);
-			$response=$pdoQuery->fetch(PDO::FETCH_ASSOC);
+			$user=$pdoQuery->fetch(PDO::FETCH_ASSOC);
 			$pdoQuery->closeCursor();
 			$pdoQuery = null;
 
-			return $response;
+			if($password):
+				$context = json_decode($this->contextBrokerRequest("GET", $this->cb["entities_url"] . "/" . $user["apub"] . "?type=Staff", $this->createContextHeaders($username, $password), []), true);
+			else:
+				$context = json_decode($this->contextBrokerRequest("GET", $this->cb["entities_url"] . "/" . $user["apub"] . "?type=Staff", $this->createContextHeaders(), []), true);
+			endif;
+			$user["lid"] = $context["Data"]["lid"]["entity"];
+			$user["pic"] = $context["Data"]["picture"]["value"];
+			$user["name"] = $context["Data"]["name"]["value"];
+			$user["mqttu"] = $context["Data"]["mqtt"]["username"];
+			$user["mqttp"] = $context["Data"]["mqtt"]["password"];
+
+			return $user;
 		}
 
 		private static function verifyPassword($password,$hash) {
@@ -456,20 +529,23 @@ use Web3\Utils;
 
 		public function getStats()
 		{
-			$this->checkBlockchainPermissions();
 
 			$pdoQuery = $this->_GeniSys->_secCon->prepare("
-				SELECT cpu,
-					mem,
-					hdd,
-					tempr
+				SELECT apub
 				FROM mqtta
 				Where id = :id
 			");
 			$pdoQuery->execute([
 				":id" => $this->_GeniSys->_confs["aid"]
 			]);
-			$stats=$pdoQuery->fetch(PDO::FETCH_ASSOC);
+			$coreApp=$pdoQuery->fetch(PDO::FETCH_ASSOC);
+
+			$context =  json_decode($this->contextBrokerRequest("GET", $this->cb["entities_url"] . "/" . $coreApp["apub"] . "?type=Application&attrs=batteryLevel.value,cpuUsage.value,memoryUsage.value,hddUsage.value,temperature.value", $this->createContextHeaders(), []), true);
+
+			$stats["cpu"] = $context["Data"]["cpuUsage"]["value"];
+			$stats["mem"] = $context["Data"]["memoryUsage"]["value"];
+			$stats["hdd"] = $context["Data"]["hddUsage"]["value"];
+			$stats["tempr"] = $context["Data"]["temperature"]["value"];
 
 			return $stats;
 		}

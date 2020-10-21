@@ -33,7 +33,7 @@ $_GeniSysAi->checkSession();
 
 		<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
-		<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
+		<link href="<?=$domain; ?>/AI/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
 	</head>
 	<body id="GeniSysAI">
 
@@ -80,7 +80,7 @@ $_GeniSysAi->checkSession();
 							<div class="panel panel-default card-view panel-refresh">
 								<div class="panel-heading">
 									<div class="pull-left">
-										<h6 class="panel-title txt-dark">HIAS Blockchain Settings</h6>
+										<h6 class="panel-title txt-dark">HIAS Blockchain</h6>
 									</div>
 									<div class="pull-right"></div>
 									<div class="clearfix"></div>
@@ -90,23 +90,12 @@ $_GeniSysAi->checkSession();
 										<div class="form-wrap">
 											<form data-toggle="validator" role="form" id="bc_config">
 												<div class="row">
-													<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+													<div class="col-lg-12col-md-12 col-sm-12 col-xs-12">
 														<div class="form-group">
-															<label for="name" class="control-label mb-10">HIAS Blockchain Account</label>
-															<input type="text" class="form-control" id="address" name="address" placeholder="HIAS Blockchain account" required value="<?=$Blockchain->_GeniSys->_helpers->oDecrypt($Blockchain->configs["bcaddress"]); ?>" autocomplete="false">
-															<span class="help-block">HIAS Blockchain account</span>
+
+															<p>The HIAS Blockchain is a private blockchain created using Ethereum. The blockchain provides permissions management for HIAS staff, devices and applications and patients, and also handles data integrity for data that is published through the HIAS network from connected devices and applications. There are three core smart contracts on the HIAS Blockchain which provide the core functionality, but you are able to create and deploy your own smart contracts and interact with them through the HIAS UI Blockchain management area.</p>
+
 														</div>
-														<div class="form-group">
-															<label for="name" class="control-label mb-10">HIAS Blockchain Account Password</label>
-															<input type="text" class="form-control" id="pw" name="pw" placeholder="HIAS Blockchain Account Password" required value="<?=$Blockchain->_GeniSys->_helpers->oDecrypt($Blockchain->configs["pw"]); ?>" autocomplete="false">
-															<span class="help-block">HIAS Blockchain password</span>
-														</div>
-														<div class="form-group mb-0">
-															<input type="hidden" class="form-control" id="update_bc" name="update_bc" required value="1">
-															<button type="submit" class="btn btn-success btn-anim" id="update_blockchain"><i class="icon-rocket"></i><span class="btn-text">Update Settings</span></button>
-														</div>
-													</div>
-													<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
 													</div>
 												</div>
 											</form>
@@ -117,67 +106,94 @@ $_GeniSysAi->checkSession();
 							<div class="panel panel-default card-view panel-refresh">
 								<div class="panel-heading">
 									<div class="pull-left">
-										<h6 class="panel-title txt-dark">Device History</h6>
+										<h6 class="panel-title txt-dark">HIAS Blockchain Settings</h6>
 									</div>
-									<div class="pull-right"><a href="<?=$domain; ?>/Blockchain/History"><i class="fa fa-eye pull-left"></i> View All History</a></div>
+									<div class="pull-right"></div>
 									<div class="clearfix"></div>
 								</div>
 								<div class="panel-wrapper collapse in">
 									<div class="panel-body">
-										<div class="table-wrap mt-40">
-											<div class="table-responsive">
-												<table class="table mb-0">
-													<thead>
-													<tr>
-														<th>ID</th>
-														<th>Action</th>
-														<th>Receipt</th>
-														<th>Time</th>
-													</tr>
-													</thead>
-													<tbody>
+										<div class="form-wrap">
+											<div class="row">
+												<div class="col-lg-12col-md-12 col-sm-12 col-xs-12">
+													<div class="form-group">
+														<form data-toggle="validator" role="form" id="blockchain_update">
+															<div class="row">
+																<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+																	<div class="form-group">
+																		<label class="control-label mb-10">HIAS Permissions Smart Contract</label>
+																		<select class="form-control" id="dc" name="dc" required>
+																			<option value="">PLEASE SELECT</option>
 
-													<?php
-														$userDetails = "";
-														$history = $Blockchain->retrieveBlockchainHistory(5);
-														if(count($history)):
-															foreach($history as $key => $value):
-																	if($value["uid"]):
-																		$user = $_GeniSysAi->getUser($value["uid"]);
-																		$userDetails = "User ID #" . $value["uid"] . " (" . $user["name"] . ") ";
-																	endif;
-													?>
+																			<?php
+																				$contracts = $Blockchain->getContracts();
+																				if(count($contracts)):
+																					foreach($contracts as $key => $value):
+																			?>
 
-													<tr>
-														<td>#<?=$value["id"];?></td>
-														<td><?=$userDetails;?><?=$value["action"];?></td>
-														<td>
+																			<option value="<?=$value["id"]; ?>" <?=$Blockchain->bcc["dc"] == $value["id"] ? " selected " : ""; ?>>#<?=$value["id"]; ?>: <?=$Blockchain->_GeniSys->_helpers->oDecrypt($value["name"]); ?></option>
 
-															<?php
-																if($value["hash"]):
-															?>
-																<a href="<?=$domain; ?>/Blockchain/Transaction/<?=$value["hash"];?>">#<?=$value["hash"];?></a>
-															<?php
-																else:
-															?>
-																NA
-															<?php
-																endif;
-															?>
+																			<?php
+																					endforeach;
+																				endif;
+																			?>
 
+																		</select>
+																		<span class="help-block">HIAS Permissions Smart Contract</span>
+																	</div>
+																	<div class="form-group">
+																		<label class="control-label mb-10">iotJumpWay Permissions Smart Contract</label>
+																		<select class="form-control" id="ic" name="ic" required>
+																			<option value="">PLEASE SELECT</option>
 
+																			<?php
+																				$contracts = $Blockchain->getContracts();
+																				if(count($contracts)):
+																					foreach($contracts as $key => $value):
+																			?>
 
-														</td>
-														<td><?=date("Y-m-d H:i:s", $value["time"]);?></td>
-													</tr>
+																			<option value="<?=$value["id"]; ?>" <?=$Blockchain->bcc["ic"] == $value["id"] ? " selected " : ""; ?>>#<?=$value["id"]; ?>: <?=$Blockchain->_GeniSys->_helpers->oDecrypt($value["name"]); ?></option>
 
-													<?php
-															endforeach;
-														endif;
-													?>
+																			<?php
+																					endforeach;
+																				endif;
+																			?>
 
-													</tbody>
-												</table>
+																		</select>
+																		<span class="help-block">iotJumpWay Permissions Smart Contract</span>
+																	</div>
+																	<div class="form-group">
+																		<label class="control-label mb-10">Patients Permissions Smart Contract</label>
+																		<select class="form-control" id="pc" name="pc" required>
+																			<option value="">PLEASE SELECT</option>
+
+																			<?php
+																				$contracts = $Blockchain->getContracts();
+																				if(count($contracts)):
+																					foreach($contracts as $key => $value):
+																			?>
+
+																			<option value="<?=$value["id"]; ?>" <?=$Blockchain->bcc["pc"] == $value["id"] ? " selected " : ""; ?>>#<?=$value["id"]; ?>: <?=$Blockchain->_GeniSys->_helpers->oDecrypt($value["name"]); ?></option>
+
+																			<?php
+																					endforeach;
+																				endif;
+																			?>
+
+																		</select>
+																		<span class="help-block">Patients Permissions Smart Contract</span>
+																	</div>
+																	<div class="form-group mb-0">
+																		<input type="hidden" class="form-control" id="update_bc" name="update_bc" required value="1">
+																		<button type="submit" class="btn btn-success btn-anim " id="update_blockchain"><i class="icon-rocket"></i><span class="btn-text">Update</span></button>
+																	</div>
+																</div>
+																<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+																</div>
+															</div>
+														</form>
+													</div>
+												</div>
 											</div>
 										</div>
 									</div>

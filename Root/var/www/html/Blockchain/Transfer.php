@@ -35,7 +35,7 @@ $contract = $Blockchain->getContract(filter_input(INPUT_GET, "contract", FILTER_
 
 		<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
-		<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
+		<link href="<?=$domain; ?>/AI/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
 	</head>
 	<body id="GeniSysAI">
 
@@ -82,6 +82,32 @@ $contract = $Blockchain->getContract(filter_input(INPUT_GET, "contract", FILTER_
 							<div class="panel panel-default card-view panel-refresh">
 								<div class="panel-heading">
 									<div class="pull-left">
+										<h6 class="panel-title txt-dark">HIAS ETHER Transfer</h6>
+									</div>
+									<div class="pull-right"></div>
+									<div class="clearfix"></div>
+								</div>
+								<div class="panel-wrapper collapse in">
+									<div class="panel-body">
+										<div class="form-wrap">
+											<form data-toggle="validator" role="form" id="bc_config">
+												<div class="row">
+													<div class="col-lg-12col-md-12 col-sm-12 col-xs-12">
+														<div class="form-group">
+
+															<p>HIAS ETHER is the private currency that allows the HIAS network to function. In the real world HIAS ETHER has no value. Users and applications require HIAS ETHER to be able to interact with the network. As well as the replenishment server service you can use this form to send HIAS ETHER to any application connected to the network.</p>
+
+														</div>
+													</div>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="panel panel-default card-view panel-refresh">
+								<div class="panel-heading">
+									<div class="pull-left">
 										<h6 class="panel-title txt-dark">HIAS Blockchain Transfer</h6>
 									</div>
 									<div class="pull-right"></div>
@@ -116,11 +142,11 @@ $contract = $Blockchain->getContract(filter_input(INPUT_GET, "contract", FILTER_
 																<option value="">PLEASE SELECT</option>
 																<?php
 																	$Applications = $iotJumpWay->getApplications();
-																	if(count($Applications)):
-																		foreach($Applications as $key => $value):
+																	if(count($Applications["Data"])):
+																		foreach($Applications["Data"] as $key => $value):
 																?>
 
-																	<option value="<?=$Blockchain->_GeniSys->_helpers->oDecrypt($value["bcaddress"]); ?>"><?=$value["name"]; ?></option>
+																	<option value="<?=$Blockchain->_GeniSys->_helpers->oDecrypt($value["blockchain"]["address"]); ?>"><?=$value["name"]["value"]; ?></option>
 
 																<?php
 																		endforeach;
@@ -158,6 +184,5 @@ $contract = $Blockchain->getContract(filter_input(INPUT_GET, "contract", FILTER_
 		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
 		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
 		<script type="text/javascript" src="<?=$domain; ?>/Blockchain/Classes/Blockchain.js"></script>
-		<script type="text/javascript" src="<?=$domain; ?>/Blockchain/Classes/web3.js"></script>
 	</body>
 </html>

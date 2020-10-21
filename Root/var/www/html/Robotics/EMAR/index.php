@@ -10,7 +10,7 @@ include dirname(__FILE__) . '/../../../Classes/Core/GeniSys.php';
 include dirname(__FILE__) . '/../../Robotics/EMAR/Classes/EMAR.php';
 
 $_GeniSysAi->checkSession();
-$TDevices = $EMAR->getDevices();
+$devices = $EMAR->getDevices();
 
 ?>
 
@@ -37,7 +37,7 @@ $TDevices = $EMAR->getDevices();
 	<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
 	<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 	<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
-	<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
+	<link href="<?=$domain; ?>/AI/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
 	<link href="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.css" rel="stylesheet" type="text/css" />
 </head>
 
@@ -100,46 +100,31 @@ $TDevices = $EMAR->getDevices();
 												<thead>
 													<tr>
 														<th>ID</th>
-														<th>Name</th>
-														<th>Details</th>
-														<th>Devices</th>
-														<th>Devices Status</th>
+														<th>DETAILS</th>
+														<th>STATUS</th>
 														<th>ACTION</th>
 													</tr>
 												</thead>
 												<tbody>
 
 													<?php
-													if(count($TDevices)):
-														foreach($TDevices as $key => $value):
+													if($devices["Response"] != "Failed"):
+														foreach($devices["Data"] as $key => $value):
 
 												?>
 
 													<tr>
-														<td><a href="javascript:void(0)">#<?=$value["id"];?></a></td>
-														<td><?=$value["name"];?></td>
+														<td><a href="javascript:void(0)">#<?=$value["did"]["value"];?></a></td>
 														<td>
-															Location: #<?=$value["lid"];?><br />
-															Zone: #<?=$value["zid"];?>
+															<strong>Name:</strong> <?=$value["name"]["value"];?><br />
+															<strong>Zone:</strong> #<?=$value["zid"]["value"];?>
 														</td>
 														<td>
-															#<?=$value["did"];?> - <?=$value["dname"];?><br />
+															<div class="label label-table <?=$value["status"]["value"] == "OFFLINE" ? "label-danger" : "label-success"; ?>">
+																<?=$value["status"]["value"] == "OFFLINE" ? "OFFLINE" : "ONLINE"; ?>
+															</div>
 														</td>
-
-														<?php
-															if($value["status"] == "ONLINE"):
-																$label = "label-success";
-																$message = "ONLINE";
-															else:
-																$label = "label-danger";
-																$message = "OFFLINE";
-															endif;
-														?>
-
-														<td>
-															<div class="label label-table <?=$label; ?>">DEVICE <?=$message; ?></div><br /><br />
-														</td>
-														<td><a href="<?=$domain; ?>/Robotics/EMAR/<?=$value["id"];?>"><i class="fa fa-edit"></i></a></a></td>
+														<td><a href="<?=$domain; ?>/Robotics/EMAR/<?=$value["did"]["value"];?>"><i class="fa fa-edit"></i></a></a></td>
 													</tr>
 
 													<?php

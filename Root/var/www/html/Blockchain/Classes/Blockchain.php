@@ -246,30 +246,38 @@ use Web3\Utils;
 			$contract = new Contract($this->web3->provider, $this->bcc["abi"]);
 			$allowed = $this->checkBlockchainPermissions($contract);
 
-			if(!filter_input(INPUT_POST, "address", FILTER_SANITIZE_STRING)):
+			if(!filter_input(INPUT_POST, "dc", FILTER_SANITIZE_NUMBER_INT)):
 				return [
 					"Response"=> "Failed",
-					"Message" => "HIAS Blockchain account password is required"
+					"Message" => "You must select the HIAS Smart Contract"
 				];
 			endif;
 
-			if(!filter_input(INPUT_POST, "pw", FILTER_SANITIZE_STRING)):
+			if(!filter_input(INPUT_POST, "ic", FILTER_SANITIZE_NUMBER_INT)):
 				return [
 					"Response"=> "Failed",
-					"Message" => "HIAS Blockchain account address is required"
+					"Message" => "You must select the iotJumpWay Smart Contract"
+				];
+			endif;
+
+			if(!filter_input(INPUT_POST, "pc", FILTER_SANITIZE_NUMBER_INT)):
+				return [
+					"Response"=> "Failed",
+					"Message" => "You must select the Patients Smart Contract"
 				];
 			endif;
 
 			$query = $this->_GeniSys->_secCon->prepare("
 				UPDATE blockchain
-				SET bcaddress = :address,
-					pw = :pw
+				SET dc = :dc,
+					ic = :ic,
+					pc = :pc
 			");
 			$query->execute([
-				':address' => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "address", FILTER_SANITIZE_STRING)),
-				':pw' => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "pw", FILTER_SANITIZE_STRING))
+				':dc' => filter_input(INPUT_POST, "dc", FILTER_SANITIZE_NUMBER_INT),
+				':ic' => filter_input(INPUT_POST, "ic", FILTER_SANITIZE_NUMBER_INT),
+				':pc' => filter_input(INPUT_POST, "pc", FILTER_SANITIZE_NUMBER_INT)
 			]);
-			$id = $this->_GeniSys->_secCon->lastInsertId();
 
 			$this->storeUserHistory("Update Blockchain Settings");
 

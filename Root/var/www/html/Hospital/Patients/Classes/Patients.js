@@ -1,7 +1,6 @@
 var Patients = {
     Create: function() {
         $.post(window.location.href, $("#patient_create").serialize(), function(resp) {
-            console.log(resp)
             var resp = jQuery.parseJSON(resp);
             switch (resp.Response) {
                 case "OK":
@@ -20,7 +19,6 @@ var Patients = {
     },
     Update: function() {
         $.post(window.location.href, $("#patient_update").serialize(), function(resp) {
-            console.log(resp)
             var resp = jQuery.parseJSON(resp);
             switch (resp.Response) {
                 case "OK":
@@ -40,9 +38,8 @@ var Patients = {
         });
     },
     ResetMqtt: function() {
-        $.post(window.location.href, { "reset_mqtt_patient": 1, "identifier": $("#identifier").val(), "pid": $("#id").val(), "id": $("#aid").val() },
+        $.post(window.location.href, { "reset_mqtt_patient": 1 },
             function(resp) {
-                console.log(resp)
                 var resp = jQuery.parseJSON(resp);
                 switch (resp.Response) {
                     case "OK":
@@ -61,10 +58,33 @@ var Patients = {
                 }
             });
     },
-    ResetAppKey: function() {
-        $.post(window.location.href, { "reset_pt_apriv": 1, "identifier": $("#identifier").val(), "pid": $("#id").val(), "id": $("#aid").val() },
+    ResetAppAMQP: function() {
+        $.post(window.location.href, { "reset_patient_amqp": 1 },
             function(resp) {
-                console.log
+                var resp = jQuery.parseJSON(resp);
+                switch (resp.Response) {
+                    case "OK":
+                        Patients.amqppa = resp.P;
+                        Patients.amqppe = resp.P.replace(/\S/gi, '*');
+                        $("#pnamqpp").text(Patients.amqppe)
+                        Logging.logMessage("Core", "Forms", "Reset OK");
+                        $('.modal-title').text('Reset Patient AMQP Key');
+                        $('.modal-body').text("This patient's new application AMQP key is: " + resp.P);
+                        $('#responsive-modal').modal('show');
+                        break;
+                    default:
+                        msg = "Reset failed: " + resp.Message
+                        Logging.logMessage("Core", "Forms", msg);
+                        $('.modal-title').text('Reset Patient AMQP Key');
+                        $('.modal-body').text(msg);
+                        $('#responsive-modal').modal('show');
+                        break;
+                }
+            });
+    },
+    ResetAppKey: function() {
+        $.post(window.location.href, { "reset_pt_apriv": 1 },
+            function(resp) {
                 var resp = jQuery.parseJSON(resp);
                 switch (resp.Response) {
                     case "OK":
@@ -85,6 +105,10 @@ var Patients = {
         $('#email').attr('type', 'password');
         $('#username').attr('type', 'password');
 
+        Patients.amqpua = $("#pnamqpu").text();
+        Patients.amqpue = $("#pnamqpu").text().replace(/\S/gi, '*');
+        Patients.amqppa = $("#pnamqpp").text();
+        Patients.amqppe = $("#pnamqpp").text().replace(/\S/gi, '*');
         Patients.mqttua = $("#pntmqttu").text();
         Patients.mqttuae = $("#pntmqttu").text().replace(/\S/gi, '*');
         Patients.mqttpa = $("#pntmqttp").text();
@@ -94,6 +118,8 @@ var Patients = {
         Patients.bcida = $("#bcid").text();
         Patients.bcidae = $("#bcid").text().replace(/\S/gi, '*');
 
+        $("#pnamqpu").text(Patients.amqpue);
+        $("#pnamqpp").text(Patients.amqppe);
         $("#pntmqttu").text(Patients.mqttuae);
         $("#pntmqttp").text(Patients.mqttpae);
         $("#idappid").text(Patients.idappidae);
@@ -106,6 +132,18 @@ $(document).ready(function() {
         $('#' + $(this).attr("id")).attr('type', 'text');
     }, function() {
         $('#' + $(this).attr("id")).attr('type', 'password');
+    });
+
+    $('#pnamqpu').hover(function() {
+        $("#pnamqpu").text(Patients.amqpua);
+    }, function() {
+        $("#pnamqpu").text(Patients.amqpue);
+    });
+
+    $('#pnamqpp').hover(function() {
+        $("#pnamqpp").text(Patients.amqppa);
+    }, function() {
+        $("#pnamqpp").text(Patients.amqppe);
     });
 
     $('#pntmqttu').hover(function() {
@@ -154,6 +192,11 @@ $(document).ready(function() {
     $("#GeniSysAI").on("click", "#reset_pt_apriv", function(e) {
         e.preventDefault();
         Patients.ResetAppKey();
+    });
+
+    $("#GeniSysAI").on("click", "#reset_patient_amqp", function(e) {
+        e.preventDefault();
+        Patients.ResetAppAMQP();
     });
 
 });

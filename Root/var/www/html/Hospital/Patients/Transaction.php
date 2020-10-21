@@ -18,9 +18,6 @@ $Patient = $Patients->getPatient($PId);
 $txn = $iotJumpWay->retrieveDeviceTransaction(filter_input(INPUT_GET, 'transaction', FILTER_SANITIZE_NUMBER_INT));
 $receipt = $iotJumpWay->retrieveDeviceTransactionReceipt($iotJumpWay->_GeniSys->_helpers->oDecrypt($txn["hash"]));
 
-list($lat, $lng) = $Patients->getMapMarkers($Patient);
-list($on, $off) = $Patients->getStatusShow($Patient["status"]);
-
 ?>
 
 <!DOCTYPE html>
@@ -140,22 +137,6 @@ list($on, $off) = $Patients->getStatusShow($Patient["status"]);
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
-						<div class="panel panel-default card-view panel-refresh">
-							<div class="panel-wrapper collapse in">
-								<div class="panel-body">
-								<div class="pull-right"><span id="offline1" style="color: #33F9FF !important;" class="<?=$on; ?>"><i class="fas fa-power-off" style="color: #33F9FF !important;"></i> Online</span> <span id="online1" class="<?=$off; ?>" style="color: #99A3A4 !important;"><i class="fas fa-power-off" style="color: #99A3A4 !important;"></i> Offline</span></div>
-									<div class="form-group">
-										<label class="control-label col-md-5">Status</label>
-										<div class="col-md-9">
-											<i class="fa fa-microchip data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idecpuU"><?=$Patient["cpu"]; ?></span>% &nbsp;&nbsp;
-											<i class="zmdi zmdi-memory data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idememU"><?=$Patient["mem"]; ?></span>% &nbsp;&nbsp;
-											<i class="far fa-hdd data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idehddU"><?=$Patient["hdd"]; ?></span>% &nbsp;&nbsp;
-											<i class="fa fa-thermometer-quarter data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idetempU"><?=$Patient["tempr"]; ?></span>°C
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
 					</div>
 				</div>
 
@@ -169,7 +150,6 @@ list($on, $off) = $Patients->getStatusShow($Patient["status"]);
 
 		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
 		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
-		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWayUI.js"></script>
 
 	</body>
 </html>

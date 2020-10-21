@@ -37,7 +37,7 @@ $_GeniSysAi->checkSession();
 	<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
 	<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 	<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
-	<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
+	<link href="<?=$domain; ?>/AI/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
 	<link href="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.css" rel="stylesheet" type="text/css" />
 </head>
 
@@ -100,37 +100,32 @@ $_GeniSysAi->checkSession();
 											<div class="row">
 												<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
 													<div class="form-group">
-														<label for="name" class="control-label mb-10">Name *</label>
-														<input type="text" class="form-control" id="name" name="name" placeholder="Name of staff member" required value="">
-														<span class="help-block">Name of staff member</span>
+														<label for="name" class="control-label mb-10">Name</label>
+														<input type="text" class="form-control" id="name" name="name" placeholder="Staff Name" required value="">
+														<span class="help-block"> Name of staff</span>
 													</div>
 													<div class="form-group">
-														<label for="name" class="control-label mb-10">Username *</label>
-														<input type="text" class="form-control" id="username" name="username" placeholder="Username of staff member" required value="">
-														<span class="help-block">Username of staff member</span>
+														<label for="name" class="control-label mb-10">Description</label>
+														<input type="text" class="form-control" id="description" name="description" placeholder="Device Description" required value="">
+														<span class="help-block"> Staff description</span>
 													</div>
 													<div class="form-group">
-														<label for="name" class="control-label mb-10">Email *</label>
-														<input type="text" class="form-control" id="email" name="email" placeholder="Email of staff member" required value="">
-														<span class="help-block">Email of staff member</span>
+														<label for="name" class="control-label mb-10">Username</label>
+														<input type="text" class="form-control" id="username" name="username" placeholder="Staff Username" required value="">
+														<span class="help-block"> Username of staff</span>
 													</div>
 													<div class="form-group">
-														<label for="name" class="control-label mb-10">NFC UID</label>
-														<input type="text" class="form-control" id="nfc" name="nfc" placeholder="NFC UID"  value="">
-														<span class="help-block">UID of staff member's NFC card/fob/implant</span>
-													</div>
-													<div class="form-group">
-														<label class="control-label mb-10">Location</label>
-														<select class="form-control" id="lid" name="lid" required>
+														<label class="control-label mb-10">Category</label>
+														<select class="form-control" id="category" name="category" required>
 															<option value="">PLEASE SELECT</option>
 
 															<?php
-																$Locations = $iotJumpWay->getLocations(0, "id ASC");
-																if(count($Locations)):
-																	foreach($Locations as $key => $value):
+																$categories = $Staff->getStaffCategories();
+																if(count($categories)):
+																	foreach($categories as $key => $value):
 															?>
 
-															<option value="<?=$value["id"]; ?>">#<?=$value["id"]; ?>: <?=$value["name"]; ?></option>
+															<option value="<?=$value["category"]; ?>"><?=$value["category"]; ?></option>
 
 															<?php
 																	endforeach;
@@ -138,7 +133,32 @@ $_GeniSysAi->checkSession();
 															?>
 
 														</select>
-														<span class="help-block"> Location of staff member</span>
+														<span class="help-block">Staff category</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Email *</label>
+														<input type="text" class="form-control" id="email" name="email" placeholder="Email of staff member" required value="">
+														<span class="help-block">Email of staff member</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Address Street Address</label>
+														<input type="text" class="form-control" id="streetAddress" name="streetAddress" placeholder="iotJumpWay Location street address" required value="">
+														<span class="help-block">iotJumpWay Location street address</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Address Locality</label>
+														<input type="text" class="form-control" id="addressLocality" name="addressLocality" placeholder="iotJumpWay Location address locality" required value="">
+														<span class="help-block">iotJumpWay Location address locality</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Address Postal Code</label>
+														<input type="text" class="form-control" id="postalCode" name="postalCode" placeholder="iotJumpWay Location postal code" required value="">
+														<span class="help-block">iotJumpWay Location post code</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">NFC UID</label>
+														<input type="text" class="form-control" id="nfc" name="nfc" placeholder="NFC UID"  value="">
+														<span class="help-block">UID of staff member's NFC card/fob/implant</span>
 													</div>
 													<div class="form-group mb-0">
 														<input type="hidden" class="form-control" id="create_staff" name="create_staff" required value="1">
@@ -147,14 +167,35 @@ $_GeniSysAi->checkSession();
 												</div>
 												<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
 													<div class="form-group">
+														<label class="control-label mb-10">Location</label>
+														<select class="form-control" id="lid" name="lid" required>
+															<option value="">PLEASE SELECT</option>
+
+															<?php
+																$Locations = $iotJumpWay->getLocations();
+																if(count($Locations["Data"])):
+																	foreach($Locations["Data"] as $key => $value):
+															?>
+
+																<option value="<?=$value["lid"]["value"]; ?>">#<?=$value["lid"]["value"]; ?>: <?=$value["name"]["value"]; ?></option>
+
+															<?php
+																	endforeach;
+																endif;
+															?>
+
+														</select>
+														<span class="help-block"> Location of staff</span>
+													</div>
+													<div class="form-group">
 														<label for="name" class="control-label mb-10">Is Admin:</label>
-														<input type="checkbox" class="" id="admin" name="admin" value="1">
+														<input type="checkbox" class="" id="admin" name="admin" value=1>
 														<span class="help-block">Is staff member an admin?</span>
 													</div>
 													<div class="form-group">
 														<label for="name" class="control-label mb-10">Has Patient Access:</label>
-														<input type="checkbox" class="" id="patients" name="patients" value="1">
-														<span class="help-block">Is staff member has patients access?</span>
+														<input type="checkbox" class="" id="patients" name="patients" value=1>
+														<span class="help-block">Does staff member has patients access?</span>
 													</div>
 												</div>
 											</div>

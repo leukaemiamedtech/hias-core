@@ -9,6 +9,7 @@ include dirname(__FILE__) . '/../../../Classes/Core/init.php';
 include dirname(__FILE__) . '/../../../Classes/Core/GeniSys.php';
 include dirname(__FILE__) . '/../../iotJumpWay/Classes/iotJumpWay.php';
 include dirname(__FILE__) . '/../../Robotics/EMAR/Classes/EMAR.php';
+include dirname(__FILE__) . '/../../AI/Classes/AI.php';
 
 $_GeniSysAi->checkSession();
 
@@ -16,17 +17,10 @@ $Locations = $iotJumpWay->getLocations();
 $Zones = $iotJumpWay->getZones();
 $Devices = $iotJumpWay->getDevices();
 
-$TId = filter_input(INPUT_GET, 'emar', FILTER_SANITIZE_NUMBER_INT);
-$TDevice = $EMAR->getDevice($TId);
+$TId = filter_input(INPUT_GET, 'device', FILTER_SANITIZE_NUMBER_INT);
+$Device = $EMAR->getDevice($TId);
 
-list($dev1On, $dev1Off) = $EMAR->getStatusShow($TDevice["status"]);
-
-list($lat, $lng) = $EMAR->getMapMarkers($TDevice);
-
-$lats  = [[
-	"lat"=> floatval($lat),
-	"lng" => floatval($lng)
-]];
+list($dev1On, $dev1Off) = $iotJumpWay->getStatusShow($Device["context"]["Data"]["status"]["value"]);
 
 ?>
 
@@ -53,7 +47,7 @@ $lats  = [[
 	<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
 	<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 	<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
-	<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
+	<link href="<?=$domain; ?>/AI/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
 	<link href="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.css" rel="stylesheet" type="text/css" />
 
 	<style>
@@ -127,7 +121,7 @@ $lats  = [[
 													<img src="<?=$domain; ?>/Robotics/EMAR/Media/Images/EMAR-Offline.png" style="width: 100%;" />
 												</div>
 											</div>
-											<img src="<?=$domain; ?>/Robotics/EMAR/<?=$_GeniSys->_helpers->oDecrypt($TDevice["sdir"]); ?>/<?=$_GeniSys->_helpers->oDecrypt($TDevice["sportf"]); ?>" id="cam2on" class="<?=$dev1On; ?>" style="width: 100%;" onerror="EMAR.imgError('cam2');" />
+											<img src="<?=$domain; ?>/Robotics/EMAR/<?=$Device["context"]["Data"]["proxy"]["endpoint"]; ?>/<?=$Device["context"]["Data"]["stream"]["file"]; ?>" id="cam2on" class="<?=$dev1On; ?>" style="width: 100%;" onerror="EMAR.imgError('cam2');" />
 										</div>
 									</div>
 								</div>
@@ -143,7 +137,7 @@ $lats  = [[
 						<div class="panel panel-default card-view panel-refresh">
 							<div class="panel-wrapper collapse in">
 								<div class="panel-body">
-									  <div id="map1" class="map" style="height: 500px;"></div>
+									  <div id="map" class="map" style="height: 500px;"></div>
 								</div>
 							</div>
 						</div>
@@ -158,12 +152,11 @@ $lats  = [[
 									<h6 class="panel-title txt-dark">EMAR Robotic Unit #<?=$TId; ?></h6>
 								</div>
 								<div class="pull-right">
-
-									<span id="offline1" style="color: #33F9FF !important;" class="<?=$dev1On; ?>"><i class="fas fa-power-off" style="color: #33F9FF !important;"></i> Online</span> <span id="online1" class="<?=$dev1Off; ?>" style="color: #99A3A4 !important;"><i class="fas fa-power-off" style="color: #99A3A4 !important;"></i> Offline</span> &nbsp;&nbsp;
-									<i class="fa fa-microchip data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="ecpuU"><?=$TDevice["cpu"]; ?></span>% &nbsp;&nbsp;
-									<i class="zmdi zmdi-memory data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="ememU"><?=$TDevice["mem"]; ?></span>% &nbsp;&nbsp;
-									<i class="far fa-hdd data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="ehddU"><?=$TDevice["hdd"]; ?></span>% &nbsp;&nbsp;
-									<i class="fa fa-thermometer-quarter data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="etempU"><?=$TDevice["tempr"]; ?></span>°C
+									<i class="fas fa-battery-full data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idebatU"><?=$Device["context"]["Data"]["batteryLevel"]["value"]; ?></span>% &nbsp;&nbsp;
+									<i class="fa fa-microchip data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idecpuU"><?=$Device["context"]["Data"]["cpuUsage"]["value"]; ?></span>% &nbsp;&nbsp;
+									<i class="zmdi zmdi-memory data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idememU"><?=$Device["context"]["Data"]["memoryUsage"]["value"]; ?></span>% &nbsp;&nbsp;
+									<i class="far fa-hdd data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idehddU"><?=$Device["context"]["Data"]["hddUsage"]["value"]; ?></span>% &nbsp;&nbsp;
+									<i class="fa fa-thermometer-quarter data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idetempU"><?=$Device["context"]["Data"]["temperature"]["value"]; ?></span>°C
 
 								</div>
 								<div class="clearfix"></div>
@@ -174,20 +167,235 @@ $lats  = [[
 										<form data-toggle="validator" role="form" id="emar_update">
 											<div class="row">
 												<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Name</label>
+														<input type="text" class="form-control" id="name" name="name" placeholder="Device Name" required value="<?=$Device["context"]["Data"]["name"]["value"]; ?>">
+														<span class="help-block"> Name of device</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Description</label>
+														<input type="text" class="form-control" id="description" name="description" placeholder="Device Description" required value="<?=$Device["context"]["Data"]["description"]["value"]; ?>">
+														<span class="help-block"> Description of device</span>
+													</div>
+													<div class="form-group">
+														<label class="control-label mb-10">Category</label>
+														<select class="form-control" id="category" name="category">
 
-													<h4>Device</h4><br />
+															<?php
+																$categories = $iotJumpWay->getDeviceCategories();
+																if(count($categories)):
+																	foreach($categories as $key => $value):
+															?>
 
+															<option value="<?=$value["category"]; ?>" <?=$value["category"] == $Device["context"]["Data"]["category"]["value"][0] ? " selected " : ""; ?>><?=$value["category"]; ?></option>
+
+															<?php
+																	endforeach;
+																endif;
+															?>
+
+														</select>
+														<span class="help-block">Device category</span>
+													</div>
+													<div class="form-group">
+														<label class="control-label mb-10">IoT Agent</label>
+														<select class="form-control" id="agent" name="agent">
+															<option value="">PLEASE SELECT</option>
+
+															<?php
+																$agents = $iotJumpWay->getAgents();
+																if(count($agents["Data"])):
+																	foreach($agents["Data"] as $key => $value):
+															?>
+
+															<option value="http://<?=$value["ip"]["value"]; ?>:<?=$value["northPort"]["value"]; ?>" <?=$Device["context"]["Data"]["agent"]["url"] == "http://" . $value["ip"]["value"] . ":" . $value["northPort"]["value"] ? " selected " : ""; ?>><?=$value["name"]["value"]; ?> (http://<?=$value["ip"]["value"]; ?>:<?=$value["northPort"]["value"]; ?>)</option>
+
+															<?php
+																	endforeach;
+																endif;
+															?>
+
+														</select>
+														<span class="help-block">Device IoT Agent</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Hardware Device Name</label>
+														<input type="text" class="form-control" id="deviceName" name="deviceName" placeholder="Hardware device name" required value="<?=$Device["context"]["Data"]["device"]["name"]; ?>">
+														<span class="help-block">Name of hardware device</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Hardware Device Name</label>
+														<input type="text" class="form-control" id="deviceManufacturer" name="deviceManufacturer" placeholder="Hardware device manufacturer" required value="<?=$Device["context"]["Data"]["device"]["manufacturer"]; ?>">
+														<span class="help-block">Name of hardware manufacturer</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Hardware Device Model</label>
+														<input type="text" class="form-control" id="deviceModel" name="deviceModel" placeholder="Hardware device model" required value="<?=$Device["context"]["Data"]["device"]["model"]; ?>">
+														<span class="help-block">Hardware model</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Operating System</label>
+														<input type="text" class="form-control" id="osName" name="osName" placeholder="Operating system name" required value="<?=$Device["context"]["Data"]["os"]["name"]; ?>">
+														<span class="help-block">Operating system name</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Operating system manufacturer</label>
+														<input type="text" class="form-control" id="osManufacturer" name="osManufacturer" placeholder="Operating system manufacturer" required value="<?=$Device["context"]["Data"]["os"]["manufacturer"]; ?>">
+														<span class="help-block">Operating system manufacturer</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Operating system version</label>
+														<input type="text" class="form-control" id="osVersion" name="osVersion" placeholder="Operating system version" required value="<?=$Device["context"]["Data"]["os"]["version"]; ?>">
+														<span class="help-block">Operating system version</span>
+													</div>
+													<div class="form-group">
+														<label class="control-label mb-10">Protocols</label>
+														<select class="form-control" id="protocols" name="protocols[]" required multiple>
+
+															<?php
+																$protocols = $iotJumpWay->getContextBrokerProtocols();
+																if(count($protocols)):
+																	foreach($protocols as $key => $value):
+															?>
+
+																<option value="<?=$value["protocol"]; ?>" <?=in_array($value["protocol"], $Device["context"]["Data"]["protocols"]) ? " selected " : ""; ?>><?=$value["protocol"]; ?></option>
+
+															<?php
+																	endforeach;
+																endif;
+															?>
+
+														</select>
+														<span class="help-block">Supported Communication Protocols</span>
+													</div>
+													<div class="form-group">
+														<label class="control-label mb-10">Sensors</label>
+														<select class="form-control" id="sensorSelect">
+															<option value="">Select Sensors To Add</option>
+
+															<?php
+																$sensors = $iotJumpWay->getThings(0, "Sensor");
+																if(count($sensors["Data"])):
+																	foreach($sensors["Data"] as $key => $value):
+															?>
+
+																<option value="<?=$value["sid"]["value"]; ?>"><?=$value["name"]["value"]; ?></option>
+
+															<?php
+																	endforeach;
+																endif;
+															?>
+
+														</select><br />
+														<div id="sensorContent">
+															<?php
+																if(isSet($Device["context"]["Data"]["sensors"])):
+																	foreach($Device["context"]["Data"]["sensors"] AS $key => $value):
+															?>
+
+															<div class="row form-control" style="margin-bottom: 5px; margin-left: 0.5px;" id="sensor-<?=$key; ?>">
+																<div class="col-lg-11 col-md-11 col-sm-11 col-xs-11">
+																	<strong><?=$value["name"]["value"]; ?></strong>
+																	<input type="hidden" class="form-control" name="sensors[]" value="<?=$value["sid"]["value"]; ?>" required>
+																</div>
+																<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+																	<a href="javascript:void(0);" class="removeSensor" data-id="<?=$key; ?>"><i class="fas fa-trash-alt"></i></a>
+																</div>
+															</div>
+
+															<?php
+																	endforeach;
+																endif;
+															?>
+														</div>
+														<span class="help-block">Device Sensors</span>
+														<span class="hidden" id="lastSensor"><?=$key ? $key : 0; ?></span>
+													</div>
+													<div class="form-group">
+														<label class="control-label mb-10">Actuators</label>
+														<select class="form-control" id="actuatorSelect">
+															<option value="">Select Actuators To Add</option>
+
+															<?php
+																$actuators = $iotJumpWay->getThings(0, "Actuator");
+																if(count($actuators["Data"])):
+																	foreach($actuators["Data"] as $key => $value):
+															?>
+
+																<option value="<?=$value["sid"]["value"]; ?>"><?=$value["name"]["value"]; ?></option>
+
+															<?php
+																	endforeach;
+																endif;
+															?>
+
+														</select><br />
+														<div id="actuatorContent">
+															<?php
+																if(isSet($Device["context"]["Data"]["actuators"])):
+																	foreach($Device["context"]["Data"]["actuators"] AS $key => $value):
+															?>
+
+															<div class="row form-control" style="margin-bottom: 5px; margin-left: 0.5px;" id="actuator-<?=$key; ?>">
+																<div class="col-lg-11 col-md-11 col-sm-11 col-xs-11">
+																	<strong><?=$value["name"]["value"]; ?></strong>
+																	<input type="hidden" class="form-control" name="actuators[]" value="<?=$value["sid"]["value"]; ?>" required>
+																</div>
+																<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+																	<a href="javascript:void(0);" class="removeActuator" data-id="<?=$key; ?>"><i class="fas fa-trash-alt"></i></a>
+																</div>
+															</div>
+
+															<?php
+																	endforeach;
+																endif;
+															?>
+														</div>
+														<span class="help-block">Device Actuators</span>
+														<span class="hidden" id="lastActuator"><?=$key ? $key : 0; ?></span>
+													</div>
+													<div class="form-group">
+														<label class="control-label mb-10">AI Models</label>
+														<select class="form-control" id="ai" name="ai[]" multiple>
+
+															<?php
+																$models = $AI->getModels()["Data"];
+																if(count($models)):
+																	foreach($models as $key => $value):
+															?>
+
+																<option value="<?=$value["mid"]["value"]; ?>" <?=array_key_exists($value["name"]["value"], $Device["context"]["Data"]["ai"]) ? " selected " : ""; ?>><?=$value["name"]["value"]; ?></option>
+
+															<?php
+																	endforeach;
+																endif;
+															?>
+
+														</select>
+														<span class="help-block">Device AI Models</span>
+													</div>
+													<div class="form-group mb-0">
+														<input type="hidden" class="form-control" id="update_emar" name="update_emar" required value="1">
+														<input type="hidden" class="form-control" id="lentity" name="lentity" required value="<?=$Device["context"]["Data"]["lid"]["entity"]; ?>">
+														<input type="hidden" class="form-control" id="zentity" name="zentity" required value="<?=$Device["context"]["Data"]["zid"]["entity"]; ?>">
+														<input type="hidden" class="form-control" id="dentity" name="dentity" required value="<?=$Device["context"]["Data"]["id"]; ?>">
+														<input type="hidden" class="form-control" id="uidentifier" name="uidentifier" required value="<?=$_SESSION["GeniSysAI"]["Identifier"]; ?>">
+														<button type="submit" class="btn btn-success btn-anim"><i class="icon-rocket"></i><span class="btn-text">Update</span></button>
+													</div>
+												</div>
+												<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
 													<div class="form-group">
 														<label class="control-label mb-10">Location</label>
 														<select class="form-control" id="lid" name="lid" required>
 															<option value="">PLEASE SELECT</option>
 
 															<?php
-																if(count($Locations)):
-																	foreach($Locations as $key => $value):
+																$Locations = $iotJumpWay->getLocations();
+																if(count($Locations["Data"])):
+																	foreach($Locations["Data"] as $key => $value):
 															?>
 
-															<option value="<?=$value["id"]; ?>" <?=$value["id"]==$TDevice["lid"] ? " selected " : ""; ?>>#<?=$value["id"]; ?>: <?=$value["name"]; ?></option>
+																<option value="<?=$value["lid"]["value"]; ?>" <?=$value["lid"]["value"] == $Device["context"]["Data"]["lid"]["value"] ? " selected " : ""; ?>>#<?=$value["lid"]["value"]; ?>: <?=$value["name"]["value"]; ?></option>
 
 															<?php
 																	endforeach;
@@ -195,38 +403,19 @@ $lats  = [[
 															?>
 
 														</select>
-														<span class="help-block">EMAR iotJumpWay Location</span>
+														<span class="help-block"> Location of device</span>
 													</div>
 													<div class="form-group">
 														<label class="control-label mb-10">Zone</label>
 														<select class="form-control" id="zid" name="zid" required>
 															<option value="">PLEASE SELECT</option>
-
 															<?php
-																if(count($Zones)):
-																	foreach($Zones as $key => $value):
+																$Zones = $iotJumpWay->getZones();
+																if(count($Zones["Data"])):
+																	foreach($Zones["Data"] as $key => $value):
 															?>
 
-															<option value="<?=$value["id"]; ?>" <?=$value["id"]==$TDevice["zid"] ? " selected " : ""; ?>>#<?=$value["id"]; ?>: <?=$value["zn"]; ?></option>
-
-															<?php
-																	endforeach;
-																endif;
-															?>
-
-														</select>
-														<span class="help-block">EMAR iotJumpWay Zone</span>
-													</div>
-													<div class="form-group">
-														<label class="control-label mb-10">Device</label>
-														<select class="form-control" id="did" name="did" required>
-															<option value="">PLEASE SELECT</option>
-															<?php
-																if(count($Devices)):
-																	foreach($Devices as $key => $value):
-															?>
-
-															<option value="<?=$value["id"]; ?>" <?=$TDevice["did"]==$value["id"] ? " selected " : ""; ?>>#<?=$value["id"]; ?>: <?=$value["name"]; ?></option>
+															<option value="<?=$value["zid"]["value"]; ?>" <?=$Device["context"]["Data"]["zid"]["value"] == $value["zid"]["value"] ? " selected " : ""; ?>>#<?=$value["zid"]["value"]; ?>: <?=$value["name"]["value"]; ?></option>
 
 															<?php
 																	endforeach;
@@ -234,56 +423,59 @@ $lats  = [[
 															?>
 
 														</select>
-														<span class="help-block">EMAR iotJumpWay Device</span>
+														<span class="help-block"> Zone of device</span>
 													</div>
 													<div class="form-group">
-														<label for="name" class="control-label mb-10">Device Name</label>
-														<input type="text" class="form-control" id="name" name="name" placeholder="EMAR Device Name" required value="<?=$TDevice["name"]; ?>">
-														<span class="help-block">EMAR iotJumpWay Device Name</span>
+														<label for="name" class="control-label mb-10">Coordinates</label>
+														<input type="text" class="form-control" id="coordinates" name="coordinates" placeholder="iotJumpWay Location coordinates" required value="<?=$Device["context"]["Data"]["location"]["value"]["coordinates"][0]; ?>, <?=$Device["context"]["Data"]["location"]["value"]["coordinates"][1]; ?>">
+														<span class="help-block">iotJumpWay Device coordinates</span>
 													</div>
 													<div class="form-group">
 														<label for="name" class="control-label mb-10">IP</label>
-														<input type="text" class="form-control hider" id="ip" name="ip" placeholder="EMAR Device IP" required value="<?=$TDevice["ip"] ? $_GeniSys->_helpers->oDecrypt($TDevice["ip"]) : ""; ?>">
-														<span class="help-block">EMAR iotJumpWay Device IP</span>
+														<input type="text" class="form-control hider" id="ip" name="ip" placeholder="Device IP" required value="<?=$Device["context"]["Data"]["ip"]["value"] ? $_GeniSys->_helpers->oDecrypt($Device["context"]["Data"]["ip"]["value"]) : ""; ?>">
+														<span class="help-block"> IP of device</span>
 													</div>
 													<div class="form-group">
-														<label for="name" class="control-label mb-10">MAC Address</label>
-														<input type="text" class="form-control hider" id="mac" name="mac"
-															placeholder="EMAR Device MAC" required
-															value="<?=$TDevice["mac"] ? $_GeniSys->_helpers->oDecrypt($TDevice["mac"]) : ""; ?>">
-														<span class="help-block">EMAR iotJumpWay Device MAC</span>
+														<label for="name" class="control-label mb-10">MAC</label>
+														<input type="text" class="form-control hider" id="mac" name="mac" placeholder="Device MAC" required value="<?=$Device["context"]["Data"]["mac"]["value"] ? $_GeniSys->_helpers->oDecrypt($Device["context"]["Data"]["mac"]["value"]) : ""; ?>">
+														<span class="help-block"> MAC of device</span>
 													</div>
-													<div class="form-group mb-0">
-														<input type="hidden" class="form-control" id="update_emar" name="update_emar" required value="1">
-														<input type="hidden" class="form-control" id="status" name="status" required value="<?=$TDevice["status"]; ?>">
-														<input type="hidden" class="form-control" id="identifier" name="identifier" required value="<?=$TDevice["apub"]; ?>">
-														<input type="hidden" class="form-control" id="id" name="id" required value="<?=$TDevice["id"]; ?>">
-														<button type="submit" class="btn btn-success btn-anim"><i class="icon-rocket"></i><span class="btn-text">Update</span></button>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Bluetooth Address</label>
+														<input type="text" class="form-control hider" id="bluetooth" name="bluetooth" placeholder="Device Bluetooth Address"  value="<?=$Device["context"]["Data"]["bluetooth"]["address"] ? $_GeniSys->_helpers->oDecrypt($Device["context"]["Data"]["bluetooth"]["address"]) : ""; ?>">
+														<span class="help-block">Bluetooth address of device</span>
 													</div>
-												</div>
-												<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-
-													<h4>Real-Time Object Detection & Depth</h4><br />
-
 													<div class="form-group">
 														<label for="name" class="control-label mb-10">Stream Port</label>
-														<input type="text" class="form-control hider" id="sport" name="sport" placeholder="EMAR Device Stream Port" required value="<?=$TDevice["sport"] ? $_GeniSys->_helpers->oDecrypt($TDevice["sport"]) : ""; ?>">
-														<span class="help-block">Stream port of EMAR live stream</span>
-													</div>
-													<div class="form-group">
-														<label for="name" class="control-label mb-10">Stream Directory</label>
-														<input type="text" class="form-control hider" id="sdir" name="sdir" placeholder="EMAR Device Stream Directory" value="<?=$TDevice["sdir"] ? $_GeniSys->_helpers->oDecrypt($TDevice["sdir"]) : ""; ?>" required>
-														<span class="help-block">Stream directory of EMAR live stream</span>
+														<input type="text" class="form-control hider" id="sport" name="sport" placeholder="TassAI Device Stream Port" required value="<?=$Device["context"]["Data"]["stream"]["port"]; ?>">
+														<span class="help-block"> Stream Port of TassAI camera device</span>
 													</div>
 													<div class="form-group">
 														<label for="name" class="control-label mb-10">Stream File</label>
-														<input type="text" class="form-control hider" id="sportf" name="sportf" placeholder="EMAR Device Stream File" required value="<?=$TDevice["sportf"] ? $_GeniSys->_helpers->oDecrypt($TDevice["sportf"]) : ""; ?>">
-														<span class="help-block">Stream file of EMAR live stream</span>
+														<input type="text" class="form-control hider" id="sportf" name="sportf" placeholder="TassAI Device Stream File" required value="<?=$Device["context"]["Data"]["stream"]["file"]; ?>">
+														<span class="help-block"> Name of TassAI camera stream file (.mjpg)</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Proxy Endpoint</label>
+														<input type="text" class="form-control hider" id="strdir" name="strdir" placeholder="TassAI Device Proxy Endpoint" required value="<?=$Device["context"]["Data"]["proxy"]["endpoint"]; ?>">
+														<span class="help-block"> Name of TassAI camera stream directory</span>
 													</div>
 													<div class="form-group">
 														<label for="name" class="control-label mb-10">Socket Port</label>
-														<input type="text" class="form-control hider" id="sckport" name="sckport" placeholder="EMAR Device Socket Port" required value="<?=$TDevice["sckport"] ? $_GeniSys->_helpers->oDecrypt($TDevice["sckport"]) : ""; ?>">
-														<span class="help-block">Socket port of EMAR live stream</span>
+														<input type="text" class="form-control hider" id="sckport" name="sckport" placeholder="TassAI Device MAC" required value="<?=$Device["context"]["Data"]["socket"]["port"]; ?>">
+														<span class="help-block"> Port of TassAI camera socket stream</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Date Created</label>
+														<p><?=$Device["context"]["Data"]["dateCreated"]["value"]; ?></p>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Date First Used</label>
+														<p><?=$Device["context"]["Data"]["dateFirstUsed"]["value"] ? $Device["context"]["Data"]["dateFirstUsed"]["value"] : "NA"; ?></p>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Date Modified</label>
+														<p><?=$Device["context"]["Data"]["dateModified"]["value"]; ?></p>
 													</div>
 
 												</div>
@@ -298,9 +490,25 @@ $lats  = [[
 						<div class="panel panel-default card-view panel-refresh">
 							<div class="panel-heading">
 								<div class="pull-left">
+									<h6 class="panel-title txt-dark">Device Schema</h6>
+								</div>
+								<div class="pull-right"></div>
+								<div class="clearfix"></div>
+							</div>
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
+									<div  style="height: 400px; overflow-y: scroll; overflow-x: hidden;">
+										<?php echo "<pre id='schema'>"; ?> <?php print_r(json_encode($Device["context"]["Data"], JSON_PRETTY_PRINT)); ?> <?php echo "</pre>"; ?>
+									</div>
+								</div>
+							</div>
+						</div><br />
+						<div class="panel panel-default card-view panel-refresh">
+							<div class="panel-heading">
+								<div class="pull-left">
 									<h6 class="panel-title txt-dark">Device History</h6>
 								</div>
-								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/<?=$TDevice["lid"]; ?>/Zones/<?=$TDevice["zid"]; ?>/Devices/<?=$TDevice["did"]; ?>/History"><i class="fa fa-eye pull-left"></i> View All Device History</a></div>
+								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/<?=$Device["context"]["Data"]["lid"]["value"]; ?>/Zones/<?=$Device["context"]["Data"]["zid"]["value"]; ?>/Devices/<?=$Device["context"]["Data"]["did"]["value"]; ?>/History"><i class="fa fa-eye pull-left"></i> View All Device History</a></div>
 								<div class="clearfix"></div>
 							</div>
 							<div class="panel-wrapper collapse in">
@@ -320,7 +528,7 @@ $lats  = [[
 
 												<?php
 													$userDetails = "";
-													$history = $iotJumpWay->retrieveDeviceHistory($TDevice["did"], 5);
+													$history = $iotJumpWay->retrieveDeviceHistory($Device["context"]["Data"]["did"]["value"], 5);
 													if(count($history)):
 														foreach($history as $key => $value):
 																if($value["uid"]):
@@ -337,7 +545,7 @@ $lats  = [[
 														<?php
 															if($value["hash"]):
 														?>
-															<a href="<?=$domain; ?>/iotJumpWay/<?=$TDevice["lid"]; ?>/Zones/<?=$TDevice["zid"]; ?>/Devices/<?=$TDevice["did"]; ?>/Transaction/<?=$value["hash"];?>">#<?=$value["hash"];?></a>
+															<a href="<?=$domain; ?>/iotJumpWay/<?=$Device["context"]["Data"]["lid"]["value"]; ?>/Zones/<?=$Device["context"]["Data"]["zid"]["value"]; ?>/Devices/<?=$Device["context"]["Data"]["did"]["value"]; ?>/Transaction/<?=$value["hash"];?>">#<?=$value["hash"];?></a>
 														<?php
 															else:
 														?>
@@ -369,7 +577,7 @@ $lats  = [[
 								<div class="pull-left">
 									<h6 class="panel-title txt-dark">Device Transactions</h6>
 								</div>
-								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/<?=$TDevice["lid"]; ?>/Zones/<?=$TDevice["zid"]; ?>/Devices/<?=$TDevice["did"]; ?>/Transactions"><i class="fa fa-eye pull-left"></i> View All Device Transactions</a></div>
+								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/<?=$Device["context"]["Data"]["lid"]["value"]; ?>/Zones/<?=$Device["context"]["Data"]["zid"]["value"]; ?>/Devices/<?=$Device["context"]["Data"]["did"]["value"]; ?>/Transactions"><i class="fa fa-eye pull-left"></i> View All Device Transactions</a></div>
 								<div class="clearfix"></div>
 							</div>
 							<div class="panel-wrapper collapse in">
@@ -388,7 +596,7 @@ $lats  = [[
 												<tbody>
 
 												<?php
-													$transactions = $iotJumpWay->retrieveDeviceTransactions($TDevice["did"], 5);
+													$transactions = $iotJumpWay->retrieveDeviceTransactions($Device["context"]["Data"]["did"]["value"], 5);
 													if(count($transactions)):
 														foreach($transactions as $key => $value):
 															if($value["uid"]):
@@ -400,7 +608,7 @@ $lats  = [[
 												  <tr>
 													<td>#<?=$value["id"];?></td>
 													<td><?=$userDetails;?><?=$value["action"];?></td>
-													<td><a href="<?=$domain; ?>/iotJumpWay/<?=$TDevice["lid"]; ?>/Zones/<?=$TDevice["zid"]; ?>/Devices/<?=$TDevice["did"]; ?>/Transaction/<?=$value["id"];?>">#<?=$value["id"];?></a></td>
+													<td><a href="<?=$domain; ?>/iotJumpWay/<?=$Device["context"]["Data"]["lid"]["value"]; ?>/Zones/<?=$Device["context"]["Data"]["zid"]["value"]; ?>/Devices/<?=$Device["context"]["Data"]["did"]["value"]; ?>/Transaction/<?=$value["id"];?>">#<?=$value["id"];?></a></td>
 													<td><?=date("Y-m-d H:i:s", $value["time"]);?></td>
 												  </tr>
 
@@ -421,7 +629,7 @@ $lats  = [[
 								<div class="pull-left">
 									<h6 class="panel-title txt-dark">Device iotJumpWay Statuses</h6>
 								</div>
-								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/<?=$TDevice["lid"]; ?>/Zones/<?=$TDevice["zid"]; ?>/Devices/<?=$TDevice["did"]; ?>Statuses"><i class="fa fa-eye pull-left"></i> View All Device Status Data</a></div>
+								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/<?=$Device["context"]["Data"]["lid"]["value"]; ?>/Zones/<?=$Device["context"]["Data"]["zid"]["value"]; ?>/Devices/<?=$Device["context"]["Data"]["did"]["value"]; ?>Statuses"><i class="fa fa-eye pull-left"></i> View All Device Status Data</a></div>
 								<div class="clearfix"></div>
 							</div>
 							<div class="panel-wrapper collapse in">
@@ -439,7 +647,7 @@ $lats  = [[
 												<tbody>
 
 												<?php
-													$Statuses = $iotJumpWay->retrieveDeviceStatuses($TDevice["did"], 5);
+													$Statuses = $iotJumpWay->retrieveDeviceStatuses($Device["context"]["Data"]["id"], 5);
 													if($Statuses["Response"] == "OK"):
 														foreach($Statuses["ResponseData"] as $key => $value):
 												?>
@@ -467,7 +675,7 @@ $lats  = [[
 								<div class="pull-left">
 									<h6 class="panel-title txt-dark">Device iotJumpWay Life</h6>
 								</div>
-								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/<?=$TDevice["lid"]; ?>/Zones/<?=$TDevice["zid"]; ?>/Devices/<?=$TDevice["did"]; ?>/Life"><i class="fa fa-eye pull-left"></i> View All Device Life Data</a></div>
+								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/<?=$Device["context"]["Data"]["lid"]["value"]; ?>/Zones/<?=$Device["context"]["Data"]["zid"]["value"]; ?>/Devices/<?=$Device["context"]["Data"]["did"]["value"]; ?>/Life"><i class="fa fa-eye pull-left"></i> View All Device Life Data</a></div>
 								<div class="clearfix"></div>
 							</div>
 							<div class="panel-wrapper collapse in">
@@ -485,7 +693,7 @@ $lats  = [[
 												<tbody>
 
 												<?php
-													$Statuses = $iotJumpWay->retrieveDeviceLife($TDevice["did"], 5);
+													$Statuses = $iotJumpWay->retrieveDeviceLife($Device["context"]["Data"]["id"], 5);
 													if($Statuses["Response"] == "OK"):
 														foreach($Statuses["ResponseData"] as $key => $value):
 												?>
@@ -520,7 +728,7 @@ $lats  = [[
 								<div class="pull-left">
 									<h6 class="panel-title txt-dark">Device iotJumpWay Sensors</h6>
 								</div>
-								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/<?=$TDevice["lid"]; ?>/Zones/<?=$TDevice["zid"]; ?>/Devices/<?=$TDevice["did"]; ?>/Sensors"><i class="fa fa-eye pull-left"></i> View All Device Sensors Data</a></div>
+								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/<?=$Device["context"]["Data"]["lid"]["value"]; ?>/Zones/<?=$Device["context"]["Data"]["zid"]["value"]; ?>/Devices/<?=$Device["context"]["Data"]["did"]["value"]; ?>/Sensors"><i class="fa fa-eye pull-left"></i> View All Device Sensors Data</a></div>
 								<div class="clearfix"></div>
 							</div>
 							<div class="panel-wrapper collapse in">
@@ -541,7 +749,7 @@ $lats  = [[
 												<tbody>
 
 												<?php
-													$Statuses = $iotJumpWay->retrieveDeviceSensors($TDevice["did"], 5);
+													$Statuses = $iotJumpWay->retrieveDeviceSensors($Device["context"]["Data"]["id"], 5);
 													if($Statuses["Response"] == "OK"):
 														foreach($Statuses["ResponseData"] as $key => $value):
 															$location = $iotJumpWay->getLocation($value->Location);
@@ -585,7 +793,7 @@ $lats  = [[
 								<div class="pull-left">
 									<h6 class="panel-title txt-dark">Device iotJumpWay Commands</h6>
 								</div>
-								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/<?=$TDevice["lid"]; ?>/Zones/<?=$TDevice["zid"]; ?>/Devices/<?=$TDevice["did"]; ?>/Commands"><i class="fa fa-eye pull-left"></i> View All Device Commands Data</a></div>
+								<div class="pull-right"><a href="<?=$domain; ?>/iotJumpWay/<?=$Device["context"]["Data"]["lid"]["value"]; ?>/Zones/<?=$Device["context"]["Data"]["zid"]["value"]; ?>/Devices/<?=$Device["context"]["Data"]["did"]["value"]; ?>/Commands"><i class="fa fa-eye pull-left"></i> View All Device Commands Data</a></div>
 								<div class="clearfix"></div>
 							</div>
 							<div class="panel-wrapper collapse in">
@@ -597,14 +805,13 @@ $lats  = [[
 												  <tr>
 													<th>ID</th>
 													<th>Details</th>
-													<th>Status</th>
 													<th>Time</th>
 												  </tr>
 												</thead>
 												<tbody>
 
 												<?php
-													$Statuses = $iotJumpWay->retrieveDeviceCommands($TDevice["did"], 5);
+													$Statuses = $iotJumpWay->retrieveDeviceCommands($Device["context"]["Data"]["id"], 5);
 													if($Statuses["Response"] == "OK"):
 														foreach($Statuses["ResponseData"] as $key => $value):
 															$location = $iotJumpWay->getLocation($value->Location);
@@ -612,8 +819,15 @@ $lats  = [[
 
 												  <tr>
 													<td>#<?=$value->_id;?></td>
-													<td><strong>Location:</strong> #<?=$value->Location;?> - <?=$location["name"]; ?></td>
-													<td><?=$value->Status;?></td>
+													<td>
+														<strong>Location:</strong> <?=$value->Location;?><br />
+														<strong>Zone:</strong> <?=$value->Zone != 0 ? "#" . $value->Zone : "NA"; ?><br />
+														<strong>From:</strong> <?=$value->From; ?><br />
+														<strong>To:</strong> <?=$value->To; ?><br />
+														<strong>Type:</strong> <?=$value->Type;?><br />
+														<strong>Value:</strong> <?=$value->Value;?><br />
+														<strong>Message:</strong> <?=$value->Message;?>
+													</td>
 													<td><?=$value->Time;?> </td>
 												  </tr>
 
@@ -634,11 +848,12 @@ $lats  = [[
 						<div class="panel panel-default card-view panel-refresh">
 							<div class="panel-wrapper collapse in">
 								<div class="panel-body">
-									<div class="pull-right"><a href="javascipt:void(0)" id="reset_apriv"><i class="fa fa-refresh"></i> Reset API Key</a></div>
+									<div class="pull-right"><a href="javascipt:void(0)" id="reset_emar_apriv"><i class="fa fa-refresh"></i> Reset API Key</a></div>
 									<div class="form-group">
 										<label class="control-label col-md-5">Identifier</label>
 										<div class="col-md-9">
-											<p class="form-control-static" id="idappid"><?=$TDevice["apub"]; ?></p>
+											<p class="form-control-static" id="idappid"><?=$Device["context"]["Data"]["id"]; ?></p>
+											<p><strong>Last Updated:</strong> <?=array_key_exists("timestamp", $Device["context"]["Data"]["keys"]) ? $Device["context"]["Data"]["keys"]["timestamp"] : "NA"; ?></p>
 										</div>
 									</div>
 								</div>
@@ -651,7 +866,7 @@ $lats  = [[
 									<div class="form-group">
 										<label class="control-label col-md-5">Blockchain Address</label>
 										<div class="col-md-9">
-											<p class="form-control-static" id="bcid"><?=$TDevice["bcaddress"]; ?></p>
+											<p class="form-control-static" id="bcid"><?=$Device["context"]["Data"]["blockchain"]["address"]; ?></p>
 										</div>
 									</div>
 								</div>
@@ -660,18 +875,39 @@ $lats  = [[
 						<div class="panel panel-default card-view panel-refresh">
 							<div class="panel-wrapper collapse in">
 								<div class="panel-body">
-									<div class="pull-right"><a href="javascipt:void(0)" id="reset_mqtt"><i
-												class="fa fa-refresh"></i> Reset MQTT Password</a></div>
+									<div class="pull-right"><a href="javascipt:void(0)" id="reset_emar_mqtt"><i class="fa fa-refresh"></i> Reset MQTT Password</a></div>
 									<div class="form-group">
 										<label class="control-label col-md-5">MQTT Username</label>
 										<div class="col-md-9">
-											<p class="form-control-static" id="mqttu"><?=$_GeniSys->_helpers->oDecrypt($TDevice["mqttu"]); ?></p>
+											<p class="form-control-static" id="idmqttu"><?=$_GeniSys->_helpers->oDecrypt($Device["context"]["Data"]["mqtt"]["username"]); ?></p>
 										</div>
 									</div>
 									<div class="form-group">
 										<label class="control-label col-md-5">MQTT Password</label>
 										<div class="col-md-9">
-											<p class="form-control-static"><span id="mqttp"><?=$_GeniSys->_helpers->oDecrypt($TDevice["mqttp"]); ?></span>
+											<p class="form-control-static"><span id="idmqttp"><?=$_GeniSys->_helpers->oDecrypt($Device["context"]["Data"]["mqtt"]["password"]); ?></span>
+											<p><strong>Last Updated:</strong> <?=array_key_exists("timestamp", $Device["context"]["Data"]["mqtt"]) ? $Device["context"]["Data"]["mqtt"]["timestamp"] : "NA"; ?></p>
+											</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="panel panel-default card-view panel-refresh">
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
+									<div class="pull-right"><a href="javascipt:void(0)" id="reset_emar_amqp"><i class="fa fa-refresh"></i> Reset AMQP Password</a></div>
+									<div class="form-group">
+										<label class="control-label col-md-5">AMQP Username</label>
+										<div class="col-md-9">
+											<p class="form-control-static" id="damqpu"><?=$Device["context"]["Data"]["amqp"]["username"] ? $_GeniSys->_helpers->oDecrypt($Device["context"]["Data"]["amqp"]["username"]) : ""; ?></p>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-md-5">AMQP Password</label>
+										<div class="col-md-9">
+											<p class="form-control-static"><span id="damqpp"><?=$Device["context"]["Data"]["amqp"]["password"] ? $_GeniSys->_helpers->oDecrypt($Device["context"]["Data"]["amqp"]["password"]) : ""; ?></span>
+											<p><strong>Last Updated:</strong> <?=array_key_exists("timestamp", $Device["context"]["Data"]["amqp"]) ? $Device["context"]["Data"]["amqp"]["timestamp"] : "NA"; ?></p>
 											</p>
 										</div>
 									</div>
@@ -690,31 +926,28 @@ $lats  = [[
 
 		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
 		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
-
+		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWayUI.js"></script>
 		<script type="text/javascript" src="<?=$domain; ?>/Robotics/EMAR/Classes/EMAR.js"></script>
 
 		<script type="text/javascript">
 
 			EMAR.HideInputs();
-			EMAR.UpdateLife();
+			iotJumpwayUI.StartDeviceLife();
 
-			var locations =  <?php echo json_encode( $lats ); ?>;
 			function initMap() {
 
-				var latlng = new google.maps.LatLng("<?=floatval($lat); ?>", "<?=floatval($lng); ?>");
-				var map = new google.maps.Map(document.getElementById('map1'), {
+				var latlng = new google.maps.LatLng("<?=floatval($Device["context"]["Data"]["location"]["value"]["coordinates"][0]); ?>", "<?=floatval($Device["context"]["Data"]["location"]["value"]["coordinates"][1]); ?>");
+				var map = new google.maps.Map(document.getElementById('map'), {
 					zoom: 10,
 					center: latlng
 				});
 
-				for (var j = 0; j < locations.length; j++) {
-					var loc = new google.maps.LatLng(locations[j]["lat"], locations[j]["lng"]);
-					var marker = new google.maps.Marker({
-						position: loc,
-						map: map,
-						title: 'Device ' + (j + 1)
-					});
-				}
+				var loc = new google.maps.LatLng(<?=floatval($Device["context"]["Data"]["location"]["value"]["coordinates"][0]); ?>, <?=floatval($Device["context"]["Data"]["location"]["value"]["coordinates"][1]); ?>);
+				var marker = new google.maps.Marker({
+					position: loc,
+					map: map,
+					title: 'Device '
+				});
 			}
 		</script>
 		<script async defer src="https://maps.googleapis.com/maps/api/js?key=<?=$_GeniSys->_helpers->oDecrypt($_GeniSys->_confs["gmaps"]); ?>&callback=initMap"></script>

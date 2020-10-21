@@ -10,7 +10,6 @@ include dirname(__FILE__) . '/../../../Classes/Core/GeniSys.php';
 include dirname(__FILE__) . '/../../Hospital/Patients/Classes/Patients.php';
 
 $_GeniSysAi->checkSession();
-$Patients = $Patients->getPatients();
 
 ?>
 
@@ -37,7 +36,7 @@ $Patients = $Patients->getPatients();
 	<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
 	<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 	<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
-	<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
+	<link href="<?=$domain; ?>/AI/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
 	<link href="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.css" rel="stylesheet" type="text/css" />
 </head>
 
@@ -82,7 +81,23 @@ $Patients = $Patients->getPatients();
 				</div>
 
 				<div class="row">
-					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+						<div class="panel panel-default card-view panel-refresh">
+							<div class="panel-heading">
+								<div class="pull-left">
+									<h6 class="panel-title txt-dark">HIAS Patients</h6>
+								</div>
+								<div class="pull-right"></div>
+								<div class="clearfix"></div>
+							</div>
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
+
+									<p>The HIAS patients area allows you to create and manage patinent accounts. Each user has a connected iotJumpWay application that provides the creditials and permissions to access the network and store data in the HIAS Blockchain. The patients network is a work in progress and is separate to the core network that HIAS staff, devices and applications have access to.</p>
+
+								</div>
+							</div>
+						</div>
 						<div class="panel panel-default card-view panel-refresh">
 							<div class="panel-heading">
 								<div class="pull-left">
@@ -108,22 +123,23 @@ $Patients = $Patients->getPatients();
 												<tbody>
 
 												<?php
-													if(count($Patients)):
-														foreach($Patients as $key => $value):
+													$Patients = $Patients->getPatients();
+													if($Patients["Response"] != "Failed"):
+														foreach($Patients["Data"] as $key => $value):
 												?>
 
 													<tr>
 														<td>#<?=$value["id"];?></td>
-														<td><img src="<?=$domain; ?>/Team/Media/Images/Uploads/<?=$value["pic"];?>" style="max-width: 100px; !important;" /></td>
+														<td><img src="<?=$domain; ?>/Hospital/Patients/Media/Images/Uploads/<?=$value["picture"]["value"];?>" style="max-width: 100px; !important;" /></td>
 														<td>
-															<strong>Name:</strong> <?=$value["username"];?>
+															<strong>Name:</strong> <?=$value["username"]["value"];?>
 														</td>
 														<td>
-															<div class="label label-table <?=$value["status"] == "OFFLINE" ? "label-danger" : "label-success"; ?>">
-																<?=$value["status"] == "OFFLINE" ? "OFFLINE" : "ONLINE"; ?>
+															<div class="label label-table <?=$value["status"]["online"] == "OFFLINE" ? "label-danger" : "label-success"; ?>">
+																<?=$value["status"]["online"] == "OFFLINE" ? "OFFLINE" : "ONLINE"; ?>
 															</div>
 														</td>
-														<td><a href="<?=$domain; ?>/Hospital/Patients/<?=$value["id"];?>"><i class="fa fa-edit"></i> Edit</a></a></td>
+														<td><a href="<?=$domain; ?>/Hospital/Patients/<?=$value["pid"]["value"];?>"><i class="fa fa-edit"></i> Edit</a></a></td>
 													</tr>
 
 												<?php
@@ -139,6 +155,7 @@ $Patients = $Patients->getPatients();
 							</div>
 						</div>
 					</div>
+					<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12"></div>
 				</div>
 
 			</div>

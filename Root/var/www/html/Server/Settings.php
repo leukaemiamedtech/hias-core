@@ -1,9 +1,9 @@
 <?php session_start();
 
 $pageDetails = [
-	"PageID" => "IoT",
-	"SubPageID" => "IoT",
-	"LowPageID" => "Locations"
+	"PageID" => "Server",
+	"SubPageID" => "Settings",
+	"LowPageID" => "Settings"
 ];
 
 include dirname(__FILE__) . '/../../Classes/Core/init.php';
@@ -39,7 +39,7 @@ list($on, $off) = $_GeniSysAi->getStatusShow($_GeniSys->_confs["status"]);
 		<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
 		<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
-		<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
+		<link href="<?=$domain; ?>/AI/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.css" rel="stylesheet" type="text/css"/>
 	</head>
 
@@ -88,6 +88,22 @@ list($on, $off) = $_GeniSysAi->getStatusShow($_GeniSys->_confs["status"]);
 						<div class="panel panel-default card-view panel-refresh">
 							<div class="panel-heading">
 								<div class="pull-left">
+									<h6 class="panel-title txt-dark">Hospital Intelligent Automation System Server</h6>
+								</div>
+								<div class="pull-right"></div>
+								<div class="clearfix"></div>
+							</div>
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
+
+									<p>The HIAS Server is the core of the HIAS network, powering a network of intelligent, IoT connected devices. This page allows you to update the core configuration required for the server.</p>
+
+								</div>
+							</div>
+						</div>
+						<div class="panel panel-default card-view panel-refresh">
+							<div class="panel-heading">
+								<div class="pull-left">
 									<h6 class="panel-title txt-dark">Edit HIAS Server Settings</h6>
 								</div>
 								<div class="pull-right"></div>
@@ -105,12 +121,12 @@ list($on, $off) = $_GeniSysAi->getStatusShow($_GeniSys->_confs["status"]);
 															<option value="">PLEASE SELECT</option>
 
 															<?php
-																if(count($Applications)):
-																	foreach($Applications as $key => $value):
+																if(count($Applications["Data"])):
+																	foreach($Applications["Data"] as $key => $value):
 															?>
 
-															<option value="<?=$value["id"]; ?>"
-																<?=$_GeniSys->_confs["aid"] == $value["id"] ? " selected " : ""; ?>>#<?=$value["id"]; ?>: <?=$value["name"]; ?></option>
+															<option value="<?=$value["aid"]["value"]; ?>"
+																<?=$_GeniSys->_confs["aid"] == $value["aid"]["value"] ? " selected " : ""; ?>>#<?=$value["aid"]["value"]; ?>: <?=$value["name"]["value"]; ?></option>
 
 															<?php
 																	endforeach;
@@ -147,7 +163,7 @@ list($on, $off) = $_GeniSysAi->getStatusShow($_GeniSys->_confs["status"]);
 													</div>
 													<div class="form-group mb-0">
 														<input type="hidden" class="form-control" id="update_server" name="update_server" required value="1">
-														<button type="submit" class="btn btn-success btn-anim"><i class="icon-rocket"></i><span class="btn-text">submit</span></button>
+														<button type="submit" class="btn btn-success btn-anim"><i class="icon-rocket"></i><span class="btn-text">Update</span></button>
 													</div>
 												</div>
 												<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
