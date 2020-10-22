@@ -3,14 +3,16 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Oct 22, 2020 at 12:01 AM
+-- Generation Time: Oct 22, 2020 at 03:34 AM
 -- Server version: 5.7.31-0ubuntu0.18.04.1
 -- PHP Version: 7.2.24-0ubuntu0.18.04.7
 
-SET SQL_MODE
-= "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone
-= "+00:00";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `skduyhfnnng`
+--
 
 -- --------------------------------------------------------
 
@@ -18,14 +20,10 @@ SET time_zone
 -- Table structure for table `amqpp`
 --
 
-CREATE TABLE `amqpp`
-(
-  `id` int
-(11) NOT NULL,
-  `uid` int
-(11) NOT NULL,
-  `permission` varchar
-(255) NOT NULL
+CREATE TABLE `amqpp` (
+  `id` int(11) NOT NULL,
+  `uid` int(11) NOT NULL,
+  `permission` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -34,14 +32,10 @@ CREATE TABLE `amqpp`
 -- Table structure for table `amqpu`
 --
 
-CREATE TABLE `amqpu`
-(
-  `id` int
-(11) NOT NULL,
-  `username` varchar
-(255) NOT NULL,
-  `pw` varchar
-(255) NOT NULL
+CREATE TABLE `amqpu` (
+  `id` int(11) NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `pw` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -50,14 +44,10 @@ CREATE TABLE `amqpu`
 -- Table structure for table `amqpvh`
 --
 
-CREATE TABLE `amqpvh`
-(
-  `id` int
-(11) NOT NULL,
-  `uid` int
-(11) NOT NULL,
-  `vhost` varchar
-(255) NOT NULL
+CREATE TABLE `amqpvh` (
+  `id` int(11) NOT NULL,
+  `uid` int(11) NOT NULL,
+  `vhost` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -66,20 +56,13 @@ CREATE TABLE `amqpvh`
 -- Table structure for table `amqpvhr`
 --
 
-CREATE TABLE `amqpvhr`
-(
-  `id` int
-(11) NOT NULL,
-  `uid` int
-(11) NOT NULL,
-  `vhost` varchar
-(255) NOT NULL,
-  `rtype` varchar
-(255) NOT NULL,
-  `rname` varchar
-(255) NOT NULL,
-  `permission` varchar
-(255) NOT NULL
+CREATE TABLE `amqpvhr` (
+  `id` int(11) NOT NULL,
+  `uid` int(11) NOT NULL,
+  `vhost` varchar(255) NOT NULL,
+  `rtype` varchar(255) NOT NULL,
+  `rname` varchar(255) NOT NULL,
+  `permission` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -88,22 +71,14 @@ CREATE TABLE `amqpvhr`
 -- Table structure for table `amqpvhrt`
 --
 
-CREATE TABLE `amqpvhrt`
-(
-  `id` int
-(11) NOT NULL,
-  `uid` int
-(11) NOT NULL,
-  `vhost` varchar
-(255) NOT NULL,
-  `rtype` varchar
-(255) NOT NULL,
-  `rname` varchar
-(255) NOT NULL,
-  `permission` varchar
-(255) NOT NULL,
-  `rkey` varchar
-(255) NOT NULL
+CREATE TABLE `amqpvhrt` (
+  `id` int(11) NOT NULL,
+  `uid` int(11) NOT NULL,
+  `vhost` varchar(255) NOT NULL,
+  `rtype` varchar(255) NOT NULL,
+  `rname` varchar(255) NOT NULL,
+  `permission` varchar(255) NOT NULL,
+  `rkey` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -112,16 +87,11 @@ CREATE TABLE `amqpvhrt`
 -- Table structure for table `blockchain`
 --
 
-CREATE TABLE `blockchain`
-(
-  `id` int
-(11) NOT NULL,
-  `dc` int
-(11) NOT NULL DEFAULT '0',
-  `pc` int
-(11) NOT NULL DEFAULT '0',
-  `ic` int
-(11) NOT NULL DEFAULT '0'
+CREATE TABLE `blockchain` (
+  `id` int(11) NOT NULL,
+  `dc` int(11) NOT NULL DEFAULT '0',
+  `pc` int(11) NOT NULL DEFAULT '0',
+  `ic` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -130,15 +100,36 @@ CREATE TABLE `blockchain`
 -- Table structure for table `blocked`
 --
 
-CREATE TABLE `blocked`
-(
-  `id` int
-(11) NOT NULL,
-  `ipv6` varchar
-(255) NOT NULL,
-  `banned` int
-(11) NOT NULL
+CREATE TABLE `blocked` (
+  `id` int(11) NOT NULL,
+  `ipv6` varchar(255) NOT NULL,
+  `banned` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cbAI`
+--
+
+CREATE TABLE `cbAI` (
+  `id` int(11) NOT NULL,
+  `model` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `cbAI`
+--
+
+INSERT INTO `cbAI` (`id`, `model`) VALUES
+(1, 'TassAI Facial Recognition (CNN)'),
+(2, 'TassAI Facial Classification (CNN)'),
+(3, 'Object Detection (CNN)'),
+(4, 'Acute Lymphoblastic Leukemia Classification (CNN)'),
+(5, 'COVID-19 Classification (CNN)'),
+(6, 'GeniSysAI Natural Language Understanding'),
+(7, 'Acute Myeloid Leukemia Classification (CNN)'),
+(8, 'COVID-19 Classification (xDNN)');
 
 -- --------------------------------------------------------
 
@@ -146,22 +137,16 @@ CREATE TABLE `blocked`
 -- Table structure for table `cbApplicationCats`
 --
 
-CREATE TABLE `cbApplicationCats`
-(
-  `id` int
-(11) NOT NULL,
-  `category` varchar
-(255) NOT NULL
+CREATE TABLE `cbApplicationCats` (
+  `id` int(11) NOT NULL,
+  `category` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `cbApplicationCats`
 --
 
-INSERT INTO `cbApplicationCats` (`
-id`,
-`category
-`) VALUES
+INSERT INTO `cbApplicationCats` (`id`, `category`) VALUES
 (1, 'System'),
 (2, 'IoT Agent');
 
@@ -171,26 +156,20 @@ id`,
 -- Table structure for table `cbDeviceCats`
 --
 
-CREATE TABLE `cbDeviceCats`
-(
-  `id` int
-(11) NOT NULL,
-  `category` varchar
-(255) NOT NULL
+CREATE TABLE `cbDeviceCats` (
+  `id` int(11) NOT NULL,
+  `category` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `cbDeviceCats`
 --
 
-INSERT INTO `cbDeviceCats` (`
-id`,
-`category
-`) VALUES
+INSERT INTO `cbDeviceCats` (`id`, `category`) VALUES
 (1, 'Camera'),
 (4, 'Scanner'),
-(5, 'Mixed Reality'),
-(6, 'Virtual Reality'),
+(5, 'MixedReality'),
+(6, 'VirtualReality'),
 (7, 'Server'),
 (8, 'TassAI'),
 (9, 'GeniSysAI'),
@@ -206,22 +185,16 @@ id`,
 -- Table structure for table `cbPatientsCats`
 --
 
-CREATE TABLE `cbPatientsCats`
-(
-  `id` int
-(11) NOT NULL,
-  `category` varchar
-(255) NOT NULL
+CREATE TABLE `cbPatientsCats` (
+  `id` int(11) NOT NULL,
+  `category` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `cbPatientsCats`
 --
 
-INSERT INTO `cbPatientsCats` (`
-id`,
-`category
-`) VALUES
+INSERT INTO `cbPatientsCats` (`id`, `category`) VALUES
 (1, 'Primary Care'),
 (2, 'Specialty Care'),
 (3, 'Emergency Care'),
@@ -235,22 +208,16 @@ id`,
 -- Table structure for table `cbProtocols`
 --
 
-CREATE TABLE `cbProtocols`
-(
-  `id` int
-(11) NOT NULL,
-  `protocol` varchar
-(255) NOT NULL
+CREATE TABLE `cbProtocols` (
+  `id` int(11) NOT NULL,
+  `protocol` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `cbProtocols`
 --
 
-INSERT INTO `cbProtocols` (`
-id`,
-`protocol
-`) VALUES
+INSERT INTO `cbProtocols` (`id`, `protocol`) VALUES
 (1, 'MQTT'),
 (2, 'AMQP'),
 (3, 'CoAP'),
@@ -264,22 +231,16 @@ id`,
 -- Table structure for table `cbUserCats`
 --
 
-CREATE TABLE `cbUserCats`
-(
-  `id` int
-(11) NOT NULL,
-  `category` varchar
-(255) NOT NULL
+CREATE TABLE `cbUserCats` (
+  `id` int(11) NOT NULL,
+  `category` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `cbUserCats`
 --
 
-INSERT INTO `cbUserCats` (`
-id`,
-`category
-`) VALUES
+INSERT INTO `cbUserCats` (`id`, `category`) VALUES
 (1, 'Management'),
 (2, 'Directors'),
 (3, 'Administration'),
@@ -296,22 +257,16 @@ id`,
 -- Table structure for table `cbZoneCats`
 --
 
-CREATE TABLE `cbZoneCats`
-(
-  `id` int
-(11) NOT NULL,
-  `category` varchar
-(255) NOT NULL
+CREATE TABLE `cbZoneCats` (
+  `id` int(11) NOT NULL,
+  `category` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `cbZoneCats`
 --
 
-INSERT INTO `cbZoneCats` (`
-id`,
-`category
-`) VALUES
+INSERT INTO `cbZoneCats` (`id`, `category`) VALUES
 (1, 'A&E'),
 (2, 'Casualty'),
 (3, 'Day room'),
@@ -343,30 +298,18 @@ id`,
 -- Table structure for table `contextbroker`
 --
 
-CREATE TABLE `contextbroker`
-(
-  `id` int
-(11) NOT NULL,
-  `hdsiv` varchar
-(50) NOT NULL,
-  `url` varchar
-(50) NOT NULL,
-  `local_ip` varchar
-(255) NOT NULL,
-  `about_url` varchar
-(255) NOT NULL,
-  `entities_url` varchar
-(255) NOT NULL,
-  `types_url` varchar
-(255) NOT NULL,
-  `subscriptions_url` varchar
-(255) NOT NULL,
-  `registrations_url` varchar
-(255) NOT NULL,
-  `agents_url` varchar
-(255) NOT NULL,
-  `commands_url` varchar
-(255) NOT NULL
+CREATE TABLE `contextbroker` (
+  `id` int(11) NOT NULL,
+  `hdsiv` varchar(50) NOT NULL,
+  `url` varchar(50) NOT NULL,
+  `local_ip` varchar(255) NOT NULL,
+  `about_url` varchar(255) NOT NULL,
+  `entities_url` varchar(255) NOT NULL,
+  `types_url` varchar(255) NOT NULL,
+  `subscriptions_url` varchar(255) NOT NULL,
+  `registrations_url` varchar(255) NOT NULL,
+  `agents_url` varchar(255) NOT NULL,
+  `commands_url` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -375,22 +318,15 @@ CREATE TABLE `contextbroker`
 -- Table structure for table `contracts`
 --
 
-CREATE TABLE `contracts`
-(
-  `id` int
-(11) NOT NULL,
-  `name` varchar
-(255) NOT NULL,
-  `contract` varchar
-(255) NOT NULL,
-  `acc` varchar
-(255) NOT NULL,
+CREATE TABLE `contracts` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `contract` varchar(255) NOT NULL,
+  `acc` varchar(255) NOT NULL,
   `abi` json NOT NULL,
   `txn` text NOT NULL,
-  `uid` int
-(11) NOT NULL,
-  `time` int
-(11) NOT NULL
+  `uid` int(11) NOT NULL,
+  `time` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -399,31 +335,19 @@ CREATE TABLE `contracts`
 -- Table structure for table `covid19data`
 --
 
-CREATE TABLE `covid19data`
-(
-  `id` int
-(11) NOT NULL,
-  `country` varchar
-(255) NOT NULL,
-  `province` varchar
-(255) NOT NULL,
-  `lat` varchar
-(255) NOT NULL,
-  `lng` varchar
-(255) NOT NULL,
-  `confirmed` int
-(11) NOT NULL DEFAULT '0',
-  `deaths` int
-(11) NOT NULL DEFAULT '0',
-  `recovered` int
-(11) NOT NULL DEFAULT '0',
-  `active` int
-(11) NOT NULL DEFAULT '0',
-  `file` varchar
-(255) NOT NULL,
+CREATE TABLE `covid19data` (
+  `id` int(11) NOT NULL,
+  `country` varchar(255) NOT NULL,
+  `province` varchar(255) NOT NULL,
+  `lat` varchar(255) NOT NULL,
+  `lng` varchar(255) NOT NULL,
+  `confirmed` int(11) NOT NULL DEFAULT '0',
+  `deaths` int(11) NOT NULL DEFAULT '0',
+  `recovered` int(11) NOT NULL DEFAULT '0',
+  `active` int(11) NOT NULL DEFAULT '0',
+  `file` varchar(255) NOT NULL,
   `date` datetime NOT NULL,
-  `timeadded` int
-(11) NOT NULL
+  `timeadded` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -432,15 +356,12 @@ CREATE TABLE `covid19data`
 -- Table structure for table `covid19pulls`
 --
 
-CREATE TABLE `covid19pulls`
-(
-  `id` int
-(11) NOT NULL,
+CREATE TABLE `covid19pulls` (
+  `id` int(11) NOT NULL,
   `pulldate` date NOT NULL,
   `datefrom` date NOT NULL,
   `dateto` date NOT NULL,
-  `rows` int
-(11) NOT NULL
+  `rows` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -449,19 +370,13 @@ CREATE TABLE `covid19pulls`
 -- Table structure for table `genisysai`
 --
 
-CREATE TABLE `genisysai`
-(
-  `id` int
-(11) NOT NULL,
-  `uid` int
-(11) NOT NULL DEFAULT '0',
-  `isGeniSys` tinyint
-(4) NOT NULL DEFAULT '0',
-  `device` varchar
-(255) NOT NULL,
+CREATE TABLE `genisysai` (
+  `id` int(11) NOT NULL,
+  `uid` int(11) NOT NULL DEFAULT '0',
+  `isGeniSys` tinyint(4) NOT NULL DEFAULT '0',
+  `device` varchar(255) NOT NULL,
   `chat` text NOT NULL,
-  `timestamp` int
-(11) NOT NULL
+  `timestamp` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -470,36 +385,21 @@ CREATE TABLE `genisysai`
 -- Table structure for table `history`
 --
 
-CREATE TABLE `history`
-(
-  `id` int
-(11) NOT NULL,
-  `uid` int
-(11) NOT NULL DEFAULT '0',
-  `action` varchar
-(255) NOT NULL,
-  `hash` int
-(11) NOT NULL DEFAULT '0',
-  `tuid` int
-(11) NOT NULL DEFAULT '0',
-  `tlid` int
-(11) NOT NULL DEFAULT '0',
-  `tzid` int
-(11) NOT NULL DEFAULT '0',
-  `tdid` int
-(11) NOT NULL DEFAULT '0',
-  `tsid` int
-(11) NOT NULL DEFAULT '0',
-  `taid` int
-(11) NOT NULL DEFAULT '0',
-  `tcid` int
-(11) NOT NULL DEFAULT '0',
-  `tpid` int
-(11) NOT NULL DEFAULT '0',
-  `tbid` int
-(11) NOT NULL DEFAULT '0',
-  `time` int
-(11) NOT NULL
+CREATE TABLE `history` (
+  `id` int(11) NOT NULL,
+  `uid` int(11) NOT NULL DEFAULT '0',
+  `action` varchar(255) NOT NULL,
+  `hash` int(11) NOT NULL DEFAULT '0',
+  `tuid` int(11) NOT NULL DEFAULT '0',
+  `tlid` int(11) NOT NULL DEFAULT '0',
+  `tzid` int(11) NOT NULL DEFAULT '0',
+  `tdid` int(11) NOT NULL DEFAULT '0',
+  `tsid` int(11) NOT NULL DEFAULT '0',
+  `taid` int(11) NOT NULL DEFAULT '0',
+  `tcid` int(11) NOT NULL DEFAULT '0',
+  `tpid` int(11) NOT NULL DEFAULT '0',
+  `tbid` int(11) NOT NULL DEFAULT '0',
+  `time` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -508,16 +408,12 @@ CREATE TABLE `history`
 -- Table structure for table `logins`
 --
 
-CREATE TABLE `logins`
-(
-  `id` int
-(11) NOT NULL,
-  `ipv6` varchar
-(255) NOT NULL,
+CREATE TABLE `logins` (
+  `id` int(11) NOT NULL,
+  `ipv6` varchar(255) NOT NULL,
   `browser` text NOT NULL,
   `language` text NOT NULL,
-  `time` varchar
-(255) NOT NULL
+  `time` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -526,16 +422,12 @@ CREATE TABLE `logins`
 -- Table structure for table `loginsf`
 --
 
-CREATE TABLE `loginsf`
-(
-  `id` int
-(11) NOT NULL,
-  `ipv6` varchar
-(255) NOT NULL,
+CREATE TABLE `loginsf` (
+  `id` int(11) NOT NULL,
+  `ipv6` varchar(255) NOT NULL,
   `browser` text NOT NULL,
   `language` text NOT NULL,
-  `time` varchar
-(255) NOT NULL
+  `time` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -544,12 +436,9 @@ CREATE TABLE `loginsf`
 -- Table structure for table `models`
 --
 
-CREATE TABLE `models`
-(
-  `id` int
-(11) NOT NULL,
-  `pub` varchar
-(255) NOT NULL
+CREATE TABLE `models` (
+  `id` int(11) NOT NULL,
+  `pub` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -558,12 +447,9 @@ CREATE TABLE `models`
 -- Table structure for table `mqtta`
 --
 
-CREATE TABLE `mqtta`
-(
-  `id` int
-(11) NOT NULL,
-  `apub` varchar
-(255) NOT NULL DEFAULT ''
+CREATE TABLE `mqtta` (
+  `id` int(11) NOT NULL,
+  `apub` varchar(255) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -572,12 +458,9 @@ CREATE TABLE `mqtta`
 -- Table structure for table `mqttl`
 --
 
-CREATE TABLE `mqttl`
-(
-  `id` int
-(11) NOT NULL,
-  `pub` varchar
-(255) NOT NULL DEFAULT ''
+CREATE TABLE `mqttl` (
+  `id` int(11) NOT NULL,
+  `pub` varchar(255) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -586,12 +469,9 @@ CREATE TABLE `mqttl`
 -- Table structure for table `mqttld`
 --
 
-CREATE TABLE `mqttld`
-(
-  `id` int
-(11) NOT NULL,
-  `apub` varchar
-(255) NOT NULL DEFAULT ''
+CREATE TABLE `mqttld` (
+  `id` int(11) NOT NULL,
+  `apub` varchar(255) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -600,12 +480,9 @@ CREATE TABLE `mqttld`
 -- Table structure for table `mqttlz`
 --
 
-CREATE TABLE `mqttlz`
-(
-  `id` int
-(11) NOT NULL,
-  `pub` varchar
-(255) NOT NULL DEFAULT ''
+CREATE TABLE `mqttlz` (
+  `id` int(11) NOT NULL,
+  `pub` varchar(255) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -614,30 +491,18 @@ CREATE TABLE `mqttlz`
 -- Table structure for table `mqttu`
 --
 
-CREATE TABLE `mqttu`
-(
-  `id` int
-(11) NOT NULL,
-  `uid` int
-(11) NOT NULL DEFAULT '0',
-  `lid` int
-(11) NOT NULL DEFAULT '0',
-  `zid` int
-(11) NOT NULL DEFAULT '0',
-  `did` int
-(11) NOT NULL DEFAULT '0',
-  `aid` int
-(11) NOT NULL DEFAULT '0',
-  `pid` int
-(11) NOT NULL DEFAULT '0',
-  `bid` int
-(11) NOT NULL DEFAULT '0',
-  `uname` varchar
-(255) NOT NULL,
-  `pw` varchar
-(255) NOT NULL,
-  `super` tinyint
-(4) NOT NULL DEFAULT '0'
+CREATE TABLE `mqttu` (
+  `id` int(11) NOT NULL,
+  `uid` int(11) NOT NULL DEFAULT '0',
+  `lid` int(11) NOT NULL DEFAULT '0',
+  `zid` int(11) NOT NULL DEFAULT '0',
+  `did` int(11) NOT NULL DEFAULT '0',
+  `aid` int(11) NOT NULL DEFAULT '0',
+  `pid` int(11) NOT NULL DEFAULT '0',
+  `bid` int(11) NOT NULL DEFAULT '0',
+  `uname` varchar(255) NOT NULL,
+  `pw` varchar(255) NOT NULL,
+  `super` tinyint(4) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -646,30 +511,18 @@ CREATE TABLE `mqttu`
 -- Table structure for table `mqttua`
 --
 
-CREATE TABLE `mqttua`
-(
-  `id` int
-(11) NOT NULL,
-  `uid` int
-(11) NOT NULL DEFAULT '0',
-  `lid` int
-(11) NOT NULL DEFAULT '0',
-  `zid` int
-(11) NOT NULL DEFAULT '0',
-  `did` int
-(11) NOT NULL DEFAULT '0',
-  `aid` int
-(11) NOT NULL DEFAULT '0',
-  `pid` int
-(11) NOT NULL DEFAULT '0',
-  `bid` int
-(11) NOT NULL DEFAULT '0',
-  `username` varchar
-(255) NOT NULL,
-  `topic` varchar
-(255) NOT NULL,
-  `rw` tinyint
-(4) NOT NULL DEFAULT '0'
+CREATE TABLE `mqttua` (
+  `id` int(11) NOT NULL,
+  `uid` int(11) NOT NULL DEFAULT '0',
+  `lid` int(11) NOT NULL DEFAULT '0',
+  `zid` int(11) NOT NULL DEFAULT '0',
+  `did` int(11) NOT NULL DEFAULT '0',
+  `aid` int(11) NOT NULL DEFAULT '0',
+  `pid` int(11) NOT NULL DEFAULT '0',
+  `bid` int(11) NOT NULL DEFAULT '0',
+  `username` varchar(255) NOT NULL,
+  `topic` varchar(255) NOT NULL,
+  `rw` tinyint(4) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -678,20 +531,13 @@ CREATE TABLE `mqttua`
 -- Table structure for table `patients`
 --
 
-CREATE TABLE `patients`
-(
-  `id` int
-(11) NOT NULL,
-  `pub` varchar
-(255) NOT NULL DEFAULT '',
-  `username` varchar
-(255) NOT NULL DEFAULT '',
-  `password` varchar
-(255) NOT NULL DEFAULT '',
-  `bcaddress` varchar
-(255) NOT NULL DEFAULT '',
-  `bcpass` varchar
-(255) NOT NULL DEFAULT ''
+CREATE TABLE `patients` (
+  `id` int(11) NOT NULL,
+  `pub` varchar(255) NOT NULL DEFAULT '',
+  `username` varchar(255) NOT NULL DEFAULT '',
+  `password` varchar(255) NOT NULL DEFAULT '',
+  `bcaddress` varchar(255) NOT NULL DEFAULT '',
+  `bcpass` varchar(255) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -700,22 +546,14 @@ CREATE TABLE `patients`
 -- Table structure for table `sensors`
 --
 
-CREATE TABLE `sensors`
-(
-  `id` int
-(11) NOT NULL,
-  `pub` varchar
-(255) NOT NULL DEFAULT '',
-  `name` varchar
-(255) NOT NULL,
-  `type` varchar
-(255) NOT NULL,
-  `hasAction` tinyint
-(4) NOT NULL DEFAULT '0',
-  `hasCommand` tinyint
-(4) NOT NULL DEFAULT '0',
-  `image` varchar
-(255) NOT NULL DEFAULT 'default.png'
+CREATE TABLE `sensors` (
+  `id` int(11) NOT NULL,
+  `pub` varchar(255) NOT NULL DEFAULT '',
+  `name` varchar(255) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `hasAction` tinyint(4) NOT NULL DEFAULT '0',
+  `hasCommand` tinyint(4) NOT NULL DEFAULT '0',
+  `image` varchar(255) NOT NULL DEFAULT 'default.png'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -724,49 +562,29 @@ CREATE TABLE `sensors`
 -- Table structure for table `settings`
 --
 
-CREATE TABLE `settings`
-(
-  `id` int
-(11) NOT NULL,
-  `aid` int
-(11) NOT NULL,
-  `version` varchar
-(50) NOT NULL,
-  `phpmyadmin` varchar
-(255) NOT NULL,
-  `recaptcha` varchar
-(255) NOT NULL,
-  `recaptchas` varchar
-(255) NOT NULL,
-  `gmaps` varchar
-(255) NOT NULL,
-  `lt` varchar
-(255) NOT NULL,
-  `lg` varchar
-(255) NOT NULL,
-  `meta_title` varchar
-(255) NOT NULL,
+CREATE TABLE `settings` (
+  `id` int(11) NOT NULL,
+  `aid` int(11) NOT NULL,
+  `version` varchar(50) NOT NULL,
+  `phpmyadmin` varchar(255) NOT NULL,
+  `recaptcha` varchar(255) NOT NULL,
+  `recaptchas` varchar(255) NOT NULL,
+  `gmaps` varchar(255) NOT NULL,
+  `lt` varchar(255) NOT NULL,
+  `lg` varchar(255) NOT NULL,
+  `meta_title` varchar(255) NOT NULL,
   `meta_description` text NOT NULL,
   `meta_keywords` text NOT NULL,
-  `domainString` varchar
-(255) NOT NULL,
-  `ip` varchar
-(255) NOT NULL
+  `domainString` varchar(255) NOT NULL,
+  `ip` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `settings`
 --
 
-INSERT INTO `settings` (`
-id`,
-`aid`,
-`version`,
-`phpmyadmin`,
-`recaptcha`,
-`recaptchas
-`, `gmaps`, `lt`, `lg`, `meta_title`, `meta_description`, `meta_keywords`, `domainString`, `ip`) VALUES
-(1, 2, '1.1.0', 'phpmyadmin', 'SVFqS0JncU5oT0pvOUdobGtNK2dHbXk3RHRodG5CdDUveFBoLzZUSUI2aUNYZHc2ak5LV0t5aUlyZjdGSE1nODo6rA64JT8kzGizTwxC4bwOkg==', 'ZU55dm5XRVBFU1ZDUFN0cVhCbkQvbFJ3VHlqZzIyVkErVmpLL2lqUzFoU2ZYM3NGY3NmaDBOTGxSWmhXd2pwVTo6/ZA5JMyOInW6+UUDtT2YWA==', 'MW9QM1dJZDErZjM4VUozcjdLVTA1VFVzbFEyVzJtcXZ5a0V4R2tMdzcrUlpSOFZ1WUZ0bWFZc2dtQUZoOHFhODo6FWJlzBbWBdGXrCX6g0U5mw==', 'SFMxajJLbTlxcXlKYnYzRFFKeENRQT09OjpKZgXKvnmt2K0soA8yhFKh', 'WkxuNTdlY2lyVDZubDIzeVk3WHZzUT09Ojp13grLr8AkZxvVbEEuJcQq', 'HIAS Hospital Intelligent Automation System', 'Open-source Hospital Intelligent Automation System & Hospital Information/Management System. A locally hosted web/IoT server and proxy for managing a network of open-source, modular, intelligent devices, robotics and applications.', '', 'eWNpT2NZSTYvMFlkRTNpRVZDUTlUb3NHcjlrdXlRazVhZ0ljU2NETHk4WUlDWVpFWnJkRjNsTWJwOFZLNjNiTjo60O5b1mEC6KzoqAdeVtU32A==', 'cTJPRDNZdy93TXZnM1MwYjZNd2UwZ1hvMmxjcTVPWStPMVBIUW94S2VyZz06OnKd1+InHYK7DXhuOgu1T5o=');
+INSERT INTO `settings` (`id`, `aid`, `version`, `phpmyadmin`, `recaptcha`, `recaptchas`, `gmaps`, `lt`, `lg`, `meta_title`, `meta_description`, `meta_keywords`, `domainString`, `ip`) VALUES
+(1, 2, '2.0.0', 'phpmyadmin', '', '', '', '', '', 'HIAS Hospital Intelligent Automation System', 'Open-source Hospital Intelligent Automation System & Hospital Information/Management System. A locally hosted web/IoT server and proxy for managing a network of open-source, modular, intelligent devices, robotics and applications.', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -774,12 +592,9 @@ id`,
 -- Table structure for table `tassai`
 --
 
-CREATE TABLE `tassai`
-(
-  `id` int
-(11) NOT NULL,
-  `pub` varchar
-(255) NOT NULL
+CREATE TABLE `tassai` (
+  `id` int(11) NOT NULL,
+  `pub` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -788,12 +603,9 @@ CREATE TABLE `tassai`
 -- Table structure for table `things`
 --
 
-CREATE TABLE `things`
-(
-  `id` int
-(11) NOT NULL,
-  `pub` varchar
-(255) NOT NULL DEFAULT ''
+CREATE TABLE `things` (
+  `id` int(11) NOT NULL,
+  `pub` varchar(255) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -802,29 +614,18 @@ CREATE TABLE `things`
 -- Table structure for table `transactions`
 --
 
-CREATE TABLE `transactions`
-(
-  `id` int
-(11) NOT NULL,
-  `uid` int
-(11) NOT NULL DEFAULT '0',
-  `tuid` int
-(11) NOT NULL DEFAULT '0',
-  `did` int
-(11) NOT NULL DEFAULT '0',
-  `aid` int
-(11) NOT NULL DEFAULT '0',
-  `cid` int
-(11) NOT NULL DEFAULT '0',
-  `pid` int
-(11) NOT NULL DEFAULT '0',
-  `bid` int
-(11) NOT NULL DEFAULT '0',
-  `action` varchar
-(255) NOT NULL,
+CREATE TABLE `transactions` (
+  `id` int(11) NOT NULL,
+  `uid` int(11) NOT NULL DEFAULT '0',
+  `tuid` int(11) NOT NULL DEFAULT '0',
+  `did` int(11) NOT NULL DEFAULT '0',
+  `aid` int(11) NOT NULL DEFAULT '0',
+  `cid` int(11) NOT NULL DEFAULT '0',
+  `pid` int(11) NOT NULL DEFAULT '0',
+  `bid` int(11) NOT NULL DEFAULT '0',
+  `action` varchar(255) NOT NULL,
   `hash` text NOT NULL,
-  `time` int
-(11) NOT NULL
+  `time` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -833,22 +634,14 @@ CREATE TABLE `transactions`
 -- Table structure for table `users`
 --
 
-CREATE TABLE `users`
-(
-  `id` int
-(11) NOT NULL,
-  `pub` varchar
-(255) NOT NULL DEFAULT '',
-  `aid` int
-(11) NOT NULL DEFAULT '0',
-  `username` varchar
-(255) NOT NULL,
-  `bcaddress` varchar
-(255) NOT NULL,
-  `bcpw` varchar
-(255) NOT NULL,
-  `password` varchar
-(255) NOT NULL
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL,
+  `pub` varchar(255) NOT NULL DEFAULT '',
+  `aid` int(11) NOT NULL DEFAULT '0',
+  `username` varchar(255) NOT NULL,
+  `bcaddress` varchar(255) NOT NULL,
+  `bcpw` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -859,326 +652,257 @@ CREATE TABLE `users`
 -- Indexes for table `amqpp`
 --
 ALTER TABLE `amqpp`
-ADD PRIMARY KEY
-(`id`),
-ADD KEY `uid`
-(`uid`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `uid` (`uid`);
 
 --
 -- Indexes for table `amqpu`
 --
 ALTER TABLE `amqpu`
-ADD PRIMARY KEY
-(`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `amqpvh`
 --
 ALTER TABLE `amqpvh`
-ADD PRIMARY KEY
-(`id`),
-ADD KEY `uid`
-(`uid`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `uid` (`uid`);
 
 --
 -- Indexes for table `amqpvhr`
 --
 ALTER TABLE `amqpvhr`
-ADD PRIMARY KEY
-(`id`),
-ADD KEY `uid`
-(`uid`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `uid` (`uid`);
 
 --
 -- Indexes for table `amqpvhrt`
 --
 ALTER TABLE `amqpvhrt`
-ADD PRIMARY KEY
-(`id`),
-ADD KEY `uid`
-(`uid`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `uid` (`uid`);
 
 --
 -- Indexes for table `blockchain`
 --
 ALTER TABLE `blockchain`
-ADD PRIMARY KEY
-(`id`),
-ADD KEY `dc`
-(`dc`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `dc` (`dc`);
 
 --
 -- Indexes for table `blocked`
 --
 ALTER TABLE `blocked`
-ADD PRIMARY KEY
-(`id`),
-ADD KEY `banned`
-(`banned`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `banned` (`banned`);
+
+--
+-- Indexes for table `cbAI`
+--
+ALTER TABLE `cbAI`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `cbApplicationCats`
 --
 ALTER TABLE `cbApplicationCats`
-ADD PRIMARY KEY
-(`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `cbDeviceCats`
 --
 ALTER TABLE `cbDeviceCats`
-ADD PRIMARY KEY
-(`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `cbPatientsCats`
 --
 ALTER TABLE `cbPatientsCats`
-ADD PRIMARY KEY
-(`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `cbProtocols`
 --
 ALTER TABLE `cbProtocols`
-ADD PRIMARY KEY
-(`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `cbUserCats`
 --
 ALTER TABLE `cbUserCats`
-ADD PRIMARY KEY
-(`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `cbZoneCats`
 --
 ALTER TABLE `cbZoneCats`
-ADD PRIMARY KEY
-(`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `contextbroker`
 --
 ALTER TABLE `contextbroker`
-ADD PRIMARY KEY
-(`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `contracts`
 --
 ALTER TABLE `contracts`
-ADD PRIMARY KEY
-(`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `covid19data`
 --
 ALTER TABLE `covid19data`
-ADD PRIMARY KEY
-(`id`),
-ADD KEY `country`
-(`country`),
-ADD KEY `province`
-(`province`),
-ADD KEY `timeadded`
-(`timeadded`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `country` (`country`),
+  ADD KEY `province` (`province`),
+  ADD KEY `timeadded` (`timeadded`);
 
 --
 -- Indexes for table `covid19pulls`
 --
 ALTER TABLE `covid19pulls`
-ADD PRIMARY KEY
-(`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `genisysai`
 --
 ALTER TABLE `genisysai`
-ADD PRIMARY KEY
-(`id`),
-ADD KEY `isGeniSys`
-(`isGeniSys`),
-ADD KEY `uid`
-(`uid`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `isGeniSys` (`isGeniSys`),
+  ADD KEY `uid` (`uid`);
 
 --
 -- Indexes for table `history`
 --
 ALTER TABLE `history`
-ADD PRIMARY KEY
-(`id`),
-ADD KEY `uid`
-(`uid`),
-ADD KEY `tuid`
-(`tuid`),
-ADD KEY `tzne`
-(`tzid`),
-ADD KEY `tlid`
-(`tlid`),
-ADD KEY `tdid`
-(`tdid`),
-ADD KEY `sid`
-(`tsid`),
-ADD KEY `taid`
-(`taid`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `uid` (`uid`),
+  ADD KEY `tuid` (`tuid`),
+  ADD KEY `tzne` (`tzid`),
+  ADD KEY `tlid` (`tlid`),
+  ADD KEY `tdid` (`tdid`),
+  ADD KEY `sid` (`tsid`),
+  ADD KEY `taid` (`taid`);
 
 --
 -- Indexes for table `logins`
 --
 ALTER TABLE `logins`
-ADD PRIMARY KEY
-(`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `loginsf`
 --
 ALTER TABLE `loginsf`
-ADD PRIMARY KEY
-(`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `models`
 --
 ALTER TABLE `models`
-ADD PRIMARY KEY
-(`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `mqtta`
 --
 ALTER TABLE `mqtta`
-ADD PRIMARY KEY
-(`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `mqttl`
 --
 ALTER TABLE `mqttl`
-ADD PRIMARY KEY
-(`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `mqttld`
 --
 ALTER TABLE `mqttld`
-ADD PRIMARY KEY
-(`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `mqttlz`
 --
 ALTER TABLE `mqttlz`
-ADD PRIMARY KEY
-(`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `mqttu`
 --
 ALTER TABLE `mqttu`
-ADD PRIMARY KEY
-(`id`),
-ADD KEY `lid`
-(`lid`),
-ADD KEY `znid`
-(`zid`),
-ADD KEY `did`
-(`did`),
-ADD KEY `aid`
-(`aid`),
-ADD KEY `pid`
-(`pid`),
-ADD KEY `bid`
-(`bid`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `lid` (`lid`),
+  ADD KEY `znid` (`zid`),
+  ADD KEY `did` (`did`),
+  ADD KEY `aid` (`aid`),
+  ADD KEY `pid` (`pid`),
+  ADD KEY `bid` (`bid`);
 
 --
 -- Indexes for table `mqttua`
 --
 ALTER TABLE `mqttua`
-ADD PRIMARY KEY
-(`id`),
-ADD KEY `lid`
-(`lid`),
-ADD KEY `zid`
-(`zid`),
-ADD KEY `did`
-(`did`),
-ADD KEY `aid`
-(`aid`),
-ADD KEY `uid`
-(`uid`),
-ADD KEY `lid_2`
-(`lid`),
-ADD KEY `zid_2`
-(`zid`),
-ADD KEY `did_2`
-(`did`),
-ADD KEY `aid_2`
-(`aid`),
-ADD KEY `pid`
-(`pid`),
-ADD KEY `bid`
-(`bid`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `lid` (`lid`),
+  ADD KEY `zid` (`zid`),
+  ADD KEY `did` (`did`),
+  ADD KEY `aid` (`aid`),
+  ADD KEY `uid` (`uid`),
+  ADD KEY `lid_2` (`lid`),
+  ADD KEY `zid_2` (`zid`),
+  ADD KEY `did_2` (`did`),
+  ADD KEY `aid_2` (`aid`),
+  ADD KEY `pid` (`pid`),
+  ADD KEY `bid` (`bid`);
 
 --
 -- Indexes for table `patients`
 --
 ALTER TABLE `patients`
-ADD PRIMARY KEY
-(`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `sensors`
 --
 ALTER TABLE `sensors`
-ADD PRIMARY KEY
-(`id`),
-ADD KEY `hasAction`
-(`hasAction`),
-ADD KEY `hasCommand`
-(`hasCommand`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `hasAction` (`hasAction`),
+  ADD KEY `hasCommand` (`hasCommand`);
 
 --
 -- Indexes for table `settings`
 --
 ALTER TABLE `settings`
-ADD PRIMARY KEY
-(`id`),
-ADD KEY `did`
-(`aid`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `did` (`aid`);
 
 --
 -- Indexes for table `tassai`
 --
 ALTER TABLE `tassai`
-ADD PRIMARY KEY
-(`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `things`
 --
 ALTER TABLE `things`
-ADD PRIMARY KEY
-(`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `transactions`
 --
 ALTER TABLE `transactions`
-ADD PRIMARY KEY
-(`id`),
-ADD KEY `did`
-(`did`),
-ADD KEY `aid`
-(`aid`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `did` (`did`),
+  ADD KEY `aid` (`aid`);
 
 --
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
-ADD PRIMARY KEY
-(`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -1188,209 +912,179 @@ ADD PRIMARY KEY
 -- AUTO_INCREMENT for table `amqpp`
 --
 ALTER TABLE `amqpp`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `amqpu`
 --
 ALTER TABLE `amqpu`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `amqpvh`
 --
 ALTER TABLE `amqpvh`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `amqpvhr`
 --
 ALTER TABLE `amqpvhr`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `amqpvhrt`
 --
 ALTER TABLE `amqpvhrt`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `blockchain`
 --
 ALTER TABLE `blockchain`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `blocked`
 --
 ALTER TABLE `blocked`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `cbAI`
+--
+ALTER TABLE `cbAI`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `cbApplicationCats`
 --
 ALTER TABLE `cbApplicationCats`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `cbDeviceCats`
 --
 ALTER TABLE `cbDeviceCats`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `cbPatientsCats`
 --
 ALTER TABLE `cbPatientsCats`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `cbProtocols`
 --
 ALTER TABLE `cbProtocols`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `cbUserCats`
 --
 ALTER TABLE `cbUserCats`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `cbZoneCats`
 --
 ALTER TABLE `cbZoneCats`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `contextbroker`
 --
 ALTER TABLE `contextbroker`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `contracts`
 --
 ALTER TABLE `contracts`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `covid19data`
 --
 ALTER TABLE `covid19data`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `covid19pulls`
 --
 ALTER TABLE `covid19pulls`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `genisysai`
 --
 ALTER TABLE `genisysai`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `history`
 --
 ALTER TABLE `history`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `logins`
 --
 ALTER TABLE `logins`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `loginsf`
 --
 ALTER TABLE `loginsf`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `models`
 --
 ALTER TABLE `models`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `mqtta`
 --
 ALTER TABLE `mqtta`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `mqttl`
 --
 ALTER TABLE `mqttl`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `mqttld`
 --
 ALTER TABLE `mqttld`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `mqttlz`
 --
 ALTER TABLE `mqttlz`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `mqttu`
 --
 ALTER TABLE `mqttu`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `mqttua`
 --
 ALTER TABLE `mqttua`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `patients`
 --
 ALTER TABLE `patients`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `sensors`
 --
 ALTER TABLE `sensors`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `settings`
 --
 ALTER TABLE `settings`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `tassai`
 --
 ALTER TABLE `tassai`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `things`
 --
 ALTER TABLE `things`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int
-(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
