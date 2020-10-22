@@ -9,6 +9,12 @@ server {
 	proxy_read_timeout 600;
 	send_timeout 600;
 
+	location /Blockchain/API/ {
+		auth_basic "Restricted";
+		auth_basic_user_file /etc/nginx/security/htpasswd;
+		proxy_pass http://HiasServerIp:8545/;
+	}
+
 	location /ContextBroker/v1/about {
 		auth_basic "Restricted";
 		auth_basic_user_file /etc/nginx/security/htpasswd;
