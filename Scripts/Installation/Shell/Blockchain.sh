@@ -11,11 +11,13 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
 	sudo apt-get update
 	sudo apt-get install ethereum
 	sudo cp -a Root/fserver/ethereum/ /fserver/
-	echo "- You will now create the first of the 3 required HIAS Blockchain accounts. Follow the instructions given to create the account for your core HIAS Blockchain user. Make sure you save the information given to you and keep it safe. You will need this information for configuring your HIAS Blockchain and if you lose these details you will have to create a new installation."
+	echo "- You will now create the first of the 4 required HIAS Blockchain accounts. Follow the instructions given to create the account for your core HIAS Blockchain user. Make sure you save the information given to you and keep it safe. You will need this information for configuring your HIAS Blockchain and if you lose these details you will have to create a new installation."
 	geth account new --datadir /fserver/ethereum/HIAS
-	echo "- You will now create the second of the 3 required HIAS Blockchain accounts. Follow the instructions given to create the account for your iotJumpWay HIAS Blockchain user. Make sure you save the information given to you and keep it safe. You will need this information for configuring your HIAS Blockchain and if you lose these details you will have to create a new installation."
+	echo "- You will now create the second of the 4 required HIAS Blockchain accounts. Follow the instructions given to create the account for your iotJumpWay MQTT HIAS Blockchain user. Make sure you save the information given to you and keep it safe. You will need this information for configuring your HIAS Blockchain and if you lose these details you will have to create a new installation."
 	geth account new --datadir /fserver/ethereum/HIAS
-	echo "- You will now create the third of the 3 required HIAS Blockchain accounts. Follow the instructions given to create the account for your personal HIAS Blockchain user. Make sure you save the information given to you and keep it safe. You will need this information for configuring your HIAS Blockchain and if you lose these details you will have to create a new installation."
+	echo "- You will now create the third of the 4 required HIAS Blockchain accounts. Follow the instructions given to create the account for your iotJumpWay AMQP HIAS Blockchain user. Make sure you save the information given to you and keep it safe. You will need this information for configuring your HIAS Blockchain and if you lose these details you will have to create a new installation."
+	geth account new --datadir /fserver/ethereum/HIAS
+	echo "- You will now create the fourth of the 4 required HIAS Blockchain accounts. Follow the instructions given to create the account for your personal HIAS Blockchain user. Make sure you save the information given to you and keep it safe. You will need this information for configuring your HIAS Blockchain and if you lose these details you will have to create a new installation."
 	geth account new --datadir /fserver/ethereum/HIAS
 	echo "- You will now install Solidity and configure/compile the HIAS Blockhain Smart Contracts."
 	sudo apt-get install solc
@@ -43,11 +45,13 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
 	read -p "! Enter your HIAS Blockchain user account address: " haddress
 	read -p "! Enter your HIAS Blockchain user account password: " hpass
 	sudo sed -i 's/\"haddress\":.*/\"haddress\": \"'$haddress'\",/g' "confs.json"
-	sudo sed -i 's/\"hpass\":.*/\"hpass\": \"'${hpass//&/\\&}'\",/g' "confs.json"
-	read -p "! Enter your iotJumpWay HIAS Blockchain user account address: " iaddress
-	read -p "! Enter your iotJumpWay HIAS Blockchain user account password: " ipass
+	escaped=$(printf '%s\n' "$hpass" | sed -e 's/[\/&]/\\&/g');
+	sudo sed -i 's/\"hpass\":.*/\"hpass\": \"'$escaped'\",/g' "confs.json"
+	read -p "! Enter your iotJumpWay MQTT HIAS Blockchain user account address: " iaddress
+	read -p "! Enter your iotJumpWay MQTT HIAS Blockchain user account password: " ipass
 	sudo sed -i 's/\"iaddress\":.*/\"iaddress\": \"'$iaddress'\",/g' "confs.json"
-	sudo sed -i 's/\"ipass\":.*/\"ipass\": \"'${ipass//&/\\&}'\",/g' "confs.json"
+	escaped=$(printf '%s\n' "$ipass" | sed -e 's/[\/&]/\\&/g');
+	sudo sed -i 's/\"ipass\":.*/\"ipass\": \"'$escaped'\",/g' "confs.json"
 	read -p "! Enter your personal HIAS Blockchain user account address: " paddress
 	echo "- Now you will update the Genesis file."
 	read -p "! Enter your HIAS Blockchain chain ID: " chainid
@@ -77,9 +81,9 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
 		sudo sed -i 's/\"authContract\":.*/\"authContract\": \"'$hcaddress'\",/g' "confs.json"
 		sudo sed -i 's/\"iotContract\":.*/\"iotContract\": \"'$icaddress'\",/g' "confs.json"
 		sudo sed -i 's/\"patientsContract\":.*/\"patientsContract\": \"'$pcaddress'\"/g' "confs.json"
-		php Scripts/Installation/PHP/Blockchain.php "Contract" "$hcaddress" "HIAS" "$haddress" "$hctransaction" "$habi"
-		php Scripts/Installation/PHP/Blockchain.php "Contract" "$icaddress" "HIAS" "$haddress" "$ictransaction" "$iabi"
-		php Scripts/Installation/PHP/Blockchain.php "Contract" "$pcaddress" "HIAS" "$haddress" "$pctransaction" "$pabi"
+		php Scripts/Installation/PHP/Blockchain.php "Contract" "$hcaddress" "HIAS Permissions & Registrations" "$haddress" "$hctransaction" "$habi"
+		php Scripts/Installation/PHP/Blockchain.php "Contract" "$icaddress" "iotJumpWay Data Integrity" "$haddress" "$ictransaction" "$iabi"
+		php Scripts/Installation/PHP/Blockchain.php "Contract" "$pcaddress" "Patients" "$haddress" "$pctransaction" "$pabi"
 		php Scripts/Installation/PHP/Blockchain.php "Config"
 		echo "- Now you will install composer and the web3 PHP and Python libraries."
 		pip3 install web3

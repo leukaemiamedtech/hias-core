@@ -3,16 +3,12 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Oct 22, 2020 at 03:34 AM
+-- Generation Time: Oct 24, 2020 at 03:57 AM
 -- Server version: 5.7.31-0ubuntu0.18.04.1
 -- PHP Version: 7.2.24-0ubuntu0.18.04.7
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-
---
--- Database: `skduyhfnnng`
---
 
 -- --------------------------------------------------------
 
@@ -312,6 +308,13 @@ CREATE TABLE `contextbroker` (
   `commands_url` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `contextbroker`
+--
+
+INSERT INTO `contextbroker` (`id`, `hdsiv`, `url`, `local_ip`, `about_url`, `entities_url`, `types_url`, `subscriptions_url`, `registrations_url`, `agents_url`, `commands_url`) VALUES
+(1, '1', 'ContextBroker', '', 'v1/about', 'v1/entities', 'v1/types', 'v1/subscriptions', 'v1/registrations', 'v1/agents', 'v1/commands');
+
 -- --------------------------------------------------------
 
 --
@@ -584,7 +587,7 @@ CREATE TABLE `settings` (
 --
 
 INSERT INTO `settings` (`id`, `aid`, `version`, `phpmyadmin`, `recaptcha`, `recaptchas`, `gmaps`, `lt`, `lg`, `meta_title`, `meta_description`, `meta_keywords`, `domainString`, `ip`) VALUES
-(1, 2, '2.0.0', 'phpmyadmin', '', '', '', '', '', 'HIAS Hospital Intelligent Automation System', 'Open-source Hospital Intelligent Automation System & Hospital Information/Management System. A locally hosted web/IoT server and proxy for managing a network of open-source, modular, intelligent devices, robotics and applications.', '', '', '');
+(1, 0, '2.0.0', 'phpmyadmin', '', '', '', '', '', 'HIAS Hospital Intelligent Automation System', 'Open-source Hospital Intelligent Automation System & Hospital Information/Management System. A locally hosted web/IoT server and proxy for managing a network of open-source, modular, intelligent devices, robotics and applications.', '', '', '');
 
 -- --------------------------------------------------------
 

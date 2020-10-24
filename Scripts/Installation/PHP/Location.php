@@ -22,7 +22,11 @@ class Core
 		$this->dbname = $config->dbname;
 		$this->dbusername = $config->dbusername;
 		$this->dbpassword = $config->dbpassword;
+		$this->mdbname = $config->mdbname;
+		$this->mdbusername = $config->mdbusername;
+		$this->mdbpassword = $config->mdbpassword;
 		$this->connect();
+		$this->mngConn = new MongoDB\Driver\Manager("mongodb://localhost:27017/".$this->mdbname.'', ["username" => $this->mdbusername, "password" => $this->mdbpassword]);
 	}
 
 	function connect()
@@ -58,8 +62,9 @@ class Location{
 		$this->confs = $core->confs;
 		$this->key = $core->key;
 		$this->conn = $core->dbcon;
-		$this->lid = 0;
 		$this->bcc = $this->getBlockchainConf();
+		$this->mngConn = $core->mngConn;
+		$this->mdbname = $core->mdbname;
 	}
 
 	public function getBlockchainConf()
@@ -197,34 +202,96 @@ class Location{
 
 	public function location($location){
 
+		$this->lentity = $this->generate_uuid();
+
 		$query = $this->conn->prepare("
 			INSERT INTO  mqttl  (
-				`name`,
-				`apps`,
-				`time`
+				`pub`
 			)  VALUES (
-				:name,
-				:apps,
-				:time
+				:pub
 			)
 		");
 		$query->execute(array(
-			':name' => $location,
-			':apps' => 0,
-			':time' => time()
+			':pub' => $this->lentity
 		));
 		$this->lid = $this->conn->lastInsertId();
 
-		echo "! Location, " . $location . " has been created with ID " . $this->lid . " !\n";
+		$data = [
+			"id" => $this->lentity,
+			"type" => "Location",
+			"category" => [
+				"value" => ["Office"]
+			],
+			"name" => [
+				"value" => $location
+			],
+			"description" => [
+				"value" => $location
+			],
+			"floorsAboveGround" => [
+				"value" => 0
+			],
+			"floorsBelowGround" => [
+				"value" => 0
+			],
+			"zones" => [
+				"value" => 0
+			],
+			"devices" => [
+				"value" => 0
+			],
+			"applications" => [
+				"value" => 0
+			],
+			"users" => [
+				"value" => 0
+			],
+			"patients" => [
+				"value" => 0
+			],
+			"location" => [
+				"type" => "geo:json",
+				"value" => [
+					"type" => "Point",
+					"coordinates" => [0, 0]
+				]
+			],
+			"address" => [
+				"type" => "PostalAddress",
+				"value" => [
+					"addressLocality" => "",
+					"postalCode" => "",
+					"streetAddress" => ""
+				]
+			],
+			"openingHours" => [
+				"value" => ""
+			],
+			"dateCreated" => [
+				"type" => "DateTime",
+				"value" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"dateModified" => [
+				"type" => "DateTime",
+				"value" => date('Y-m-d\TH:i:s.Z\Z', time())
+			]
+		];
+
+		$insert = new \MongoDB\Driver\BulkWrite;
+		$_id1 = $insert->insert($data);
+		$result = $this->mngConn->executeBulkWrite($this->mdbname.'.Locations', $insert);
+
+		echo "! Location, " . $location . " has been created with ID " . $this->lid . " & Identifier " . $this->lentity . " !\n";
 		return True;
 	}
 
-	public function applications($application, $bcuser, $bcpass, $ip, $mac, $application2, $bcuser2, $domain){
-		$this->application($application, $bcuser, $ip, $mac, $domain, $bcuser, $bcpass);
-		$this->application($application2, $bcuser2, $ip, $mac, $domain, $bcuser, $bcpass);
+	public function applications($application, $bcuser, $bcpass, $ip, $mac, $application2, $bcuser2, $application3, $bcuser3, $domain){
+		$this->application($application, $bcuser, $ip, $mac, $domain, $bcuser, $bcpass, "Broker");
+		$this->application($application2, $bcuser2, $ip, $mac, $domain, $bcuser, $bcpass, "IoT Agent");
+		$this->application($application3, $bcuser3, $ip, $mac, $domain, $bcuser, $bcpass, "IoT Agent");
 	}
 
-	public function application($application, $bcuser, $ip, $mac, $domain, $bcauthu, $bcauthp){
+	public function application($application, $bcuser, $ip, $mac, $domain, $bcauthu, $bcauthp, $category){
 
 		$mqttUser = $this->generate_uuid();
 		$mqttPass = $this->password();
@@ -234,56 +301,168 @@ class Location{
 		$privKey = $this->generateKey(32);
 		$privKeyHash = $this->createPasswordHash($privKey);
 
+		$amqppubKey = $this->generate_uuid();
+		$amqpprvKey = $this->generateKey(32);
+		$amqpKeyHash = $this->createPasswordHash($amqpprvKey);
+
 		$htpasswd = new Htpasswd('/etc/nginx/security/htpasswd');
 		$htpasswd->addUser($pubKey, $privKey, Htpasswd::ENCTYPE_APR_MD5);
 
+		$web3 = $this->blockchainConnection($domain, $pubKey, $privKey);
+
 		$query = $this->conn->prepare("
 			INSERT INTO  mqtta  (
-				`lid`,
-				`name`,
-				`bcaddress`,
-				`mqttu`,
-				`mqttp`,
-				`apub`,
-				`aprv`,
-				`ip`,
-				`mac`,
-				`lt`,
-				`lg`,
-				`status`,
-				`time`
+				`apub`
 			)  VALUES (
-				:lid,
-				:name,
-				:bcaddress,
-				:mqttu,
-				:mqttp,
-				:apub,
-				:aprv,
-				:ip,
-				:mac,
-				:lt,
-				:lg,
-				:status,
-				:time
+				:apub
 			)
 		");
 		$query->execute([
-			':lid' => $this->lid,
-			':name' => $application,
-			':bcaddress' => $bcuser,
-			':mqttu' => $this->encrypt($mqttUser),
-			':mqttp' => $this->encrypt($mqttPass),
-			':apub' => $pubKey,
-			':aprv' => $this->encrypt($privKeyHash),
-			':ip' => $this->encrypt($ip),
-			':mac' => $this->encrypt($mac),
-			':lt' => "",
-			':lg' => "",
-			':status' => "OFFLINE",
-			':time' => time()
+			':apub' => $pubKey
 		]);
 		$aid = $this->conn->lastInsertId();
+
+		$data = [
+			"id" => $pubKey,
+			"type" => "Application",
+			"category" => [
+				"value" => [$category]
+			],
+			"name" => [
+				"value" => $application
+			],
+			"description" => [
+				"value" => $application
+			],
+			"lid" => [
+				"value" => $this->lid,
+				"entity" => $this->lentity
+			],
+			"aid" => [
+				"value" => $aid
+			],
+			"admin" => [
+				"value" => 1
+			],
+			"patients" => [
+				"value" => 1
+			],
+			"cancelled" => [
+				"value" => 0
+			],
+			"location" => [
+				"type" => "geo:json",
+				"value" => [
+					"type" => "Point",
+					"coordinates" => [0, 0]
+				]
+			],
+			"agent" => [
+				"url" => ""
+			],
+			"device" => [
+				"name" => "",
+				"manufacturer" => "",
+				"model" => "",
+				"version" => ""
+			],
+			"os" => [
+				"name" => "",
+				"manufacturer" => "",
+				"version" => ""
+			],
+			"protocols" => ["MQTT"],
+			"status" => [
+				"value" => "OFFLINE",
+				"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"keys" => [
+				"public" => $pubKey,
+				"private" => $this->encrypt($privKeyHash),
+				"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"blockchain" => [
+				"address" => $bcuser,
+				"password" => $this->encrypt("")
+			],
+			"mqtt" => [
+				"username" => $this->encrypt($mqttUser),
+				"password" => $this->encrypt($mqttPass),
+				"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"coap" => [
+				"username" => "",
+				"password" => ""
+			],
+			"amqp" => [
+				"username" => $this->encrypt($amqppubKey),
+				"password" => $this->encrypt($amqpprvKey),
+				"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"batteryLevel" => [
+				"value" => 0.00
+			],
+			"cpuUsage" => [
+				"value" => 0.00
+			],
+			"memoryUsage" => [
+				"value" => 0.00
+			],
+			"hddUsage" => [
+				"value" => 0.00
+			],
+			"temperature" => [
+				"value" => 0.00
+			],
+			"ip" => [
+				"value" => $ip,
+				"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"mac" => [
+				"value" => $this->encrypt($mac),
+				"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"bluetooth" => [
+				"address" => "",
+				"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"ai" => [],
+			"sensors" => [],
+			"actuators" => [],
+			"dateCreated" => [
+				"type" => "DateTime",
+				"value" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"dateFirstUsed" => [
+				"type" => "DateTime",
+				"value" => ""
+			],
+			"dateModified" => [
+				"type" => "DateTime",
+				"value" => date('Y-m-d\TH:i:s.Z\Z', time())
+			]
+		];
+
+		$insert = new \MongoDB\Driver\BulkWrite;
+		$_id1 = $insert->insert($data);
+		$result = $this->mngConn->executeBulkWrite($this->mdbname.'.Applications', $insert);
+
+		$amid = $this->addAmqpUser($amqppubKey, $amqpKeyHash);
+		$this->addAmqpUserVh($amid, "iotJumpWay");
+		$this->addAmqpVhPerm($amid, "iotJumpWay", "exchange", "Core", "read");
+		$this->addAmqpVhPerm($amid, "iotJumpWay", "exchange", "Core", "write");
+		$this->addAmqpVhPerm($amid, "iotJumpWay", "queue", "Life", "read");
+		$this->addAmqpVhPerm($amid, "iotJumpWay", "queue", "Life", "write");
+		$this->addAmqpVhPerm($amid, "iotJumpWay", "queue", "Statuses", "read");
+		$this->addAmqpVhPerm($amid, "iotJumpWay", "queue", "Statuses", "write");
+		$this->addAmqpVhTopic($amid, "iotJumpWay", "topic", "Core", "read", "Life");
+		$this->addAmqpVhTopic($amid, "iotJumpWay", "topic", "Core", "write", "Life");
+		$this->addAmqpVhTopic($amid, "iotJumpWay", "topic", "Core", "read", "Statuses");
+		$this->addAmqpVhTopic($amid, "iotJumpWay", "topic", "Core", "write", "Statuses");
+		$this->addAmqpUserPerm($amid, "administrator");
+		$this->addAmqpUserPerm($amid, "managment");
+		$this->addAmqpVhPerm($amid, "iotJumpWay", "queue", "Life", "configure");
+		$this->addAmqpVhPerm($amid, "iotJumpWay", "queue", "Statuses", "configure");
 
 		$query = $this->conn->prepare("
 			INSERT INTO  mqttu  (
@@ -324,7 +503,7 @@ class Location{
 			':lid' => $this->lid,
 			':aid' => $aid,
 			':username' => $mqttUser,
-			':topic' => $this->lid."/Devices/#",
+			':topic' => $this->lentity."/Devices/#",
 			':rw' => 4
 		));
 
@@ -347,20 +526,10 @@ class Location{
 			':lid' => $this->lid,
 			':aid' => $aid,
 			':username' => $mqttUser,
-			':topic' => $this->lid."/Applications/#",
+			':topic' => $this->lentity."/Applications/#",
 			':rw' => 4
 		));
 
-		$query = $this->conn->prepare("
-			UPDATE mqttl
-			SET apps = apps + 1
-			WHERE id = :id
-		");
-		$query->execute(array(
-			':id'=> $this->lid
-		));
-
-		$web3 = $this->blockchainConnection($domain, $pubKey, $privKey);
 		$unlocked =  $this->unlockBlockchainAccount($web3, $bcauthu, $bcauthp);
 
 		if($unlocked == "FAILED"):
@@ -383,68 +552,161 @@ class Location{
 		});
 
 		if($hash == "FAILED"):
-			echo " HIAS Blockchain deposit failed! \n";
-			return False;
+			echo " HIAS Blockchain deposit 1 failed! " . $msg . "\n";
 		else:
 			$txid = $this->storeBlockchainTransaction("Deposit", $hash, 0, $aid);
 			$this->storeUserHistory("Deposit", $txid, $this->lid, 0, 0, 0, $aid);
-			echo " HIAS Blockchain deposit ok!\n";
-			$hash = "";
-			$msg = "";
-			$contract->at($this->decrypt($this->bcc["contract"]))->send("registerApplication", $pubKey, $bcuser, true, $this->lid, $aid, $application, 1, time(), ["from" => $bcauthu], function ($err, $resp) use (&$hash, &$msg) {
-				if ($err !== null) {
-					$hash = "FAILED";
-					$msg = $err . "\n";
-					return;
-				}
-				$hash = $resp;
-			});
+			echo " HIAS Blockchain deposit 1 ok!\n";
 
-			if($hash == "FAILED"):
-				echo " HIAS Blockchain registerApplication failed!\n";
-				return False;
-			else:
-				$txid = $this->storeBlockchainTransaction("Register Application", $hash, 0, $aid);
-				$this->storeUserHistory("Register Application", $txid, $this->lid, 0, 0, 0, $aid);
-				$balance = $this->getBlockchainBalance($web3, $bcauthu);
-				echo "HIAS Blockchain register application complete! You were rewarded for this action! Your balance is now: " . $balance . " HIAS Ether!\n";
-			endif;
-		endif;
+			if($application=="Context Broker"):
 
-		$hash = "";
-		$msg = "";
-		$icontract->at($this->decrypt($this->bcc["icontract"]))->send("deposit", 9000000000000000000, ["from" => $bcauthu, "value" => 9000000000000000000], function ($err, $resp) use (&$hash, &$msg) {
-			if ($err !== null) {
-				$hash = "FAILED";
-				$msg = $err . "\n";
-				return;
-			}
-			$hash = $resp;
-		});
+				$hash = "";
+				$msg = "";
+				$contract->at($this->decrypt($this->bcc["contract"]))->send("initiate", $pubKey, $bcuser, True, 1, $application, $this->lid, $aid, 1, time(), ["from" => $bcauthu], function ($err, $resp) use (&$hash, &$msg) {
+					if ($err !== null) {
+						$hash = "FAILED";
+						$msg = $err;
+						return;
+					}
+					$hash = $resp;
+				});
 
-		if($hash == "FAILED"):
-			echo " HIAS Blockchain deposit failed!\n";
-			return False;
-		else:
-			$txid = $this->storeBlockchainTransaction("Deposit", $hash, 0, $aid);
-			$this->storeUserHistory("Deposit", $txid, $this->lid, 0, 0, 0, $aid);
-			echo " HIAS Blockchain deposit ok!\n";
-			$icontract->at($this->decrypt($this->bcc["icontract"]))->send("registerAuthorized", $bcuser, ["from" => $bcauthu], function ($err, $resp) use (&$hash, &$msg) {
-				if ($err !== null) {
-					$hash = "FAILED";
-					$msg = $err . "\n";
-					return;
-				}
-				$hash = $resp;
-			});
+				if($hash == "FAILED"):
+					echo " HIAS Blockchain initiate failed! " . $msg . "\n";
+				else:
+					$txid = $this->storeBlockchainTransaction("Initiate", $hash, 0, $aid);
+					$this->storeUserHistory("Initiate", $txid, $this->lid, 0, 0, 0, $aid);
+					$balance = $this->getBlockchainBalance($web3, $bcauthu);
+					echo "HIAS blockchain initiate complete! You were rewarded for this action! Your balance is now: " . $balance . " HIAS Ether!  \n";
 
-			if($hash == "FAILED"):
-				echo " HIAS Blockchain registerAuthorized failed!\n";
-			else:
-				$txid = $this->storeBlockchainTransaction("iotJumpWay Register Authorized", $hash, 0, $aid);
-				$this->storeUserHistory("Register Authorized", $txid, $this->lid, 0, 0, 0, $aid);
-				$balance = $this->getBlockchainBalance($web3, $bcauthu);
-				echo "HIAS Blockchain register authorized complete! You were rewarded for this action! Your balance is now: " . $balance . " HIAS Ether!\n";
+					$hash = "";
+					$msg = "";
+					$contract->at($this->decrypt($this->bcc["contract"]))->send("deposit", 9000000000000000000, ["from" => $bcauthu, "value" => 9000000000000000000], function ($err, $resp) use (&$hash, &$msg) {
+						if ($err !== null) {
+							$hash = "FAILED";
+							$msg = $err . "\n";
+							return;
+						}
+						$hash = $resp;
+					});
+
+					if($hash == "FAILED"):
+						echo " HIAS Blockchain 2 deposit failed! " . $msg . "\n";
+					else:
+						$txid = $this->storeBlockchainTransaction("Deposit", $hash, 0, $aid);
+						$this->storeUserHistory("Deposit", $txid, $this->lid, 0, 0, 0, $aid);
+						echo " HIAS Blockchain deposit 2 ok!\n";
+
+						sleep(25);
+
+						$hash = "";
+						$msg = "";
+						$contract->at($this->decrypt($this->bcc["contract"]))->send("registerApplication", $pubKey, $bcuser, true, $this->lid, $aid, $application, 1, time(), ["from" => $bcauthu], function ($err, $resp) use (&$hash, &$msg) {
+							if ($err !== null) {
+								$hash = "FAILED";
+								$msg = $err . "\n";
+								return;
+							}
+							$hash = $resp;
+						});
+
+						if($hash == "FAILED"):
+							echo " HIAS Blockchain registerApplication failed! " . $msg . "\n";
+						else:
+							$txid = $this->storeBlockchainTransaction("Register Application", $hash, 0, $aid);
+							$this->storeUserHistory("Register Application", $txid, $this->lid, 0, 0, 0, $aid);
+							$balance = $this->getBlockchainBalance($web3, $bcauthu);
+							echo "HIAS Blockchain register application complete! You were rewarded for this action! Your balance is now: " . $balance . " HIAS Ether!\n";
+
+							$hash = "";
+							$msg = "";
+							$icontract->at($this->decrypt($this->bcc["icontract"]))->send("deposit", 9000000000000000000, ["from" => $bcauthu, "value" => 9000000000000000000], function ($err, $resp) use (&$hash, &$msg) {
+								if ($err !== null) {
+									$hash = "FAILED";
+									$msg = $err . "\n";
+									return;
+								}
+								$hash = $resp;
+							});
+
+							if($hash == "FAILED"):
+								echo " HIAS Blockchain 3 deposit failed! " . $msg . "\n";
+							else:
+								$txid = $this->storeBlockchainTransaction("Deposit", $hash, 0, $aid);
+								$this->storeUserHistory("Deposit", $txid, $this->lid, 0, 0, 0, $aid);
+								echo " HIAS Blockchain 3 deposit ok!\n";
+
+								if($application=="Context Broker"):
+
+									$hash = "";
+									$msg = "";
+									$icontract->at($this->decrypt($this->bcc["icontract"]))->send("initiate", ["from" => $bcauthu], function ($err, $resp) use (&$hash, &$msg) {
+										if ($err !== null) {
+											$hash = "FAILED";
+											$msg = $err;
+											return;
+										}
+										$hash = $resp;
+									});
+
+									if($hash == "FAILED"):
+										echo " HIAS Blockchain iotJumpWay Initiate failed! " . $msg . "\n";
+									else:
+										$txid = $this->storeBlockchainTransaction("iotJumpWay Initiate", $hash, 0, $aid);
+										$this->storeUserHistory("iotJumpWay Initiate", $txid, $this->lid, 0, 0, 0, $aid);
+										$balance = $this->getBlockchainBalance($web3, $bcauthu);
+										echo "HIAS iotJumpWay Blockchain Initiate complete! You were rewarded for this action! Your balance is now: " . $balance . " HIAS Ether!\n";
+
+										$hash = "";
+										$msg = "";
+										$contract->at($this->decrypt($this->bcc["contract"]))->send("deposit", 9000000000000000000, ["from" => $bcauthu, "value" => 9000000000000000000], function ($err, $resp) use (&$hash, &$msg) {
+											if ($err !== null) {
+												$hash = "FAILED";
+												$msg = $err . "\n";
+												return;
+											}
+											$hash = $resp;
+										});
+
+										if($hash == "FAILED"):
+											echo " HIAS Blockchain 4 deposit failed! " . $msg . "\n";
+										else:
+											$txid = $this->storeBlockchainTransaction("Deposit", $hash, 0, $aid);
+											$this->storeUserHistory("Deposit", $txid, $this->lid, 0, 0, 0, $aid);
+											echo " HIAS Blockchain 4 deposit ok!\n";
+
+											sleep(25);
+
+											$hash = "";
+											$msg = "";
+											$icontract->at($this->decrypt($this->bcc["icontract"]))->send("registerAuthorized", $bcuser, ["from" => $bcauthu], function ($err, $resp) use (&$hash, &$msg) {
+												if ($err !== null) {
+													$hash = "FAILED";
+													$msg = $err . "\n";
+													return;
+												}
+												$hash = $resp;
+											});
+
+											if($hash == "FAILED"):
+												echo " HIAS Blockchain iotJumpWay registerAuthorized failed! " . $msg . "\n";
+											else:
+												$txid = $this->storeBlockchainTransaction("iotJumpWay Register Authorized", $hash, 0, $aid);
+												$this->storeUserHistory("Register Authorized", $txid, $this->lid, 0, 0, 0, $aid);
+												$balance = $this->getBlockchainBalance($web3, $bcauthu);
+												echo "HIAS Blockchain register authorized complete! You were rewarded for this action! Your balance is now: " . $balance . " HIAS Ether!\n";
+											endif;
+
+										endif;
+									endif;
+
+								endif;
+							endif;
+						endif;
+
+					endif;
+				endif;
+
 			endif;
 		endif;
 
@@ -457,6 +719,114 @@ class Location{
 		echo "!! Your application MQTT password is: " . $mqttPass . "\n";
 		echo "";
 		return True;
+	}
+
+	private function addAmqpUser($username, $key)
+	{
+		$query = $this->conn->prepare("
+			INSERT INTO  amqpu  (
+				`username`,
+				`pw`
+			)  VALUES (
+				:username,
+				:pw
+			)
+		");
+		$query->execute([
+			':username' => $username,
+			':pw' => $this->encrypt($key)
+		]);
+		$amid = $this->conn->lastInsertId();
+		return $amid;
+	}
+
+	private function addAmqpUserPerm($uid, $permission)
+	{
+		$query = $this->conn->prepare("
+			INSERT INTO  amqpp  (
+				`uid`,
+				`permission`
+			)  VALUES (
+				:uid,
+				:permission
+			)
+		");
+		$query->execute([
+			':uid' => $uid,
+			':permission' => $permission
+		]);
+	}
+
+	private function addAmqpUserVh($uid, $vhost)
+	{
+		$query = $this->conn->prepare("
+			INSERT INTO  amqpvh  (
+				`uid`,
+				`vhost`
+			)  VALUES (
+				:uid,
+				:vhost
+			)
+		");
+		$query->execute([
+			':uid' => $uid,
+			':vhost' => $vhost
+		]);
+	}
+
+	private function addAmqpVhPerm($uid, $vhost, $rtype, $rname, $permission)
+	{
+		$query = $this->conn->prepare("
+			INSERT INTO  amqpvhr  (
+				`uid`,
+				`vhost`,
+				`rtype`,
+				`rname`,
+				`permission`
+			)  VALUES (
+				:uid,
+				:vhost,
+				:rtype,
+				:rname,
+				:permission
+			)
+		");
+		$query->execute([
+			':uid' => $uid,
+			':vhost' => $vhost,
+			':rtype' => $rtype,
+			':rname' => $rname,
+			':permission' => $permission
+		]);
+	}
+
+	private function addAmqpVhTopic($uid, $vhost, $rtype, $rname, $permission, $rkey)
+	{
+		$query = $this->conn->prepare("
+			INSERT INTO  amqpvhrt  (
+				`uid`,
+				`vhost`,
+				`rtype`,
+				`rname`,
+				`permission`,
+				`rkey`
+			)  VALUES (
+				:uid,
+				:vhost,
+				:rtype,
+				:rname,
+				:permission,
+				:rkey
+			)
+		");
+		$query->execute([
+			':uid' => $uid,
+			':vhost' => $vhost,
+			':rtype' => $rtype,
+			':rname' => $rname,
+			':permission' => $permission,
+			':rkey' => $rkey
+		]);
 	}
 
 	public function generate_uuid() {
@@ -562,6 +932,6 @@ class Location{
 $Core  = new Core();
 $Location = new Location($Core);
 $Location->location($argv[1]);
-$Location->applications($argv[2], $argv[3], $argv[4], $argv[5], $argv[6], $argv[7], $argv[8], $argv[9]);
+$Location->applications($argv[2], $argv[3], $argv[4], $argv[5], $argv[6], $argv[7], $argv[8], $argv[9], $argv[10], $argv[11]);
 
 ?>
