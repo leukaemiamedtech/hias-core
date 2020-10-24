@@ -2,7 +2,7 @@
 
 $pageDetails = [
 	"PageID" => "IoT",
-	"SubPageID" => "IoT",
+	"SubPageID" => "Location",
 	"LowPageID" => "Data"
 ];
 
@@ -16,7 +16,6 @@ $_GeniSysAi->checkSession();
 $LId = 1;
 $Location = $iotJumpWay->getLocation($LId);
 $blockchainConf = $Blockchain->getBlockchainConf();
-
 
 ?>
 
@@ -42,7 +41,7 @@ $blockchainConf = $Blockchain->getBlockchainConf();
 		<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
 		<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
-		<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
+		<link href="<?=$domain; ?>/AI/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.css" rel="stylesheet" type="text/css"/>
 	</head>
 
@@ -117,11 +116,6 @@ $blockchainConf = $Blockchain->getBlockchainConf();
 													$Life = $iotJumpWay->retrieveLife(5);
 													if($Life["Response"] == "OK"):
 														foreach($Life["ResponseData"] as $key => $value):
-
-															$location = $iotJumpWay->getLocation($value->Location);
-															$device = $iotJumpWay->getDevice($value->Device);
-															$zone = $iotJumpWay->getZone($value->Zone);
-															$application = $iotJumpWay->getApplication($value->Application);
 															$hashString = (string)$value->Data->CPU . (string)$value->Data->Memory . (string)$value->Data->Diskspace . (string)$value->Data->Temperature . (string)$value->Data->Latitude . (string)$value->Data->Longitude;
 
 												?>
@@ -129,10 +123,10 @@ $blockchainConf = $Blockchain->getBlockchainConf();
 												  <tr>
 													<td>#<?=$value->_id;?></td>
 													<td><?=$value->Use;?></td>
-													<td><strong>Location:</strong> #<?=$value->Location;?> - <?=$location["name"]; ?><br />
-														<strong>Zone:</strong> <?=$value->Zone != 0 ? "#" . $value->Zone . " - " . $zone["zn"] : "NA"; ?><br />
-														<strong>Device</strong> <?=$value->Device != 0 ? "#" . $value->Device . " - " . $device["name"] : "NA"; ?><br />
-														<strong>Application</strong> <?=$value->Application != 0 ? "#" . $value->Application . " - " . $application["name"] : "NA";?>
+													<td><strong>Location:</strong> <?=$value->Location;?><br />
+														<strong>Zone:</strong> <?=$value->Zone;?><br />
+														<strong>Device</strong> <?=$value->Device; ?><br />
+														<strong>Application</strong> <?=$value->Application;?>
 													</td>
 													<td>
 														<strong>CPU</strong>: <?=$value->Data->CPU;?>%<br />
@@ -191,20 +185,17 @@ $blockchainConf = $Blockchain->getBlockchainConf();
 													$Statuses = $iotJumpWay->retrieveStatuses(5);
 													if($Statuses["Response"] == "OK"):
 														foreach($Statuses["ResponseData"] as $key => $value):
-															$location = $iotJumpWay->getLocation($value->Location);
-															$device = $iotJumpWay->getDevice($value->Device);
-															$zone = $iotJumpWay->getZone($value->Zone);
-															$application = $iotJumpWay->getApplication($value->Application);
 															$hashString = (string)$value->Status;
 												?>
 
 												  <tr>
 													<td>#<?=$value->_id;?></td>
 													<td><?=$value->Use;?></td>
-													<td><strong>Location:</strong> #<?=$value->Location;?> - <?=$location["name"]; ?><br />
-														<strong>Zone:</strong> <?=$value->Zone != 0 ? "#" . $value->Zone . " - " . $zone["zn"] : "NA"; ?><br />
-														<strong>Device</strong> <?=$value->Device != 0 ? "#" . $value->Device . " - " . $device["name"] : "NA"; ?><br />
-														<strong>Application</strong> <?=$value->Application != 0 ? "#" . $value->Application . " - " . $application["name"] : "NA";?>
+													<td>
+														<strong>Location:</strong> <?=$value->Location;?><br />
+														<strong>Zone:</strong> <?=$value->Zone;?><br />
+														<strong>Device</strong> <?=$value->Device; ?><br />
+														<strong>Application</strong> <?=$value->Application;?>
 													</td>
 													<td><?=$value->Status;?></td>
 													<td><?=$value->Time;?> </td>
@@ -259,21 +250,17 @@ $blockchainConf = $Blockchain->getBlockchainConf();
 													$Commands = $iotJumpWay->retrieveCommands();
 													if($Commands["Response"] == "OK"):
 														foreach($Commands["ResponseData"] as $key => $value):
-
-															$location = $iotJumpWay->getLocation($value->Location);
-															$device = $iotJumpWay->getDevice($value->From);
-															$devicet = $iotJumpWay->getDevice($value->To);
-															$zone = $iotJumpWay->getZone($value->Zone);
 															$hashString = (string)$value->From . (string)$value->Type . (string)$value->Value . (string)$value->Message ;
 												?>
 
 												  <tr>
 													<td>#<?=$value->_id;?></td>
 													<td><?=$value->Use;?></td>
-													<td>Location #<?=$value->Location;?>: <?=$location["name"]; ?><br />
-														Zone <?=$value->Zone != 0 ? "#" . $value->Zone . ": " . $zone["zn"] : "NA"; ?><br />
-														From <?=$value->From != 0 ? "#" . $value->From . ": " . $device["name"] : "NA"; ?><br />
-														To <?=$value->To != 0 ? "#" . $value->To . ": " . $devicet["name"] : "NA"; ?><br />
+													<td>
+														Location #<?=$value->Location;?><br />
+														Zone <?=$value->Zone != 0 ? "#" . $value->Zone : "NA"; ?><br />
+														From <?=$value->From; ?><br />
+														To <?=$value->To; ?><br />
 													</td>
 													<td><?=$value->Type;?></td>
 													<td><?=$value->Value;?></td>
@@ -331,20 +318,16 @@ $blockchainConf = $Blockchain->getBlockchainConf();
 													$Sensors = $iotJumpWay->retrieveSensors();
 													if($Sensors["Response"] == "OK"):
 														foreach($Sensors["ResponseData"] as $key => $value):
-															$location = $iotJumpWay->getLocation($value->Location);
-															$device = $iotJumpWay->getDevice($value->Device);
-															$zone = $iotJumpWay->getZone($value->Zone);
-															$application = $iotJumpWay->getApplication($value->Application);
 															$hashString = (string)$value->Sensor . (string)$value->Type . (string)$value->Value . (string)$value->Message;
 												?>
 
 												  <tr>
 													<td>#<?=$value->_id;?></td>
 													<td><?=$value->Use;?></td>
-													<td><strong>Location:</strong> #<?=$value->Location;?> - <?=$location["name"]; ?><br />
-														<strong>Zone:</strong> <?=$value->Zone != 0 ? "#" . $value->Zone . " - " . $zone["zn"] : "NA"; ?><br />
-														<strong>Device</strong> <?=$value->Device != 0 ? "#" . $value->Device . " - " . $device["name"] : "NA"; ?><br />
-														<strong>Application</strong> <?=$value->Application != 0 ? "#" . $value->Application . " - " . $application["name"] : "NA";?>
+													<td><strong>Location:</strong> #<?=$value->Location;?><br />
+														<strong>Zone:</strong> <?=$value->Zone != 0 ? "#" . $value->Zone : "NA"; ?><br />
+														<strong>Device</strong> <?=$value->Device != 0 ? "#" . $value->Device : "NA"; ?><br />
+														<strong>Application</strong> <?=$value->Application != 0 ? "#" . $value->Application : "NA";?>
 													</td>
 													<td><?=$value->Type;?></td>
 													<td><?=$value->Sensor;?></td>

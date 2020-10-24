@@ -2,7 +2,7 @@
 
 $pageDetails = [
 	"PageID" => "IoT",
-	"SubPageID" => "IoT",
+	"SubPageID" => "Entities",
 	"LowPageID" => "Applications"
 ];
 
@@ -11,9 +11,6 @@ include dirname(__FILE__) . '/../../Classes/Core/GeniSys.php';
 include dirname(__FILE__) . '/../iotJumpWay/Classes/iotJumpWay.php';
 
 $_GeniSysAi->checkSession();
-
-$Applications = $iotJumpWay->getApplications();
-
 ?>
 
 <!DOCTYPE html>
@@ -39,7 +36,7 @@ $Applications = $iotJumpWay->getApplications();
 	<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
 	<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 	<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
-	<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
+	<link href="<?=$domain; ?>/AI/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
 	<link href="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.css" rel="stylesheet" type="text/css" />
 </head>
 
@@ -109,19 +106,21 @@ $Applications = $iotJumpWay->getApplications();
 												<tbody>
 
 												<?php
-													if(count($Applications)):
-														foreach($Applications as $key => $value):
+													$Applications = $iotJumpWay->getApplications();
+													if(count($Applications["Data"])):
+														foreach($Applications["Data"] as $key => $value):
 												?>
 
 													<tr>
-														<td><a href="javascript:void(0)">#<?=$value["id"];?></a></td>
+														<td><a href="javascript:void(0)">#<?=$value["aid"]["value"];?></a></td>
 														<td>
-															<strong>Name:</strong> <?=$value["name"];?><br />
-															<strong>Location:</strong> #<?=$value["lid"];?> - <?=$value["loc"];?>
+															<?=$value["cancelled"]["value"] ? "<strong>CANCELLED</strong><br /><br />" : "";?>
+															<strong>Name:</strong> <?=$value["name"]["value"];?><br />
+															<strong>Location:</strong> #<?=$value["lid"]["value"];?>
 														</td>
 														<td>
 															<?php
-																if($value["status"]=="ONLINE"):
+																if($value["status"]["value"]=="ONLINE"):
 															?>
 																<span id="" style="color: #33F9FF !important;" class=""><i class="fas fa-power-off" style="color: #33F9FF !important;"></i> Online</span>
 															<?php
@@ -132,7 +131,7 @@ $Applications = $iotJumpWay->getApplications();
 																endif;
 															?>
 														</td>
-														<td><a href="<?=$domain; ?>/iotJumpWay/<?=$value["lid"];?>/Applications/<?=$value["id"];?>"><i class="fa fa-edit"></i> Edit</a></td>
+														<td><a href="<?=$domain; ?>/iotJumpWay/<?=$value["lid"]["value"];?>/Applications/<?=$value["aid"]["value"];?>"><i class="fa fa-edit"></i> Edit</a></td>
 													</tr>
 
 												<?php

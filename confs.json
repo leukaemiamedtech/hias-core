@@ -1,64 +1,81 @@
 {
     "iotJumpWay": {
-        "channels": {
-            "commands": "Commands"
+        "cert": "/fserver/certs/fullchain.pem",
+        "host": "YourHiasDomainName",
+        "ip": "YourHiasIP",
+        "ipinfo": "YourHiasIpInfoKey",
+        "identifier": "YourIotJumpWayApplicationIdentifier",
+        "auth": "YourIotJumpWayApplicationAuthKey",
+        "ContextBroker": {
+            "version": "v1",
+            "address": "ContextBroker/v1",
+            "iport": 8883,
+            "port": 3524,
+            "lid": "YourIotJumpWayLocationID",
+            "aid": "YourContextBrokerApplicationID",
+            "an": "YourContextBrokerApplicationName",
+            "un": "YourContextBrokerApplicationMqttUsername",
+            "pw": "YourContextBrokerApplicationMqttPassword"
         },
-        "host": "YourSubdomain.YourDomain.YourTLD",
-        "port": 8883,
-        "ip": "localhost",
-        "ipinfo": "YourIpInfoApiKey",
-        "lid": YourLocationID,
-        "zid": YourZoneID,
-        "did": YourDeviceId,
-        "dn": "YourDeviceName",
-        "gun": "YourDeviceMqttUsername",
-        "gpw": "YourDeviceMqttPass",
-        "paid": YourIotJumpWayApplicationID,
-        "pan": "YourIotJumpWayApplicationName",
-        "pun": "YourIotJumpWayMqttUser",
-        "ppw": "YourIotJumpWayMqttPass",
-        "mdb": "YourMongoDatabaseName",
-        "mdbu": "YourMongoDatabaseUser",
-        "mdbp": "YourMongoDatabasePass",
-        "dbname": "YourMySqlDatabaseName",
-        "dbuser": "YourMySqlDatabaseUser",
-        "dbpass": "YourMySqlDatabasePass"
+        "databases": {
+            "mongo": {
+                "ip": "localhost",
+                "db": "YourMongoDatabaseName",
+                "dbu": "YourMongoDatabaseUsername",
+                "dbp": "YourMongoDatabasePassword"
+            }
+        },
+        "AMQP": {
+            "vhost": "iotJumpWay",
+            "exchange": "Core",
+            "identifier": "YourAmqpApplicationIdentifier",
+            "un": "YourAmqpApplicationUsername",
+            "pw": "YourAmqpApplicationPasword",
+            "northPort": 8254,
+            "port": 8282
+        },
+        "MQTT": {
+            "port": 8883,
+            "Agent": {
+                "lid": "YourIotJumpWayLocationID",
+                "aid": "YourIotJumpWayApplicationID",
+                "an": "YourIotJumpWayApplicationName",
+                "un": "YourIotJumpWayApplicationUsername",
+                "pw": "YourIotJumpWayApplicationPassword",
+                "northPort": 3256
+            },
+            "TassAI": {
+                "allowed": [".jpg", ".JPG", ".png", ".PNG"],
+                "data": "/fserver/models/TassAI/Data/Security/",
+                "detection": "/fserver/models/TassAI/face-detection-retail-0004.xml",
+                "dlib": "/fserver/models/TassAI/shape_predictor_68_face_landmarks.dat",
+                "dlibr": "/fserver/models/TassAI/dlib_face_recognition_resnet_model_v1.dat",
+                "reidentification": "/fserver/models/TassAI/face-reidentification-retail-0095.xml",
+                "landmarks": "/fserver/models/TassAI/landmarks-regression-retail-0009.xml",
+                "runas": "CPU",
+                "test": "Test/",
+                "threshold": 0.6,
+                "port": 8080,
+                "lid": "YourIotJumpWayLocationID",
+                "zid": "YourTassAIZoneID",
+                "did": "YourTassAIDeviceID",
+                "dn": "Server Security API",
+                "un": "YourTassAIMqttUsername",
+                "pw": "YourTassAIMqttPassword"
+            }
+        }
     },
     "ethereum": {
         "authAbi": [],
         "authContract": "YourAuthContractAddress",
-        "bchost": "https://YourSubdomain.YourDomain.YourTLD/Blockchain/API/",
+        "bchost": "https://YourHiasDomainName/Blockchain/API/",
         "iotAbi": [],
         "iotContract": "YourIotContractAddress",
         "haddress": "YourHiasBlockhainUserAddress",
         "hpass": "YourHiasBlockhainUserPass",
         "iaddress": "YourIotBlockhainUserAddress",
         "ipass": "YourIotBlockhainUserPass",
-        "user": "YourIotUserIdentifier",
-        "pass": "YourIotUserPass",
         "patientsAbi": [],
         "patientsContract": "YourPatientsContractAddress"
-    },
-    "TassAI": {
-        "core": {
-            "allowed": [
-                ".jpg",
-                ".JPG",
-                ".png",
-                ".PNG"
-            ]
-        },
-        "ip": "YourCameraApiIP",
-        "data": "/fserver/models/TassAI/Data/Security/",
-        "detection": "/fserver/models/TassAI/face-detection-retail-0004.xml",
-        "dlib": "/fserver/models/TassAI/shape_predictor_68_face_landmarks.dat",
-        "dlibr": "/fserver/models/TassAI/dlib_face_recognition_resnet_model_v1.dat",
-        "reidentification": "/fserver/models/TassAI/face-reidentification-retail-0095.xml",
-        "landmarks": "/fserver/models/TassAI/landmarks-regression-retail-0009.xml",
-        "runas": "CPU",
-        "test": "Test/",
-        "port": 8080,
-        "threshold": 0.6,
-        "vid": 0
     }
 }

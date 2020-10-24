@@ -2,7 +2,7 @@
 
 $pageDetails = [
 	"PageID" => "IoT",
-	"SubPageID" => "IoT",
+	"SubPageID" => "Entities",
 	"LowPageID" => "Devices"
 ];
 
@@ -16,7 +16,6 @@ $LId = 1;
 $Location = $iotJumpWay->getLocation($LId);
 
 $Zones = $iotJumpWay->getZones();
-$Devices = $iotJumpWay->getDevices();
 
 ?>
 
@@ -42,7 +41,7 @@ $Devices = $iotJumpWay->getDevices();
 		<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
 		<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
-		<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
+		<link href="<?=$domain; ?>/AI/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.css" rel="stylesheet" type="text/css"/>
 	</head>
 
@@ -112,23 +111,23 @@ $Devices = $iotJumpWay->getDevices();
 												<tbody>
 
 												<?php
-													if(count($Devices)):
-														foreach($Devices as $key => $value):
+													$Devices = $iotJumpWay->getDevices();
+													if(count($Devices["Data"])):
+														foreach($Devices["Data"] as $key => $value):
 												?>
 
 												  <tr>
-													<td><a href="javascript:void(0)">#<?=$value["id"];?></a></td>
+													<td><a href="javascript:void(0)">#<?=$value["did"]["value"];?></a></td>
 													<td>
-														<strong>Name:</strong> <?=$value["name"];?><br />
-														<strong>Location:</strong> #<?=$value["lid"];?> - <?=$value["loc"];?><br />
-														<strong>Zone:</strong> #<?=$value["zid"];?> - <?=$value["zne"];?>
+														<strong>Name:</strong> <?=$value["name"]["value"];?><br />
+														<strong>Zone:</strong> #<?=$value["zid"]["value"];?>
 													</td>
 													<td>
-														<div class="label label-table <?=$value["status"] == "OFFLINE" ? "label-danger" : "label-success"; ?>">
-															<?=$value["status"] == "OFFLINE" ? "OFFLINE" : "ONLINE"; ?>
+														<div class="label label-table <?=$value["status"]["value"] == "OFFLINE" ? "label-danger" : "label-success"; ?>">
+															<?=$value["status"]["value"] == "OFFLINE" ? "OFFLINE" : "ONLINE"; ?>
 														</div>
 													</td>
-													<td><a href="/iotJumpWay/<?=$value["lid"];?>/Zones/<?=$value["zid"];?>/Devices/<?=$value["id"];?>"><i class="fa fa-edit"></i> Edit</a></td>
+													<td><a href="/iotJumpWay/<?=$value["lid"]["value"];?>/Zones/<?=$value["zid"]["value"];?>/Devices/<?=$value["did"]["value"];?>"><i class="fa fa-edit"></i> Edit</a></td>
 												  </tr>
 
 												<?php

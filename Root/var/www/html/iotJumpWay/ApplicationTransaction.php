@@ -15,7 +15,7 @@ $_GeniSysAi->checkSession();
 $AId = filter_input(INPUT_GET, 'application', FILTER_SANITIZE_NUMBER_INT);
 $Application = $iotJumpWay->getApplication($AId);
 
-list($dev1On, $dev1Off) = $iotJumpWay->getStatusShow($Application["status"]);
+list($appOn, $appOff) = $iotJumpWay->getStatusShow($Application["context"]["Data"]["status"]["value"]);
 
 $txn = $iotJumpWay->retrieveApplicationTransaction(filter_input(INPUT_GET, 'transaction', FILTER_SANITIZE_NUMBER_INT));
 $receipt = $iotJumpWay->retrieveApplicationTransactionReceipt($iotJumpWay->_GeniSys->_helpers->oDecrypt($txn["hash"]));
@@ -45,7 +45,7 @@ $receipt = $iotJumpWay->retrieveApplicationTransactionReceipt($iotJumpWay->_Geni
 	<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
 	<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 	<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
-	<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
+	<link href="<?=$domain; ?>/AI/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
 	<link href="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.css" rel="stylesheet" type="text/css" />
 </head>
 
@@ -142,14 +142,15 @@ $receipt = $iotJumpWay->retrieveApplicationTransactionReceipt($iotJumpWay->_Geni
 						<div class="panel panel-default card-view panel-refresh">
 							<div class="panel-wrapper collapse in">
 								<div class="panel-body">
-								<div class="pull-right"><span id="offline1" style="color: #33F9FF !important;" class="<?=$dev1On; ?>"><i class="fas fa-power-off" style="color: #33F9FF !important;"></i> Online</span> <span id="online1" class="<?=$dev1Off; ?>" style="color: #99A3A4 !important;"><i class="fas fa-power-off" style="color: #99A3A4 !important;"></i> Offline</span></div>
+								<div class="pull-right"><span id="offline1" style="color: #33F9FF !important;" class="<?=$appOn; ?>"><i class="fas fa-power-off" style="color: #33F9FF !important;"></i> Online</span> <span id="online1" class="<?=$appOff; ?>" style="color: #99A3A4 !important;"><i class="fas fa-power-off" style="color: #99A3A4 !important;"></i> Offline</span></div>
 									<div class="form-group">
 										<label class="control-label col-md-5">Status</label>
-										<div class="col-md-9">
-											<i class="fa fa-microchip data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idecpuU"><?=$Application["cpu"]; ?></span>% &nbsp;&nbsp;
-											<i class="zmdi zmdi-memory data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idememU"><?=$Application["mem"]; ?></span>% &nbsp;&nbsp;
-											<i class="far fa-hdd data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idehddU"><?=$Application["hdd"]; ?></span>% &nbsp;&nbsp;
-											<i class="fa fa-thermometer-quarter data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idetempU"><?=$Application["tempr"]; ?></span>°C
+										<div class="col-md-12">
+											<i class="fas fa-battery-full data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idebatU"><?=$Application["context"]["Data"]["batteryLevel"]["value"]; ?></span>% &nbsp;&nbsp;
+											<i class="fa fa-microchip data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idecpuU"><?=$Application["context"]["Data"]["cpuUsage"]["value"]; ?></span>% &nbsp;&nbsp;
+											<i class="zmdi zmdi-memory data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idememU"><?=$Application["context"]["Data"]["memoryUsage"]["value"]; ?></span>% &nbsp;&nbsp;
+											<i class="far fa-hdd data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idehddU"><?=$Application["context"]["Data"]["hddUsage"]["value"]; ?></span>% &nbsp;&nbsp;
+											<i class="fa fa-thermometer-quarter data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idetempU"><?=$Application["context"]["Data"]["temperature"]["value"]; ?></span>°C
 										</div>
 									</div>
 								</div>

@@ -2,13 +2,14 @@
 
 $pageDetails = [
 	"PageID" => "IoT",
-	"SubPageID" => "IoT",
+	"SubPageID" => "Entities",
 	"LowPageID" => "Devices"
 ];
 
 include dirname(__FILE__) . '/../../Classes/Core/init.php';
 include dirname(__FILE__) . '/../../Classes/Core/GeniSys.php';
 include dirname(__FILE__) . '/../iotJumpWay/Classes/iotJumpWay.php';
+include dirname(__FILE__) . '/../AI/Classes/AI.php';
 
 $_GeniSysAi->checkSession();
 
@@ -39,7 +40,7 @@ $Zones = $iotJumpWay->getZones(0, "id ASC");
 		<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
 		<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
-		<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
+		<link href="<?=$domain; ?>/AI/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.css" rel="stylesheet" type="text/css"/>
 	</head>
 
@@ -105,16 +106,183 @@ $Zones = $iotJumpWay->getZones(0, "id ASC");
 														<span class="help-block"> Name of device</span>
 													</div>
 													<div class="form-group">
+														<label for="name" class="control-label mb-10">Description</label>
+														<input type="text" class="form-control" id="description" name="description" placeholder="Device Description" required value="">
+														<span class="help-block"> Description of device</span>
+													</div>
+													<div class="form-group">
+														<label class="control-label mb-10">Category</label>
+														<select class="form-control" id="category" name="category" required>
+															<option value="">PLEASE SELECT</option>
+
+															<?php
+																$categories = $iotJumpWay->getDeviceCategories();
+																if(count($categories)):
+																	foreach($categories as $key => $value):
+															?>
+
+															<option value="<?=$value["category"]; ?>"><?=$value["category"]; ?></option>
+
+															<?php
+																	endforeach;
+																endif;
+															?>
+
+														</select>
+														<span class="help-block">Device category</span>
+													</div>
+													<div class="form-group">
+														<label class="control-label mb-10">IoT Agent</label>
+														<select class="form-control" id="agent" name="agent">
+															<option value="">PLEASE SELECT</option>
+
+															<?php
+																$agents = $iotJumpWay->getAgents();
+																if(count($agents["Data"])):
+																	foreach($agents["Data"] as $key => $value):
+																		print_r($value);
+															?>
+
+															<option value="http://<?=$value["ip"]["value"]; ?>:<?=$value["northPort"]["value"]; ?>"><?=$value["name"]["value"]; ?> (http://<?=$value["ip"]["value"]; ?>:<?=$value["northPort"]["value"]; ?>)</option>
+
+															<?php
+																	endforeach;
+																endif;
+															?>
+
+														</select>
+														<span class="help-block">Device IoT Agent</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Hardware Device Name</label>
+														<input type="text" class="form-control" id="deviceName" name="deviceName" placeholder="Hardware device name" required value="">
+														<span class="help-block">Name of hardware device</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Hardware Device Name</label>
+														<input type="text" class="form-control" id="deviceManufacturer" name="deviceManufacturer" placeholder="Hardware device manufacturer" required value="">
+														<span class="help-block">Name of hardware manufacturer</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Hardware Device Model</label>
+														<input type="text" class="form-control" id="deviceModel" name="deviceModel" placeholder="Hardware device model" required value="">
+														<span class="help-block">Hardware model</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Operating System</label>
+														<input type="text" class="form-control" id="osName" name="osName" placeholder="Operating system name" required value="">
+														<span class="help-block">Operating system name</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Operating system manufacturer</label>
+														<input type="text" class="form-control" id="osManufacturer" name="osManufacturer" placeholder="Operating system manufacturer" required value="">
+														<span class="help-block">Operating system manufacturer</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Operating system version</label>
+														<input type="text" class="form-control" id="osVersion" name="osVersion" placeholder="Operating system version" required value="">
+														<span class="help-block">Operating system version</span>
+													</div>
+													<div class="form-group">
+														<label class="control-label mb-10">Protocols</label>
+														<select class="form-control" id="protocols" name="protocols[]" required multiple>
+
+															<?php
+																$protocols = $iotJumpWay->getContextBrokerProtocols();
+																if(count($protocols)):
+																	foreach($protocols as $key => $value):
+															?>
+
+																<option value="<?=$value["protocol"]; ?>"><?=$value["protocol"]; ?></option>
+
+															<?php
+																	endforeach;
+																endif;
+															?>
+
+														</select>
+														<span class="help-block">Supported Communication Protocols</span>
+													</div>
+													<div class="form-group">
+														<label class="control-label mb-10">Sensors</label>
+														<select class="form-control" id="sensorSelect">
+															<option value="">Select Sensors To Add</option>
+
+															<?php
+																$sensors = $iotJumpWay->getThings(0, "Sensor");
+																if(count($sensors["Data"])):
+																	foreach($sensors["Data"] as $key => $value):
+															?>
+
+																<option value="<?=$value["sid"]["value"]; ?>"><?=$value["name"]["value"]; ?></option>
+
+															<?php
+																	endforeach;
+																endif;
+															?>
+
+														</select><br />
+														<div id="sensorContent"></div>
+														<span class="help-block">Device Sensors</span>
+														<span class="hidden" id="lastSensor"><?=$key ? $key : 0; ?></span>
+													</div>
+													<div class="form-group">
+														<label class="control-label mb-10">Actuators</label>
+														<select class="form-control" id="actuatorSelect">
+															<option value="">Select Actuators To Add</option>
+
+															<?php
+																$actuators = $iotJumpWay->getThings(0, "Actuator");
+																if(count($actuators["Data"])):
+																	foreach($actuators["Data"] as $key => $value):
+															?>
+
+																<option value="<?=$value["sid"]["value"]; ?>"><?=$value["name"]["value"]; ?></option>
+
+															<?php
+																	endforeach;
+																endif;
+															?>
+
+														</select><br />
+														<div id="actuatorContent"></div>
+														<span class="help-block">Device Actuators</span>
+														<span class="hidden" id="lastActuator"><?=$key ? $key : 0; ?></span>
+													</div>
+													<div class="form-group">
+														<label class="control-label mb-10">AI Models</label>
+														<select class="form-control" id="ai" name="ai[]" multiple>
+
+															<?php
+																$models = $AI->getModels()["Data"];
+																if(count($models)):
+																	foreach($models as $key => $value):
+															?>
+
+																<option value="<?=$value["mid"]["value"]; ?>"><?=$value["name"]["value"]; ?></option>
+
+															<?php
+																	endforeach;
+																endif;
+															?>
+
+														</select>
+														<span class="help-block">Device AI Models</span>
+													</div>
+												</div>
+												<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+													<div class="form-group">
 														<label class="control-label mb-10">Location</label>
 														<select class="form-control" id="lid" name="lid" required>
 															<option value="">PLEASE SELECT</option>
 
 															<?php
-																if(count($Locations)):
-																	foreach($Locations as $key => $value):
+																$Locations = $iotJumpWay->getLocations();
+																if(count($Locations["Data"])):
+																	foreach($Locations["Data"] as $key => $value):
 															?>
 
-															<option value="<?=$value["id"]; ?>">#<?=$value["id"]; ?>: <?=$value["name"]; ?></option>
+																<option value="<?=$value["lid"]["value"]; ?>">#<?=$value["lid"]["value"]; ?>: <?=$value["name"]["value"]; ?></option>
 
 															<?php
 																	endforeach;
@@ -128,13 +296,13 @@ $Zones = $iotJumpWay->getZones(0, "id ASC");
 														<label class="control-label mb-10">Zone</label>
 														<select class="form-control" id="zid" name="zid" required>
 															<option value="">PLEASE SELECT</option>
-
 															<?php
-																if(count($Zones)):
-																	foreach($Zones as $key => $value):
+																$Zones = $iotJumpWay->getZones();
+																if(count($Zones["Data"])):
+																	foreach($Zones["Data"] as $key => $value):
 															?>
 
-															<option value="<?=$value["id"]; ?>">#<?=$value["id"]; ?>: <?=$value["zn"]; ?></option>
+															<option value="<?=$value["zid"]["value"]; ?>">#<?=$value["zid"]["value"]; ?>: <?=$value["name"]["value"]; ?></option>
 
 															<?php
 																	endforeach;
@@ -142,26 +310,33 @@ $Zones = $iotJumpWay->getZones(0, "id ASC");
 															?>
 
 														</select>
-
 														<span class="help-block"> Zone of device</span>
 													</div>
-													<div class="form-group mb-0">
-														<input type="hidden" class="form-control" id="create_device" name="create_device" required value="1">
-														<button type="submit" class="btn btn-success btn-anim" id="device_creater"><i class="icon-rocket"></i><span class="btn-text">Create</span></button>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Coordinates</label>
+														<input type="text" class="form-control" id="coordinates" name="coordinates" placeholder="iotJumpWay Location coordinates" required value="">
+														<span class="help-block">iotJumpWay Device coordinates</span>
 													</div>
-												</div>
-												<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
 													<div class="form-group">
 														<label for="name" class="control-label mb-10">IP</label>
-														<input type="text" class="form-control" id="ip" name="ip" placeholder="Device IP" required value="">
+														<input type="text" class="form-control hider" id="ip" name="ip" placeholder="Device IP" required value="">
 														<span class="help-block"> IP of device</span>
 													</div>
 													<div class="form-group">
 														<label for="name" class="control-label mb-10">MAC</label>
-														<input type="text" class="form-control" id="mac" name="mac" placeholder="Device MAC" required value="">
+														<input type="text" class="form-control hider" id="mac" name="mac" placeholder="Device MAC" required value="">
 														<span class="help-block"> MAC of device</span>
 													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Bluetooth Address</label>
+														<input type="text" class="form-control hider" id="bluetooth" name="bluetooth" placeholder="Device Bluetooth Address"  value="">
+														<span class="help-block">Bluetooth address of device</span>
+													</div>
 												</div>
+											</div>
+											<div class="form-group mb-0">
+												<input type="hidden" class="form-control" id="create_device" name="create_device" required value="1">
+												<button type="submit" class="btn btn-success btn-anim" id="device_creater"><i class="icon-rocket"></i><span class="btn-text">Create</span></button>
 											</div>
 										</form>
 									</div>

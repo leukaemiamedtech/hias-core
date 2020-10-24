@@ -15,7 +15,7 @@ $_GeniSysAi->checkSession();
 $DId = filter_input(INPUT_GET, 'device', FILTER_SANITIZE_NUMBER_INT);
 $Device = $iotJumpWay->getDevice($DId);
 
-list($dev1On, $dev1Off) = $iotJumpWay->getStatusShow($Device["status"]);
+list($dev1On, $dev1Off) = $iotJumpWay->getStatusShow($Device["context"]["Data"]["status"]["value"]);
 
 $txn = $iotJumpWay->retrieveDeviceTransaction(filter_input(INPUT_GET, 'transaction', FILTER_SANITIZE_NUMBER_INT));
 $receipt = $iotJumpWay->retrieveDeviceTransactionReceipt($iotJumpWay->_GeniSys->_helpers->oDecrypt($txn["hash"]));
@@ -45,7 +45,7 @@ $receipt = $iotJumpWay->retrieveDeviceTransactionReceipt($iotJumpWay->_GeniSys->
 	<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
 	<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 	<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
-	<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
+	<link href="<?=$domain; ?>/AI/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
 	<link href="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.css" rel="stylesheet" type="text/css" />
 </head>
 
@@ -145,11 +145,12 @@ $receipt = $iotJumpWay->retrieveDeviceTransactionReceipt($iotJumpWay->_GeniSys->
 								<div class="pull-right"><span id="offline1" style="color: #33F9FF !important;" class="<?=$dev1On; ?>"><i class="fas fa-power-off" style="color: #33F9FF !important;"></i> Online</span> <span id="online1" class="<?=$dev1Off; ?>" style="color: #99A3A4 !important;"><i class="fas fa-power-off" style="color: #99A3A4 !important;"></i> Offline</span></div>
 									<div class="form-group">
 										<label class="control-label col-md-5">Status</label>
-										<div class="col-md-9">
-											<i class="fa fa-microchip data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idecpuU"><?=$Device["cpu"]; ?></span>% &nbsp;&nbsp;
-											<i class="zmdi zmdi-memory data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idememU"><?=$Device["mem"]; ?></span>% &nbsp;&nbsp;
-											<i class="far fa-hdd data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idehddU"><?=$Device["hdd"]; ?></span>% &nbsp;&nbsp;
-											<i class="fa fa-thermometer-quarter data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idetempU"><?=$Device["tempr"]; ?></span>°C
+										<div class="col-md-12">
+											<i class="fas fa-battery-full data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idebatU"><?=$Device["context"]["Data"]["batteryLevel"]["value"]; ?></span>% &nbsp;&nbsp;
+											<i class="fa fa-microchip data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idecpuU"><?=$Device["context"]["Data"]["cpuUsage"]["value"]; ?></span>% &nbsp;&nbsp;
+											<i class="zmdi zmdi-memory data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idememU"><?=$Device["context"]["Data"]["memoryUsage"]["value"]; ?></span>% &nbsp;&nbsp;
+											<i class="far fa-hdd data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idehddU"><?=$Device["context"]["Data"]["hddUsage"]["value"]; ?></span>% &nbsp;&nbsp;
+											<i class="fa fa-thermometer-quarter data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idetempU"><?=$Device["context"]["Data"]["temperature"]["value"]; ?></span>°C
 										</div>
 									</div>
 								</div>

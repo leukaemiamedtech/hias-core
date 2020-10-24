@@ -1,7 +1,7 @@
 var iotJumpWay = {
     client: null,
     connected: false,
-    host: "",
+    host: "YourHiasDomainName",
     port: 9001,
     useTLS: true,
     cleansession: true,
@@ -10,8 +10,8 @@ var iotJumpWay = {
         addr: ""
     },
     mqttOptions: {
-        lid: 0,
-        aid: 0,
+        lid: "",
+        aid: "",
         an: "",
         un: "",
         uc: ""
@@ -121,5 +121,5 @@ $(document).ready(function() {
     iotJumpWay.raise();
     setInterval(function() {
         iotJumpWay.getStats();
-    }, 5000);
+    }, 15000);
 });

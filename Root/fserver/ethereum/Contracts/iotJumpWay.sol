@@ -31,8 +31,8 @@ contract iotJumpWay {
 
 	function initiate()
 		public {
-			require(isHIAS());
-			require(setup == false);
+			require(isHIAS(), "Caller Not HIAS");
+			require(setup == false, "Setup is not false");
 			authorized[msg.sender] = true;
 			setup = true;
 		}
@@ -41,25 +41,26 @@ contract iotJumpWay {
 		public
 		view
 		returns (uint256) {
-			require(isHIAS());
+			require(isHIAS(), "Caller Not HIAS");
 			return address(this).balance;
 		}
 
 	function deposit(uint256 amount)
 		payable
 		public {
-			require(isHIAS());
+			require(isHIAS(), "Caller Not HIAS");
 			require(msg.value == amount);
 		}
 
 	function updateCompensation(uint amount)
 		public {
-			require(isHIAS());
+			require(isHIAS(), "Caller Not HIAS");
 			compensation = amount;
 		}
 
 	function compensate(address payable _address, uint256 amount)
 		private {
+			require(amount <= address(this).balance,"Not enough balance");
 			_address.transfer(amount);
 		}
 
@@ -74,27 +75,27 @@ contract iotJumpWay {
 		public
 		view
 		returns(bool) {
-			require(accessAllowed(msg.sender));
+			require(accessAllowed(msg.sender), "Access not allowed");
 			return hashMap[_identifier].exists == true;
 		}
 
 	function registerAuthorized(address _address)
 		public {
-			require(accessAllowed(msg.sender));
+			require(accessAllowed(msg.sender), "Access not allowed");
 			authorized[_address] = true;
 			compensate(msg.sender, compensation);
 		}
 
 	function deregisterAuthorized(address _address)
 		public {
-			require(accessAllowed(msg.sender));
+			require(accessAllowed(msg.sender), "Access not allowed");
 			delete authorized[_address];
 			compensate(msg.sender, compensation);
 		}
 
 	function registerHash(string memory dataId, bytes memory _dataHash, uint _time, uint _createdBy, string memory _identifier, address payable _address)
 		public {
-			require(accessAllowed(msg.sender));
+			require(accessAllowed(msg.sender), "Access not allowed");
 			dataHash memory newHashMap = dataHash(_dataHash, _time, _createdBy, _identifier, true);
 			hashMap[dataId] = newHashMap;
 			hashes++;
@@ -106,17 +107,9 @@ contract iotJumpWay {
 		public
 		view
 		returns(dataHash memory){
-			require(accessAllowed(msg.sender));
-			require(hashExists(_identifier));
+			require(accessAllowed(msg.sender), "Access not allowed");
+			require(hashExists(_identifier), "Hash does not exist");
 			return(hashMap[_identifier]);
-		}
-
-	function count()
-		public
-		view
-		returns (uint){
-			require(accessAllowed(msg.sender));
-			return hashes;
 		}
 
 }

@@ -1,7 +1,8 @@
 ######################################################################################################
 #
-# Organization:  Peter Moss Leukemia AI Research
+# Organization:  Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss
 # Repository:    HIAS: Hospital Intelligent Automation System
+# Project:       GeniSysAI
 #
 # Author:        Adam Milton-Barker (AdamMiltonBarker.com)
 # Contributors:

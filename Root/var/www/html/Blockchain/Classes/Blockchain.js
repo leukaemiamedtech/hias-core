@@ -229,7 +229,7 @@ var Blockchain = {
             });
     },
     updateConfig: function() {
-        $.post(window.location.href, $("#bc_config").serialize(), function(resp) {
+        $.post(window.location.href, $("#blockchain_update").serialize(), function(resp) {
             var resp = jQuery.parseJSON(resp);
             switch (resp.Response) {
                 case "OK":
@@ -270,7 +270,6 @@ var Blockchain = {
     },
     transfer: function() {
         $.post(window.location.href, $("#send").serialize(), function(resp) {
-            console.log(resp);
             var resp = jQuery.parseJSON(resp);
             switch (resp.Response) {
                 case "OK":

@@ -17,6 +17,77 @@ use Web3\Utils;
 			$this->contract = new Contract($this->web3->provider, $this->bcc["abi"]);
 			$this->icontract = new Contract($this->web3->provider, $this->bcc["iabi"]);
 			$this->checkBlockchainPermissions();
+			$this->cb = $this->getContextBrokerConf();
+		}
+
+		public function getContextBrokerConf()
+		{
+			$pdoQuery = $this->_GeniSys->_secCon->prepare("
+				SELECT *
+				FROM contextbroker
+			");
+			$pdoQuery->execute();
+			$response=$pdoQuery->fetch(PDO::FETCH_ASSOC);
+			$pdoQuery->closeCursor();
+			$pdoQuery = null;
+			return $response;
+		}
+
+		private function createContextHeaders()
+		{
+			$basicAuth = $_SESSION["GeniSysAI"]["User"] . ":" . $this->_GeniSys->_helpers->oDecrypt($_SESSION["GeniSysAI"]["Pass"]);
+			$basicAuth = base64_encode($basicAuth);
+
+			return [
+				"Content-Type: application/json",
+				'Authorization: Basic '. $basicAuth
+			];
+		}
+
+		private function contextBrokerRequest($method, $endpoint, $headers, $json)
+		{
+			$path = $this->_GeniSys->_helpers->oDecrypt($this->_GeniSys->_confs["domainString"]) . "/" . $this->cb["url"] . "/" . $endpoint;
+
+			if($method == "GET"):
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+				curl_setopt($ch, CURLOPT_HEADER, 1);
+				curl_setopt($ch, CURLOPT_URL, $path);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				$response = curl_exec($ch);
+				$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+				$header = substr($response, 0, $header_size);
+				$body = substr($response, $header_size);
+				curl_close($ch);
+			elseif($method == "POST"):
+				$ch = curl_init($path);
+				curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+				curl_setopt($ch, CURLOPT_HEADER, 1);
+				curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+				$response = curl_exec($ch);
+				$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+				$header = substr($response, 0, $header_size);
+				$body = substr($response, $header_size);
+				curl_close($ch);
+			elseif($method == "PATCH"):
+				$ch = curl_init($path);
+				curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+				curl_setopt($ch, CURLOPT_HEADER, 1);
+				curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+				$response = curl_exec($ch);
+				$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+				$header = substr($response, 0, $header_size);
+				$body = substr($response, $header_size);
+				curl_close($ch);
+			endif;
+
+			return $body;
 		}
 
 		public function getBlockchainConf()
@@ -188,212 +259,425 @@ use Web3\Utils;
 			return $txid;
 		}
 
-		public function getDevices()
-		{
-			$pdoQuery = $this->_GeniSys->_secCon->prepare("
-				SELECT emar.id,
-					emar.name,
-					emar.lid,
-					emar.zid,
-					emar.did,
-					device.name as dname,
-					device.status,
-					device.lt,
-					device.lg,
-					device.mqttu,
-					device.mqttp
-				FROM emar emar
-				INNER JOIN mqttld device
-				ON device.id = emar.did
-				ORDER BY id DESC
-			");
-			$pdoQuery->execute();
-			$response=$pdoQuery->fetchAll(PDO::FETCH_ASSOC);
-			$pdoQuery->closeCursor();
-			$pdoQuery = null;
-			return $response;
-		}
-
-		public function getDevice($id)
-		{
-			$pdoQuery = $this->_GeniSys->_secCon->prepare("
-				SELECT emar.id,
-					emar.name,
-					emar.lid,
-					emar.zid,
-					emar.did,
-					emar.ip,
-					emar.mac,
-					emar.sdir,
-					device.status,
-					device.lt,
-					device.lg,
-					device.tempr,
-					device.apub,
-					device.bcaddress,
-					device.hdd,
-					device.mem,
-					device.cpu,
-					device.mqttu,
-					device.mqttp,
-					emar.sport,
-					emar.sportf,
-					emar.sckport
-				FROM emar emar
-				INNER JOIN mqttld device
-				ON device.id = emar.did
-				WHERE emar.id = :id
-			");
-			$pdoQuery->execute([
-				":id" => $id
-			]);
-			$response=$pdoQuery->fetch(PDO::FETCH_ASSOC);
-			return $response;
-		}
-
-		public function createiDevice($params = [])
+		private function addAmqpUser($username, $key)
 		{
 			$query = $this->_GeniSys->_secCon->prepare("
-				INSERT INTO  mqttld  (
-					`lid`,
-					`zid`,
-					`name`,
-					`mqttu`,
-					`mqttp`,
-					`apub`,
-					`aprv`,
-					`time`
-				)  VALUES (
-					:lid,
-					:zid,
-					:name,
-					:mqttu,
-					:mqttp,
-					:apub,
-					:aprv,
-					:time
-				)
-			");
-			$query->execute([
-				':lid' => $params["lid"],
-				':zid' => $params["zid"],
-				':name' => $params["name"],
-				':mqttu' =>$this->_GeniSys->_helpers->oEncrypt($params["mqttu"]),
-				':mqttp' =>$this->_GeniSys->_helpers->oEncrypt($params["mqttp"]),
-				':apub' => $this->_GeniSys->_helpers->oEncrypt($params["apub"]),
-				':aprv' => $this->_GeniSys->_helpers->oEncrypt($params["aprv"]),
-				':time' => time()
-			]);
-			$did = $this->_GeniSys->_secCon->lastInsertId();
-
-			$query = $this->_GeniSys->_secCon->prepare("
-				INSERT INTO  mqttu  (
-					`lid`,
-					`zid`,
-					`did`,
-					`uname`,
+				INSERT INTO  amqpu  (
+					`username`,
 					`pw`
 				)  VALUES (
-					:lid,
-					:zid,
-					:did,
-					:uname,
+					:username,
 					:pw
 				)
 			");
 			$query->execute([
-				':lid' => $params["lid"],
-				':zid' => $params["zid"],
-				':did' => $did,
-				':uname' => $params["mqttu"],
-				':pw' => $params["mqttHash"]
+				':username' => $username,
+				':pw' => $this->_GeniSys->_helpers->oEncrypt($key)
 			]);
+			$amid = $this->_GeniSys->_secCon->lastInsertId();
+			return $amid;
+		}
 
+		private function addAmqpUserVh($uid, $vhost)
+		{
 			$query = $this->_GeniSys->_secCon->prepare("
-				INSERT INTO  mqttua  (
-					`lid`,
-					`zid`,
-					`did`,
-					`username`,
-					`topic`,
-					`rw`
+				INSERT INTO  amqpvh  (
+					`uid`,
+					`vhost`
 				)  VALUES (
-					:lid,
-					:zid,
-					:did,
-					:username,
-					:topic,
-					:rw
+					:uid,
+					:vhost
 				)
 			");
-			$query->execute(array(
-				':lid' => $params["lid"],
-				':zid' => $params["zid"],
-				':did' => $did,
-				':username' => $params["mqttu"],
-				':topic' => $params["lid"] . "/Device/" . $params["zid"] . "/" . $did . "#",
-				':rw' => 4
-			));
+			$query->execute([
+				':uid' => $uid,
+				':vhost' => $vhost
+			]);
+		}
 
+		private function addAmqpVhPerm($uid, $vhost, $rtype, $rname, $permission)
+		{
 			$query = $this->_GeniSys->_secCon->prepare("
-				UPDATE mqttl
-				SET devices = devices + 1
+				INSERT INTO  amqpvhr  (
+					`uid`,
+					`vhost`,
+					`rtype`,
+					`rname`,
+					`permission`
+				)  VALUES (
+					:uid,
+					:vhost,
+					:rtype,
+					:rname,
+					:permission
+				)
+			");
+			$query->execute([
+				':uid' => $uid,
+				':vhost' => $vhost,
+				':rtype' => $rtype,
+				':rname' => $rname,
+				':permission' => $permission
+			]);
+		}
+
+		private function addAmqpVhTopic($uid, $vhost, $rtype, $rname, $permission, $rkey)
+		{
+			$query = $this->_GeniSys->_secCon->prepare("
+				INSERT INTO  amqpvhrt  (
+					`uid`,
+					`vhost`,
+					`rtype`,
+					`rname`,
+					`permission`,
+					`rkey`
+				)  VALUES (
+					:uid,
+					:vhost,
+					:rtype,
+					:rname,
+					:permission,
+					:rkey
+				)
+			");
+			$query->execute([
+				':uid' => $uid,
+				':vhost' => $vhost,
+				':rtype' => $rtype,
+				':rname' => $rname,
+				':permission' => $permission,
+				':rkey' => $rkey
+			]);
+		}
+
+		public function checkLocation($lid)
+		{
+			$pdoQuery = $this->_GeniSys->_secCon->prepare("
+				SELECT id
+				FROM mqttl
 				WHERE id = :id
 			");
-			$query->execute(array(
-				':id'=>$params["lid"]
-			));
+			$pdoQuery->execute([
+				":id" => $lid
+			]);
+			$location=$pdoQuery->fetch(PDO::FETCH_ASSOC);
+			$pdoQuery->closeCursor();
+			$pdoQuery = null;
 
-			return $did;
+			if($location["id"]):
+				return True;
+			else:
+				return False;
+			endif;
 		}
+
+		public function getLocation($id, $attrs = Null)
+		{
+			$pdoQuery = $this->_GeniSys->_secCon->prepare("
+				SELECT *
+				FROM mqttl
+				WHERE id = :id
+			");
+			$pdoQuery->execute([
+				":id" => $id
+			]);
+			$location=$pdoQuery->fetch(PDO::FETCH_ASSOC);
+			$pdoQuery->closeCursor();
+			$pdoQuery = null;
+
+			if($attrs):
+				$attrs="&attrs=" . $attrs;
+			endif;
+
+			$location["context"] = json_decode($this->contextBrokerRequest("GET", $this->cb["entities_url"] . "/" . $location["pub"] . "?type=Location" . $attrs, $this->createContextHeaders(), []), true);
+			return $location;
+		}
+
+		public function checkZone($zid)
+		{
+			$pdoQuery = $this->_GeniSys->_secCon->prepare("
+				SELECT id
+				FROM mqttlz
+				WHERE id = :id
+			");
+			$pdoQuery->execute([
+				":id" => $zid
+			]);
+			$location=$pdoQuery->fetch(PDO::FETCH_ASSOC);
+			$pdoQuery->closeCursor();
+			$pdoQuery = null;
+
+			if($location["id"]):
+				return True;
+			else:
+				return False;
+			endif;
+		}
+
+		public function getZone($id, $attrs = Null)
+		{
+			$pdoQuery = $this->_GeniSys->_secCon->prepare("
+				SELECT *
+				FROM mqttlz
+				WHERE id = :id
+				ORDER BY id DESC
+			");
+			$pdoQuery->execute([
+				":id" => $id
+			]);
+			$zone=$pdoQuery->fetch(PDO::FETCH_ASSOC);
+			$pdoQuery->closeCursor();
+			$pdoQuery = null;
+
+			if($attrs):
+				$attrs="&attrs=" . $attrs;
+			endif;
+
+			$zone["context"] = json_decode($this->contextBrokerRequest("GET", $this->cb["entities_url"] . "/" . $zone["pub"] . "?type=Zone" . $attrs, $this->createContextHeaders(), []), true);
+			return $zone;
+		}
+
+		public function getDevices($limit = 0)
+		{
+			$limiter = "";
+			if($limit != 0):
+				$limiter = "&limit=" . $limit;
+			endif;
+
+			$devices = json_decode($this->contextBrokerRequest("GET", $this->cb["entities_url"] . "?type=Device&category=EMAR".$limiter, $this->createContextHeaders(), []), true);
+			return $devices;
+		}
+
+		public function getDevice($id, $attrs = Null)
+		{
+			$pdoQuery = $this->_GeniSys->_secCon->prepare("
+				SELECT *
+				FROM mqttld
+				WHERE id = :id
+				ORDER BY id DESC
+			");
+			$pdoQuery->execute([
+				":id" => $id
+			]);
+			$device=$pdoQuery->fetch(PDO::FETCH_ASSOC);
+			$pdoQuery->closeCursor();
+			$pdoQuery = null;
+
+			if($attrs):
+				$attrs="&attrs=" . $attrs;
+			endif;
+
+			$device["context"] = json_decode($this->contextBrokerRequest("GET", $this->cb["entities_url"] . "/" . $device["apub"] . "?type=Device" . $attrs, $this->createContextHeaders(), []), true);
+			return $device;
+		}
+
+		public function getThing($id, $attrs = Null)
+		{
+			$pdoQuery = $this->_GeniSys->_secCon->prepare("
+				SELECT *
+				FROM things
+				WHERE id = :id
+			");
+			$pdoQuery->execute([
+				":id" => $id
+			]);
+			$thing=$pdoQuery->fetch(PDO::FETCH_ASSOC);
+			$pdoQuery->closeCursor();
+			$pdoQuery = null;
+
+			if($attrs):
+				$attrs="&attrs=" . $attrs;
+			endif;
+
+			$thing["context"] = json_decode($this->contextBrokerRequest("GET", $this->cb["entities_url"] . "/" . $thing["pub"] . "?type=Thing" . $attrs, $this->createContextHeaders(), []), true);
+			return $thing;
+		}
+
+		public function getModel($id, $attrs = Null)
+		{
+			$pdoQuery = $this->_GeniSys->_secCon->prepare("
+				SELECT *
+				FROM models
+				WHERE id = :id
+				ORDER BY id DESC
+			");
+			$pdoQuery->execute([
+				":id" => $id
+			]);
+			$model=$pdoQuery->fetch(PDO::FETCH_ASSOC);
+			$pdoQuery->closeCursor();
+			$pdoQuery = null;
+
+			if($attrs):
+				$attrs="&attrs=" . $attrs;
+			endif;
+
+			$device["context"] = json_decode($this->contextBrokerRequest("GET", $this->cb["entities_url"] . "/" . $model["pub"] . "?type=Model" . $attrs, $this->createContextHeaders(), []), true);
+			return $device;
+		}
+
 		public function createDevice()
 		{
 			if(!filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT)):
 				return [
 					"Response"=> "Failed",
-					"Message" => "iotJumpWay location id is required"
+					"Message" => "Location ID is required"
 				];
 			endif;
+
+			if(!$this->checkLocation(filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT))):
+				return [
+					"Response"=> "Failed",
+					"Message" => "iotJumpWay location does not exist"
+				];
+			endif;
+
 			if(!filter_input(INPUT_POST, "zid", FILTER_SANITIZE_NUMBER_INT)):
 				return [
 					"Response"=> "Failed",
-					"Message" => "iotJumpWay zone id is required"
+					"Message" => "Zone ID is required"
 				];
 			endif;
+
+			if(!$this->checkZone(filter_input(INPUT_POST, "zid", FILTER_SANITIZE_NUMBER_INT))):
+				return [
+					"Response"=> "Failed",
+					"Message" => "iotJumpWay zone does not exist"
+				];
+			endif;
+
+			if(!filter_input(INPUT_POST, "category", FILTER_SANITIZE_STRING)):
+				return [
+					"Response"=> "Failed",
+					"Message" => "Category is required"
+				];
+			endif;
+
 			if(!filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING)):
 				return [
 					"Response"=> "Failed",
-					"Message" => "EMAR device name is required"
+					"Message" => "Name is required"
 				];
 			endif;
+
+			if(!filter_input(INPUT_POST, "description", FILTER_SANITIZE_STRING)):
+				return [
+					"Response"=> "Failed",
+					"Message" => "Name is required"
+				];
+			endif;
+
+			if(!filter_input(INPUT_POST, "coordinates", FILTER_SANITIZE_STRING)):
+				return [
+					"Response"=> "Failed",
+					"Message" => "Coordinates entity is required"
+				];
+			endif;
+
+			if(!filter_input(INPUT_POST, "deviceName", FILTER_SANITIZE_STRING)):
+				return [
+					"Response"=> "Failed",
+					"Message" => "Hardware device name is required"
+				];
+			endif;
+
+			if(!filter_input(INPUT_POST, "deviceManufacturer", FILTER_SANITIZE_STRING)):
+				return [
+					"Response"=> "Failed",
+					"Message" => "Hardware device manufacturer is required"
+				];
+			endif;
+
+			if(!filter_input(INPUT_POST, "deviceModel", FILTER_SANITIZE_STRING)):
+				return [
+					"Response"=> "Failed",
+					"Message" => "Hardware device model is required"
+				];
+			endif;
+
+			if(!filter_input(INPUT_POST, "osName", FILTER_SANITIZE_STRING)):
+				return [
+					"Response"=> "Failed",
+					"Message" => "Operating system name is required"
+				];
+			endif;
+
+			if(!filter_input(INPUT_POST, "osManufacturer", FILTER_SANITIZE_STRING)):
+				return [
+					"Response"=> "Failed",
+					"Message" => "Operating system manufacturer is required"
+				];
+			endif;
+
+			if(!filter_input(INPUT_POST, "osVersion", FILTER_SANITIZE_STRING)):
+				return [
+					"Response"=> "Failed",
+					"Message" => "Operating system version is required"
+				];
+			endif;
+
+			if(!filter_input(INPUT_POST, "agent", FILTER_SANITIZE_STRING)):
+				return [
+					"Response"=> "Failed",
+					"Message" => "IoT Agent is required"
+				];
+			endif;
+
 			if(!filter_input(INPUT_POST, "ip", FILTER_SANITIZE_STRING)):
 				return [
 					"Response"=> "Failed",
-					"Message" => "Device IP is required"
+					"Message" => "IP is required"
 				];
 			endif;
+
 			if(!filter_input(INPUT_POST, "mac", FILTER_SANITIZE_STRING)):
 				return [
 					"Response"=> "Failed",
-					"Message" => "Device MAC is required"
+					"Message" => "MAC is required"
 				];
 			endif;
+
+			if(!isSet($_POST["protocols"])):
+				return [
+					"Response"=> "Failed",
+					"Message" => "At least one M2M protocol is required"
+				];
+			endif;
+
 			if(!filter_input(INPUT_POST, "sport", FILTER_SANITIZE_STRING)):
 				return [
 					"Response"=> "Failed",
 					"Message" => "Device stream port is required"
 				];
 			endif;
+
 			if(!filter_input(INPUT_POST, "sportf", FILTER_SANITIZE_STRING)):
 				return [
 					"Response"=> "Failed",
 					"Message" => "Device stream file is required"
 				];
 			endif;
+
+			if(!filter_input(INPUT_POST, "strdir", FILTER_SANITIZE_STRING)):
+				return [
+					"Response"=> "Failed",
+					"Message" => "Device stream directory is required"
+				];
+			endif;
+
 			if(!filter_input(INPUT_POST, "sckport", FILTER_SANITIZE_STRING)):
 				return [
 					"Response"=> "Failed",
 					"Message" => "Device socket port is required"
+				];
+			endif;
+
+			$unlocked =  $this->unlockBlockchainAccount();
+
+			if($unlocked == "FAILED"):
+				return [
+					"Response"=> "Failed",
+					"Message" => "Unlocking HIAS Blockhain Account Failed!"
 				];
 			endif;
 
@@ -405,12 +689,80 @@ use Web3\Utils;
 			$privKey = $this->_GeniSys->_helpers->generateKey(32);
 			$privKeyHash = $this->_GeniSys->_helpers->createPasswordHash($privKey);
 
+			$amqppubKey = $this->_GeniSys->_helpers->generate_uuid();
+			$amqpprvKey = $this->_GeniSys->_helpers->generateKey(32);
+			$amqpKeyHash = $this->_GeniSys->_helpers->createPasswordHash($amqpprvKey);
+
 			$bcPass = $this->_GeniSys->_helpers->password();
 
-			$lid = filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT);
-			$zid = filter_input(INPUT_POST, "zid", FILTER_SANITIZE_NUMBER_INT);
+			$lid = filter_input(INPUT_POST, 'lid', FILTER_SANITIZE_NUMBER_INT);
+			$location = $this->getLocation($lid);
+
+			$zid = filter_input(INPUT_POST, 'zid', FILTER_SANITIZE_NUMBER_INT);
+			$zone = $this->getZone($zid);
+
 			$ip = filter_input(INPUT_POST, "ip", FILTER_SANITIZE_STRING);
 			$mac = filter_input(INPUT_POST, "mac", FILTER_SANITIZE_STRING);
+			$bluetooth = filter_input(INPUT_POST, "bluetooth", FILTER_SANITIZE_STRING);
+			$name = filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING);
+			$coords = explode(",", filter_input(INPUT_POST, "coordinates", FILTER_SANITIZE_STRING));
+
+			$protocols = [];
+			foreach($_POST["protocols"] AS $key => $value):
+				$protocols[] = $value;
+			endforeach;
+
+			$models = [];
+			if(isSet($_POST["ai"])):
+				foreach($_POST["ai"] AS $key => $value):
+					$model = $this->getModel($value)["context"]["Data"];
+					$mname = $model["name"]["value"];
+					unset($model["id"]);
+					unset($model["type"]);
+					unset($model["mid"]);
+					unset($model["name"]);
+					unset($model["description"]);
+					unset($model["network"]);
+					unset($model["language"]);
+					unset($model["framework"]);
+					unset($model["toolkit"]);
+					unset($model["dateCreated"]);
+					unset($model["dateModified"]);
+					$models[$mname] = $model;
+				endforeach;
+			endif;
+
+			$sensors = [];
+			if(isSet($_POST["sensors"])):
+				foreach($_POST["sensors"] AS $key => $value):
+					$sensor = $this->getThing($value)["context"]["Data"];
+					unset($sensor["id"]);
+					unset($sensor["type"]);
+					unset($sensor["category"]);
+					unset($sensor["description"]);
+					unset($sensor["thing"]);
+					unset($sensor["properties"]["image"]);
+					unset($sensor["dateCreated"]);
+					unset($sensor["dateModified"]);
+					$sensors[] = $sensor;
+				endforeach;
+			endif;
+
+			$actuators = [];
+			if(isSet($_POST["actuators"])):
+				foreach($_POST["actuators"] AS $key => $value):
+					$actuator = $this->getThing($value)["context"]["Data"];
+					unset($actuator["id"]);
+					unset($actuator["type"]);
+					unset($actuator["category"]);
+					unset($actuator["description"]);
+					unset($actuator["thing"]);
+					unset($actuator["properties"]["image"]);
+					unset($actuator["dateCreated"]);
+					unset($actuator["dateModeified"]);
+					$actuators[] = $actuator;
+				endforeach;
+			endif;
 
 			$newBcUser = $this->createBlockchainUser($bcPass);
 
@@ -423,199 +775,290 @@ use Web3\Utils;
 
 			$query = $this->_GeniSys->_secCon->prepare("
 				INSERT INTO  mqttld  (
-					`lid`,
-					`zid`,
-					`name`,
-					`mqttu`,
-					`mqttp`,
-					`bcaddress`,
-					`bcpw`,
-					`apub`,
-					`aprv`,
-					`ip`,
-					`mac`,
-					`lt`,
-					`lg`,
-					`time`
+					`id`
 				)  VALUES (
-					:lid,
-					:zid,
-					:name,
-					:mqttu,
-					:mqttp,
-					:bcaddress,
-					:bcpw,
-					:apub,
-					:aprv,
-					:ip,
-					:mac,
-					:lt,
-					:lg,
-					:time
+					:id
 				)
 			");
 			$query->execute([
-				':lid' => $lid,
-				':zid' => $zid,
-				':name' => filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING),
-				':mqttu' =>$this->_GeniSys->_helpers->oEncrypt($mqttUser),
-				':mqttp' =>$this->_GeniSys->_helpers->oEncrypt($mqttPass),
-				':bcaddress' => $this->_GeniSys->_helpers->oEncrypt($newBcUser),
-				':bcpw' => $this->_GeniSys->_helpers->oEncrypt($bcPass),
-				':apub' => $pubKey,
-				':aprv' => $this->_GeniSys->_helpers->oEncrypt($privKeyHash),
-				':ip' => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "ip", FILTER_SANITIZE_STRING)),
-				':mac' => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "mac", FILTER_SANITIZE_STRING)),
-				':lt' => "",
-				':lg' => "",
-				':time' => time()
+				':id' => 0
 			]);
 			$did = $this->_GeniSys->_secCon->lastInsertId();
 
-			$query = $this->_GeniSys->_secCon->prepare("
-				INSERT INTO  mqttu  (
-					`lid`,
-					`zid`,
-					`did`,
-					`uname`,
-					`pw`
-				)  VALUES (
-					:lid,
-					:zid,
-					:did,
-					:uname,
-					:pw
-				)
-			");
-			$query->execute([
-				':lid' => $lid,
-				':zid' => $zid,
-				':did' => $did,
-				':uname' => $mqttUser,
-				':pw' => $mqttHash
-			]);
+			$data = [
+				"id" => $pubKey,
+				"type" => "Device",
+				"category" => [
+					"value" => [filter_input(INPUT_POST, "category", FILTER_SANITIZE_STRING)]
+				],
+				"name" => [
+					"value" => $name
+				],
+				"description" => [
+					"value" => filter_input(INPUT_POST, "description", FILTER_SANITIZE_STRING)
+				],
+				"lid" => [
+					"value" => $lid,
+					"entity" => $location["context"]["Data"]["id"]
+				],
+				"zid" => [
+					"value" => $zid,
+					"entity" => $zone["context"]["Data"]["id"]
+				],
+				"did" => [
+					"value" => $did
+				],
+				"location" => [
+					"type" => "geo:json",
+					"value" => [
+						"type" => "Point",
+						"coordinates" => [floatval($coords[0]), floatval($coords[1])]
+					]
+				],
+				"agent" => [
+					"url" => filter_input(INPUT_POST, "agent", FILTER_SANITIZE_STRING)
+				],
+				"device" => [
+					"type" => "EMAR",
+					"name" => filter_input(INPUT_POST, "deviceName", FILTER_SANITIZE_STRING),
+					"manufacturer" => filter_input(INPUT_POST, "deviceManufacturer", FILTER_SANITIZE_STRING),
+					"model" => filter_input(INPUT_POST, "deviceModel", FILTER_SANITIZE_STRING)
+				],
+				"proxy" => [
+					"endpoint" => filter_input(INPUT_POST, "strdir", FILTER_SANITIZE_STRING)
+				],
+				"stream" => [
+					"port" => filter_input(INPUT_POST, "sport", FILTER_SANITIZE_STRING),
+					"file" => filter_input(INPUT_POST, "sportf", FILTER_SANITIZE_STRING)
+				],
+				"socket" => [
+					"port" => filter_input(INPUT_POST, "sckport", FILTER_SANITIZE_STRING)
+				],
+				"os" => [
+					"name" => filter_input(INPUT_POST, "osName", FILTER_SANITIZE_STRING),
+					"manufacturer" => filter_input(INPUT_POST, "osManufacturer", FILTER_SANITIZE_STRING),
+					"version" => filter_input(INPUT_POST, "osVersion", FILTER_SANITIZE_STRING)
+				],
+				"protocols" => $protocols,
+				"status" => [
+					"value" => "OFFLINE",
+					"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+				],
+				"keys" => [
+					"public" => $pubKey,
+					"private" => $this->_GeniSys->_helpers->oEncrypt($privKeyHash),
+					"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+				],
+				"blockchain" => [
+					"address" => $newBcUser,
+					"password" => $this->_GeniSys->_helpers->oEncrypt($bcPass)
+				],
+				"mqtt" => [
+					"username" => $this->_GeniSys->_helpers->oEncrypt($mqttUser),
+					"password" => $this->_GeniSys->_helpers->oEncrypt($mqttPass),
+					"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+				],
+				"coap" => [
+					"username" => "",
+					"password" => ""
+				],
+				"amqp" => [
+					"username" => $this->_GeniSys->_helpers->oEncrypt($amqppubKey),
+					"password" => $this->_GeniSys->_helpers->oEncrypt($amqpprvKey),
+					"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+				],
+				"batteryLevel" => [
+					"value" => 0.00
+				],
+				"cpuUsage" => [
+					"value" => 0.00
+				],
+				"memoryUsage" => [
+					"value" => 0.00
+				],
+				"hddUsage" => [
+					"value" => 0.00
+				],
+				"temperature" => [
+					"value" => 0.00
+				],
+				"ip" => [
+					"value" => $this->_GeniSys->_helpers->oEncrypt($ip),
+					"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+				],
+				"mac" => [
+					"value" => $this->_GeniSys->_helpers->oEncrypt($mac),
+					"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+				],
+				"bluetooth" => [
+					"address" => $bluetooth ? $this->_GeniSys->_helpers->oEncrypt($bluetooth) : "",
+					"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+				],
+				"ai" => $models,
+				"sensors" => $sensors,
+				"actuators" => $actuators,
+				"dateCreated" => [
+					"type" => "DateTime",
+					"value" => date('Y-m-d\TH:i:s.Z\Z', time())
+				],
+				"dateFirstUsed" => [
+					"type" => "DateTime",
+					"value" => ""
+				],
+				"dateModified" => [
+					"type" => "DateTime",
+					"value" => date('Y-m-d\TH:i:s.Z\Z', time())
+				]
+			];
 
-			$query = $this->_GeniSys->_secCon->prepare("
-				INSERT INTO  mqttua  (
-					`lid`,
-					`zid`,
-					`did`,
-					`username`,
-					`topic`,
-					`rw`
-				)  VALUES (
-					:lid,
-					:zid,
-					:did,
-					:username,
-					:topic,
-					:rw
-				)
-			");
-			$query->execute(array(
-				':lid' => $lid,
-				':zid' => $zid,
-				':did' => $did,
-				':username' => $mqttUser,
-				':topic' => $lid."/Devices/#",
-				':rw' => 4
-			));
+			$response = json_decode($this->contextBrokerRequest("POST", $this->cb["entities_url"] . "?type=Device", $this->createContextHeaders(), json_encode($data)), true);
 
-			$query = $this->_GeniSys->_secCon->prepare("
-				UPDATE mqttl
-				SET devices = devices + 1
-				WHERE id = :id
-			");
-			$query->execute(array(
-				':id'=>$lid
-			));
+			if($response["Response"]=="OK"):
 
-			$unlocked =  $this->unlockBlockchainAccount();
+				$query = $this->_GeniSys->_secCon->prepare("
+					UPDATE mqttld
+					SET apub = :apub
+					WHERE id = :id
+				");
+				$query->execute(array(
+					':apub'=> $response["Entity"]["id"],
+					':id'=> $did
+				));
 
-			if($unlocked == "FAILED"):
+				$query = $this->_GeniSys->_secCon->prepare("
+					INSERT INTO  mqttu  (
+						`lid`,
+						`zid`,
+						`did`,
+						`uname`,
+						`pw`
+					)  VALUES (
+						:lid,
+						:zid,
+						:did,
+						:uname,
+						:pw
+					)
+				");
+				$query->execute([
+					':lid' => $lid,
+					':zid' => $zid,
+					':did' => $did,
+					':uname' => $mqttUser,
+					':pw' => $mqttHash
+				]);
+
+				$query = $this->_GeniSys->_secCon->prepare("
+					INSERT INTO  mqttua  (
+						`lid`,
+						`zid`,
+						`did`,
+						`username`,
+						`topic`,
+						`rw`
+					)  VALUES (
+						:lid,
+						:zid,
+						:did,
+						:username,
+						:topic,
+						:rw
+					)
+				");
+				$query->execute(array(
+					':lid' => $lid,
+					':zid' => $zid,
+					':did' => $did,
+					':username' => $mqttUser,
+					':topic' => $location["context"]["Data"]["id"] . "/Devices/" . $zone["context"]["Data"]["id"] . "/" . $pubKey . "/#",
+					':rw' => 4
+				));
+
+				$amid = $this->addAmqpUser($amqppubKey, $amqpKeyHash);
+				$this->addAmqpUserVh($amid, "iotJumpWay");
+				$this->addAmqpVhPerm($amid, "iotJumpWay", "exchange", "Core", "read");
+				$this->addAmqpVhPerm($amid, "iotJumpWay", "exchange", "Core", "write");
+				$this->addAmqpVhPerm($amid, "iotJumpWay", "queue", "Life", "read");
+				$this->addAmqpVhPerm($amid, "iotJumpWay", "queue", "Life", "write");
+				$this->addAmqpVhPerm($amid, "iotJumpWay", "queue", "Statuses", "read");
+				$this->addAmqpVhPerm($amid, "iotJumpWay", "queue", "Statuses", "write");
+				$this->addAmqpVhTopic($amid, "iotJumpWay", "topic", "Core", "read", "Life");
+				$this->addAmqpVhTopic($amid, "iotJumpWay", "topic", "Core", "write", "Life");
+				$this->addAmqpVhTopic($amid, "iotJumpWay", "topic", "Core", "read", "Statuses");
+				$this->addAmqpVhTopic($amid, "iotJumpWay", "topic", "Core", "write", "Statuses");
+
+				$query = $this->_GeniSys->_secCon->prepare("
+					INSERT INTO  tassai  (
+						`pub`
+					)  VALUES (
+						:pub
+					)
+				");
+				$query->execute([
+					':pub' => $pubKey
+				]);
+
+				$hash = "";
+				$msg = "";
+				$actionMsg = "";
+				$balanceMessage = "";
+				$this->contract->at($this->_GeniSys->_helpers->oDecrypt($this->bcc["contract"]))->send("registerDevice", $pubKey, $newBcUser, $lid, $zid, $did, $name, $_SESSION["GeniSysAI"]["Uid"], time(), ["from" => $_SESSION["GeniSysAI"]["BC"]["BCUser"]], function ($err, $resp) use (&$hash, &$msg) {
+					if ($err !== null) {
+						$hash = "FAILED";
+						$msg = $err;
+						return;
+					}
+					$hash = $resp;
+				});
+
+				if($hash == "FAILED"):
+					$actionMsg = " HIAS Blockchain registerDevice failed!\n" . $msg;
+				else:
+					$txid = $this->storeBlockchainTransaction("Register Device", $hash, $did);
+					$this->storeUserHistory("Register Device", $txid, $lid, $zid, $did);
+					$balance = $this->getBlockchainBalance();
+					$actionMsg = " HIAS Blockchain registerDevice OK!\n";
+					$balanceMessage = " You were rewarded for this action! Your balance is now: " . $balance . " HIAS Ether!";
+				endif;
+
+				$this->icontract->at($this->_GeniSys->_helpers->oDecrypt($this->bcc["icontract"]))->send("registerAuthorized", $newBcUser, ["from" => $_SESSION["GeniSysAI"]["BC"]["BCUser"]], function ($err, $resp) use (&$hash, &$msg) {
+					if ($err !== null) {
+						$hash = "FAILED";
+						$msg = $err;
+						return;
+					}
+					$hash = $resp;
+				});
+
+				if($hash == "FAILED"):
+					$actionMsg .= " HIAS Blockchain registerAuthorized failed! " . $msg;
+				else:
+					$txid = $this->storeBlockchainTransaction("iotJumpWay Register Authorized", $hash, $did);
+					$this->storeUserHistory("Register Authorized", $txid, $lid, $zid, $did);
+					$balance = $this->getBlockchainBalance();
+					$actionMsg .= " HIAS Blockchain registerAuthorized OK!\n";
+					$balanceMessage = " You were rewarded for this action! Your balance is now: " . $balance . " HIAS Ether!";
+				endif;
+
 				return [
-					"Response"=> "Failed",
-					"Message" => "Unlocking HIAS Blockhain Account Failed!"
+					"Response"=> "OK",
+					"Message" => "Device created!" . $actionMsg . $balanceMessage,
+					"LID" => filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT),
+					"ZID" => filter_input(INPUT_POST, "zid", FILTER_SANITIZE_NUMBER_INT),
+					"DID" => $did,
+					"MU" => $mqttUser,
+					"MP" => $mqttPass,
+					"BU" => $newBcUser,
+					"BP" => $bcPass,
+					"AppID" => $pubKey,
+					"AppKey" => $privKey
+				];
+			else:
+				return [
+					"Response"=> "FAILED",
+					"Message" => "Device creating failed"
 				];
 			endif;
-
-			$hash = "";
-			$msg = "";
-			$actionMsg = "";
-			$balanceMessage = "";
-			$this->contract->at($this->_GeniSys->_helpers->oDecrypt($this->bcc["contract"]))->send("registerDevice", $pubKey, $newBcUser, $lid, $zid, $did, filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING), $_SESSION["GeniSysAI"]["Uid"], time(), ["from" => $_SESSION["GeniSysAI"]["BC"]["BCUser"]], function ($err, $resp) use (&$hash, &$msg) {
-				if ($err !== null) {
-					$hash = "FAILED";
-					$msg = $err;
-					return;
-				}
-				$hash = $resp;
-			});
-
-			$pdoQuery = $this->_GeniSys->_secCon->prepare("
-				INSERT INTO  emar  (
-					`name`,
-					`lid`,
-					`zid`,
-					`did`,
-					`ip`,
-					`mac`,
-					`sdir`,
-					`sport`,
-					`sportf`,
-					`sckport`
-				)  VALUES (
-					:name,
-					:lid,
-					:zid,
-					:did,
-					:ip,
-					:mac,
-					:sdir,
-					:sport,
-					:sportf,
-					:sckport
-				)
-			");
-			$pdoQuery->execute([
-				":name" => filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING),
-				":lid" => $lid,
-				":zid" => $zid,
-				":did" => $did,
-				":ip" => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "ip", FILTER_SANITIZE_STRING)),
-				":mac" => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "mac", FILTER_SANITIZE_STRING)),
-				":sdir" => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "sdir", FILTER_SANITIZE_STRING)),
-				":sport" => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "sport", FILTER_SANITIZE_STRING)),
-				":sportf" => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "sportf", FILTER_SANITIZE_STRING)),
-				":sckport" => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "sckport", FILTER_SANITIZE_STRING))
-			]);
-			$eid = $this->_GeniSys->_secCon->lastInsertId();
-			$pdoQuery->closeCursor();
-			$pdoQuery = null;
-
-			if($hash == "FAILED"):
-				$actionMsg = " HIAS Blockchain registerDevice failed! ";
-			else:
-				$txid = $this->storeBlockchainTransaction("Register EMAR Device", $hash, $did);
-				$this->storeUserHistory("Register EMAR Device", $txid, $lid, $zid, $did);
-				$balance = $this->getBlockchainBalance();
-				$balanceMessage = " You were rewarded for this action! Your balance is now: " . $balance . " HIAS Ether!";
-			endif;
-
-			return [
-				"Response"=> "OK",
-				"Message" => "Device created!" . $actionMsg . $balanceMessage,
-				"LID" => $lid,
-				"ZID" => $zid,
-				"EDID" => $eid,
-				"DID" => $did,
-				"MU" => $mqttUser,
-				"MP" => $mqttPass,
-				"BU" => $newBcUser,
-				"BP" => $bcPass,
-				"AppID" => $pubKey,
-				"AppKey" => $privKey
-			];
 		}
 
 		public function updateDevice()
@@ -623,105 +1066,163 @@ use Web3\Utils;
 			if(!filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT)):
 				return [
 					"Response"=> "Failed",
-					"Message" => "iotJumpWay location id is required"
+					"Message" => "Location ID is required"
 				];
 			endif;
+
+			if(!$this->checkLocation(filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT))):
+				return [
+					"Response"=> "Failed",
+					"Message" => "iotJumpWay location does not exist"
+				];
+			endif;
+
 			if(!filter_input(INPUT_POST, "zid", FILTER_SANITIZE_NUMBER_INT)):
 				return [
 					"Response"=> "Failed",
-					"Message" => "iotJumpWay zone id is required"
+					"Message" => "Zone ID is required"
 				];
 			endif;
-			if(!filter_input(INPUT_POST, "did", FILTER_SANITIZE_NUMBER_INT)):
+
+			if(!$this->checkZone(filter_input(INPUT_POST, "zid", FILTER_SANITIZE_NUMBER_INT))):
 				return [
 					"Response"=> "Failed",
-					"Message" => "iotJumpWay device id is required"
+					"Message" => "iotJumpWay zone does not exist"
 				];
 			endif;
-			if(!filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT)):
+
+			if(!filter_input(INPUT_POST, "category", FILTER_SANITIZE_STRING)):
 				return [
 					"Response"=> "Failed",
-					"Message" => "ID is required"
+					"Message" => "Category is required"
 				];
 			endif;
+
 			if(!filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING)):
 				return [
 					"Response"=> "Failed",
-					"Message" => "EMAR device name is required"
+					"Message" => "Name is required"
 				];
 			endif;
+
+			if(!filter_input(INPUT_POST, "description", FILTER_SANITIZE_STRING)):
+				return [
+					"Response"=> "Failed",
+					"Message" => "Description is required"
+				];
+			endif;
+
+			if(!filter_input(INPUT_POST, "coordinates", FILTER_SANITIZE_STRING)):
+				return [
+					"Response"=> "Failed",
+					"Message" => "Coordinates entity is required"
+				];
+			endif;
+
+			if(!filter_input(INPUT_POST, "deviceName", FILTER_SANITIZE_STRING)):
+				return [
+					"Response"=> "Failed",
+					"Message" => "Hardware device name is required"
+				];
+			endif;
+
+			if(!filter_input(INPUT_POST, "deviceManufacturer", FILTER_SANITIZE_STRING)):
+				return [
+					"Response"=> "Failed",
+					"Message" => "Hardware device manufacturer is required"
+				];
+			endif;
+
+			if(!filter_input(INPUT_POST, "deviceModel", FILTER_SANITIZE_STRING)):
+				return [
+					"Response"=> "Failed",
+					"Message" => "Hardware device model is required"
+				];
+			endif;
+
+			if(!filter_input(INPUT_POST, "osName", FILTER_SANITIZE_STRING)):
+				return [
+					"Response"=> "Failed",
+					"Message" => "Operating system name is required"
+				];
+			endif;
+
+			if(!filter_input(INPUT_POST, "osManufacturer", FILTER_SANITIZE_STRING)):
+				return [
+					"Response"=> "Failed",
+					"Message" => "Operating system manufacturer is required"
+				];
+			endif;
+
+			if(!filter_input(INPUT_POST, "osVersion", FILTER_SANITIZE_STRING)):
+				return [
+					"Response"=> "Failed",
+					"Message" => "Operating system version is required"
+				];
+			endif;
+
+			if(!filter_input(INPUT_POST, "osVersion", FILTER_SANITIZE_STRING)):
+				return [
+					"Response"=> "Failed",
+					"Message" => "Operating system version is required"
+				];
+			endif;
+
+			if(!filter_input(INPUT_POST, "agent", FILTER_SANITIZE_STRING)):
+				return [
+					"Response"=> "Failed",
+					"Message" => "IoT Agent is required"
+				];
+			endif;
+
 			if(!filter_input(INPUT_POST, "ip", FILTER_SANITIZE_STRING)):
 				return [
 					"Response"=> "Failed",
-					"Message" => "Device IP is required"
+					"Message" => "IP is required"
 				];
 			endif;
+
 			if(!filter_input(INPUT_POST, "mac", FILTER_SANITIZE_STRING)):
 				return [
 					"Response"=> "Failed",
-					"Message" => "Device MAC is required"
+					"Message" => "MAC is required"
 				];
 			endif;
+
+			if(!isSet($_POST["protocols"])):
+				return [
+					"Response"=> "Failed",
+					"Message" => "At least one M2M protocol is required"
+				];
+			endif;
+
 			if(!filter_input(INPUT_POST, "sport", FILTER_SANITIZE_STRING)):
 				return [
 					"Response"=> "Failed",
-					"Message" => "Stream port is required"
+					"Message" => "Device stream port is required"
 				];
 			endif;
-			if(!filter_input(INPUT_POST, "sdir", FILTER_SANITIZE_STRING)):
-				return [
-					"Response"=> "Failed",
-					"Message" => "Stream directory is required"
-				];
-			endif;
+
 			if(!filter_input(INPUT_POST, "sportf", FILTER_SANITIZE_STRING)):
 				return [
 					"Response"=> "Failed",
-					"Message" => "Stream file is required"
+					"Message" => "Device stream file is required"
 				];
 			endif;
+
+			if(!filter_input(INPUT_POST, "strdir", FILTER_SANITIZE_STRING)):
+				return [
+					"Response"=> "Failed",
+					"Message" => "Device stream directory is required"
+				];
+			endif;
+
 			if(!filter_input(INPUT_POST, "sckport", FILTER_SANITIZE_STRING)):
 				return [
 					"Response"=> "Failed",
-					"Message" => "Socket port is required"
+					"Message" => "Device socket port is required"
 				];
 			endif;
-
-			$lid = filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT);
-			$zid = filter_input(INPUT_POST, "zid", FILTER_SANITIZE_NUMBER_INT);
-			$did = filter_input(INPUT_POST, "did", FILTER_SANITIZE_NUMBER_INT);
-			$ip = filter_input(INPUT_POST, "ip", FILTER_SANITIZE_STRING);
-			$mac = filter_input(INPUT_POST, "mac", FILTER_SANITIZE_STRING);
-
-			$pdoQuery = $this->_GeniSys->_secCon->prepare("
-				UPDATE emar
-				SET name = :name,
-					lid = :lid,
-					zid = :zid,
-					did = :did,
-					ip = :ip,
-					mac = :mac,
-					sport = :sport,
-					sdir = :sdir,
-					sportf = :sportf,
-					sckport = :sckport
-				WHERE id = :id
-			");
-			$pdoQuery->execute([
-				":name" => filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING),
-				":lid" => $lid,
-				":zid" => $zid,
-				":did" => $did,
-				":ip" => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "ip", FILTER_SANITIZE_STRING)),
-				":mac" => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "mac", FILTER_SANITIZE_STRING)),
-				":sport" => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "sport", FILTER_SANITIZE_STRING)),
-				":sdir" => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "sdir", FILTER_SANITIZE_STRING)),
-				":sportf" => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "sportf", FILTER_SANITIZE_STRING)),
-				":sckport" => $this->_GeniSys->_helpers->oEncrypt(filter_input(INPUT_POST, "sckport", FILTER_SANITIZE_STRING)),
-				":id" => filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT)
-			]);
-			$pdoQuery->closeCursor();
-			$pdoQuery = null;
 
 			$unlocked =  $this->unlockBlockchainAccount();
 
@@ -732,162 +1233,370 @@ use Web3\Utils;
 				];
 			endif;
 
-			$hash = "";
-			$msg = "";
-			$this->contract->at($this->_GeniSys->_helpers->oDecrypt($this->bcc["contract"]))->send("updateDevice", filter_input(INPUT_POST, "identifier", FILTER_SANITIZE_STRING), "Device", $lid, $zid, $did, $name, filter_input(INPUT_POST, "status", FILTER_SANITIZE_STRING), time(), ["from" => $_SESSION["GeniSysAI"]["BC"]["BCUser"]], function ($err, $resp) use (&$hash, &$msg) {
-				if ($err !== null) {
-					$hash = "FAILED";
-					$msg = $err;
-					return;
-				}
-				$hash = $resp;
-			});
+			$ip = filter_input(INPUT_POST, "ip", FILTER_SANITIZE_STRING);
+			$mac = filter_input(INPUT_POST, "mac", FILTER_SANITIZE_STRING);
+			$bluetooth = filter_input(INPUT_POST, "bluetooth", FILTER_SANITIZE_STRING);
+			$name = filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING);
+			$coords = explode(",", filter_input(INPUT_POST, "coordinates", FILTER_SANITIZE_STRING));
 
-			$balance = "";
-			$balanceMessage = "";
-			$actionMsg = "";
-			if($hash == "FAILED"):
-				$actionMsg = " HIAS Blockchain updateDevice failed! " . $msg;
-			else:
-				$txid = $this->storeBlockchainTransaction("Update EMAR Device", $hash, $did);
-				$this->storeUserHistory("Updated EMAR Device", $txid, $lid, $zid, $did);
-				$balance = $this->getBlockchainBalance();
-				$balanceMessage = " You were rewarded for this action! Your balance is now: " . $balance . " HIAS Ether!";
+			$did = filter_input(INPUT_GET, 'device', FILTER_SANITIZE_NUMBER_INT);
+			$device = $this->getDevice($did);
+
+			$lid = filter_input(INPUT_POST, 'lid', FILTER_SANITIZE_NUMBER_INT);
+			$location = $this->getLocation($lid);
+
+			$zid = filter_input(INPUT_POST, 'zid', FILTER_SANITIZE_NUMBER_INT);
+			$zone = $this->getZone($zid);
+
+			$protocols = [];
+			foreach($_POST["protocols"] AS $key => $value):
+				$protocols[] = $value;
+			endforeach;
+
+			$models = [];
+			if(isSet($_POST["ai"])):
+				foreach($_POST["ai"] AS $key => $value):
+					$model = $this->getModel($value)["context"]["Data"];
+					$mname = $model["name"]["value"];
+					unset($model["id"]);
+					unset($model["type"]);
+					unset($model["mid"]);
+					unset($model["name"]);
+					unset($model["description"]);
+					unset($model["network"]);
+					unset($model["language"]);
+					unset($model["framework"]);
+					unset($model["toolkit"]);
+					unset($model["dateCreated"]);
+					unset($model["dateModified"]);
+					$models[$mname] = $model;
+				endforeach;
 			endif;
 
-			return [
-				"Response"=> "OK",
-				"Message" => "Device updated!" . $actionMsg . $balanceMessage
+			$sensors = [];
+			if(isSet($_POST["sensors"])):
+				foreach($_POST["sensors"] AS $key => $value):
+					$sensor = $this->getThing($value)["context"]["Data"];
+					unset($sensor["id"]);
+					unset($sensor["type"]);
+					unset($sensor["category"]);
+					unset($sensor["description"]);
+					unset($sensor["thing"]);
+					unset($sensor["properties"]["image"]);
+					unset($sensor["dateCreated"]);
+					unset($sensor["dateModified"]);
+					$sensors[] = $sensor;
+				endforeach;
+			endif;
+
+			$actuators = [];
+			if(isSet($_POST["actuators"])):
+				foreach($_POST["actuators"] AS $key => $value):
+					$actuator = $this->getThing($value)["context"]["Data"];
+					unset($actuator["id"]);
+					unset($actuator["type"]);
+					unset($actuator["category"]);
+					unset($actuator["description"]);
+					unset($actuator["thing"]);
+					unset($actuator["properties"]["image"]);
+					unset($actuator["dateCreated"]);
+					unset($actuator["dateModeified"]);
+					$actuators[] = $actuator;
+				endforeach;
+			endif;
+
+			if($device["context"]["Data"]["lid"]["value"] != $lid):
+				$query = $this->_GeniSys->_secCon->prepare("
+					UPDATE mqttu
+					SET lid = :lid
+					WHERE did = :did
+				");
+				$query->execute([
+					':lid' => $lid,
+					':did' => $did
+				]);
+				$pdoQuery->closeCursor();
+				$pdoQuery = null;
+
+				$query = $this->_GeniSys->_secCon->prepare("
+					UPDATE mqttua
+					SET lid = :lid
+					WHERE did = :did
+				");
+				$query->execute([
+					':lid' => $lid,
+					':did' => $did
+				]);
+				$pdoQuery->closeCursor();
+				$pdoQuery = null;
+
+				$query = $this->_GeniSys->_secCon->prepare("
+					UPDATE mqttua
+					SET topic = :topicN
+					WHERE did = :did
+						& topic = :topic
+				");
+				$query->execute([
+					':topicN' => $device["context"]["Data"]["lid"]["entity"] . "/ " . $device["context"]["Data"]["zid"]["entity"] . "/Devices/" . $device["context"]["Data"]["id"] . "/#",
+					':did' => $did,
+					':topic' => $location["context"]["Data"]["id"] . "/Devices/" . $zone["context"]["Data"]["id"] . "/Devices/" . $device["context"]["Data"]["id"] . "/#"
+				]);
+				$pdoQuery->closeCursor();
+				$pdoQuery = null;
+			endif;
+
+			$data = [
+				"category" => [
+					"value" => [filter_input(INPUT_POST, "category", FILTER_SANITIZE_STRING)]
+				],
+				"name" => [
+					"value" => $name
+				],
+				"description" => [
+					"value" => filter_input(INPUT_POST, "description", FILTER_SANITIZE_STRING)
+				],
+				"lid" => [
+					"value" => $lid,
+					"entity" => $location["context"]["Data"]["id"]
+				],
+				"zid" => [
+					"value" => $zid,
+					"entity" => $zone["context"]["Data"]["id"]
+				],
+				"did" => [
+					"value" => $did
+				],
+				"location" => [
+					"type" => "geo:json",
+					"value" => [
+						"type" => "Point",
+						"coordinates" => [floatval($coords[0]), floatval($coords[1])]
+					]
+				],
+				"agent" => [
+					"url" => filter_input(INPUT_POST, "agent", FILTER_SANITIZE_STRING)
+				],
+				"device" => [
+					"type" => "EMAR",
+					"name" => filter_input(INPUT_POST, "deviceName", FILTER_SANITIZE_STRING),
+					"manufacturer" => filter_input(INPUT_POST, "deviceManufacturer", FILTER_SANITIZE_STRING),
+					"model" => filter_input(INPUT_POST, "deviceModel", FILTER_SANITIZE_STRING)
+				],
+				"proxy" => [
+					"endpoint" => filter_input(INPUT_POST, "strdir", FILTER_SANITIZE_STRING)
+				],
+				"stream" => [
+					"port" => filter_input(INPUT_POST, "sport", FILTER_SANITIZE_STRING),
+					"file" => filter_input(INPUT_POST, "sportf", FILTER_SANITIZE_STRING)
+				],
+				"socket" => [
+					"port" => filter_input(INPUT_POST, "sckport", FILTER_SANITIZE_STRING)
+				],
+				"os" => [
+					"name" => filter_input(INPUT_POST, "osName", FILTER_SANITIZE_STRING),
+					"manufacturer" => filter_input(INPUT_POST, "osManufacturer", FILTER_SANITIZE_STRING),
+					"version" => filter_input(INPUT_POST, "osVersion", FILTER_SANITIZE_STRING)
+				],
+				"protocols" => $protocols,
+				"status" => [
+					"value" => $device["context"]["Data"]["status"]["value"],
+					"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+				],
+				"ip" => [
+					"value" => $this->_GeniSys->_helpers->oEncrypt($ip),
+					"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+				],
+				"mac" => [
+					"value" => $this->_GeniSys->_helpers->oEncrypt($mac),
+					"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+				],
+				"bluetooth" => [
+					"address" => $bluetooth ? $this->_GeniSys->_helpers->oEncrypt($bluetooth) : "",
+					"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+				],
+				"ai" => $models,
+				"sensors" => $sensors,
+				"actuators" => $actuators,
+				"dateModified" => [
+					"type" => "DateTime",
+					"value" => date('Y-m-d\TH:i:s.Z\Z', time())
+				]
 			];
+
+			$response = json_decode($this->contextBrokerRequest("PATCH", $this->cb["entities_url"] . "/" . $device["context"]["Data"]["id"] . "/attrs?type=Device", $this->createContextHeaders(), json_encode($data)), true);
+
+			if($response["Response"]=="OK"):
+
+				$hash = "";
+				$msg = "";
+				$this->contract->at($this->_GeniSys->_helpers->oDecrypt($this->bcc["contract"]))->send("updateDevice", $device["context"]["Data"]["id"], "Device", $lid, $zid, $did, $name, $device["context"]["Data"]["status"]["value"], time(), ["from" => $_SESSION["GeniSysAI"]["BC"]["BCUser"]], function ($err, $resp) use (&$hash, &$msg) {
+					if ($err !== null) {
+						$hash = "FAILED";
+						$msg = $err;
+						return;
+					}
+					$hash = $resp;
+				});
+
+				$balance = "";
+				$balanceMessage = "";
+				$actionMsg = "";
+				if($hash == "FAILED"):
+					$actionMsg = " HIAS Blockchain updateDevice failed!\n";
+				else:
+					$txid = $this->storeBlockchainTransaction("Update Device", $hash, $did);
+					$this->storeUserHistory("Updated Device", $txid, $lid, $zid, $did);
+					$balance = $this->getBlockchainBalance();
+					$balanceMessage = " You were rewarded for this action! Your balance is now: " . $balance . " HIAS Ether!\n";
+				endif;
+
+				$device = $this->getDevice($did);
+
+				return [
+					"Response"=> "OK",
+					"Message" => "Device updated!" . $actionMsg . $balanceMessage,
+					"Schema" => $device["context"]["Data"]
+				];
+			else:
+				return [
+					"Response"=> "Failed",
+					"Message" => "There was a problem updating this device context data!"
+				];
+			endif;
 		}
 
 		public function resetMqtt()
 		{
-			$lid = filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT);
-			$zid = filter_input(INPUT_POST, "zid", FILTER_SANITIZE_NUMBER_INT);
-			$did = filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT);
+			$id = filter_input(INPUT_GET, 'device', FILTER_SANITIZE_NUMBER_INT);
+			$Device = $this->getDevice($id);
 
 			$mqttPass = $this->_GeniSys->_helpers->password();
 			$mqttHash = create_hash($mqttPass);
 
-			$query = $this->_GeniSys->_secCon->prepare("
-				UPDATE mqttld
-				SET mqttp = :mqttp
-				WHERE id = :id
-			");
-			$query->execute(array(
-				':mqttp' => $this->_GeniSys->_helpers->oEncrypt($mqttPass),
-				':id' => $did
-			));
-
-			$query = $this->_GeniSys->_secCon->prepare("
-				UPDATE mqttu
-				SET pw = :pw
-				WHERE did = :did
-			");
-			$query->execute(array(
-				':pw' => $mqttHash,
-				':did' => $did
-			));
-
-			$this->storeUserHistory("Reset EMAR Device MQTT Password", 0, $lid, $zid, $did);
-
-			return [
-				"Response"=> "OK",
-				"Message" => "Device MQTT password reset!",
-				"P" => $mqttPass
+			$data = [
+				"mqtt" => [
+					"username" => $Device["context"]["Data"]["mqtt"]["username"],
+					"password" => $this->_GeniSys->_helpers->oEncrypt($mqttPass),
+					"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+				],
+				"dateModified" => [
+					"type" => "DateTime",
+					"value" => date('Y-m-d\TH:i:s.Z\Z', time())
+				]
 			];
+
+			$response = json_decode($this->contextBrokerRequest("PATCH", $this->cb["entities_url"] . "/" . $Device["context"]["Data"]["id"] . "/attrs?type=Device", $this->createContextHeaders(), json_encode($data)), true);
+
+			if($response["Response"]=="OK"):
+				$query = $this->_GeniSys->_secCon->prepare("
+					UPDATE mqttu
+					SET pw = :pw
+					WHERE did = :did
+				");
+				$query->execute(array(
+					':pw' => $mqttHash,
+					':did' => $id
+				));
+
+				$this->storeUserHistory("Reset Device MQTT Password", 0, $Device["context"]["Data"]["lid"]["value"], $Device["context"]["Data"]["zid"]["value"], $id);
+
+				return [
+					"Response"=> "OK",
+					"Message" => "MQTT password reset!",
+					"P" => $mqttPass
+				];
+			else:
+				return [
+					"Response"=> "FAILED",
+					"Message" => "MQTT password reset failed!"
+				];
+			endif;
 
 		}
 
 		public function resetDvcKey()
 		{
-			$lid = filter_input(INPUT_POST, "lid", FILTER_SANITIZE_NUMBER_INT);
-			$zid = filter_input(INPUT_POST, "zid", FILTER_SANITIZE_NUMBER_INT);
-			$id = filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT);
+			$id = filter_input(INPUT_GET, 'device', FILTER_SANITIZE_NUMBER_INT);
+			$Device = $this->getDevice($id);
 
 			$privKey = $this->_GeniSys->_helpers->generateKey(32);
 			$privKeyHash = $this->_GeniSys->_helpers->createPasswordHash($privKey);
 
-			$query = $this->_GeniSys->_secCon->prepare("
-				UPDATE mqttld
-				SET aprv = :aprv
-				WHERE id = :id
-			");
-			$query->execute(array(
-				':aprv' => $this->_GeniSys->_helpers->oEncrypt($privKeyHash),
-				':id' => $id
-			));
-
-			$this->storeUserHistory("Reset EMAR Device Key", 0, $lid, $zid, $id);
-
-			return [
-				"Response"=> "OK",
-				"Message" => "Device key reset!",
-				"P" => $privKey
+			$data = [
+				"keys" => [
+					"public" => $Device["context"]["Data"]["keys"]["public"],
+					"private" => $this->_GeniSys->_helpers->oEncrypt($privKeyHash),
+					"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+				],
+				"dateModified" => [
+					"type" => "DateTime",
+					"value" => date('Y-m-d\TH:i:s.Z\Z', time())
+				]
 			];
 
-		}
+			$response = json_decode($this->contextBrokerRequest("PATCH", $this->cb["entities_url"] . "/" . $Device["context"]["Data"]["id"] . "/attrs?type=Device", $this->createContextHeaders(), json_encode($data)), true);
 
-		public function getLifes()
-		{
-			$pdoQuery = $this->_GeniSys->_secCon->prepare("
-				SELECT emar.id,
-					device.status,
-					device.lt,
-					device.lg,
-					device.tempr,
-					device.hdd,
-					device.mem,
-					device.cpu
-				FROM emar emar
-				INNER JOIN mqttld device
-				ON device.id = emar.did
-				WHERE emar.id = :id
-			");
-			$pdoQuery->execute([
-				":id" => filter_input(INPUT_POST, "device", FILTER_SANITIZE_NUMBER_INT)
-			]);
-			$response=$pdoQuery->fetch(PDO::FETCH_ASSOC);
-
-			if($response["id"]):
-				return  [
-					'Response'=>'OK',
-					'ResponseData'=>$response
+			if($response["Response"]=="OK"):
+				$this->storeUserHistory("Reset Device Key", 0, $Device["context"]["Data"]["lid"]["value"], $Device["context"]["Data"]["zid"]["value"], $id);
+				return [
+					"Response"=> "OK",
+					"Message" => "Device key reset!",
+					"P" => $privKey
 				];
 			else:
-				return  [
-					'Response'=>'FAILED',
-					'Message'=>'EMAR device not found!'
+				return [
+					"Response"=> "FAILED",
+					"Message" => "Device key reset failed!"
 				];
 			endif;
-
 		}
 
-		public function getStatusShow($status)
+		public function resetDvcAmqpKey()
 		{
-			if($status=="ONLINE"):
-				$on = "  ";
-				$off = " hide ";
+			$id = filter_input(INPUT_GET, 'device', FILTER_SANITIZE_NUMBER_INT);
+			$Device = $this->getDevice($id);
+
+			$amqpPass = $this->_GeniSys->_helpers->password();
+			$amqpHash = $this->_GeniSys->_helpers->createPasswordHash($amqpPass);
+
+			$data = [
+				"amqp" => [
+					"username" => $Device["context"]["Data"]["amqp"]["username"],
+					"password" => $this->_GeniSys->_helpers->oEncrypt($amqpPass),
+					"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+				],
+				"dateModified" => [
+					"type" => "DateTime",
+					"value" => date('Y-m-d\TH:i:s.Z\Z', time())
+				]
+			];
+
+			$response = json_decode($this->contextBrokerRequest("PATCH", $this->cb["entities_url"] . "/" . $Device["context"]["Data"]["id"] . "/attrs?type=Device", $this->createContextHeaders(), json_encode($data)), true);
+
+			if($response["Response"]=="OK"):
+				$query = $this->_GeniSys->_secCon->prepare("
+					UPDATE amqpu
+					SET pw = :pw
+					WHERE username = :username
+				");
+				$query->execute(array(
+					':pw' => $this->_GeniSys->_helpers->oEncrypt($amqpHash),
+					':username' => $this->_GeniSys->_helpers->oDecrypt($Device["context"]["Data"]["amqp"]["username"])
+				));
+
+				$this->storeUserHistory("Reset Device AMQP Key", 0, $Device["context"]["Data"]["lid"]["value"], $Device["context"]["Data"]["zid"]["value"], $id);
+
+				return [
+					"Response"=> "OK",
+					"Message" => "AMQP password reset!",
+					"P" => $amqpPass
+				];
 			else:
-				$on = " hide ";
-				$off = "  ";
+				return [
+					"Response"=> "FAILED",
+					"Message" => "AMQP password reset failed!"
+				];
 			endif;
-
-			return [$on, $off];
-		}
-
-		public function getMapMarkers($device)
-		{
-			if(!$device["lt"]):
-				$lat = $this->_GeniSys->lt;
-				$lng = $this->_GeniSys->lg;
-			else:
-				$lat = $device["lt"];
-				$lng = $device["lg"];
-			endif;
-
-			return [$lat, $lng];
 		}
 
 	}
@@ -900,11 +1609,14 @@ use Web3\Utils;
 	if(filter_input(INPUT_POST, "create_emar", FILTER_SANITIZE_NUMBER_INT)):
 		die(json_encode($EMAR->createDevice()));
 	endif;
-	 if(filter_input(INPUT_POST, "reset_mqtt", FILTER_SANITIZE_NUMBER_INT)):
+	 if(filter_input(INPUT_POST, "reset_emar_mqtt", FILTER_SANITIZE_NUMBER_INT)):
 	 	 die(json_encode($EMAR->resetMqtt()));
 	 endif;
-	 if(filter_input(INPUT_POST, "reset_key", FILTER_SANITIZE_NUMBER_INT)):
+	 if(filter_input(INPUT_POST, "reset_emar_key", FILTER_SANITIZE_NUMBER_INT)):
 	 	 die(json_encode($EMAR->resetDvcKey()));
+	 endif;
+	 if(filter_input(INPUT_POST, "reset_emar_amqp", FILTER_SANITIZE_NUMBER_INT)):
+	 	 die(json_encode($EMAR->resetDvcAmqpKey()));
 	 endif;
 	if(filter_input(INPUT_POST, "get_lifes", FILTER_SANITIZE_NUMBER_INT)):
 		die(json_encode($EMAR->getLifes()));

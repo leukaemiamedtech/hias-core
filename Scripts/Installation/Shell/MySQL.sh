@@ -21,21 +21,20 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
     sudo mysql -uroot -p$rpassword -e "SELECT host, user from mysql.user";
     read -p "! Enter a new application database user: " adbusername
     read -p "! Enter a new application database password: " adbpassword
-    sudo mysql -uroot -p$rpassword -e "GRANT SELECT, INSERT, DELETE  ON *.* TO $adbusername@localhost IDENTIFIED BY '$adbpassword'";
+    sudo mysql -uroot -p$rpassword -e "GRANT SELECT, INSERT, UPDATE, DELETE  ON *.* TO $adbusername@localhost IDENTIFIED BY '$adbpassword'";
     sudo mysql -uroot -p$rpassword -e "SELECT host, user from mysql.user";
     read -p "! Enter a new database name: " dbname
     sudo mysql -uroot -p$rpassword -e "CREATE DATABASE $dbname";
     sudo mysql -uroot -p$rpassword -e 'show databases;'
     sudo mysql -uroot -p$rpassword -e "use $dbname;"
     sudo mysql -uroot  -p$rpassword $dbname < Scripts/Installation/SQL.sql;
-    sudo sed -i "s/\"dbname\":.*/\"dbname\": \"$dbname\",/g" "confs.json"
-    sudo sed -i "s/\"dbuser\":.*/\"dbuser\": \"$adbusername\",/g" "confs.json"
-    sudo sed -i "s/\"dbpass\":.*/\"dbpass\": \"${adbpassword//&/\\&}\"/g" "confs.json"
     sudo sed -i "s/\"dbname\":.*/\"dbname\": \"$dbname\",/g" "/fserver/var/www/Classes/Core/confs.json"
     sudo sed -i "s/\"dbusername\":.*/\"dbusername\": \"$adbusername\",/g" "/fserver/var/www/Classes/Core/confs.json"
-    sudo sed -i "s/\"dbpassword\":.*/\"dbpassword\": \"${adbpassword//&/\\&}\",/g" "/fserver/var/www/Classes/Core/confs.json"
-    read -p "! Enter a new encryption key, this key should be 32 characters: " ekey
-    sudo sed -i "s/\"key\":.*/\"key\": \"$ekey\"/g" "/fserver/var/www/Classes/Core/confs.json"
+    escaped=$(printf '%s\n' "$adbpassword" | sed -e 's/[\/&]/\\&/g');
+    sudo sed -i "s/\"dbpassword\":.*/\"dbpassword\": \"$escaped\",/g" "/fserver/var/www/Classes/Core/confs.json"
+    read -p "! Enter a new encryption key, this key should be 32 characters an NO special characters: " ekey
+    escaped=$(printf '%s\n' "$ekey" | sed -e 's/[\/&]/\\&/g');
+    sudo sed -i "s/\"key\":.*/\"key\": \"$escaped\"/g" "/fserver/var/www/Classes/Core/confs.json"
     echo "! Updated MySql configuration."
     echo "! Moving MySql to hard-drive."
     sudo systemctl stop mysql

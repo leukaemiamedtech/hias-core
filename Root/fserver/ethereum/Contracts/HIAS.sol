@@ -85,7 +85,7 @@ contract HIAS {
 		public
 		view
 		returns(bool) {
-			require(callerAllowed());
+			require(callerAllowed(), "Caller Not Allowed");
 			if(compare(_type, "Application")){
 				return applicationMap[identifier].allowed == true;
 			} else if(compare(_type, "User")){
@@ -99,25 +99,26 @@ contract HIAS {
 		public
 		view
 		returns (uint256) {
-			require(isHIAS());
+			require(isHIAS(), "Caller Not HIAS");
 			return address(this).balance;
 		}
 
 	function deposit(uint256 amount)
 		payable
 		public {
-			require(isHIAS());
-			require(msg.value == amount);
+			require(isHIAS(), "Caller Not HIAS");
+			require(msg.value == amount, "Deposit Values Do Not Match");
 		}
 
 	function updateCompensation(uint amount)
 		public {
-			require(isHIAS());
+			require(isHIAS(), "Caller Not HIAS");
 			compensation = amount;
 		}
 
 	function compensate(address payable _address, uint256 amount)
 		private {
+			require(amount <= address(this).balance,"Not enough balance");
 			_address.transfer(amount);
 		}
 
@@ -138,8 +139,8 @@ contract HIAS {
 
 	function initiate(string memory _identifier, address _address, bool _admin, uint _user, string memory _name, uint _location, uint _application, uint _createdBy, uint _time)
 		public {
-			require(isHIAS());
-			require(setup == false);
+			require(isHIAS(), "Caller Not HIAS");
+			require(setup == false, "Setup is not false");
 			user memory newUser = user(_address, true, _admin, _user, _name,  _location, _application, _time, _createdBy, _time, true);
 			userMap[_identifier] = newUser;
 			users++;
@@ -156,8 +157,8 @@ contract HIAS {
 
 	function registerUser(string memory _identifier, address _address, bool _admin, uint _user, string memory _name, uint _location, uint _application, uint _time, uint _createdBy)
 		public {
-			require(callerAllowed());
-			require(callerAdmin());
+			require(callerAllowed(), "Caller Not Allowed");
+			require(callerAdmin(), "Caller Not Admin");
 			user memory newUser = user(_address, true, _admin, _user, _name,  _location, _application, _time, _createdBy, _time, true);
 			userMap[_identifier] = newUser;
 			users++;
@@ -174,8 +175,8 @@ contract HIAS {
 
 	function registerApplication(string memory _identifier, address _address, bool _admin, uint _location, uint _application, string memory _name, uint _createdBy, uint _time)
 		public {
-			require(callerAllowed());
-			require(callerAdmin());
+			require(callerAllowed(), "Caller Not Allowed");
+			require(callerAdmin(), "Caller Not Admin");
 			application memory newApplication = application(_address, true, _admin, _location, _application, _name, "OFFLINE", _time, _createdBy, _time, true);
 			applicationMap[_identifier] = newApplication;
 			applications++;
@@ -189,8 +190,8 @@ contract HIAS {
 
 	function registerDevice(string memory _identifier, address _address, uint _location, uint _zone, uint _device, string memory _name, uint _createdBy, uint _time)
 		public {
-			require(callerAllowed());
-			require(callerAdmin());
+			require(callerAllowed(), "Caller Not Allowed");
+			require(callerAdmin(), "Caller Not Admin");
 			device memory newDevice = device(_address, _location, _zone, _device, _name, "OFFLINE", _time, _createdBy, _time, true);
 			deviceMap[_identifier] = newDevice;
 			devices++;
@@ -199,9 +200,9 @@ contract HIAS {
 
 	function updateUser(string memory _identifier, string memory _type, bool _allowed, bool _admin, uint _user, string memory _name, uint _location, uint _application, uint _time)
 		public {
-			require(callerAllowed());
-			require(callerAdmin());
-			require(exists(_type, _identifier));
+			require(callerAllowed(), "Caller Not Allowed");
+			require(callerAdmin(), "Caller Not Admin");
+			require(exists(_type, _identifier), "User Does Not Exist");
 			user storage currentUser = userMap[_identifier];
 			currentUser.allowed = _allowed;
 			currentUser.admin = _admin;
@@ -217,9 +218,9 @@ contract HIAS {
 
 	function updateApplication(string memory _identifier, string memory _type, bool _allowed, bool _admin, uint _location, string memory _name, string memory _status, uint _time)
 		public {
-			require(callerAllowed());
-			require(callerAdmin());
-			require(exists(_type, _identifier));
+			require(callerAllowed(), "Caller Not Allowed");
+			require(callerAdmin(), "Caller Not Admin");
+			require(exists(_type, _identifier), "Application Does Not Exist");
 			application storage currentApplication = applicationMap[_identifier];
 			currentApplication.allowed = _allowed;
 			currentApplication.admin = _admin;
@@ -234,9 +235,9 @@ contract HIAS {
 
 	function updateDevice(string memory _identifier, string memory _type, uint _location, uint _zone, uint _device, string memory _name, string memory _status, uint _time)
 		public {
-			require(callerAllowed());
-			require(callerAdmin());
-			require(exists(_type, _identifier));
+			require(callerAllowed(), "Caller Not Allowed");
+			require(callerAdmin(), "Caller Not Admin");
+			require(exists(_type, _identifier), "Device Does Not Exist");
 			device storage currentDevice = deviceMap[_identifier];
 			currentDevice.location = _location;
 			currentDevice.zone = _zone;
@@ -247,35 +248,22 @@ contract HIAS {
 			compensate(msg.sender, compensation);
 		}
 
-	function count(string memory _type)
-		public
-		view
-		returns (uint){
-			require(callerAllowed());
-			require(callerAdmin());
-			if(compare(_type, "Application")){
-				return applications;
-			} else if(compare(_type, "Device")){
-				return devices;
-			} else if(compare(_type, "User")){
-				return users;
-			}
-		}
-
 	function deregsiter(string memory _type, string memory _identifier)
 		public {
-			require(callerAllowed());
-			require(callerAdmin());
-			require(exists(_type, _identifier));
+			require(callerAllowed(), "Caller Not Allowed");
+			require(callerAdmin(), "Caller Not Admin");
 			if(compare(_type, "Application")){
+				require(exists(_type, _identifier), "Application Does Not Exist");
 				delete authorized[applicationMap[_identifier].bcaddress];
 				delete applicationMap[_identifier];
 				applications--;
 			} else if(compare(_type, "Device")){
+				require(exists(_type, _identifier), "Device Does Not Exist");
 				delete authorized[deviceMap[_identifier].bcaddress];
 				delete deviceMap[_identifier];
 				devices--;
 			} else if(compare(_type, "User")){
+				require(exists(_type, _identifier), "User Does Not Exist");
 				delete authorized[userMap[_identifier].bcaddress];
 				delete userMap[_identifier];
 				users--;
@@ -287,9 +275,9 @@ contract HIAS {
 		public
 		view
 		returns(user memory){
-			require(callerAllowed());
-			require(callerAdmin());
-			require(exists("User", _identifier));
+			require(callerAllowed(), "Caller Not Allowed");
+			require(callerAdmin(), "Caller Not Admin");
+			require(exists("User", _identifier), "User Does Not Exist");
 			return(userMap[_identifier]);
 		}
 
@@ -297,9 +285,9 @@ contract HIAS {
 		public
 		view
 		returns(application memory){
-			require(callerAllowed());
-			require(callerAdmin());
-			require(exists("Application", _identifier));
+			require(callerAllowed(), "Caller Not Allowed");
+			require(callerAdmin(), "Caller Not Admin");
+			require(exists("Application", _identifier), "Application Does Not Exist");
 			return(applicationMap[_identifier]);
 		}
 
@@ -307,9 +295,9 @@ contract HIAS {
 		public
 		view
 		returns(device memory){
-			require(callerAllowed());
-			require(callerAdmin());
-			require(exists("Device", _identifier));
+			require(callerAllowed(), "Caller Not Allowed");
+			require(callerAdmin(), "Caller Not Admin");
+			require(exists("Device", _identifier), "Device Does Not Exist");
 			return(deviceMap[_identifier]);
 		}
 

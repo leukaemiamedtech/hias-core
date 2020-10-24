@@ -1,9 +1,8 @@
 var EMAR = {
-    location: 1,
-    zone: 1,
-    device: 5,
-    controller: 4,
-    LifeDevice: 1,
+    location: $("#lentity").val(),
+    zone: $("#zentity").val(),
+    device: $("#dentity").val(),
+    controller: $("#uidentifier").val(),
     Create: function() {
         $.post(window.location.href, $("#emar_create").serialize(), function(resp) {
             var resp = jQuery.parseJSON(resp);
@@ -28,28 +27,35 @@ var EMAR = {
             var resp = jQuery.parseJSON(resp);
             switch (resp.Response) {
                 case "OK":
+                    var fjson = JSON.stringify(resp.Schema, null, '\t');
+                    window.parent.$('#schema').html(fjson);
+                    msg = resp.Message
+                    Logging.logMessage("Core", "EMAR", msg);
                     $('.modal-title').text('EMAR Update');
-                    $('.modal-body').text("EMAR Update OK");
+                    $('.modal-body').text(msg);
                     $('#responsive-modal').modal('show');
-                    Logging.logMessage("Core", "EMAR", "EMAR Update OK");
                     break;
                 default:
-                    msg = "EMAR Update Failed: " + resp.Message
+                    msg = resp.Message
                     Logging.logMessage("Core", "EMAR", msg);
+                    $('.modal-title').text('EMAR Update');
+                    $('.modal-body').text(msg);
+                    $('#responsive-modal').modal('show');
                     break;
             }
         });
     },
     ResetMqtt: function() {
-        $.post(window.location.href, { "reset_mqtt": 1, "id": $("#did").val(), "lid": $("#lid").val(), "zid": $("#zid").val() },
+        $.post(window.location.href, { "reset_emar_mqtt": 1 },
             function(resp) {
+                console.log(resp)
                 var resp = jQuery.parseJSON(resp);
                 switch (resp.Response) {
                     case "OK":
                         Logging.logMessage("Core", "Forms", "Reset OK");
-                        GeniSysAI.mqttpa = resp.P;
-                        GeniSysAI.mqttpae = resp.P.replace(/\S/gi, '*');
-                        $("#idmqttp").text(GeniSysAI.mqttpae);
+                        EMAR.mqttpa = resp.P;
+                        EMAR.mqttpae = resp.P.replace(/\S/gi, '*');
+                        $("#idmqttp").text(EMAR.mqttpae);
                         $('.modal-title').text('New MQTT Password');
                         $('.modal-body').text("This device's new MQTT password is: " + resp.P);
                         $('#responsive-modal').modal('show');
@@ -62,7 +68,7 @@ var EMAR = {
             });
     },
     ResetDvcKey: function() {
-        $.post(window.location.href, { "reset_key": 1, "id": $("#did").val(), "lid": $("#lid").val(), "zid": $("#zid").val() },
+        $.post(window.location.href, { "reset_emar_key": 1 },
             function(resp) {
                 var resp = jQuery.parseJSON(resp);
                 switch (resp.Response) {
@@ -75,6 +81,30 @@ var EMAR = {
                     default:
                         msg = "Reset failed: " + resp.Message
                         Logging.logMessage("Core", "Forms", msg);
+                        break;
+                }
+            });
+    },
+    ResetDvcAMQP: function() {
+        $.post(window.location.href, { "reset_emar_amqp": 1 },
+            function(resp) {
+                var resp = jQuery.parseJSON(resp);
+                switch (resp.Response) {
+                    case "OK":
+                        EMAR.damqppa = resp.P;
+                        EMAR.damqppae = resp.P.replace(/\S/gi, '*');
+                        $("#damqpp").text(EMAR.damqppae);
+                        Logging.logMessage("Core", "Forms", resp.Message);
+                        $('.modal-title').text('Reset Device AMQP Key');
+                        $('.modal-body').text("This device's new AMQP key is: " + resp.P);
+                        $('#responsive-modal').modal('show');
+                        break;
+                    default:
+                        msg = "Reset failed: " + resp.Message
+                        Logging.logMessage("Core", "Forms", msg);
+                        $('.modal-title').text('Reset Device AMQP Key');
+                        $('.modal-body').text(msg);
+                        $('#responsive-modal').modal('show');
                         break;
                 }
             });
@@ -126,27 +156,28 @@ var EMAR = {
         $('#sckport').attr('type', 'password');
         $('#sdir').attr('type', 'password');
 
-        EMAR.mqttua = $("#mqttu").text();
-        EMAR.mqttuae = $("#mqttu").text().replace(/\S/gi, '*');
-        EMAR.mqttpa = $("#mqttp").text();
-        EMAR.mqttpae = $("#mqttp").text().replace(/\S/gi, '*');
+        EMAR.damqpua = $("#damqpu").text();
+        EMAR.damqpuae = $("#damqpu").text().replace(/\S/gi, '*');
+        EMAR.damqppa = $("#damqpp").text();
+        EMAR.damqppae = $("#damqpp").text().replace(/\S/gi, '*');
+        EMAR.mqttua = $("#idmqttu").text();
+        EMAR.mqttuae = $("#idmqttu").text().replace(/\S/gi, '*');
+        EMAR.mqttpa = $("#idmqttp").text();
+        EMAR.mqttpae = $("#idmqttp").text().replace(/\S/gi, '*');
         EMAR.idappida = $("#idappid").text();
         EMAR.idappidae = $("#idappid").text().replace(/\S/gi, '*');
         EMAR.bcida = $("#bcid").text();
         EMAR.bcidae = $("#bcid").text().replace(/\S/gi, '*');
 
-        $("#mqttut").text(GeniSysAI.mqttu3ae);
-        $("#mqttpt").text(GeniSysAI.mqttp3ae);
-        $("#idappid").text(GeniSysAI.idappidae);
-        $("#bcid").text(GeniSysAI.bcidae);
-
-        $("#mqttu").text(EMAR.mqttuae);
-        $("#mqttp").text(EMAR.mqttpae);
+        $("#damqpu").text(EMAR.damqpuae);
+        $("#damqpp").text(EMAR.damqppae);
+        $("#idmqttu").text(EMAR.mqttuae);
+        $("#idmqttp").text(EMAR.mqttpae);
         $("#idappid").text(EMAR.idappidae);
         $("#bcid").text(EMAR.bcidae);
     },
     GetLifes: function() {
-        $.post(window.location.href, { "get_lifes": 1, "device": $("#id").val() }, function(resp) {
+        $.post(window.location.href, { "get_lifes": 1 }, function(resp) {
             var resp = jQuery.parseJSON(resp);
             switch (resp.Response) {
                 case "OK":
@@ -254,14 +285,19 @@ $(document).ready(function() {
         EMAR.cams("CENTER");
     });
 
-    $("#GeniSysAI").on("click", "#reset_mqtt", function(e) {
+    $("#GeniSysAI").on("click", "#reset_emar_mqtt", function(e) {
         e.preventDefault();
         EMAR.ResetMqtt();
     });
 
-    $("#GeniSysAI").on("click", "#reset_apriv", function(e) {
+    $("#GeniSysAI").on("click", "#reset_emar_apriv", function(e) {
         e.preventDefault();
         EMAR.ResetDvcKey();
+    });
+
+    $("#GeniSysAI").on("click", "#reset_emar_amqp", function(e) {
+        e.preventDefault();
+        EMAR.ResetDvcAMQP();
     });
 
     $('.hider').hover(function() {
@@ -270,16 +306,28 @@ $(document).ready(function() {
         $('#' + $(this).attr("id")).attr('type', 'password');
     });
 
-    $('#mqttu').hover(function() {
-        $("#mqttu").text(EMAR.mqttua);
+    $('#damqpu').hover(function() {
+        $("#damqpu").text(EMAR.damqpua);
     }, function() {
-        $("#mqttu").text(EMAR.mqttuae);
+        $("#damqpu").text(EMAR.damqpuae);
     });
 
-    $('#mqttp').hover(function() {
-        $("#mqttp").text(EMAR.mqttpa);
+    $('#damqpp').hover(function() {
+        $("#damqpp").text(EMAR.damqppa);
     }, function() {
-        $("#mqttp").text(EMAR.mqttpae);
+        $("#damqpp").text(EMAR.damqppae);
+    });
+
+    $('#idmqttu').hover(function() {
+        $("#idmqttu").text(EMAR.mqttua);
+    }, function() {
+        $("#idmqttu").text(EMAR.mqttuae);
+    });
+
+    $('#idmqttp').hover(function() {
+        $("#idmqttp").text(EMAR.mqttpa);
+    }, function() {
+        $("#idmqttp").text(EMAR.mqttpae);
     });
 
     $('#idappid').hover(function() {

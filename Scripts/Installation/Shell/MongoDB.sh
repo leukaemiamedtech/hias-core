@@ -23,12 +23,13 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
 		read -p "! Enter your MongoDB database name: " dbn
 		read -p "! Enter your MongoDB database username: " dbu
 		read -p "! Enter your MongoDB database password: " dbp
-		sudo sed -i "s/\"mdb\":.*/\"mdb\": \"$dbn\",/g" "confs.json"
-		sudo sed -i "s/\"mdbu\":.*/\"mdbu\": \"$dbu\",/g" "confs.json"
-		sudo sed -i "s/\"mdbp\":.*/\"mdbp\": \"${dbp//&/\\&}\",/g" "confs.json"
+		escaped=$(printf '%s\n' "$dbp" | sed -e 's/[\/&]/\\&/g');
+		sudo sed -i "s/\"db\":.*/\"db\": \"$dbn\",/g" "confs.json"
+		sudo sed -i "s/\"dbu\":.*/\"dbu\": \"$dbu\",/g" "confs.json"
+		sudo sed -i "s/\"dbp\":.*/\"dbp\": \"$escaped\"/g" "confs.json"
 		sudo sed -i "s/\"mdbname\":.*/\"mdbname\": \"$dbn\",/g" "/fserver/var/www/Classes/Core/confs.json"
 		sudo sed -i "s/\"mdbusername\":.*/\"mdbusername\": \"$dbu\",/g" "/fserver/var/www/Classes/Core/confs.json"
-		sudo sed -i "s/\"mdbpassword\":.*/\"mdbpassword\": \"${dbn//&/\\&}\",/g" "/fserver/var/www/Classes/Core/confs.json"
+		sudo sed -i "s/\"mdbpassword\":.*/\"mdbpassword\": \"$escaped\",/g" "/fserver/var/www/Classes/Core/confs.json"
 		echo "- Installed MongoDB and configured database";
 		exit 0
 	else

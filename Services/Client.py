@@ -44,7 +44,7 @@ class Client():
 		_, img_encoded = cv2.imencode('.jpg', img)
 
 		response = requests.post(self.addr, data=img_encoded.tostring(),
-                           headers=self.headers)
+						   headers=self.headers)
 
 		response = json.loads(response.text)
 

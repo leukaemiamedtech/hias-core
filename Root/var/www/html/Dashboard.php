@@ -1,12 +1,14 @@
 <?php session_start();
 
 $pageDetails = [
-    "PageID" => "Dashboard"
+	"PageID" => "Home"
 ];
+
 
 include dirname(__FILE__) . '/../Classes/Core/init.php';
 include dirname(__FILE__) . '/../Classes/Core/GeniSys.php';
-include dirname(__FILE__) . '/Security/GeniSysAI/Classes/GeniSysAI.php';
+include dirname(__FILE__) . '/iotJumpWay/Classes/iotJumpWay.php';
+include dirname(__FILE__) . '/AI/TassAI/Classes/TassAI.php';
 include dirname(__FILE__) . '/Data-Analysis/COVID-19/Classes/COVID19.php';
 
 $country = "Spain";
@@ -14,7 +16,7 @@ $period = "Year";
 $stat = "Deaths";
 
 $_GeniSysAi->checkSession();
-$TDevice = $GeniSysAI->getDevice(1);
+$TDevice = $iotJumpWay->getDevice(2);
 $stats = $_GeniSysAi->getStats();
 
 $covid19d = $COVID19->getCOVID19Totals();
@@ -48,47 +50,47 @@ $weekd = $covid19d[7];
 		<link type="image/x-icon" rel="shortcut icon" href="<?=$domain; ?>/img/favicon.png" />
 		<link type="image/x-icon" rel="apple-touch-icon" href="<?=$domain; ?>/img/favicon.png" />
 
-        <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
-        <link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
+		<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
+		<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
 		<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
-		<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
+		<link href="<?=$domain; ?>/AI/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
 	</head>
 
-    <body>
+	<body>
 
-        <div class="preloader-it">
-            <div class="la-anim-1"></div>
-        </div>
+		<div class="preloader-it">
+			<div class="la-anim-1"></div>
+		</div>
 
-        <div class="wrapper theme-6-active pimary-color-pink">
+		<div class="wrapper theme-6-active pimary-color-pink">
 
-            <?php include dirname(__FILE__) . '/Includes/Nav.php'; ?>
-            <?php include dirname(__FILE__) . '/Includes/LeftNav.php'; ?>
-            <?php include dirname(__FILE__) . '/Includes/RightNav.php'; ?>
+			<?php include dirname(__FILE__) . '/Includes/Nav.php'; ?>
+			<?php include dirname(__FILE__) . '/Includes/LeftNav.php'; ?>
+			<?php include dirname(__FILE__) . '/Includes/RightNav.php'; ?>
 
-            <div class="page-wrapper">
-            <div class="container-fluid pt-25">
+			<div class="page-wrapper">
+			<div class="container-fluid pt-25">
 
-            	<?php include dirname(__FILE__) . '/Includes/Stats.php'; ?>
+				<?php include dirname(__FILE__) . '/Includes/Stats.php'; ?>
 
 				<div class="row">
 					<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
-                        <div class="panel panel-default card-view panel-refresh">
-                            <div class="panel-heading">
-                            </div>
-                            <div class="panel-wrapper collapse in">
-                                <div class="panel-body">
-                                    <?php include dirname(__FILE__) . '/Includes/Weather.php'; ?>
-                                </div>
-                            </div>
+						<div class="panel panel-default card-view panel-refresh">
+							<div class="panel-heading">
+							</div>
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
+									<?php include dirname(__FILE__) . '/Includes/Weather.php'; ?>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
 						<div class="panel panel-default card-view">
 							<div class="panel-wrapper collapse in">
 								<div class="panel-body">
-                                    <?php include dirname(__FILE__) . '/iotJumpWay/Includes/iotJumpWay.php'; ?>
+									<?php include dirname(__FILE__) . '/iotJumpWay/Includes/iotJumpWay.php'; ?>
 								</div>
 							</div>
 						</div>
@@ -97,8 +99,8 @@ $weekd = $covid19d[7];
 
 				<div class="row">
 					<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
-                        <div class="panel panel-default card-view panel-refresh">
-                            <div class="panel-heading">
+						<div class="panel panel-default card-view panel-refresh">
+							<div class="panel-heading">
 								<div class="pull-left">
 									<h6 class="panel-title txt-dark">COVID-19 <?=$COVID19->stat; ?> this <?=$COVID19->period; ?> in <?=$COVID19->country; ?></h6>
 								</div>
@@ -107,19 +109,19 @@ $weekd = $covid19d[7];
 									</div>
 								</div>
 								<div class="clearfix"></div>
-                            </div>
-                            <div class="panel-wrapper collapse in">
-                                <div class="panel-body">
+							</div>
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
 									<div id="e_chart_1" class="" style="height: 375px;"></div>
-                                </div>
-                            </div>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
 						<div class="panel panel-default card-view">
 							<div class="panel-wrapper collapse in">
 								<div class="panel-body">
-									<img src="<?=$domain; ?>/Security/GeniSysAI/Server/<?=$_GeniSys->_helpers->oDecrypt($TDevice["sportf"]); ?>" style="width: 100%;" />
+									<img src="<?=$domain; ?>/TassAI/<?=$TDevice["context"]["Data"]["proxy"]["endpoint"]; ?>/<?=$TDevice["context"]["Data"]["stream"]["file"]; ?>" style="width: 100%;" />
 								</div>
 							</div>
 						</div>
@@ -253,41 +255,41 @@ $weekd = $covid19d[7];
 
 		</div>
 
-        <?php  include dirname(__FILE__) . '/Includes/JS.php'; ?>
+		<?php  include dirname(__FILE__) . '/Includes/JS.php'; ?>
 
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/echarts/dist/echarts-en.min.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/vendors/echarts-liquidfill.min.js"></script>
-        <script type="text/javascript">
+		<script type="text/javascript" src="<?=$domain; ?>/vendors/bower_components/echarts/dist/echarts-en.min.js"></script>
+		<script type="text/javascript" src="<?=$domain; ?>/vendors/echarts-liquidfill.min.js"></script>
+		<script type="text/javascript">
 
 			var eChart_1 = echarts.init(document.getElementById('e_chart_1'));
 
 			var option = {
-                tooltip: {
-                    trigger: 'axis',
-                    backgroundColor: 'rgba(33,33,33,1)',
-                    borderRadius: 0,
-                    padding: 10,
-                    axisPointer: {
-                        type: 'cross',
-                        label: {
-                            backgroundColor: 'rgba(33,33,33,1)'
-                        }
-                    },
-                    textStyle: {
-                        color: '#fff',
-                        fontStyle: 'normal',
-                        fontWeight: 'normal',
-                        fontFamily: "'Montserrat', sans-serif",
-                        fontSize: 12
-                    }
-                },
-                color: ['#635bd6'],
+				tooltip: {
+					trigger: 'axis',
+					backgroundColor: 'rgba(33,33,33,1)',
+					borderRadius: 0,
+					padding: 10,
+					axisPointer: {
+						type: 'cross',
+						label: {
+							backgroundColor: 'rgba(33,33,33,1)'
+						}
+					},
+					textStyle: {
+						color: '#fff',
+						fontStyle: 'normal',
+						fontWeight: 'normal',
+						fontFamily: "'Montserrat', sans-serif",
+						fontSize: 12
+					}
+				},
+				color: ['#635bd6'],
 				xAxis: {
 					type: 'category',
 					axisLabel: {
-                        textStyle: {
-                            color: '#ffffff'
-                        },
+						textStyle: {
+							color: '#ffffff'
+						},
 						interval: 1,
 						rotate: 45
 					},
@@ -295,16 +297,16 @@ $weekd = $covid19d[7];
 				},
 				yAxis: {
 					axisLabel: {
-                        textStyle: {
-                            color: '#ffffff'
-                        }
+						textStyle: {
+							color: '#ffffff'
+						}
 					},
 					type: 'value'
 				},
-                grid: {
-                    top: 10,
-                    left: 0,
-                    right: 0,
+				grid: {
+					top: 10,
+					left: 0,
+					right: 0,
 					bottom: 100,
 					containLabel: true
 				},
@@ -644,9 +646,8 @@ $weekd = $covid19d[7];
 			hos_chart_v.resize();
 		</script>
 
-        <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
-        <script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
+		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
+		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
 
-    </body>
-
+	</body>
 </html>

@@ -2,7 +2,7 @@
 ## HIAS - Hospital Intelligent Automation System
 [![HIAS - Hospital Intelligent Automation System](Media/Images/HIAS-Hospital-Intelligent-Automation-System.png)](https://github.com/LeukemiaAiResearch/HIAS)
 
-[![VERSION](https://img.shields.io/badge/VERSION-1.0.2-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/1.0.2) [![DEV BRANCH](https://img.shields.io/badge/DEV%20BRANCH-1.1.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/1.1.0) [![Contributions Welcome!](https://img.shields.io/badge/Contributions-Welcome-lightgrey.svg)](CONTRIBUTING.md)  [![Issues](https://img.shields.io/badge/Issues-Welcome-lightgrey.svg)](issues) [![LICENSE](https://img.shields.io/badge/LICENSE-MIT-blue.svg)](LICENSE)
+[![VERSION](https://img.shields.io/badge/VERSION-2.0.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/2.0.0) [![DEV BRANCH](https://img.shields.io/badge/DEV%20BRANCH-2.1.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/1.1.0) [![Contributions Welcome!](https://img.shields.io/badge/Contributions-Welcome-lightgrey.svg)](CONTRIBUTING.md)  [![Issues](https://img.shields.io/badge/Issues-Welcome-lightgrey.svg)](issues) [![LICENSE](https://img.shields.io/badge/LICENSE-MIT-blue.svg)](LICENSE)
 
 &nbsp;
 
@@ -10,25 +10,29 @@
 
 - [Introduction](#introduction)
 - [Key Features](#key-features)
-- [HIAS Hardware](#hias-hardware)
 - [HIAS Network](#hias-network)
 - [HIAS UI](#hias-ui)
 - [HIAS Blockchain](#hias-blockchain)
-- [HIAS IoT](#hias-iot)
+- [HIAS Data Systems Interface](#hias-data-systems-interface)
+    - [HDSI IoT Agents](#hdsi-iot-agents)
+        - [MQTT](#mqtt)
+        - [AQMP](#aqmp)
+- [HIAS iotJumpWay Network](#hias-iotjumpway-network)
+    - [HIAS IoT Data Smart Contract](#hias-iot-data-smart-contract)
     - [HIAS IoT Zones](#hias-iot-zones)
     - [HIAS IoT Devices](#hias-iot-devices)
     - [HIAS IoT Sensors/Actuators](#hias-iot-sensorsactuators)
     - [HIAS IoT Applications](#hias-iot-applications)
     - [HIAS IoT Data](#hias-iot-data)
-    - [HIAS IoT Data Smart Contract](#hias-iot-data-smart-contract)
+- [HIAS Artificial Intelligence](#hias-artificial-intelligence)
+    - [HDSI AI Model Schemas](#hdsi-ai-model-schemas)
+    - [HIAS Acute Lymphoblastic Leukemia Detection System (CNN)](#hias-acute-lymphoblastic-leukemia-detection-system-cnn)
+    - [HIAS COVID-19 Detection System (CNN)](#hias-covid-19-detection-system-cnn)
+    - [HIAS Facial Recognition API](#hias-facial-recognition-api)
+    - [HIAS Natural Language Understanding Engines](#hias-natural-language-understanding-engines)
 - [Installation](#installation)
-- [HIAS Detection Systems](#hias-detection-systems)
-    - [Acute Lymphoblastic Leukemia Detection System (CNN)](#acute-lymphoblastic-leukemia-detection-system-cnn)
-    - [COVID-19 Detection System (CNN)](#covid-19-detection-system-cnn)
 - [HIAS Data Analysis](#hias-data-analysis)
     - [HIAS COVID-19 Data Analysis](#hias-covid-19-data-analysis)
-- [HIAS Facial Recognition API](#hias-facial-recognition-api)
-- [HIAS Natural Language Understanding Engines](#hias-natural-language-understanding-engines)
 - [EMAR / EMAR Mini](#emar--emar-mini)
 - [Modular Addons](#modular-addons)
 - [Acknowledgement](#acknowledgement)
@@ -59,41 +63,38 @@ __This project is a proof of concept, and is still a work in progress.__
 
 ![HIAS Network Map](Media/Images/HIAS-Network.png)
 
-- **Local Web Server (Complete)**
+- **Local Web Server**
     - Locally hosted webserver using NGINX.
-- **High Grade SSL Encryption (Complete)**
+- **High Grade SSL Encryption**
     - High grade (A+) encryption for the web server, proxy and network.
-- **Proxy (Complete)**
+- **Proxy**
     - Secure access to local devices from the outside world.
-- **Blockchain (Complete)**
-    - Private Ethereum blockchain for access permissions, provides data integrity and accountability.
-- **System Database (Complete)**
-    - The system MySQL database powers the HIAS UI.
-- **IoT Database (Complete)**
-    - The network IoT database is a Mongo database that stores all data from the HIAS network devices and applications.
-- **Local Samba Server (Complete)**
+- **HIAS Blockchain**
+    - Private Ethereum blockchain for access permissions, and providing data integrity & accountability.
+- **HDSI Context Broker**
+    - Context Broker handles contextual data for iotJumpWay IoT Agents, AI Models, Devices, Applications, Staff & Patients.
+- **HDSI IoT Agents**
+    - MQTT, AQMP & CoAP IoT Agents translate and push data coming from iotJumpWay Devices and Applications to the HDSI Context Broker.
+- **System Database**
+    - MySQL database powering the HIAS UI.
+- **IoT Database**
+    - The network IoT database is a Mongo database that stores all data from the HIAS network devices and applications, as well as iotJumpWay IoT Agents, AI Models, Devices, Applications, Staff & Patients contextual data.
+- **Local Samba Server**
     - A local Samba file server allowing controlled individual and group access to files on your local network.
-- **Local IoT Broker (Complete)**
+- **Local IoT Broker**
     - Local and private MQTT/Websockets broker based on the  [iotJumpway Broker](https://github.com/iotJumpway/Broker "iotJumpway Broker").
-- **Server UI (Work In Progress)**
+- **Server UI**
     - A control panel to monitor and manage your HIAS network.
-- **Facial Identification Systems (Complete)**
+- **Facial Identification Systems**
     - Facial identification systems based on [TassAI](https://github.com/TassAI/ "TassAI").
-- **Natural Language Understanding (NLU) Server (Complete)**
+- **Natural Language Understanding (NLU) Server**
     - Natural Language Understanding server based on [GeniSysAI](https://github.com/GeniSysAI/ "GeniSysAI").
-- **COVID Data Analysis System (Complete)**
+- **COVID Data Analysis System**
     - A data anaysis system for monitoring the COVID 19 pandemic. This system collects data from the [Johns Hopkins University COVID-19 Daily Reports](https://github.com/CSSEGISandData/COVID-19/) on Github.
-- **AI Detection Systems (Complete)**
+- **AI Detection Systems**
     - Detection systems for classsifying Acute Lymphoblastic Leukemia and COVID-19.
-- **HIS/HMS (In Development)**
+- **HIS/HMS**
     - Hospital management system providing online tools for managing and running day to day activities and resources for the hospital.
-
-&nbsp;
-
-# HIAS Hardware
-![HIAS UI](Media/Images/HIAS-Hardware.png)
-
-HIAS has been developed on an UP2 and a 1.5TB HDD to show the potential of lower powered devices for building IoT networks. In a real world scenario such as a being used to power a hospital network, it is likely that a device with more resources and storage will be required.
 
 &nbsp;
 
@@ -112,13 +113,31 @@ The HIAS UI is the central control panel for the server, and all of the modular 
 &nbsp;
 
 # HIAS Blockchain
-![HIAS Blockchain](Media/Images/HIAS-Blockchain.png)
-
 The HIAS Blockchain is a private Ethereum blockchain network that provides an immutable history of everything that happens on the HIAS network. Every user/device and application has a HIAS Blockchain address, meaning their actions can be recorded on the blockchain. Smart contracts provide additional security when it comes to verifying permissions, data hashes are stored on the blockchain providing data integrity. and each action made by staff members in the UI is recorded. The HIAS Blockchain network can be extended by installing additional full miner nodes which help to create blocks, seal transaction blocks, and also have a full copy of the entire HIAS Blockchain which remain synchronized.
 
 &nbsp;
 
-# HIAS IoT
+# HIAS Data Systems Interface
+![HIAS Data Systems Interface](Media/Images/HDSI-Context-Broker.jpg)
+
+The HIAS Data Services Interface is a context broker that handles contextual information for the HIAS network. The broker implements the HDSI V1 API and allows easy management of HIAS iotJumpWay IoT Agents, AI Models, Devices, Applications, and HIAS Staff & Patient accounts and their related contextual data. HDSI is based on [Open Mobile Alliance](http://www.openmobilealliance.org/)'s [NGSI](http://www.openmobilealliance.org/release/NGSI/V1_0-20120529-A/OMA-TS-NGSI_Context_Management-V1_0-20120529-A.pdf), and has been customized to meet the requirements of the HIAS network.
+
+All iotJumpWay IoT Agents, AI Models, Devices, Applications, and HIAS Staff & Patient accounts have unique schemas that standardize their information and setup, these schemas are stored in the context broker.
+
+## HDSI IoT Agents
+![HDSI IoT Agents](Media/Images/HDSI-IoT-Agents.jpg)
+
+The HDSI IoT Agents translate and push data sent from iotJumpWay Devices & Applications to the HDSI Context Broker. Each IoT Agent is responsible for it's own communication protocol, or transport. Current supported IoT protocols include HTTP, MQTT, Websockets & AMQP, with a CoAP broker and IoT Agent in development. The IoT Agents listen to data being sent on using their protocol and sends contextual data to the context broker, and historical data is stored in directly in the Mongo database.
+
+### MQTT
+The MQTT (Message Queuing Telemetry Transport) protocol is one of the most well known and popular machine to machine communication protocols. Developed by IBM's Dr. Andy Stanford-Clark, the protocol is a lightweight publish and subscribe protocol designed for constrained devices. MQTT is primary communciation on the HIAS network.
+
+### AMQP
+The AMQP (Advanced Message Queuing Protocol) is another popular machine to machine communication protocol. Although different to MQTT, it has the same function, allowing constrained devices and applications to communicate with each other.
+
+&nbsp;
+
+# HIAS iotJumpWay Network
 ![HIAS IoT](Media/Images/HIAS-IoT-Dashboard.png)
 
 The HIAS IoT network is powered by a new, fully open-source version of the [iotJumpWay](https://www.iotJumpWay.com "iotJumpWay"). The HIAS iotJumpway dashboard is your control panel for managing all of your network iotJumpWay zones, devices, sensors/actuators and applications.
@@ -167,41 +186,24 @@ The HIAS Blockchain hosts an iotJumpWay smart contract responsible for veryifing
 
 &nbsp;
 
-# Installation
-Installation scripts and tutorials for setting up your HIAS - Hospital Intelligent Automation System & UI are provided. To get started, please follow the installation guides provided below in the order they are given:
+# HIAS Artificial Intelligence
+The HIAS network is made up of multiple open-source AI models, these models are provided through our official Github organization, as well as our research project Githubs. Current models available for the HIAS network include Leukemia and COVID classifiers, facial recognition and natural language understanding.
 
-| ORDER | GUIDE | INFORMATION | AUTHOR |
-| ----- | ----- | ----------- | ------ |
-| 1 | [Main Installation Guide](Documentation/Installation.md "Main Installation Guide") | Primary installation guide covering most of the information needed to do the core installation |  [Adam Milton-Barker](https://www.leukemiaairesearch.com/team/adam-milton-barker "Adam Milton-Barker") |
+## HDSI AI Model Schemas
+![HDSI AI Model Schemas](Media/Images/HDSI-AI-Model-Schemas.jpg)
+The HDSI schemas provide an easy way to manage and use the HIAS AI models. The schemas provide a standardization that allows you to not only use our models, but easily create your own and use them with the HIAS network.
 
-&nbsp;
-
-# HIAS Detection Systems
-Using AI models on the HIAS network, the UI can be used to classify image based samples for diseases such as COVID-19 and Leukemia.
-
- ## Acute Lymphoblastic Leukemia Detection System (CNN)
+ ## HIAS Acute Lymphoblastic Leukemia Detection System (CNN)
 ![HIAS COVID-19 Diagnosis (CNN)](Media/Images/HIAS-ALL-Detection-System.png)
 
 The HIAS Acute Lymphoblastic Leukemia Detection System (CNN) used the [oneAPI Acute Lymphoblastic Leukemia Classifier](https://github.com/AMLResearchProject/oneAPI-ALL-Classifier), based on the proposed architecture in the [Acute Leukemia Classification Using Convolution Neural Network In Clinical Decision Support System](https://airccj.org/CSCP/vol7/csit77505.pdf) paper and using the [Acute Lymphoblastic Leukemia Image Database for Image Processing dataset](https://homes.di.unimi.it/scotti/all). The classifier achieves 98% accuracy at detecting Acute Lymphoblastic Leukemia in unseen data.
 
-## COVID-19 Detection System (CNN)
+## HIAS COVID-19 Detection System (CNN)
 ![HIAS COVID-19 Diagnosis (CNN)](Media/Images/HIAS-COVID-19-Detection-System.png)
 
  The HIAS COVID-19 Detection System (CNN) system uses the [COVID-19 Tensorflow DenseNet Classifier](https://github.com/COVID-19-AI-Research-Project/AI-Classification/tree/master/Projects/2 "COVID-19 Tensorflow DenseNet Classifier") project, a Tensorflow 2 DenseNet implementation using the [SARS-COV-2 Ct-Scan Dataset](https://www.kaggle.com/plameneduardo/sarscov2-ctscan-dataset "SARS-COV-2 Ct-Scan Dataset") by our collaborators, Plamenlancaster: [Professor Plamen Angelov](https://www.lancaster.ac.uk/lira/people/#d.en.397371) from [Lancaster University](https://www.lancaster.ac.uk/)/ Centre Director @ [Lira](https://www.lancaster.ac.uk/lira/), & his researcher, [Eduardo Soares PhD](https://www.lancaster.ac.uk/sci-tech/about-us/people/eduardo-almeida-soares). The classifier achieves 92% accuracy at detecting COVID-19 in unseen data.
 
-&nbsp;
-
-# HIAS Data Analysis
-The HIAS network hosts a number of AI models that monitor data from local and external sources to make predictions based on the raw data. You can monitor real-time data using the HIAS UI.
-
-## HIAS COVID-19 Data Analysis
-![HIAS COVID-19 Data Analysis](Media/Images/HIAS-Data-Analysis-COVID-19.png)
-
-Functionality is now available to set up a basic COVID-19 tracker that powers graphs in the HIAS UI. This system pulls data from the [COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19 "COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University") and displays the stats in the UI.
-
-&nbsp;
-
-# HIAS Facial Recognition API
+## HIAS Facial Recognition API
 ![HIAS Facial Recognition](Media/Images/HIAS-Facial-Recognition.png)
 
 The HIAS facial recognition API is based on [TassAI](https://www.facebook.com/TassAI/ "TassAI"). The API allows for facial identification using authenticated HTTP requests from devices and applications that are authorized to communicate with the HIAS network.
@@ -214,10 +216,31 @@ Multiple TassAI facial recognition devices can be configured. The cameras track 
 
 &nbsp;
 
-# HIAS Natural Language Understanding Engines
+## HIAS Natural Language Understanding Engines
 ![HIAS Natural Language Understanding Engines](Media/Images/HIAS-NLU.jpg)
 
 The HIAS UI allows Natural Language Understanding Engines to be connected to the network. These NLUs can be communicated with via the network allowing applications and devices to have realtime spoken interactions with known and unknown users.
+
+&nbsp;
+
+&nbsp;
+
+# Installation
+Installation scripts and tutorials for setting up your HIAS - Hospital Intelligent Automation System & UI are provided. To get started, please follow the installation guides provided below in the order they are given:
+
+| ORDER | GUIDE | INFORMATION | AUTHOR |
+| ----- | ----- | ----------- | ------ |
+| 1 | [Main Installation Guide](Documentation/Installation.md "Main Installation Guide") | Primary installation guide covering most of the information needed to do the core installation |  [Adam Milton-Barker](https://www.leukemiaairesearch.com/team/adam-milton-barker "Adam Milton-Barker") |
+
+&nbsp;
+
+# HIAS Data Analysis
+The HIAS network hosts a number of AI models that monitor data from local and external sources to make predictions based on the raw data. You can monitor real-time data using the HIAS UI.
+
+## HIAS COVID-19 Data Analysis
+![HIAS COVID-19 Data Analysis](Media/Images/HIAS-Data-Analysis-COVID-19.png)
+
+Functionality is now available to set up a basic COVID-19 tracker that powers graphs in the HIAS UI. This system pulls data from the [COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19 "COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University") and displays the stats in the UI.
 
 &nbsp;
 
