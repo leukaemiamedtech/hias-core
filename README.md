@@ -24,10 +24,11 @@
     - [HIAS IoT Sensors/Actuators](#hias-iot-sensorsactuators)
     - [HIAS IoT Applications](#hias-iot-applications)
     - [HIAS IoT Data](#hias-iot-data)
-- [Installation](#installation)
-- [HIAS Detection Systems](#hias-detection-systems)
+- [HIAS Artficial Intelligence](#hias-artificial-intelligence)
+    - [HDSI AI Model Schemas](#hdsi-ai-model-schemas)
     - [Acute Lymphoblastic Leukemia Detection System (CNN)](#acute-lymphoblastic-leukemia-detection-system-cnn)
     - [COVID-19 Detection System (CNN)](#covid-19-detection-system-cnn)
+- [Installation](#installation)
 - [HIAS Data Analysis](#hias-data-analysis)
     - [HIAS COVID-19 Data Analysis](#hias-covid-19-data-analysis)
 - [HIAS Facial Recognition API](#hias-facial-recognition-api)
@@ -185,17 +186,12 @@ The HIAS Blockchain hosts an iotJumpWay smart contract responsible for veryifing
 
 &nbsp;
 
-# Installation
-Installation scripts and tutorials for setting up your HIAS - Hospital Intelligent Automation System & UI are provided. To get started, please follow the installation guides provided below in the order they are given:
+# HIAS Artficial Intelligence
+The HIAS network is made up of multiple open-source AI models, these models are provided through our official Github organization, as well as our research project Githubs. Current models available for the HIAS network include Leukemia and COVID classifiers, facial recognition and natural language understanding.
 
-| ORDER | GUIDE | INFORMATION | AUTHOR |
-| ----- | ----- | ----------- | ------ |
-| 1 | [Main Installation Guide](Documentation/Installation.md "Main Installation Guide") | Primary installation guide covering most of the information needed to do the core installation |  [Adam Milton-Barker](https://www.leukemiaairesearch.com/team/adam-milton-barker "Adam Milton-Barker") |
-
-&nbsp;
-
-# HIAS Detection Systems
-Using AI models on the HIAS network, the UI can be used to classify image based samples for diseases such as COVID-19 and Leukemia.
+## HDSI AI Model Schemas
+![HDSI AI Model Schemas](Media/Images/HDSI-AI-Model-Schemas.jpg)
+The HDSI schemas provide an easy way to manage and use the HIAS AI models. The schemas provide a standardization that allows you to not only use our models, but easily create your own and use them with the HIAS network.
 
  ## Acute Lymphoblastic Leukemia Detection System (CNN)
 ![HIAS COVID-19 Diagnosis (CNN)](Media/Images/HIAS-ALL-Detection-System.png)
@@ -206,6 +202,15 @@ The HIAS Acute Lymphoblastic Leukemia Detection System (CNN) used the [oneAPI Ac
 ![HIAS COVID-19 Diagnosis (CNN)](Media/Images/HIAS-COVID-19-Detection-System.png)
 
  The HIAS COVID-19 Detection System (CNN) system uses the [COVID-19 Tensorflow DenseNet Classifier](https://github.com/COVID-19-AI-Research-Project/AI-Classification/tree/master/Projects/2 "COVID-19 Tensorflow DenseNet Classifier") project, a Tensorflow 2 DenseNet implementation using the [SARS-COV-2 Ct-Scan Dataset](https://www.kaggle.com/plameneduardo/sarscov2-ctscan-dataset "SARS-COV-2 Ct-Scan Dataset") by our collaborators, Plamenlancaster: [Professor Plamen Angelov](https://www.lancaster.ac.uk/lira/people/#d.en.397371) from [Lancaster University](https://www.lancaster.ac.uk/)/ Centre Director @ [Lira](https://www.lancaster.ac.uk/lira/), & his researcher, [Eduardo Soares PhD](https://www.lancaster.ac.uk/sci-tech/about-us/people/eduardo-almeida-soares). The classifier achieves 92% accuracy at detecting COVID-19 in unseen data.
+
+&nbsp;
+
+# Installation
+Installation scripts and tutorials for setting up your HIAS - Hospital Intelligent Automation System & UI are provided. To get started, please follow the installation guides provided below in the order they are given:
+
+| ORDER | GUIDE | INFORMATION | AUTHOR |
+| ----- | ----- | ----------- | ------ |
+| 1 | [Main Installation Guide](Documentation/Installation.md "Main Installation Guide") | Primary installation guide covering most of the information needed to do the core installation |  [Adam Milton-Barker](https://www.leukemiaairesearch.com/team/adam-milton-barker "Adam Milton-Barker") |
 
 &nbsp;
 
