@@ -10,17 +10,20 @@
 
 - [Introduction](#introduction)
 - [Key Features](#key-features)
-- [HIAS Hardware](#hias-hardware)
 - [HIAS Network](#hias-network)
 - [HIAS UI](#hias-ui)
 - [HIAS Blockchain](#hias-blockchain)
-- [HIAS IoT](#hias-iot)
+- [HIAS Data Systems Interface](#hias-data-systems-interface)
+    - [HDSI IoT Agents](#hdsi-iot-agents)
+        - [MQTT](#mqtt)
+        - [AQMP](#aqmp)
+- [HIAS iotJumpWay Network](#hias-iotjumpway)
+    - [HIAS IoT Data Smart Contract](#hias-iot-data-smart-contract)
     - [HIAS IoT Zones](#hias-iot-zones)
     - [HIAS IoT Devices](#hias-iot-devices)
     - [HIAS IoT Sensors/Actuators](#hias-iot-sensorsactuators)
     - [HIAS IoT Applications](#hias-iot-applications)
     - [HIAS IoT Data](#hias-iot-data)
-    - [HIAS IoT Data Smart Contract](#hias-iot-data-smart-contract)
 - [Installation](#installation)
 - [HIAS Detection Systems](#hias-detection-systems)
     - [Acute Lymphoblastic Leukemia Detection System (CNN)](#acute-lymphoblastic-leukemia-detection-system-cnn)
@@ -59,41 +62,38 @@ __This project is a proof of concept, and is still a work in progress.__
 
 ![HIAS Network Map](Media/Images/HIAS-Network.png)
 
-- **Local Web Server (Complete)**
+- **Local Web Server**
     - Locally hosted webserver using NGINX.
-- **High Grade SSL Encryption (Complete)**
+- **High Grade SSL Encryption**
     - High grade (A+) encryption for the web server, proxy and network.
-- **Proxy (Complete)**
+- **Proxy**
     - Secure access to local devices from the outside world.
-- **Blockchain (Complete)**
-    - Private Ethereum blockchain for access permissions, provides data integrity and accountability.
-- **System Database (Complete)**
-    - The system MySQL database powers the HIAS UI.
-- **IoT Database (Complete)**
-    - The network IoT database is a Mongo database that stores all data from the HIAS network devices and applications.
-- **Local Samba Server (Complete)**
+- **HIAS Blockchain**
+    - Private Ethereum blockchain for access permissions, and providing data integrity & accountability.
+- **HDSI Context Broker**
+    - Context Broker handles contextual data for iotJumpWay IoT Agents, AI Models, Devices, Applications, Staff & Patients.
+- **HDSI IoT Agents**
+    - MQTT, AQMP & CoAP IoT Agents translate and push data coming from iotJumpWay Devices and Applications to the HDSI Context Broker.
+- **System Database**
+    - MySQL database powering the HIAS UI.
+- **IoT Database**
+    - The network IoT database is a Mongo database that stores all data from the HIAS network devices and applications, as well as iotJumpWay IoT Agents, AI Models, Devices, Applications, Staff & Patients contextual data.
+- **Local Samba Server**
     - A local Samba file server allowing controlled individual and group access to files on your local network.
-- **Local IoT Broker (Complete)**
+- **Local IoT Broker**
     - Local and private MQTT/Websockets broker based on the  [iotJumpway Broker](https://github.com/iotJumpway/Broker "iotJumpway Broker").
-- **Server UI (Work In Progress)**
+- **Server UI**
     - A control panel to monitor and manage your HIAS network.
-- **Facial Identification Systems (Complete)**
+- **Facial Identification Systems**
     - Facial identification systems based on [TassAI](https://github.com/TassAI/ "TassAI").
-- **Natural Language Understanding (NLU) Server (Complete)**
+- **Natural Language Understanding (NLU) Server**
     - Natural Language Understanding server based on [GeniSysAI](https://github.com/GeniSysAI/ "GeniSysAI").
-- **COVID Data Analysis System (Complete)**
+- **COVID Data Analysis System**
     - A data anaysis system for monitoring the COVID 19 pandemic. This system collects data from the [Johns Hopkins University COVID-19 Daily Reports](https://github.com/CSSEGISandData/COVID-19/) on Github.
-- **AI Detection Systems (Complete)**
+- **AI Detection Systems**
     - Detection systems for classsifying Acute Lymphoblastic Leukemia and COVID-19.
-- **HIS/HMS (In Development)**
+- **HIS/HMS**
     - Hospital management system providing online tools for managing and running day to day activities and resources for the hospital.
-
-&nbsp;
-
-# HIAS Hardware
-![HIAS UI](Media/Images/HIAS-Hardware.png)
-
-HIAS has been developed on an UP2 and a 1.5TB HDD to show the potential of lower powered devices for building IoT networks. In a real world scenario such as a being used to power a hospital network, it is likely that a device with more resources and storage will be required.
 
 &nbsp;
 
@@ -112,13 +112,31 @@ The HIAS UI is the central control panel for the server, and all of the modular 
 &nbsp;
 
 # HIAS Blockchain
-![HIAS Blockchain](Media/Images/HIAS-Blockchain.png)
-
 The HIAS Blockchain is a private Ethereum blockchain network that provides an immutable history of everything that happens on the HIAS network. Every user/device and application has a HIAS Blockchain address, meaning their actions can be recorded on the blockchain. Smart contracts provide additional security when it comes to verifying permissions, data hashes are stored on the blockchain providing data integrity. and each action made by staff members in the UI is recorded. The HIAS Blockchain network can be extended by installing additional full miner nodes which help to create blocks, seal transaction blocks, and also have a full copy of the entire HIAS Blockchain which remain synchronized.
 
 &nbsp;
 
-# HIAS IoT
+# HDSI Context Broker
+![HDSI Context Broker](Media/Images/HDSI-Context-Broker.jpg)
+
+The HIAS Data Services Interface Context Broker handles contextual information for the HIAS network. The broker implements the HDSI V1 API and allows easy management of HIAS iotJumpWay IoT Agents, AI Models, Devices, Applications, and HIAS Staff & Patient accounts and their related contextual data. HDSI is based on [Open Mobile Alliance](http://www.openmobilealliance.org/)'s [NGSI](http://www.openmobilealliance.org/release/NGSI/V1_0-20120529-A/OMA-TS-NGSI_Context_Management-V1_0-20120529-A.pdf), and has been customized to meet the requirements of the HIAS network.
+
+All iotJumpWay IoT Agents, AI Models, Devices, Applications, and HIAS Staff & Patient accounts have unique schemas that standardize their information and setup, these schemas are stored in the context broker.
+
+## HDSI IoT Agents
+![HDSI IoT Agents](Media/Images/HDSI-IoT-Agents.jpg)
+
+The HDSI IoT Agents translate and push data sent from iotJumpWay Devices & Applications to the HDSI Context Broker. Each IoT Agent is responsible for it's own communication protocol, or transport. Current supported IoT protocols include HTTP, MQTT, Websockets & AMQP, with a CoAP broker and IoT Agent in development. The IoT Agents listen to data being sent on using their protocol and sends contextual data to the context broker, and historical data is stored in directly in the Mongo database.
+
+### MQTT
+The MQTT (Message Queuing Telemetry Transport) protocol is one of the most well known and popular machine to machine communication protocols. Developed by IBM's Dr. Andy Stanford-Clark, the protocol is a lightweight publish and subscribe protocol designed for constrained devices. MQTT is primary communciation on the HIAS network.
+
+### AMQP
+The AMQP (Advanced Message Queuing Protocol) is another popular machine to machine communication protocol. Although different to MQTT, it has the same function, allowing constrained devices and applications to communicate with each other.
+
+&nbsp;
+
+# HIAS iotJumpWay Network
 ![HIAS IoT](Media/Images/HIAS-IoT-Dashboard.png)
 
 The HIAS IoT network is powered by a new, fully open-source version of the [iotJumpWay](https://www.iotJumpWay.com "iotJumpWay"). The HIAS iotJumpway dashboard is your control panel for managing all of your network iotJumpWay zones, devices, sensors/actuators and applications.
