@@ -44,7 +44,7 @@ class Blockchain():
 		""" Connects to HIAS Blockchain. """
 
 		self.w3 = Web3(Web3.HTTPProvider(self.Helpers.confs["ethereum"]["bchost"], request_kwargs={
-						'auth': HTTPBasicAuth(self.Helpers.confs["ethereum"]["user"], self.Helpers.confs["ethereum"]["pass"])}))
+						'auth': HTTPBasicAuth(self.Helpers.confs["iotJumpWay"]["identifier"], self.Helpers.confs["iotJumpWay"]["auth"])}))
 
 		self.authContract = self.w3.eth.contract(self.w3.toChecksumAddress(self.Helpers.confs["ethereum"]["authContract"]), abi=json.dumps(self.Helpers.confs["ethereum"]["authAbi"]))
 		self.iotContract = self.w3.eth.contract(self.w3.toChecksumAddress(self.Helpers.confs["ethereum"]["iotContract"]), abi=json.dumps(self.Helpers.confs["ethereum"]["iotAbi"]))

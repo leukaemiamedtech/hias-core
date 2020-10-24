@@ -45,7 +45,7 @@ class ContextBroker():
 		apiUrl = "https://" + self.Helpers.confs["iotJumpWay"]["host"] + "/" +  self.Helpers.confs["iotJumpWay"]["ContextBroker"]["address"] + "/entities/" + _id + "?type=" + typeof + "&attrs=blockchain.address,lid.value,lid.entity"
 
 		response = requests.get(apiUrl, headers=self.headers, auth=(
-			self.Helpers.confs["iotJumpWay"]["MQTT"]["Agent"]["identifier"], self.Helpers.confs["iotJumpWay"]["MQTT"]["Agent"]["auth"]))
+			self.Helpers.confs["iotJumpWay"]["identifier"], self.Helpers.confs["iotJumpWay"]["auth"]))
 
 		return json.loads(response.text)
 
@@ -57,7 +57,7 @@ class ContextBroker():
 					"/entities?type=Staff&values=nfc.value|nfc"
 
 		response = requests.get(apiUrl, headers=self.headers, auth=(
-			self.Helpers.confs["iotJumpWay"]["MQTT"]["Agent"]["identifier"], self.Helpers.confs["iotJumpWay"]["MQTT"]["Agent"]["auth"]))
+			self.Helpers.confs["iotJumpWay"]["identifier"], self.Helpers.confs["iotJumpWay"]["auth"]))
 
 		return json.loads(response.text)
 
@@ -69,7 +69,7 @@ class ContextBroker():
 					"/entities?type=Device&category.value=GeniSysAI&values=zid.value|" + zone + ",status|ONLINE"
 
 		response = requests.get(apiUrl, headers=self.headers, auth=(
-			self.Helpers.confs["iotJumpWay"]["MQTT"]["Agent"]["identifier"], self.Helpers.confs["iotJumpWay"]["MQTT"]["Agent"]["auth"]))
+			self.Helpers.confs["iotJumpWay"]["identifier"], self.Helpers.confs["iotJumpWay"]["auth"]))
 
 		return json.loads(response.text)
 
@@ -81,6 +81,6 @@ class ContextBroker():
 			"/entities/" + _id + "/attrs?type=" + typeof
 
 		response = requests.patch(apiUrl, data=json.dumps(data), headers=self.headers, auth=(
-			self.Helpers.confs["iotJumpWay"]["MQTT"]["Agent"]["identifier"], self.Helpers.confs["iotJumpWay"]["MQTT"]["Agent"]["auth"]))
+			self.Helpers.confs["iotJumpWay"]["identifier"], self.Helpers.confs["iotJumpWay"]["auth"]))
 
 		return json.loads(response.text)

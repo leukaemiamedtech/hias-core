@@ -4,6 +4,8 @@
         "host": "YourHiasDomainName",
         "ip": "YourHiasIP",
         "ipinfo": "YourHiasIpInfoKey",
+        "identifier": "YourIotJumpWayApplicationIdentifier",
+        "auth": "YourIotJumpWayApplicationAuthKey",
         "ContextBroker": {
             "version": "v1",
             "address": "ContextBroker/v1",
@@ -40,9 +42,7 @@
                 "an": "YourIotJumpWayApplicationName",
                 "un": "YourIotJumpWayApplicationUsername",
                 "pw": "YourIotJumpWayApplicationPassword",
-                "northPort": 3256,
-                "identifier": "YourIotJumpWayApplicationIdentifier",
-                "auth": "YourIotJumpWayApplicationAuthKey"
+                "northPort": 3256
             },
             "TassAI": {
                 "allowed": [".jpg", ".JPG", ".png", ".PNG"],
@@ -75,8 +75,6 @@
         "hpass": "YourHiasBlockhainUserPass",
         "iaddress": "YourIotBlockhainUserAddress",
         "ipass": "YourIotBlockhainUserPass",
-        "user": "YourIotUserIdentifier",
-        "pass": "YourIotUserPass",
         "patientsAbi": [],
         "patientsContract": "YourPatientsContractAddress"
     }
