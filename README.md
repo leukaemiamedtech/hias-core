@@ -24,7 +24,7 @@
     - [HIAS IoT Sensors/Actuators](#hias-iot-sensorsactuators)
     - [HIAS IoT Applications](#hias-iot-applications)
     - [HIAS IoT Data](#hias-iot-data)
-- [HIAS Artficial Intelligence](#hias-artificial-intelligence)
+- [HIAS Artificial Intelligence](#hias-artificial-intelligence)
     - [HDSI AI Model Schemas](#hdsi-ai-model-schemas)
     - [Acute Lymphoblastic Leukemia Detection System (CNN)](#acute-lymphoblastic-leukemia-detection-system-cnn)
     - [COVID-19 Detection System (CNN)](#covid-19-detection-system-cnn)
@@ -186,7 +186,7 @@ The HIAS Blockchain hosts an iotJumpWay smart contract responsible for veryifing
 
 &nbsp;
 
-# HIAS Artficial Intelligence
+# HIAS Artificial Intelligence
 The HIAS network is made up of multiple open-source AI models, these models are provided through our official Github organization, as well as our research project Githubs. Current models available for the HIAS network include Leukemia and COVID classifiers, facial recognition and natural language understanding.
 
 ## HDSI AI Model Schemas
