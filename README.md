@@ -16,7 +16,7 @@
 - [HIAS Data Systems Interface](#hias-data-systems-interface)
     - [HDSI IoT Agents](#hdsi-iot-agents)
         - [MQTT](#mqtt)
-        - [AQMP](#aqmp)
+        - [AMQP](#AMQP)
 - [HIAS iotJumpWay Network](#hias-iotjumpway-network)
     - [HIAS IoT Data Smart Contract](#hias-iot-data-smart-contract)
     - [HIAS IoT Zones](#hias-iot-zones)
@@ -74,7 +74,7 @@ __This project is a proof of concept, and is still a work in progress.__
 - **HDSI Context Broker**
     - Context Broker handles contextual data for iotJumpWay IoT Agents, AI Models, Devices, Applications, Staff & Patients.
 - **HDSI IoT Agents**
-    - MQTT, AQMP & CoAP IoT Agents translate and push data coming from iotJumpWay Devices and Applications to the HDSI Context Broker.
+    - MQTT, AMQP & CoAP IoT Agents translate and push data coming from iotJumpWay Devices and Applications to the HDSI Context Broker.
 - **System Database**
     - MySQL database powering the HIAS UI.
 - **IoT Database**
@@ -220,8 +220,6 @@ Multiple TassAI facial recognition devices can be configured. The cameras track 
 ![HIAS Natural Language Understanding Engines](Media/Images/HIAS-NLU.jpg)
 
 The HIAS UI allows Natural Language Understanding Engines to be connected to the network. These NLUs can be communicated with via the network allowing applications and devices to have realtime spoken interactions with known and unknown users.
-
-&nbsp;
 
 &nbsp;
 
