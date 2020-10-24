@@ -17,7 +17,7 @@
     - [HDSI IoT Agents](#hdsi-iot-agents)
         - [MQTT](#mqtt)
         - [AQMP](#aqmp)
-- [HIAS iotJumpWay Network](#hias-iotjumpway)
+- [HIAS iotJumpWay Network](#hias-iotjumpway-network)
     - [HIAS IoT Data Smart Contract](#hias-iot-data-smart-contract)
     - [HIAS IoT Zones](#hias-iot-zones)
     - [HIAS IoT Devices](#hias-iot-devices)
@@ -116,10 +116,10 @@ The HIAS Blockchain is a private Ethereum blockchain network that provides an im
 
 &nbsp;
 
-# HDSI Context Broker
-![HDSI Context Broker](Media/Images/HDSI-Context-Broker.jpg)
+# HIAS Data Systems Interface
+![HIAS Data Systems Interface](Media/Images/HDSI-Context-Broker.jpg)
 
-The HIAS Data Services Interface Context Broker handles contextual information for the HIAS network. The broker implements the HDSI V1 API and allows easy management of HIAS iotJumpWay IoT Agents, AI Models, Devices, Applications, and HIAS Staff & Patient accounts and their related contextual data. HDSI is based on [Open Mobile Alliance](http://www.openmobilealliance.org/)'s [NGSI](http://www.openmobilealliance.org/release/NGSI/V1_0-20120529-A/OMA-TS-NGSI_Context_Management-V1_0-20120529-A.pdf), and has been customized to meet the requirements of the HIAS network.
+The HIAS Data Services Interface is a context broker that handles contextual information for the HIAS network. The broker implements the HDSI V1 API and allows easy management of HIAS iotJumpWay IoT Agents, AI Models, Devices, Applications, and HIAS Staff & Patient accounts and their related contextual data. HDSI is based on [Open Mobile Alliance](http://www.openmobilealliance.org/)'s [NGSI](http://www.openmobilealliance.org/release/NGSI/V1_0-20120529-A/OMA-TS-NGSI_Context_Management-V1_0-20120529-A.pdf), and has been customized to meet the requirements of the HIAS network.
 
 All iotJumpWay IoT Agents, AI Models, Devices, Applications, and HIAS Staff & Patient accounts have unique schemas that standardize their information and setup, these schemas are stored in the context broker.
 

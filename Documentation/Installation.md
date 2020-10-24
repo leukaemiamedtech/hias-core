@@ -6,7 +6,6 @@
 # Table Of Contents
 
 - [Introduction](#introduction)
-- [Required Hardware](#required-hardware)
 - [Prerequisites](#prerequisites)
   - [Ubuntu Server 18.04.4 LTS](#ubuntu-server-18044-lts)
   - [VirtualBox](#virtualbox)
@@ -53,17 +52,6 @@
 
 # Introduction
 The following guide will take you through setting up and installing the  [Hospital Intelligent Automation System](https://github.com/LeukemiaAiResearch/HIAS " Hospital Intelligent Automation System").
-
-&nbsp;
-
-# Required Hardware
-For this tutorial I am using a [UP2 AI Vision Devkit](https://up-board.org/upkits/up-squared-ai-vision-kit/ "UP2 AI Vision Devkit") and a 1.5TB hard-drive for the core server hardware, but you can use any linux machine and hard-drive. For real-world usage in medical centers and hospitals it is suggested to use a device with more resources.
-
-![Required Hardware](../Media/Images/HIAS-Hardware.png)
-
-- 1 x Linux machine (Server)
-- 1 x 1TB (Or more) HDD
-- 1 x Webcam
 
 &nbsp;
 
