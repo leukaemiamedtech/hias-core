@@ -26,13 +26,13 @@
     - [HIAS IoT Data](#hias-iot-data)
 - [HIAS Artificial Intelligence](#hias-artificial-intelligence)
     - [HDSI AI Model Schemas](#hdsi-ai-model-schemas)
-    - [Acute Lymphoblastic Leukemia Detection System (CNN)](#acute-lymphoblastic-leukemia-detection-system-cnn)
-    - [COVID-19 Detection System (CNN)](#covid-19-detection-system-cnn)
+    - [HIAS Acute Lymphoblastic Leukemia Detection System (CNN)](#hias-acute-lymphoblastic-leukemia-detection-system-cnn)
+    - [HIAS COVID-19 Detection System (CNN)](#hias-covid-19-detection-system-cnn)
+    - [HIAS Facial Recognition API](#hias-facial-recognition-api)
+    - [HIAS Natural Language Understanding Engines](#hias-natural-language-understanding-engines)
 - [Installation](#installation)
 - [HIAS Data Analysis](#hias-data-analysis)
     - [HIAS COVID-19 Data Analysis](#hias-covid-19-data-analysis)
-- [HIAS Facial Recognition API](#hias-facial-recognition-api)
-- [HIAS Natural Language Understanding Engines](#hias-natural-language-understanding-engines)
 - [EMAR / EMAR Mini](#emar--emar-mini)
 - [Modular Addons](#modular-addons)
 - [Acknowledgement](#acknowledgement)
@@ -193,15 +193,35 @@ The HIAS network is made up of multiple open-source AI models, these models are 
 ![HDSI AI Model Schemas](Media/Images/HDSI-AI-Model-Schemas.jpg)
 The HDSI schemas provide an easy way to manage and use the HIAS AI models. The schemas provide a standardization that allows you to not only use our models, but easily create your own and use them with the HIAS network.
 
- ## Acute Lymphoblastic Leukemia Detection System (CNN)
+ ## HIAS Acute Lymphoblastic Leukemia Detection System (CNN)
 ![HIAS COVID-19 Diagnosis (CNN)](Media/Images/HIAS-ALL-Detection-System.png)
 
 The HIAS Acute Lymphoblastic Leukemia Detection System (CNN) used the [oneAPI Acute Lymphoblastic Leukemia Classifier](https://github.com/AMLResearchProject/oneAPI-ALL-Classifier), based on the proposed architecture in the [Acute Leukemia Classification Using Convolution Neural Network In Clinical Decision Support System](https://airccj.org/CSCP/vol7/csit77505.pdf) paper and using the [Acute Lymphoblastic Leukemia Image Database for Image Processing dataset](https://homes.di.unimi.it/scotti/all). The classifier achieves 98% accuracy at detecting Acute Lymphoblastic Leukemia in unseen data.
 
-## COVID-19 Detection System (CNN)
+## HIAS COVID-19 Detection System (CNN)
 ![HIAS COVID-19 Diagnosis (CNN)](Media/Images/HIAS-COVID-19-Detection-System.png)
 
  The HIAS COVID-19 Detection System (CNN) system uses the [COVID-19 Tensorflow DenseNet Classifier](https://github.com/COVID-19-AI-Research-Project/AI-Classification/tree/master/Projects/2 "COVID-19 Tensorflow DenseNet Classifier") project, a Tensorflow 2 DenseNet implementation using the [SARS-COV-2 Ct-Scan Dataset](https://www.kaggle.com/plameneduardo/sarscov2-ctscan-dataset "SARS-COV-2 Ct-Scan Dataset") by our collaborators, Plamenlancaster: [Professor Plamen Angelov](https://www.lancaster.ac.uk/lira/people/#d.en.397371) from [Lancaster University](https://www.lancaster.ac.uk/)/ Centre Director @ [Lira](https://www.lancaster.ac.uk/lira/), & his researcher, [Eduardo Soares PhD](https://www.lancaster.ac.uk/sci-tech/about-us/people/eduardo-almeida-soares). The classifier achieves 92% accuracy at detecting COVID-19 in unseen data.
+
+## HIAS Facial Recognition API
+![HIAS Facial Recognition](Media/Images/HIAS-Facial-Recognition.png)
+
+The HIAS facial recognition API is based on [TassAI](https://www.facebook.com/TassAI/ "TassAI"). The API allows for facial identification using authenticated HTTP requests from devices and applications that are authorized to communicate with the HIAS network.
+
+A range of open-source facial recognition systems can be attached to the network and use web and IP cameras attached to devices that process frames from the cameras in real-time, before streaming the processed framed to a local server endpoint.
+
+Multiple TassAI facial recognition devices can be configured. The cameras track known and unknown users and can communicate with the Natural Language Understanding Engines allowing conversations to be triggered based on facial recognition identifications.
+
+![HIAS Facial Recognition](Media/Images/HIAS-Facial-Recognition-Edit.png)
+
+&nbsp;
+
+## HIAS Natural Language Understanding Engines
+![HIAS Natural Language Understanding Engines](Media/Images/HIAS-NLU.jpg)
+
+The HIAS UI allows Natural Language Understanding Engines to be connected to the network. These NLUs can be communicated with via the network allowing applications and devices to have realtime spoken interactions with known and unknown users.
+
+&nbsp;
 
 &nbsp;
 
@@ -221,26 +241,6 @@ The HIAS network hosts a number of AI models that monitor data from local and ex
 ![HIAS COVID-19 Data Analysis](Media/Images/HIAS-Data-Analysis-COVID-19.png)
 
 Functionality is now available to set up a basic COVID-19 tracker that powers graphs in the HIAS UI. This system pulls data from the [COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19 "COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University") and displays the stats in the UI.
-
-&nbsp;
-
-# HIAS Facial Recognition API
-![HIAS Facial Recognition](Media/Images/HIAS-Facial-Recognition.png)
-
-The HIAS facial recognition API is based on [TassAI](https://www.facebook.com/TassAI/ "TassAI"). The API allows for facial identification using authenticated HTTP requests from devices and applications that are authorized to communicate with the HIAS network.
-
-A range of open-source facial recognition systems can be attached to the network and use web and IP cameras attached to devices that process frames from the cameras in real-time, before streaming the processed framed to a local server endpoint.
-
-Multiple TassAI facial recognition devices can be configured. The cameras track known and unknown users and can communicate with the Natural Language Understanding Engines allowing conversations to be triggered based on facial recognition identifications.
-
-![HIAS Facial Recognition](Media/Images/HIAS-Facial-Recognition-Edit.png)
-
-&nbsp;
-
-# HIAS Natural Language Understanding Engines
-![HIAS Natural Language Understanding Engines](Media/Images/HIAS-NLU.jpg)
-
-The HIAS UI allows Natural Language Understanding Engines to be connected to the network. These NLUs can be communicated with via the network allowing applications and devices to have realtime spoken interactions with known and unknown users.
 
 &nbsp;
 
