@@ -13,15 +13,11 @@ include dirname(__FILE__) . '/../../Hospital/Patients/Classes/Patients.php';
 $_GeniSysAi->checkSession();
 
 $Locations = $iotJumpWay->getLocations(0, "id ASC");
-$Zones = $iotJumpWay->getZones(0, "id ASC");
-$Devices = $iotJumpWay->getDevices(0, "id ASC");
-$Applications = $iotJumpWay->getApplications(0, "id ASC");
 
 $PId = filter_input(INPUT_GET, 'patient', FILTER_SANITIZE_NUMBER_INT);
 $Patient = $Patients->getPatient($PId);
 
-list($lat, $lng) = $Patients->getMapMarkers($Patient);
-list($on, $off) = $Patients->getStatusShow($Patient["status"]);
+$cancelled = $Patient["context"]["Data"]["status"]["cancelled"] ? True : False;
 
 ?>
 
@@ -48,7 +44,7 @@ list($on, $off) = $Patients->getStatusShow($Patient["status"]);
 	<link href="<?=$domain; ?>/vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
 	<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 	<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
-	<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
+	<link href="<?=$domain; ?>/AI/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
 	<link href="<?=$domain; ?>/vendors/bower_components/fullcalendar/dist/fullcalendar.css" rel="stylesheet"
 		type="text/css" />
 </head>
@@ -112,31 +108,90 @@ list($on, $off) = $Patients->getStatusShow($Patient["status"]);
 												<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
 													<div class="form-group">
 														<label for="name" class="control-label mb-10">Name</label>
-														<input type="text" class="form-control" id="name" name="name" placeholder="Name of patient" required value="<?=$Patient["name"]; ?>">
+														<input type="text" class="form-control" id="name" name="name" placeholder="Patient Name" required value="<?=$Patient["context"]["Data"]["name"]["value"]; ?>" <?=$cancelled ? " disabled " : ""; ?>>
 														<span class="help-block"> Name of patient</span>
 													</div>
 													<div class="form-group">
-														<label for="name" class="control-label mb-10">Email</label>
-														<input type="email" class="form-control hider" id="email" name="email" placeholder="Email of patient" required value="<?=$Patient["email"]; ?>">
-														<span class="help-block"> Email of patient</span>
+														<label for="name" class="control-label mb-10">Description</label>
+														<input type="text" class="form-control" id="description" name="description" placeholder="Device Description" required value="<?=$Patient["context"]["Data"]["description"]["value"]; ?>" <?=$cancelled ? " disabled " : ""; ?>>
+														<span class="help-block"> Patient description</span>
 													</div>
 													<div class="form-group">
 														<label for="name" class="control-label mb-10">Username</label>
-														<input type="text" class="form-control hider" id="username" name="username" placeholder="Username of patient" required value="<?=$Patient["username"]; ?>">
+														<input type="text" class="form-control" id="username" name="username" placeholder="Patient Username" required value="<?=$Patient["context"]["Data"]["username"]["value"]; ?>" <?=$cancelled ? " disabled " : ""; ?>>
 														<span class="help-block"> Username of patient</span>
 													</div>
 													<div class="form-group">
-														<label class="control-label mb-10">Location</label>
-														<select class="form-control" id="lid" name="lid" required>
+														<label class="control-label mb-10">Category</label>
+														<select class="form-control" id="category" name="category" required <?=$cancelled ? " disabled " : ""; ?>>
 															<option value="">PLEASE SELECT</option>
 
 															<?php
-																if(count($Locations)):
-																	foreach($Locations as $key => $value):
+																$categories = $Patients->getPatientCategories();
+																if(count($categories)):
+																	foreach($categories as $key => $value):
 															?>
 
-															<option value="<?=$value["id"]; ?>"
-																<?=$Patient["lid"] == $value["id"] ? " selected " : ""; ?>>#<?=$value["id"]; ?>: <?=$value["name"]; ?></option>
+															<option value="<?=$value["category"]; ?>" <?=$Patient["context"]["Data"]["category"]["value"][0]==$value["category"] ? " selected " : ""; ?>><?=$value["category"]; ?></option>
+
+															<?php
+																	endforeach;
+																endif;
+															?>
+
+														</select>
+														<span class="help-block">Patient category</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Email *</label>
+														<input type="text" class="form-control" id="email" name="email" placeholder="Email of patient" required value="<?=$Patient["context"]["Data"]["email"]["value"]; ?>" <?=$cancelled ? " disabled " : ""; ?>>
+														<span class="help-block">Email of patient</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Address Street Address</label>
+														<input type="text" class="form-control" id="streetAddress" name="streetAddress" placeholder="iotJumpWay Location street address" required value="<?=$Patient["context"]["Data"]["username"]["value"]; ?>" <?=$cancelled ? " disabled " : ""; ?>>
+														<span class="help-block">iotJumpWay Location street address</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Address Locality</label>
+														<input type="text" class="form-control" id="addressLocality" name="addressLocality" placeholder="iotJumpWay Location address locality" required value="<?=$Patient["context"]["Data"]["address"]["value"]["addressLocality"]; ?>" <?=$cancelled ? " disabled " : ""; ?>>
+														<span class="help-block">iotJumpWay Location address locality</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Address Postal Code</label>
+														<input type="text" class="form-control" id="postalCode" name="postalCode" placeholder="iotJumpWay Location postal code" required value="<?=$Patient["context"]["Data"]["address"]["value"]["postalCode"]; ?>" <?=$cancelled ? " disabled " : ""; ?>>
+														<span class="help-block">iotJumpWay Location post code</span>
+													</div>
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">NFC UID</label>
+														<input type="text" class="form-control" id="nfc" name="nfc" placeholder="NFC UID"  value="<?=$Patient["context"]["Data"]["nfc"]["value"]; ?>" <?=$cancelled ? " disabled " : ""; ?>>
+														<span class="help-block">UID of patient's NFC card/fob/implant</span>
+													</div>
+													<?php if(!$cancelled): ?>
+													<div class="form-group mb-0">
+														<input type="hidden" class="form-control" id="update_patient" name="update_patient" required value="1">
+														<button type="submit" class="btn btn-success btn-anim"><i class="icon-rocket"></i><span class="btn-text">Update Patient</span></button>
+													</div>
+													<?php endif; ?>
+												</div>
+												<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+													<div class="form-group">
+														<label for="name" class="control-label mb-10">Photo</label>
+														<input type="file" class="form-control" id="photo" name="photo" />
+														<span class="help-block"> Photo of patient</span>
+													</div>
+													<div class="form-group">
+														<label class="control-label mb-10">Location</label>
+														<select class="form-control" id="lid" name="lid" required <?=$cancelled ? " disabled " : ""; ?>>
+															<option value="">PLEASE SELECT</option>
+
+															<?php
+																$Locations = $iotJumpWay->getLocations();
+																if(count($Locations["Data"])):
+																	foreach($Locations["Data"] as $key => $value):
+															?>
+
+																<option value="<?=$value["lid"]["value"]; ?>" <?=$Patient["context"]["Data"]["lid"]["value"]==$value["lid"]["value"] ? " selected " : ""; ?>>#<?=$value["lid"]["value"]; ?>: <?=$value["name"]["value"]; ?></option>
 
 															<?php
 																	endforeach;
@@ -147,55 +202,19 @@ list($on, $off) = $Patients->getStatusShow($Patient["status"]);
 														<span class="help-block"> Location of patient</span>
 													</div>
 													<div class="form-group">
-														<label class="control-label mb-10">iotJumpWay Application</label>
-														<select class="form-control" id="aid" name="aid" required>
-															<option value="">PLEASE SELECT</option>
-
-															<?php
-																if(count($Applications)):
-																	foreach($Applications as $key => $value):
-															?>
-
-															<option value="<?=$value["id"]; ?>"
-																<?=$Patient["aid"] == $value["id"] ? " selected " : ""; ?>>#<?=$value["id"]; ?>: <?=$value["name"]; ?></option>
-
-															<?php
-																	endforeach;
-																endif;
-															?>
-
-														</select>
-														<span class="help-block">iotJumpWay application</span>
-													</div>
-													<div class="form-group mb-0">
-														<input type="hidden" class="form-control" id="update_patient" name="update_patient" required value="1">
-														<input type="hidden" class="form-control" id="identifier" name="identifier" required value="<?=$Patient["apub"]; ?>">
-														<input type="hidden" class="form-control" id="bcu" name="bcu" required value="<?=$_GeniSys->_helpers->oDecrypt($Patient["bcaddress"]); ?>">
-														<input type="hidden" class="form-control" id="aid" name="aid" required value="<?=$Patient["aid"]; ?>">
-														<input type="hidden" class="form-control" id="id" name="id" required value="<?=$Patient["id"]; ?>">
-														<button type="submit" class="btn btn-success btn-anim"><i class="icon-rocket"></i><span class="btn-text">Update Patient</span></button>
-													</div>
-												</div>
-												<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-													<div class="form-group">
-														<label for="name" class="control-label mb-10">Photo</label>
-														<input type="file" class="form-control" id="photo" name="photo" />
-														<span class="help-block"> Photo of patient</span>
-													</div>
-													<div class="form-group">
 														<label for="name" class="control-label mb-10">Active</label>
-														<input type="checkbox" id="active" name="active" value="1" <?=$Patient["active"] ? " checked " : ""; ?> />
+														<input type="checkbox" id="active" name="active" value="1" <?=$Patient["context"]["Data"]["status"]["active"] ? " checked " : ""; ?>  <?=$cancelled ? " disabled " : ""; ?>/>
 														<span class="help-block">Is Patient Active?</span>
 													</div>
 													<div class="form-group">
 														<label for="name" class="control-label mb-10">Admitted</label>
-														<input type="checkbox" id="admitted" name="admitted" value="1" <?=$Patient["admitted"] ? " checked "  : ""; ?> />
+														<input type="checkbox" id="admitted" name="admitted" value="1" <?=$Patient["context"]["Data"]["status"]["admitted"] ? " checked "  : ""; ?>  <?=$cancelled ? " disabled " : ""; ?>/>
 														<span class="help-block">Is Patient Admitted?</span>
 													</div>
 													<div class="form-group">
-														<label for="name" class="control-label mb-10">Discharged</label>
-														<input type="checkbox" id="discharged" name="discharged" value="1" <?=$Patient["discharged"] ? " checked " : ""; ?> />
-														<span class="help-block">Is Patient Discharged?</span>
+														<label for="name" class="control-label mb-10">Is cancelled:</label>
+														<input type="checkbox" class="" id="cancelled" name="cancelled" value=1 <?=$Patient["context"]["Data"]["status"]["cancelled"] ? " checked " : ""; ?> <?=$cancelled ? " disabled " : ""; ?> <?=$cancelled ? " disabled " : ""; ?>>
+														<span class="help-block">Is staff member cancelled?</span>
 													</div>
 													<div class="clearfix"></div>
 												</div>
@@ -211,7 +230,7 @@ list($on, $off) = $Patients->getStatusShow($Patient["status"]);
 								<div class="pull-left">
 									<h6 class="panel-title txt-dark">Patient History</h6>
 								</div>
-								<div class="pull-right"><a href="<?=$domain; ?>/Hospital/Patients/<?=$Patient["id"]; ?>/History"><i class="fa fa-eye pull-left"></i> View All Patient History</a></div>
+								<div class="pull-right"><a href="<?=$domain; ?>/Hospital/Patients/<?=$Patient["context"]["Data"]["pid"]["value"]; ?>/History"><i class="fa fa-eye pull-left"></i> View All Patient History</a></div>
 								<div class="clearfix"></div>
 							</div>
 							<div class="panel-wrapper collapse in">
@@ -231,7 +250,7 @@ list($on, $off) = $Patients->getStatusShow($Patient["status"]);
 
 												<?php
 													$userDetails = "";
-													$history = $Patients->retrieveHistory($Patient["id"], 5);
+													$history = $Patients->retrieveHistory($Patient["context"]["Data"]["pid"]["value"], 5);
 													if(count($history)):
 														foreach($history as $key => $value):
 																if($value["uid"]):
@@ -248,7 +267,7 @@ list($on, $off) = $Patients->getStatusShow($Patient["status"]);
 														<?php
 															if($value["hash"]):
 														?>
-															<a href="<?=$domain; ?>/Hospital/Patients/<?=$Patient["id"]; ?>/Transaction/<?=$value["hash"];?>">#<?=$value["hash"];?></a>
+															<a href="<?=$domain; ?>/Hospital/Patients/<?=$Patient["context"]["Data"]["pid"]["value"]; ?>/Transaction/<?=$value["hash"];?>">#<?=$value["hash"];?></a>
 														<?php
 															else:
 														?>
@@ -280,7 +299,7 @@ list($on, $off) = $Patients->getStatusShow($Patient["status"]);
 								<div class="pull-left">
 									<h6 class="panel-title txt-dark">Patient Transactions</h6>
 								</div>
-								<div class="pull-right"><a href="<?=$domain; ?>/Hospital/Patients/<?=$Patient["id"]; ?>/Transactions"><i class="fa fa-eye pull-left"></i> View All Patient Transactions</a></div>
+								<div class="pull-right"><a href="<?=$domain; ?>/Hospital/Patients/<?=$Patient["context"]["Data"]["pid"]["value"]; ?>/Transactions"><i class="fa fa-eye pull-left"></i> View All Patient Transactions</a></div>
 								<div class="clearfix"></div>
 							</div>
 							<div class="panel-wrapper collapse in">
@@ -299,7 +318,7 @@ list($on, $off) = $Patients->getStatusShow($Patient["status"]);
 												<tbody>
 
 												<?php
-													$transactions = $Patients->retrieveTransactions($Patient["id"], 5);
+													$transactions = $Patients->retrieveTransactions($Patient["context"]["Data"]["pid"]["value"], 5);
 													if(count($transactions)):
 														foreach($transactions as $key => $value):
 															if($value["uid"]):
@@ -311,7 +330,7 @@ list($on, $off) = $Patients->getStatusShow($Patient["status"]);
 												  <tr>
 													<td>#<?=$value["id"];?></td>
 													<td><?=$userDetails;?><?=$value["action"];?></td>
-													<td><a href="<?=$domain; ?>/Hospital/Patients/<?=$Patient["id"]; ?>/Transaction/<?=$value["id"];?>">#<?=$value["id"];?></a></td>
+													<td><a href="<?=$domain; ?>/Hospital/Patients/<?=$Patient["context"]["Data"]["pid"]["value"]; ?>/Transaction/<?=$value["id"];?>">#<?=$value["id"];?></a></td>
 													<td><?=date("Y-m-d H:i:s", $value["time"]);?></td>
 												  </tr>
 
@@ -330,39 +349,13 @@ list($on, $off) = $Patients->getStatusShow($Patient["status"]);
 					</div>
 					<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
 						<div class="panel panel-default card-view panel-refresh">
-							<div class="panel-heading">
-								<div class="pull-left">
-									<h6 class="panel-title txt-dark">Patient Application #<?=$Patient["aid"]; ?></h6>
-								</div>
-								<div class="pull-right"><span id="offline3" style="color: #33F9FF !important;" class="<?=$on; ?>"><i class="fas fa-power-off" style="color: #33F9FF !important;"></i> Online</span> <span id="online3" class="<?=$off; ?>" style="color: #99A3A4 !important;"><i class="fas fa-power-off" style="color: #99A3A4 !important;"></i> Offline</span></div>
-								<div class="clearfix"></div>
-							</div>
 							<div class="panel-wrapper collapse in">
 								<div class="panel-body">
-									<label class="control-label col-md-5">Status</label>
-									<div class="col-md-9">
-										<i class="fa fa-microchip data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idecpuU"><?=$Patient["cpu"]; ?></span>% &nbsp;&nbsp;
-										<i class="zmdi zmdi-memory data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idememU"><?=$Patient["mem"]; ?></span>% &nbsp;&nbsp;
-										<i class="far fa-hdd data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idehddU"><?=$Patient["hdd"]; ?></span>% &nbsp;&nbsp;
-										<i class="fa fa-thermometer-quarter data-right-rep-icon txt-light" aria-hidden="true"></i>&nbsp;<span id="idetempU"><?=$Patient["tempr"]; ?></span>°C
-									</div>
+									<img src="<?=$domain; ?>/Hospital/Patients/Media/Images/Uploads/<?=$Patient["context"]["Data"]["picture"]["value"];?>" style="width: 100%; !important;" />
 								</div>
 							</div>
 						</div>
-						<div class="panel panel-default card-view panel-refresh">
-							<div class="panel-wrapper collapse in">
-								<div class="panel-body">
-									<img src="<?=$domain; ?>/Team/Media/Images/Uploads/<?=$Patient["pic"];?>" style="width: 100%; !important;" />
-								</div>
-							</div>
-						</div>
-						<div class="panel panel-default card-view panel-refresh">
-							<div class="panel-wrapper collapse in">
-								<div class="panel-body">
-									<div id="map1" style="height:300px;"></div>
-								</div>
-							</div>
-						</div>
+						<?php if(!$cancelled): ?>
 						<div class="panel panel-default card-view panel-refresh">
 							<div class="panel-wrapper collapse in">
 								<div class="panel-body">
@@ -370,7 +363,7 @@ list($on, $off) = $Patients->getStatusShow($Patient["status"]);
 									<div class="form-group">
 										<label class="control-label col-md-5">Identifier</label>
 										<div class="col-md-9">
-											<p class="form-control-static" id="idappid"><?=$Patient["apub"]; ?></p>
+											<p class="form-control-static" id="idappid"><?=$Patient["context"]["Data"]["keys"]["public"]; ?></p>
 										</div>
 									</div>
 								</div>
@@ -383,7 +376,7 @@ list($on, $off) = $Patients->getStatusShow($Patient["status"]);
 									<div class="form-group">
 										<label class="control-label col-md-5">Blockchain Address</label>
 										<div class="col-md-9">
-											<p class="form-control-static" id="bcid"><?=$_GeniSys->_helpers->oDecrypt($Patient["bcaddress"]); ?></p>
+											<p class="form-control-static" id="bcid"><?=$Patient["context"]["Data"]["blockchain"]["address"]; ?></p>
 										</div>
 									</div>
 								</div>
@@ -397,19 +390,41 @@ list($on, $off) = $Patients->getStatusShow($Patient["status"]);
 									<div class="form-group">
 										<label class="control-label col-md-5">MQTT Username</label>
 										<div class="col-md-9">
-											<p class="form-control-static" id="pntmqttu"><?=$_GeniSys->_helpers->oDecrypt($Patient["mqttu"]); ?></p>
+											<p class="form-control-static" id="pntmqttu"><?=$_GeniSys->_helpers->oDecrypt($Patient["context"]["Data"]["mqtt"]["username"]); ?></p>
 										</div>
 									</div>
 									<div class="form-group">
 										<label class="control-label col-md-5">MQTT Password</label>
 										<div class="col-md-9">
-											<p class="form-control-static"><span id="pntmqttp"><?=$_GeniSys->_helpers->oDecrypt($Patient["mqttp"]); ?></span>
+											<p class="form-control-static"><span id="pntmqttp"><?=$_GeniSys->_helpers->oDecrypt($Patient["context"]["Data"]["mqtt"]["password"]); ?></span>
 											</p>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
+						<div class="panel panel-default card-view panel-refresh">
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
+									<div class="pull-right"><a href="javascipt:void(0)" id="reset_patient_amqp"><i class="fa fa-refresh"></i> Reset AMQP Password</a></div>
+									<div class="form-group">
+										<label class="control-label col-md-5">AMQP Username</label>
+										<div class="col-md-9">
+											<p class="form-control-static" id="pnamqpu"><?=$Patient["context"]["Data"]["amqp"]["username"] ? $_GeniSys->_helpers->oDecrypt($Patient["context"]["Data"]["amqp"]["username"]) : ""; ?></p>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-md-5">AMQP Password</label>
+										<div class="col-md-9">
+											<p class="form-control-static"><span id="pnamqpp"><?=$Patient["context"]["Data"]["amqp"]["password"] ? $_GeniSys->_helpers->oDecrypt($Patient["context"]["Data"]["amqp"]["password"]) : ""; ?></span>
+											<p><strong>Last Updated:</strong> <?=array_key_exists("timestamp", $Patient["context"]["Data"]["amqp"]) ? $Patient["context"]["Data"]["amqp"]["timestamp"] : "NA"; ?></p>
+											</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<?php endif; ?>
 					</div>
 				</div>
 
@@ -423,32 +438,13 @@ list($on, $off) = $Patients->getStatusShow($Patient["status"]);
 
 		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
 		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
-
 		<script type="text/javascript" src="<?=$domain; ?>/Hospital/Patients/Classes/Patients.js"></script>
 
 		<script type="text/javascript">
-
 			$(document).ready(function() {
 				Patients.HideInputs();
 			});
-
-			function initMap() {
-
-				var latlng = new google.maps.LatLng("<?=floatval($lat); ?>", "<?=floatval($lng); ?>");
-				var map = new google.maps.Map(document.getElementById('map1'), {
-					zoom: 10,
-					center: latlng
-				});
-
-				var marker = new google.maps.Marker({
-					position: latlng,
-					map: map,
-					title: 'Approximate location'
-				});
-			}
-
 		</script>
-		<script async defer src="https://maps.googleapis.com/maps/api/js?key=<?=$_GeniSys->_helpers->oDecrypt($_GeniSys->_confs["gmaps"]); ?>&callback=initMap"></script>
 
 	</body>
 </html>

@@ -11,7 +11,7 @@
 #                allowing devices on the HIAS network to identify known and unknown users via
 #                HTTP request.
 # License:       MIT License
-# Last Modified: 2020-09-23
+# Last Modified: 2020-10-18
 #
 ######################################################################################################
 
@@ -25,13 +25,16 @@ import signal
 import sys
 import threading
 
+sys.path.insert(0, os.path.abspath(
+	os.path.join(os.path.dirname(__file__), '..')))
+
 import numpy as np
 
 from flask import Flask, request, Response
 from threading import Thread
 
 from Classes.Helpers import Helpers
-from Classes.iotJumpWay import Device as iot
+from Classes.MQTT import Device
 from Classes.TassAI import TassAI
 
 from Classes.OpenVINO.ie_module import InferenceContext
@@ -77,7 +80,7 @@ class CamAPI():
 		hdd = psutil.disk_usage('/').percent
 		tmp = psutil.sensors_temperatures()['coretemp'][0].current
 		r = requests.get('http://ipinfo.io/json?token=' +
-		                 self.Helpers.confs["iotJumpWay"]["ipinfo"])
+							self.Helpers.confs["iotJumpWay"]["ipinfo"])
 		data = r.json()
 		location = data["loc"].split(',')
 
@@ -100,6 +103,25 @@ class CamAPI():
 
 		threading.Timer(300.0, self.life).start()
 
+	def startIoT(self):
+		""" Initiates the iotJumpWay connection. """
+
+		self.Device = Device({
+			"host": self.Helpers.confs["iotJumpWay"]["host"],
+			"port": self.Helpers.confs["iotJumpWay"]["MQTT"]["port"],
+			"lid": self.Helpers.confs["iotJumpWay"]["MQTT"]["TassAI"]["lid"],
+			"zid": self.Helpers.confs["iotJumpWay"]["MQTT"]["TassAI"]["zid"],
+			"did": self.Helpers.confs["iotJumpWay"]["MQTT"]["TassAI"]["did"],
+			"an": self.Helpers.confs["iotJumpWay"]["MQTT"]["TassAI"]["dn"],
+			"un": self.Helpers.confs["iotJumpWay"]["MQTT"]["TassAI"]["un"],
+			"pw": self.Helpers.confs["iotJumpWay"]["MQTT"]["TassAI"]["pw"]
+		})
+		self.Device.connect()
+		self.Device.channelSub()
+		self.Device.commandsCallback = self.commandsCallback
+
+		self.Helpers.logger.info("iotJumpWay connection initiated.")
+
 	def threading(self):
 		""" Creates required module threads. """
 
@@ -114,11 +136,6 @@ class CamAPI():
 
 app = Flask(__name__)
 CamAPI = CamAPI()
-
-@app.route('/Encode', methods=['POST'])
-def Encode():
-	""" Responds to POST requests sent to the /Encode API endpoint. """
-
 
 @app.route('/Inference', methods=['POST'])
 def Inference():
@@ -192,10 +209,12 @@ def main():
 	# Starts threading
 	signal.signal(signal.SIGINT, CamAPI.signal_handler)
 	signal.signal(signal.SIGTERM, CamAPI.signal_handler)
+
+	CamAPI.startIoT()
 	CamAPI.threading()
 
-	app.run(host=CamAPI.Helpers.confs["TassAI"]["ip"],
-			port=CamAPI.Helpers.confs["TassAI"]["port"])
+	app.run(host=CamAPI.Helpers.confs["iotJumpWay"]["ip"],
+			port=CamAPI.Helpers.confs["iotJumpWay"]["MQTT"]["TassAI"]["port"])
 
 if __name__ == "__main__":
 	main()

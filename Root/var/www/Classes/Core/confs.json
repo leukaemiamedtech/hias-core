@@ -1,9 +1,9 @@
 {
-    "dbname": "",
-    "dbusername": "",
-    "dbpassword": "",
-    "mdbname": "",
-    "mdbusername": "",
-    "mdbpassword": "",
-    "key": ""
+    "dbname": "YourMysqlDatabaseName",
+    "dbusername": "YourMysqlDatabaseUsername",
+    "dbpassword": "YourMysqlDatabasePassword^",
+    "mdbname": "YourMongoDatabaseName",
+    "mdbusername": "YourMongoDatabaseUsername",
+    "mdbpassword": "YourMongoDatabasePassword",
+    "key": "YourEncryptionKey"
 }

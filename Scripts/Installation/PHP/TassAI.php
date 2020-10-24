@@ -21,7 +21,11 @@ class Core
 		$this->dbname = $config->dbname;
 		$this->dbusername = $config->dbusername;
 		$this->dbpassword = $config->dbpassword;
+		$this->mdbname = $config->mdbname;
+		$this->mdbusername = $config->mdbusername;
+		$this->mdbpassword = $config->mdbpassword;
 		$this->connect();
+		$this->mngConn = new MongoDB\Driver\Manager("mongodb://localhost:27017/".$this->mdbname.'', ["username" => $this->mdbusername, "password" => $this->mdbpassword]);
 	}
 
 	function connect()
@@ -58,6 +62,8 @@ class TassAI{
 		$this->key = $core->key;
 		$this->conn = $core->dbcon;
 		$this->bcc = $this->getBlockchainConf();
+		$this->mngConn = $core->mngConn;
+		$this->mdbname = $core->mdbname;
 	}
 
 	public function getBlockchainConf()
@@ -208,42 +214,94 @@ class TassAI{
 		return $txid;
 	}
 
-	public function zone($zone){
+	public function zone($lid, $lie, $zone){
+
+		$id = $this->generate_uuid();
 
 		$query = $this->conn->prepare("
 			INSERT INTO  mqttlz  (
-				`lid`,
-				`zn`,
-				`time`
+				`pub`
 			)  VALUES (
-				:lid,
-				:zn,
-				:time
+				:pub
 			)
 		");
 		$query->execute([
-			':lid' => 1,
-			':zn' => $zone,
-			':time' => time()
+			':pub' => $id
 		]);
 		$zid = $this->conn->lastInsertId();
 
-		echo "! Zone, " . $zone . ", has been created with ID " . $zid . " !\n";
+		$data = [
+			"id" => $id,
+			"type" => "Zone",
+			"category" => [
+				"value" => ["Room"]
+			],
+			"name" => [
+				"value" => $zone
+			],
+			"description" => [
+				"value" => $zone
+			],
+			"devices" => [
+				"value" => 1
+			],
+			"lid" => [
+				"value" => $lid,
+				"entity" => $lie
+			],
+			"zid" => [
+				"value" => $zid
+			],
+			"devices" => [
+				"value" => 0
+			],
+			"location" => [
+				"type" => "geo:json",
+				"value" => [
+					"type" => "Point",
+					"coordinates" => [0, 0]
+				]
+			],
+			"dateCreated" => [
+				"type" => "DateTime",
+				"value" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"dateModified" => [
+				"type" => "DateTime",
+				"value" => date('Y-m-d\TH:i:s.Z\Z', time())
+			]
+		];
+
+		$insert = new \MongoDB\Driver\BulkWrite;
+		$insertData = $insert->insert($data);
+		$result = $this->mngConn->executeBulkWrite($this->mdbname.'.Zones', $insert);
+
+		echo "! Zone, " . $zone . ", has been created with ID " . $zid . " with Identifier " . $id . " !\n";
+
+		$this->lid = $lid;
+		$this->lie = $lie;
+		$this->zid = $zid;
+		$this->zie = $id;
 	}
 
 	public function device($ip, $mac, $domain, $user, $pass, $bcauthu, $bcauthp){
 
-		$mqttUser = $this->generate_uuid();
-		$mqttPass = $this->password();
-		$mqttHash = create_hash($mqttPass);
+		$web3 = $this->blockchainConnection($domain, $user, $pass);
 
 		$pubKey = $this->generate_uuid();
 		$privKey = $this->generateKey(32);
 		$privKeyHash = $this->createPasswordHash($privKey);
 
+		$mqttUser = $this->generate_uuid();
+		$mqttPass = $this->password();
+		$mqttHash = create_hash($mqttPass);
+
+		$amqppubKey = $this->generate_uuid();
+		$amqpprvKey = $this->generateKey(32);
+		$amqpKeyHash = $this->createPasswordHash($amqpprvKey);
+
 		$bcPass = $this->password();
 
-		$web3 = $this->blockchainConnection($domain, $user, $pass);
 		$unlocked =  $this->unlockBlockchainAccount($web3, $bcauthu, $bcauthp);
 
 		if($unlocked == "FAILED"):
@@ -262,51 +320,137 @@ class TassAI{
 
 		$query = $this->conn->prepare("
 			INSERT INTO  mqttld  (
-				`lid`,
-				`zid`,
-				`name`,
-				`mqttu`,
-				`mqttp`,
-				`bcaddress`,
-				`apub`,
-				`aprv`,
-				`ip`,
-				`mac`,
-				`lt`,
-				`lg`,
-				`time`
+				`apub`
 			)  VALUES (
-				:lid,
-				:zid,
-				:name,
-				:mqttu,
-				:mqttp,
-				:bcaddress,
-				:apub,
-				:aprv,
-				:ip,
-				:mac,
-				:lt,
-				:lg,
-				:time
+				:apub
 			)
 		");
 		$query->execute([
-			':lid' => 1,
-			':zid' => 1,
-			':name' => "Server Security API",
-			':mqttu' =>$this->encrypt($mqttUser),
-			':mqttp' =>$this->encrypt($mqttPass),
-			':bcaddress' => $newBcUser,
-			':apub' => $pubKey,
-			':aprv' => $this->encrypt($privKeyHash),
-			':ip' => $this->encrypt($ip),
-			':mac' => $this->encrypt($mac),
-			':lt' => "",
-			':lg' => "",
-			':time' => time()
+			':apub' => $pubKey
 		]);
 		$did = $this->conn->lastInsertId();
+
+		$name = "Server Security API";
+
+		$data = [
+			"id" => $pubKey,
+			"type" => "Device",
+			"category" => [
+				"value" => [filter_input(INPUT_POST, "category", FILTER_SANITIZE_STRING)]
+			],
+			"name" => [
+				"value" => $name
+			],
+			"description" => [
+				"value" => $name
+			],
+			"lid" => [
+				"value" => $this->lid,
+				"entity" => $this->lie
+			],
+			"zid" => [
+				"value" => $this->zid,
+				"entity" => $this->zie
+			],
+			"did" => [
+				"value" => $did
+			],
+			"location" => [
+				"type" => "geo:json",
+				"value" => [
+					"type" => "Point",
+					"coordinates" => [0,0]
+				]
+			],
+			"agent" => [
+				"url" => ""
+			],
+			"device" => [
+				"name" => "UPDATE THIS FIELD",
+				"manufacturer" => "UPDATE THIS FIELD",
+				"model" => "UPDATE THIS FIELD",
+				"version" => "UPDATE THIS FIELD"
+			],
+			"os" => [
+				"name" => "UPDATE THIS FIELD",
+				"manufacturer" => "UPDATE THIS FIELD",
+				"version" => "UPDATE THIS FIELD"
+			],
+			"protocols" => ["MQTT"],
+			"status" => [
+				"value" => "OFFLINE",
+				"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"keys" => [
+				"public" => $pubKey,
+				"private" => $this->encrypt($privKeyHash),
+				"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"blockchain" => [
+				"address" => $newBcUser,
+				"password" => $this->encrypt($bcPass)
+			],
+			"mqtt" => [
+				"username" => $this->encrypt($mqttUser),
+				"password" => $this->encrypt($mqttPass),
+				"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"coap" => [
+				"username" => "",
+				"password" => ""
+			],
+			"amqp" => [
+				"username" => $this->encrypt($amqppubKey),
+				"password" => $this->encrypt($amqpprvKey),
+				"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"batteryLevel" => [
+				"value" => 0.00
+			],
+			"cpuUsage" => [
+				"value" => 0.00
+			],
+			"memoryUsage" => [
+				"value" => 0.00
+			],
+			"hddUsage" => [
+				"value" => 0.00
+			],
+			"temperature" => [
+				"value" => 0.00
+			],
+			"ip" => [
+				"value" => $ip,
+				"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"mac" => [
+				"value" => $this->encrypt($mac),
+				"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"bluetooth" => [
+				"address" => $this->encrypt(""),
+				"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"ai" => [],
+			"sensors" => [],
+			"actuators" => [],
+			"dateCreated" => [
+				"type" => "DateTime",
+				"value" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"dateFirstUsed" => [
+				"type" => "DateTime",
+				"value" => ""
+			],
+			"dateModified" => [
+				"type" => "DateTime",
+				"value" => date('Y-m-d\TH:i:s.Z\Z', time())
+			]
+		];
+
+		$insert = new \MongoDB\Driver\BulkWrite;
+		$inserted = $insert->insert($data);
+		$result = $this->mngConn->executeBulkWrite($this->mdbname.'.Devices', $insert);
 
 		$query = $this->conn->prepare("
 			INSERT INTO  mqttu  (
@@ -324,8 +468,8 @@ class TassAI{
 			)
 		");
 		$query->execute([
-			':lid' => 1,
-			':zid' => 1,
+			':lid' => $this->lid,
+			':zid' => $this->zid,
 			':did' => $did,
 			':uname' => $mqttUser,
 			':pw' => $mqttHash
@@ -349,63 +493,26 @@ class TassAI{
 			)
 		");
 		$query->execute(array(
-			':lid' => 1,
-			':zid' => 1,
+			':lid' => $this->lid,
+			':zid' => $this->zid,
 			':did' => $did,
 			':username' => $mqttUser,
-			':topic' => "1/Devices/1/".$did."/#",
+			':topic' => $this->lie . "/Devices/" . $this->zie . "/".$did."/#",
 			':rw' => 4
 		));
 
-		$query = $this->conn->prepare("
-			UPDATE mqttl
-			SET devices = devices + 1
-			WHERE id = :id
-		");
-		$query->execute(array(
-			':id'=>1
-		));
-
-		$pdoQuery = $this->conn->prepare("
-			INSERT INTO  genisysai  (
-				`name`,
-				`type`,
-				`lid`,
-				`zid`,
-				`did`,
-				`ip`,
-				`mac`,
-				`sport`,
-				`strdir`,
-				`sportf`,
-				`sckport`
-			)  VALUES (
-				:name,
-				:type,
-				:lid,
-				:zid,
-				:did,
-				:ip,
-				:mac,
-				:sport,
-				:strdir,
-				:sportf,
-				:sckport
-			)
-		");
-		$pdoQuery->execute([
-			":name" => "Server Security API",
-			":type" => "API",
-			":lid" => 1,
-			":zid" => 1,
-			":did" => 1,
-			":ip" => $this->encrypt($ip),
-			":mac" => $this->encrypt($mac),
-			":sport" => $this->encrypt("8080"),
-			":strdir" => $this->encrypt("Server"),
-			":sportf" => $this->encrypt("stream.mjpg"),
-			":sckport" => $this->encrypt("8181")
-		]);
+		$amid = $this->addAmqpUser($amqppubKey, $amqpKeyHash);
+		$this->addAmqpUserVh($amid, "iotJumpWay");
+		$this->addAmqpVhPerm($amid, "iotJumpWay", "exchange", "Core", "read");
+		$this->addAmqpVhPerm($amid, "iotJumpWay", "exchange", "Core", "write");
+		$this->addAmqpVhPerm($amid, "iotJumpWay", "queue", "Life", "read");
+		$this->addAmqpVhPerm($amid, "iotJumpWay", "queue", "Life", "write");
+		$this->addAmqpVhPerm($amid, "iotJumpWay", "queue", "Statuses", "read");
+		$this->addAmqpVhPerm($amid, "iotJumpWay", "queue", "Statuses", "write");
+		$this->addAmqpVhTopic($amid, "iotJumpWay", "topic", "Core", "read", "Life");
+		$this->addAmqpVhTopic($amid, "iotJumpWay", "topic", "Core", "write", "Life");
+		$this->addAmqpVhTopic($amid, "iotJumpWay", "topic", "Core", "read", "Statuses");
+		$this->addAmqpVhTopic($amid, "iotJumpWay", "topic", "Core", "write", "Statuses");
 
 		$hash = "";
 		$msg = "";
@@ -421,84 +528,195 @@ class TassAI{
 		$actionMsg = "";
 
 		if($hash == "FAILED"):
-			echo " HIAS Blockchain deposit failed! \n";
-			return False;
+			echo " HIAS Blockchain HIAS deposit failed! " . $msg . "\n";
 		else:
 			$txid = $this->storeBlockchainTransaction("Deposit", $hash, $did, 0);
 			$this->storeUserHistory("Deposit", $txid, 1, 1, $did, 0, 0);
+			echo " HIAS Blockchain HIAS deposit complete!\n";
+
+			$hash = "";
+			$msg = "";
+			$actionMsg = "";
+			$balanceMessage = "";
+			$contract->at($this->decrypt($this->bcc["contract"]))->send("registerDevice", $pubKey, $newBcUser, 1, 1, $did, "Server Security API", 1, time(), ["from" => $bcauthu], function ($err, $resp) use (&$hash, &$msg) {
+				if ($err !== null) {
+					$hash = "FAILED";
+					$msg = $err;
+					return;
+				}
+				$hash = $resp;
+			});
+
+			if($hash == "FAILED"):
+				echo " HIAS Blockchain registerDevice failed!\n";
+				return False;
+			else:
+				$txid = $this->storeBlockchainTransaction("Register Device", $hash, $did, 0);
+				$this->storeUserHistory("Register Device", $txid, 1, 1, $did, 0, 0);
+				$balance = $this->getBlockchainBalance($web3, $bcauthu);
+				echo "HIAS Blockchain registerDevice complete! You were rewarded for this action! Your balance is now: " . $balance . " HIAS Ether!\n";
+
+				$hash = "";
+				$msg = "";
+				$icontract->at($this->decrypt($this->bcc["icontract"]))->send("deposit", 5000000000000000000, ["from" => $bcauthu, "value" => 5000000000000000000], function ($err, $resp) use (&$hash, &$msg) {
+					if ($err !== null) {
+						$hash = "FAILED";
+						$msg = $err;
+						return;
+					}
+					$hash = $resp;
+				});
+
+				$actionMsg = "";
+
+				if($hash == "FAILED"):
+					echo " HIAS Blockchain iotJumpWay deposit failed!"  . $msg . "\n";
+				else:
+					$txid = $this->storeBlockchainTransaction("Deposit", $hash, $did, 0);
+					$this->storeUserHistory("Deposit", $txid, 1, 1, $did, 0, 0);
+					echo " HIAS Blockchain iotJumpWay deposit complete!\n";
+
+					$hash = "";
+					$msg = "";
+					$icontract->at($this->decrypt($this->bcc["icontract"]))->send("registerAuthorized", $newBcUser, ["from" => $bcauthu], function ($err, $resp) use (&$hash, &$msg) {
+						if ($err !== null) {
+							$hash = "FAILED";
+							$msg = $err;
+							return;
+						}
+						$hash = $resp;
+					});
+
+					if($hash == "FAILED"):
+						echo " HIAS Blockchain registerAuthorized failed!\n";
+					else:
+						$txid = $this->storeBlockchainTransaction("iotJumpWay Register Authorized", $hash, $did, 0);
+						$this->storeUserHistory("Register Authorized", $txid, 1, 1, $did, 0, 0);
+						$balance = $this->getBlockchainBalance($web3, $bcauthu);
+						echo "HIAS Blockchain registerAuthorized complete You were rewarded for this action! Your balance is now: " . $balance . " HIAS Ether!\n";
+					endif;
+				endif;
+
+				echo "";
+				echo "!! NOTE THESE CREDENTIALS AND KEEP THEM IN A SAFE PLACE !!\n";
+				echo "! Device, Server Security API, has been created with ID " . $did . " !\n";
+				echo "!! Your device public key is: " . $pubKey . " !!\n";
+				echo "!! Your device private key is: " . $privKey . " !!\n";
+				echo "!! Your device MQTT username is: " . $mqttUser . " !!\n";
+				echo "!! Your device MQTT password is: " . $mqttPass . " !!\n";
+				echo "";
+
+			endif;
 		endif;
-
-		$hash = "";
-		$msg = "";
-		$actionMsg = "";
-		$balanceMessage = "";
-		$contract->at($this->decrypt($this->bcc["contract"]))->send("registerDevice", $pubKey, $newBcUser, 1, 1, $did, "Server Security API", 1, time(), ["from" => $bcauthu], function ($err, $resp) use (&$hash, &$msg) {
-			if ($err !== null) {
-				$hash = "FAILED";
-				$msg = $err;
-				return;
-			}
-			$hash = $resp;
-		});
-
-		if($hash == "FAILED"):
-			echo " HIAS Blockchain registerDevice failed!\n";
-			return False;
-		else:
-			$txid = $this->storeBlockchainTransaction("Register Device", $hash, $did, 0);
-			$this->storeUserHistory("Register Device", $txid, 1, 1, $did, 0, 0);
-			$balance = $this->getBlockchainBalance($web3, $bcauthu);
-			echo " You were rewarded for this action! Your balance is now: " . $balance . " HIAS Ether!\n";
-		endif;
-
-		$hash = "";
-		$msg = "";
-		$icontract->at($this->decrypt($this->bcc["icontract"]))->send("deposit", 5000000000000000000, ["from" => $bcauthu, "value" => 5000000000000000000], function ($err, $resp) use (&$hash, &$msg) {
-			if ($err !== null) {
-				$hash = "FAILED";
-				$msg = $err;
-				return;
-			}
-			$hash = $resp;
-		});
-
-		$actionMsg = "";
-
-		if($hash == "FAILED"):
-			echo " HIAS Blockchain deposit failed!\n";
-			return False;
-		else:
-			$txid = $this->storeBlockchainTransaction("Deposit", $hash, $did, 0);
-			$this->storeUserHistory("Deposit", $txid, 1, 1, $did, 0, 0);;
-		endif;
-
-		$icontract->at($this->decrypt($this->bcc["icontract"]))->send("registerAuthorized", $newBcUser, ["from" => $bcauthu], function ($err, $resp) use (&$hash, &$msg) {
-			if ($err !== null) {
-				$hash = "FAILED";
-				$msg = $err;
-				return;
-			}
-			$hash = $resp;
-		});
-
-		if($hash == "FAILED"):
-			echo " HIAS Blockchain registerAuthorized failed!\n";
-		else:
-			$txid = $this->storeBlockchainTransaction("iotJumpWay Register Authorized", $hash, $did, 0);
-			$this->storeUserHistory("Register Authorized", $txid, 1, 1, $did, 0, 0);
-			$balance = $this->getBlockchainBalance($web3, $bcauthu);
-			echo " You were rewarded for this action! Your balance is now: " . $balance . " HIAS Ether!\n";
-		endif;
-
-		echo "";
-		echo "!! NOTE THESE CREDENTIALS AND KEEP THEM IN A SAFE PLACE !!\n";
-		echo "! Device, Server Security API, has been created with ID " . $did . " !\n";
-		echo "!! Your device public key is: " . $pubKey . " !!\n";
-		echo "!! Your device private key is: " . $privKey . " !!\n";
-		echo "!! Your device MQTT username is: " . $mqttUser . " !!\n";
-		echo "!! Your device MQTT password is: " . $mqttPass . " !!\n";
-		echo "";
 		return True;
+	}
+
+	private function addAmqpUser($username, $key)
+	{
+		$query = $this->conn->prepare("
+			INSERT INTO  amqpu  (
+				`username`,
+				`pw`
+			)  VALUES (
+				:username,
+				:pw
+			)
+		");
+		$query->execute([
+			':username' => $username,
+			':pw' => $this->encrypt($key)
+		]);
+		$amid = $this->conn->lastInsertId();
+		return $amid;
+	}
+
+	private function addAmqpUserPerm($uid, $permission)
+	{
+		$query = $this->conn->prepare("
+			INSERT INTO  amqpp  (
+				`uid`,
+				`permission`
+			)  VALUES (
+				:uid,
+				:permission
+			)
+		");
+		$query->execute([
+			':uid' => $uid,
+			':permission' => $permission
+		]);
+	}
+
+	private function addAmqpUserVh($uid, $vhost)
+	{
+		$query = $this->conn->prepare("
+			INSERT INTO  amqpvh  (
+				`uid`,
+				`vhost`
+			)  VALUES (
+				:uid,
+				:vhost
+			)
+		");
+		$query->execute([
+			':uid' => $uid,
+			':vhost' => $vhost
+		]);
+	}
+
+	private function addAmqpVhPerm($uid, $vhost, $rtype, $rname, $permission)
+	{
+		$query = $this->conn->prepare("
+			INSERT INTO  amqpvhr  (
+				`uid`,
+				`vhost`,
+				`rtype`,
+				`rname`,
+				`permission`
+			)  VALUES (
+				:uid,
+				:vhost,
+				:rtype,
+				:rname,
+				:permission
+			)
+		");
+		$query->execute([
+			':uid' => $uid,
+			':vhost' => $vhost,
+			':rtype' => $rtype,
+			':rname' => $rname,
+			':permission' => $permission
+		]);
+	}
+
+	private function addAmqpVhTopic($uid, $vhost, $rtype, $rname, $permission, $rkey)
+	{
+		$query = $this->conn->prepare("
+			INSERT INTO  amqpvhrt  (
+				`uid`,
+				`vhost`,
+				`rtype`,
+				`rname`,
+				`permission`,
+				`rkey`
+			)  VALUES (
+				:uid,
+				:vhost,
+				:rtype,
+				:rname,
+				:permission,
+				:rkey
+			)
+		");
+		$query->execute([
+			':uid' => $uid,
+			':vhost' => $vhost,
+			':rtype' => $rtype,
+			':rname' => $rname,
+			':permission' => $permission,
+			':rkey' => $rkey
+		]);
 	}
 
 	public function generate_uuid() {
@@ -602,7 +820,7 @@ class TassAI{
 
 $Core  = new Core();
 $TassAI = new TassAI($Core);
-$TassAI->zone($argv[1]);
-$TassAI->device($argv[2], $argv[3], $argv[4], $argv[5], $argv[6], $argv[7], $argv[8]);
+$TassAI->zone($argv[1], $argv[2], $argv[3]);
+$TassAI->device($argv[4], $argv[5], $argv[6], $argv[7], $argv[8], $argv[9], $argv[10]);
 
 ?>

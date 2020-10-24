@@ -51,12 +51,17 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
         echo $FMSG;
         exit
     fi
-    sh Scripts/Installation/Shell/Samba.sh
+    bash Scripts/Installation/Shell/Blockchain.sh
     if [ $? -ne 0 ]; then
         echo $FMSG;
         exit
     fi
-    bash Scripts/Installation/Shell/Blockchain.sh
+    bash Scripts/Installation/Shell/MqttBroker.sh
+    if [ $? -ne 0 ]; then
+        echo $FMSG;
+        exit
+    fi
+    bash Scripts/Installation/Shell/AmqpBroker.sh
     if [ $? -ne 0 ]; then
         echo $FMSG;
         exit
@@ -66,12 +71,12 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
         echo $FMSG;
         exit
     fi
-    bash Scripts/Installation/Shell/iotJumpWayLocation.sh
+    bash Scripts/Installation/Shell/Admin.sh
     if [ $? -ne 0 ]; then
         echo $FMSG;
         exit
     fi
-    bash Scripts/Installation/Shell/Admin.sh
+    bash Scripts/Installation/Shell/Finalize.sh
     if [ $? -ne 0 ]; then
         echo $FMSG;
         exit
@@ -81,17 +86,17 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
         echo $FMSG;
         exit
     fi
-    sh Scripts/Installation/Shell/COVID19.sh
-    if [ $? -ne 0 ]; then
-        echo $FMSG;
-        exit
-    fi
     sh Scripts/Installation/Shell/Services.sh
     if [ $? -ne 0 ]; then
         echo $FMSG;
         exit
     fi
-    bash Scripts/Installation/Shell/Finalize.sh
+    sh Scripts/Installation/Shell/Samba.sh
+    if [ $? -ne 0 ]; then
+        echo $FMSG;
+        exit
+    fi
+    sh Scripts/Installation/Shell/COVID19.sh
     if [ $? -ne 0 ]; then
         echo $FMSG;
         exit

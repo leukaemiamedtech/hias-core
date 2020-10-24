@@ -1,14 +1,16 @@
+#!/usr/bin/env python3
 ######################################################################################################
 #
-# Organization:  Peter Moss Leukemia AI Research
+# Organization:  Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss
 # Repository:    HIAS: Hospital Intelligent Automation System
+# Module:        Blockchain
 #
 # Author:        Adam Milton-Barker (AdamMiltonBarker.com)
 #
 # Title:         Blockchain Class
 # Description:   Handles communication with the HIAS Blockchain.
 # License:       MIT License
-# Last Modified: 2020-09-20
+# Last Modified: 2020-10-18
 #
 ######################################################################################################
 
@@ -21,7 +23,6 @@ from requests.auth import HTTPBasicAuth
 from web3 import Web3
 
 from Classes.Helpers import Helpers
-from Classes.MySQL import MySQL
 
 
 class Blockchain():
@@ -40,17 +41,14 @@ class Blockchain():
 		self.Helpers.logger.info("Blockchain Class initialization complete.")
 
 	def startBlockchain(self):
-		""" Connects to MySQL database. """
+		""" Connects to HIAS Blockchain. """
 
 		self.w3 = Web3(Web3.HTTPProvider(self.Helpers.confs["ethereum"]["bchost"], request_kwargs={
-						'auth': HTTPBasicAuth(self.Helpers.confs["ethereum"]["user"], self.Helpers.confs["ethereum"]["pass"])}))
+						'auth': HTTPBasicAuth(self.Helpers.confs["iotJumpWay"]["identifier"], self.Helpers.confs["iotJumpWay"]["auth"])}))
 
-		self.authContract = self.w3.eth.contract(self.w3.toChecksumAddress(
-			self.Helpers.confs["ethereum"]["authContract"]), abi=json.dumps(self.Helpers.confs["ethereum"]["authAbi"]))
-		self.iotContract = self.w3.eth.contract(self.w3.toChecksumAddress(
-			self.Helpers.confs["ethereum"]["iotContract"]), abi=json.dumps(self.Helpers.confs["ethereum"]["iotAbi"]))
-		self.patientsContract = self.w3.eth.contract(self.w3.toChecksumAddress(
-			self.Helpers.confs["ethereum"]["patientsContract"]), abi=json.dumps(self.Helpers.confs["ethereum"]["patientsAbi"]))
+		self.authContract = self.w3.eth.contract(self.w3.toChecksumAddress(self.Helpers.confs["ethereum"]["authContract"]), abi=json.dumps(self.Helpers.confs["ethereum"]["authAbi"]))
+		self.iotContract = self.w3.eth.contract(self.w3.toChecksumAddress(self.Helpers.confs["ethereum"]["iotContract"]), abi=json.dumps(self.Helpers.confs["ethereum"]["iotAbi"]))
+		self.patientsContract = self.w3.eth.contract(self.w3.toChecksumAddress(self.Helpers.confs["ethereum"]["patientsContract"]), abi=json.dumps(self.Helpers.confs["ethereum"]["patientsAbi"]))
 		self.Helpers.logger.info("Blockchain connections started")
 
 	def hiasAccessCheck(self, typeof, identifier):
@@ -79,8 +77,8 @@ class Blockchain():
 			return balance
 		except:
 			e = sys.exc_info()
-			self.Helpers.logger.info("Get Balance Failed!")
-			self.Helpers.logger.info(str(e))
+			self.Helpers.logger.error("Get Balance Failed!")
+			self.Helpers.logger.error(str(e))
 			return False
 
 	def hashCommand(self, data):
@@ -107,8 +105,7 @@ class Blockchain():
 		""" Hashes the data for data integrity. """
 
 		hasher = str(data["CPU"]) + str(data["Memory"]) + str(data["Diskspace"]) + \
-					str(data["Temperature"]) + \
-					str(data["Latitude"]) + str(data["Longitude"])
+					str(data["Temperature"]) + str(data["Latitude"]) + str(data["Longitude"])
 
 		return bcrypt.hashpw(hasher.encode(), bcrypt.gensalt())
 
@@ -129,15 +126,18 @@ class Blockchain():
 													"gas": 1000000,
 													"value": self.w3.toWei(replenish, "ether")})
 			self.Helpers.logger.info("HIAS Blockchain Replenish Transaction OK! ")
-			self.Helpers.logger.info(tx_hash)
-			tx_receipt = self.w3.eth.waitForTransactionReceipt(tx_hash)
-			self.Helpers.logger.info("HIAS Blockchain Replenish OK!")
-			self.Helpers.logger.info(str(tx_receipt))
+			#self.Helpers.logger.info(tx_hash)
+			txr = self.w3.eth.waitForTransactionReceipt(tx_hash)
+			if txr["status"] is 1:
+				self.Helpers.logger.info("HIAS Blockchain Data Hash OK!")
+				#self.Helpers.logger.info(str(txr))
+			else:
+				self.Helpers.logger.error("HIAS Blockchain Data Hash KO!")
 			return True
 		except:
 			e = sys.exc_info()
-			self.Helpers.logger.info("HIAS Blockchain Replenish Failed! ")
-			self.Helpers.logger.info(str(e))
+			self.Helpers.logger.error("HIAS Blockchain Replenish Failed! ")
+			self.Helpers.logger.error(str(e))
 			return False
 
 	def storeHash(self, dbid, hashed, at, inserter, identifier, to, typeof):
@@ -148,13 +148,16 @@ class Blockchain():
 															"from": self.w3.toChecksumAddress(self.Helpers.confs["ethereum"]["iaddress"]),
 															"gas": 1000000})
 			self.Helpers.logger.info("HIAS Blockchain Data Transaction OK!")
-			self.Helpers.logger.info(txh)
+			#self.Helpers.logger.info(txh)
 			txr = self.w3.eth.waitForTransactionReceipt(txh)
-			self.Helpers.logger.info("HIAS Blockchain Data Hash OK!")
-			self.Helpers.logger.info(str(txr))
+			if txr["status"] is 1:
+				self.Helpers.logger.info("HIAS Blockchain Data Hash OK!")
+				#self.Helpers.logger.info(str(txr))
+			else:
+				self.Helpers.logger.error("HIAS Blockchain Data Hash KO!")
 		except:
 			e = sys.exc_info()
-			self.Helpers.logger.info("HIAS Blockchain Data Hash Failed!")
-			self.Helpers.logger.info(str(e))
-			self.Helpers.logger.info(str(e))
+			self.Helpers.logger.error("HIAS Blockchain Data Hash KO!")
+			self.Helpers.logger.error(str(e))
+			self.Helpers.logger.error(str(e))
 

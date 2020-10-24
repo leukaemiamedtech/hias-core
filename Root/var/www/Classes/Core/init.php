@@ -75,6 +75,7 @@ use Web3\Utils;
 			include dirname(__FILE__) . '/../../Classes/helpers.php';
 
 			$this->_helpers = new Helpers($this);
+			$this->cb = $this->getContextBrokerConf();
 			$this->_confs = $this->getConfigs();
 			$this->_pageDetails = $_pageDetails;
 
@@ -95,6 +96,63 @@ use Web3\Utils;
 				setcookie("GeniSysAI", $rander, time()+(10*365*24*60*60), '/', $_SERVER['SERVER_NAME'], true, true);
 				$_COOKIE['GeniSysAI'] = $rander;
 			endif;
+		}
+
+		public function getContextBrokerConf()
+		{
+			$pdoQuery = $this->_secCon->prepare("
+				SELECT *
+				FROM contextbroker
+			");
+			$pdoQuery->execute();
+			$response=$pdoQuery->fetch(PDO::FETCH_ASSOC);
+			$pdoQuery->closeCursor();
+			$pdoQuery = null;
+			return $response;
+		}
+
+		private function createContextHeaders()
+		{
+			$basicAuth = $_SESSION["GeniSysAI"]["User"] . ":" . $this->_helpers->oDecrypt($_SESSION["GeniSysAI"]["Pass"]);
+			$basicAuth = base64_encode($basicAuth);
+
+			return [
+				"Content-Type: application/json",
+				'Authorization: Basic '. $basicAuth
+			];
+		}
+
+		private function contextBrokerRequest($method, $url, $headers, $json, $domain)
+		{
+			$path = $this->_helpers->oDecrypt($domain) . "/" . $this->cb["url"] . "/" . $url;
+
+			if($method == "GET"):
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+				curl_setopt($ch, CURLOPT_HEADER, 1);
+				curl_setopt($ch, CURLOPT_URL, $path);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				$response = curl_exec($ch);
+				$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+				$header = substr($response, 0, $header_size);
+				$body = substr($response, $header_size);
+				curl_close($ch);
+			elseif($method == "POST"):
+				$ch = curl_init($path);
+				curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+				curl_setopt($ch, CURLOPT_HEADER, 1);
+				curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+				$response = curl_exec($ch);
+				$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+				$header = substr($response, 0, $header_size);
+				$body = substr($response, $header_size);
+				curl_close($ch);
+			endif;
+
+			return $body;
 		}
 
 		public function getBlockchainConf()
@@ -175,22 +233,28 @@ use Web3\Utils;
 					server.meta_title,
 					server.meta_description,
 					server.domainString,
-					mqtta.status,
-					mqtta.lt as alt,
-					mqtta.lg as alg,
-					mqtta.cpu,
-					mqtta.mem,
-					mqtta.hdd,
-					mqtta.tempr
+					mqtta.apub
 				FROM settings server
 				INNER JOIN mqtta mqtta
 				ON mqtta.id = server.aid
 			");
 			$pdoQuery->execute();
-			$response=$pdoQuery->fetch(PDO::FETCH_ASSOC);
+			$configs=$pdoQuery->fetch(PDO::FETCH_ASSOC);
 			$pdoQuery->closeCursor();
 			$pdoQuery = null;
-			return $response;
+
+			if(isSet($_SESSION["GeniSysAI"]["Active"])):
+				$context =  json_decode($this->contextBrokerRequest("GET", "entities/" . $configs["apub"] . "?type=Application", $this->createContextHeaders(), [], $configs["domainString"]), true);
+				$configs["status"] = $context["Data"]["status"]["value"];
+				$configs["cpu"] = $context["Data"]["cpuUsage"]["value"];
+				$configs["mem"] = $context["Data"]["memoryUsage"]["value"];
+				$configs["hdd"] = $context["Data"]["hddUsage"]["value"];
+				$configs["tempr"] = $context["Data"]["temperature"]["value"];
+				$configs["alt"] = $context["Data"]["location"]["value"]["coordinates"][0];
+				$configs["alg"] = $context["Data"]["location"]["value"]["coordinates"][1];
+			endif;
+
+			return $configs;
 		}
 
 		public function updateConfigs()

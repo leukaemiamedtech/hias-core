@@ -22,7 +22,11 @@ class Core
 		$this->dbname = $config->dbname;
 		$this->dbusername = $config->dbusername;
 		$this->dbpassword = $config->dbpassword;
+		$this->mdbname = $config->mdbname;
+		$this->mdbusername = $config->mdbusername;
+		$this->mdbpassword = $config->mdbpassword;
 		$this->connect();
+		$this->mngConn = new MongoDB\Driver\Manager("mongodb://localhost:27017/".$this->mdbname.'', ["username" => $this->mdbusername, "password" => $this->mdbpassword]);
 	}
 
 	function connect()
@@ -59,6 +63,8 @@ class Admin{
 		$this->key = $core->key;
 		$this->conn = $core->dbcon;
 		$this->bcc = $this->getBlockchainConf();
+		$this->mngConn = $core->mngConn;
+		$this->mdbname = $core->mdbname;
 	}
 
 	public function getBlockchainConf()
@@ -152,16 +158,13 @@ class Admin{
 		return $txid;
 	}
 
-	private function storeUserHistory($action, $hash, $location = 0, $zone = 0, $device = 0, $sensor = 0, $name = 0)
+	private function storeUserHistory($action, $hash, $location, $uid, $aid)
 	{
 		$pdoQuery = $this->conn->prepare("
 			INSERT INTO  history (
 				`uid`,
 				`tuid`,
 				`tlid`,
-				`tzid`,
-				`tdid`,
-				`tsid`,
 				`taid`,
 				`action`,
 				`hash`,
@@ -170,9 +173,6 @@ class Admin{
 				:uid,
 				:tuid,
 				:tlid,
-				:tzid,
-				:tdid,
-				:tsid,
 				:taid,
 				:action,
 				:hash,
@@ -181,12 +181,9 @@ class Admin{
 		");
 		$pdoQuery->execute([
 			":uid" => 1,
-			":tuid" => 1,
+			":tuid" => $uid,
 			":tlid" => $location,
-			":tzid" => $zone,
-			":tdid" => $device,
-			":tsid" => $sensor,
-			":taid" => $name,
+			":taid" => $aid,
 			":action" => $action,
 			":hash" => $hash,
 			":time" => time()
@@ -197,62 +194,173 @@ class Admin{
 		return $txid;
 	}
 
-	public function create($name, $email, $user, $paddress, $ppass, $ip, $mac, $domain, $haddress, $hpass)
+	public function create($name, $email, $user, $paddress, $ppass, $ip, $mac, $domain, $haddress, $hpass, $lentity)
 	{
 		if(!$this->checkUser($user)):
 
-			$pass=$this->password(12);
+			$pass=$this->generateKey(32);
 			$passhash=$this->createPasswordHash($pass);
+
+			$mqttUser = $this->generate_uuid();
+			$mqttPass = $this->generateKey(32);
+			$mqttHash = create_hash($mqttPass);
+
+			$amqppubKey = $this->generate_uuid();
+			$amqpprvKey = $this->generateKey(32);
+			$amqpKeyHash = create_hash($mqttPass);
+
+			$pubKey = $this->generate_uuid();
+			$privKey = $this->generateKey(32);
+			$privKeyHash = $this->createPasswordHash($privKey);
 
 			$htpasswd = new Htpasswd('/etc/nginx/security/htpasswd');
 			$htpasswd->addUser($user, $pass, Htpasswd::ENCTYPE_APR_MD5);
 
+			$query = $this->conn->prepare("
+				INSERT INTO  mqtta  (
+					`apub`
+				)  VALUES (
+					:pub
+				)
+			");
+			$query->execute([
+				':pub' => $pubKey
+			]);
+			$aid = $this->conn->lastInsertId();
+
 			$pdoQuery = $this->conn->prepare("
 				INSERT INTO users (
+					`pub`,
+					`aid`,
 					`username`,
-					`name`,
-					`email`,
-					`admin`,
 					`password`,
 					`bcaddress`,
-					`bcpw`,
-					`nfc`,
-					`created`
+					`bcpw`
 				)  VALUES (
+					:pub,
+					:aid,
 					:username,
-					:name,
-					:email,
-					:admin,
 					:password,
 					:bcaddress,
-					:bcpw,
-					:nfc,
-					:created
+					:bcpw
 				)
 			");
 			$pdoQuery->execute([
+				":pub"=>$pubKey,
+				":aid"=>$aid,
 				":username"=>$user,
-				":name"=>$name,
-				":email"=>$email,
-				":admin"=>1,
 				":password"=>$this->encrypt($passhash),
 				":bcaddress"=>$paddress,
-				":bcpw"=>$this->encrypt($ppass),
-				":nfc"=>"",
-				':created' => time()
+				":bcpw"=>$this->encrypt($ppass)
 			]);
 			$uid = $this->conn->lastInsertId();
 			$pdoQuery->closeCursor();
 			$pdoQuery = null;
 
+			$data = [
+				"id" => $pubKey,
+				"type" => "Staff",
+				"category" => [
+					"value" => ["Management"]
+				],
+				"name" => [
+					"value" => $name
+				],
+				"username" => [
+					"value" => $user
+				],
+				"description" => [
+					"value" => $user . " user account."
+				],
+				"email" => [
+					"value" => $email
+				],
+				"picture" => [
+					"value" => "default.png"
+				],
+				"lid" => [
+					"value" => 1,
+					"entity" => $lentity
+				],
+				"zid" => [
+					"value" => 0,
+					"entity" => "",
+					"timestamp" => "",
+					"welcomed" => ""
+				],
+				"aid" => [
+					"value" => $aid,
+					"entity" => $pubKey
+				],
+				"uid" => [
+					"value" => $uid
+				],
+				"permissions" => [
+					"adminAccess" => 1,
+					"patientsAccess" => 1,
+					"cancelled" => 0
+				],
+				"address" => [
+					"type" => "PostalAddress",
+					"value" => [
+						"addressLocality" => "",
+						"postalCode" => "",
+						"streetAddress" => ""
+					]
+				],
+				"keys" => [
+					"public" => $pubKey,
+					"private" => $this->encrypt($privKeyHash),
+					"nfc" => "",
+					"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+				],
+				"blockchain" => [
+					"address" => $paddress,
+					"password" => $this->encrypt($ppass)
+				],
+				"mqtt" => [
+					"username" => $this->encrypt($mqttUser),
+					"password" => $this->encrypt($mqttPass),
+					"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+				],
+				"coap" => [
+					"username" => "",
+					"password" => ""
+				],
+				"amqp" => [
+					"username" => $this->encrypt($amqppubKey),
+					"password" => $this->encrypt($amqpprvKey),
+					"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+				],
+				"status" => [
+					"value" => "OFFLINE"
+				],
+				"dateCreated" => [
+					"type" => "DateTime",
+					"value" => date('Y-m-d\TH:i:s.Z\Z', time())
+				],
+				"dateFirstUsed" => [
+					"type" => "DateTime",
+					"value" => ""
+				],
+				"dateModified" => [
+					"type" => "DateTime",
+					"value" => date('Y-m-d\TH:i:s.Z\Z', time())
+				]
+			];
+
+			$insert = new \MongoDB\Driver\BulkWrite;
+			$id = $insert->insert($data);
+			$result = $this->mngConn->executeBulkWrite($this->mdbname.'.Staff', $insert);
+
 			echo "";
 			echo "!! NOTE THESE CREDENTIALS AND KEEP THEM IN A SAFE PLACE !!\n";
 			echo "";
-			echo "! Admin user, " . $user . ", has been created with ID " . $uid . " !!\n";
-			echo "!! Your username is: " . $user . " !!\n";
-			echo "!! Your password is: " . $pass . " !!\n";
-			echo "!! THESE CREDENTIALS ARE ALSO USED FOR THE TASS STREAM AUTHENTICATION POP UP YOU WILL FACE WHEN YOU FIRST LOGIN !!\n";
-			$this->application($name, $uid, $paddress, $ip, $mac, $domain, $haddress, $hpass);
+			echo "! Admin user, " . $user . ", has been created with ID " . $uid . " and Identifier " . $pubKey . " !!\n";
+			echo "!! Your HIAS login username is: " . $user . " !!\n";
+			echo "!! Your HIAS login password is: " . $pass . " !!\n";
+			echo "!! THESE CREDENTIALS ARE ALSO USED FOR THE PROXY AUTHENTICATION POP UP YOU WILL ENCOUNTER WHEN YOU FIRST LOGIN !!\n";
+			$this->application($name, $uid, $paddress, $ppass, $ip, $mac, $domain, $aid, $haddress, $hpass, $lentity, $pubKey, $privKey, $mqttUser, $mqttPass, $mqttHash, $privKeyHash, $amqppubKey, $amqpprvKey);
 			return True;
 		else:
 			echo "! A user with this username already exists!\n";
@@ -260,69 +368,134 @@ class Admin{
 		endif;
 	}
 
-	public function application($name, $uid, $paddress, $ip, $mac, $domain, $haddress, $hpass){
-
-		$mqttUser = $this->generate_uuid();
-		$mqttPass = $this->password();
-		$mqttHash = create_hash($mqttPass);
-
-		$pubKey = $this->generate_uuid();
-		$privKey = $this->generateKey(32);
-		$privKeyHash = $this->createPasswordHash($privKey);
+	public function application($name, $uid, $paddress, $ppass, $ip, $mac, $domain, $aid, $haddress, $hpass, $lentity, $pubKey, $privKey, $mqttUser, $mqttPass, $mqttHash, $privKeyHash, $amqppubKey, $amqpprvKey){
 
 		$htpasswd = new Htpasswd('/etc/nginx/security/htpasswd');
 		$htpasswd->addUser($pubKey, $privKey, Htpasswd::ENCTYPE_APR_MD5);
 
-		$query = $this->conn->prepare("
-			INSERT INTO  mqtta  (
-				`lid`,
-				`uid`,
-				`name`,
-				`bcaddress`,
-				`mqttu`,
-				`mqttp`,
-				`apub`,
-				`aprv`,
-				`ip`,
-				`mac`,
-				`lt`,
-				`lg`,
-				`status`,
-				`time`
-			)  VALUES (
-				:lid,
-				:uid,
-				:name,
-				:bcaddress,
-				:mqttu,
-				:mqttp,
-				:apub,
-				:aprv,
-				:ip,
-				:mac,
-				:lt,
-				:lg,
-				:status,
-				:time
-			)
-		");
-		$query->execute([
-			':lid' => 1,
-			':uid' => $uid,
-			':name' => $name,
-			':bcaddress' => $paddress,
-			':mqttu' => $this->encrypt($mqttUser),
-			':mqttp' => $this->encrypt($mqttPass),
-			':apub' => $pubKey,
-			':aprv' => $this->encrypt($privKeyHash),
-			':ip' => $this->encrypt($ip),
-			':mac' => $this->encrypt($mac),
-			':lt' => "",
-			':lg' => "",
-			':status' => "OFFLINE",
-			':time' => time()
-		]);
-		$aid = $this->conn->lastInsertId();
+		$web3 = $this->blockchainConnection($domain, $pubKey, $privKey);
+
+		$data = [
+			"id" => $pubKey,
+			"type" => "Application",
+			"category" => [
+				"value" => ["Management"]
+			],
+			"name" => [
+				"value" => $name
+			],
+			"description" => [
+				"value" => $name . " user application."
+			],
+			"lid" => [
+				"value" => 1,
+				"entity" => $lentity
+			],
+			"aid" => [
+				"value" => $aid
+			],
+			"admin" => [
+				"value" => 1
+			],
+			"patients" => [
+				"value" => 1
+			],
+			"cancelled" => [
+				"value" => 0
+			],
+			"location" => [
+				"type" => "geo:json",
+				"value" => [
+					"type" => "Point",
+					"coordinates" => [0, 0]
+				]
+			],
+			"device" => [
+				"name" => "",
+				"manufacturer" => "",
+				"model" => "",
+				"version" => ""
+			],
+			"os" => [
+				"name" => "",
+				"manufacturer" => "",
+				"version" => ""
+			],
+			"protocols" => ["MQTT"],
+			"status" => [
+				"value" => "OFFLINE",
+				"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"keys" => [
+				"public" => $pubKey,
+				"private" => $this->encrypt($privKeyHash),
+				"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"blockchain" => [
+				"address" => $paddress,
+				"password" => $this->encrypt($ppass)
+			],
+			"mqtt" => [
+				"username" => $this->encrypt($mqttUser),
+				"password" => $this->encrypt($mqttPass),
+				"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"coap" => [
+				"username" => "",
+				"password" => ""
+			],
+			"amqp" => [
+				"username" => $this->encrypt($amqppubKey),
+				"password" => $this->encrypt($amqpprvKey),
+				"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"batteryLevel" => [
+				"value" => 0.00
+			],
+			"cpuUsage" => [
+				"value" => 0.00
+			],
+			"memoryUsage" => [
+				"value" => 0.00
+			],
+			"hddUsage" => [
+				"value" => 0.00
+			],
+			"temperature" => [
+				"value" => 0.00
+			],
+			"ip" => [
+				"value" => $this->encrypt($ip),
+				"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"mac" => [
+				"value" => $this->encrypt($mac),
+				"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"bluetooth" => [
+				"address" => "",
+				"timestamp" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"ai" => [],
+			"sensors" => [],
+			"actuators" => [],
+			"dateCreated" => [
+				"type" => "DateTime",
+				"value" => date('Y-m-d\TH:i:s.Z\Z', time())
+			],
+			"dateFirstUsed" => [
+				"type" => "DateTime",
+				"value" => ""
+			],
+			"dateModified" => [
+				"type" => "DateTime",
+				"value" => date('Y-m-d\TH:i:s.Z\Z', time())
+			]
+		];
+
+		$insert = new \MongoDB\Driver\BulkWrite;
+		$id = $insert->insert($data);
+		$result = $this->mngConn->executeBulkWrite($this->mdbname.'.Applications', $insert);
 
 		$query = $this->conn->prepare("
 			INSERT INTO  mqttu  (
@@ -363,7 +536,7 @@ class Admin{
 			':lid' => 1,
 			':aid' => $aid,
 			':username' => $mqttUser,
-			':topic' => "1/Devices/#",
+			':topic' => $lentity."/Devices/#",
 			':rw' => 4
 		));
 
@@ -386,20 +559,10 @@ class Admin{
 			':lid' => 1,
 			':aid' => $aid,
 			':username' => $mqttUser,
-			':topic' => "1/Applications/#",
+			':topic' => $lentity."/Applications/#",
 			':rw' => 4
 		));
 
-		$query = $this->conn->prepare("
-			UPDATE mqttl
-			SET apps = apps + 1
-			WHERE id = :id
-		");
-		$query->execute(array(
-			':id'=> 1
-		));
-
-		$web3 = $this->blockchainConnection($domain, $pubKey, $privKey);
 		$unlocked =  $this->unlockBlockchainAccount($web3, $haddress, $hpass);
 
 		if($unlocked == "FAILED"):
@@ -423,10 +586,9 @@ class Admin{
 
 		if($hash == "FAILED"):
 			echo " HIAS Blockchain deposit failed! \n";
-			return False;
 		else:
 			$txid = $this->storeBlockchainTransaction("Deposit", $hash, 0, $aid);
-			$this->storeUserHistory("Deposit", $txid, 1, 0, 0, 0, $aid);
+			$this->storeUserHistory("Deposit", $txid, 1, $uid, $aid);
 			echo " HIAS Blockchain deposit ok!\n";
 			$hash = "";
 			$msg = "";
@@ -444,7 +606,7 @@ class Admin{
 				return False;
 			else:
 				$txid = $this->storeBlockchainTransaction("Register User", $hash, 0, $aid);
-				$this->storeUserHistory("Register User", $txid, 1, 0, 0, 0, $aid);
+				$this->storeUserHistory("Register User", $txid, 1, $uid, $aid);
 				$balance = $this->getBlockchainBalance($web3, $haddress);
 				echo "Register user completed! You were rewarded for this action! Your balance is now: " . $balance . " HIAS Ether!\n";
 			endif;
@@ -463,10 +625,9 @@ class Admin{
 
 		if($hash == "FAILED"):
 			echo " HIAS Blockchain deposit failed!\n";
-			return False;
 		else:
 			$txid = $this->storeBlockchainTransaction("Deposit", $hash, 0, $aid);
-			$this->storeUserHistory("Deposit", $txid, 1, 0, 0, 0, $aid);
+			$this->storeUserHistory("Deposit", $txid, 1, $uid, $aid);
 			echo " HIAS Blockchain deposit ok!\n";
 			$icontract->at($this->decrypt($this->bcc["icontract"]))->send("registerAuthorized", $paddress, ["from" => $haddress], function ($err, $resp) use (&$hash, &$msg) {
 				if ($err !== null) {
@@ -479,9 +640,10 @@ class Admin{
 
 			if($hash == "FAILED"):
 				echo " HIAS Blockchain registerAuthorized failed!\n";
+				return False;
 			else:
 				$txid = $this->storeBlockchainTransaction("iotJumpWay Register Authorized", $hash, 0, $aid);
-				$this->storeUserHistory("Register Authorized", $txid, 1, 0, 0, 0, $aid);
+				$this->storeUserHistory("Register Authorized", $txid, 1, $uid, $aid);
 				$balance = $this->getBlockchainBalance($web3, $haddress);
 				echo "iotJumpWay register authorized You were rewarded for this action! Your balance is now: " . $balance . " HIAS Ether!\n";
 			endif;
@@ -524,6 +686,114 @@ class Admin{
 			mt_rand( 0, 0x3fff ) | 0x8000,
 			mt_rand( 0, 0x2Aff ), mt_rand( 0, 0xffD3 ), mt_rand( 0, 0xff4B )
 		);
+	}
+
+	private function addAmqpUser($username, $key)
+	{
+		$query = $this->conn->prepare("
+			INSERT INTO  amqpu  (
+				`username`,
+				`pw`
+			)  VALUES (
+				:username,
+				:pw
+			)
+		");
+		$query->execute([
+			':username' => $username,
+			':pw' => $this->encrypt($key)
+		]);
+		$amid = $this->conn->lastInsertId();
+		return $amid;
+	}
+
+	private function addAmqpUserPerm($uid, $permission)
+	{
+		$query = $this->conn->prepare("
+			INSERT INTO  amqpp  (
+				`uid`,
+				`permission`
+			)  VALUES (
+				:uid,
+				:permission
+			)
+		");
+		$query->execute([
+			':uid' => $uid,
+			':permission' => $permission
+		]);
+	}
+
+	private function addAmqpUserVh($uid, $vhost)
+	{
+		$query = $this->conn->prepare("
+			INSERT INTO  amqpvh  (
+				`uid`,
+				`vhost`
+			)  VALUES (
+				:uid,
+				:vhost
+			)
+		");
+		$query->execute([
+			':uid' => $uid,
+			':vhost' => $vhost
+		]);
+	}
+
+	private function addAmqpVhPerm($uid, $vhost, $rtype, $rname, $permission)
+	{
+		$query = $this->conn->prepare("
+			INSERT INTO  amqpvhr  (
+				`uid`,
+				`vhost`,
+				`rtype`,
+				`rname`,
+				`permission`
+			)  VALUES (
+				:uid,
+				:vhost,
+				:rtype,
+				:rname,
+				:permission
+			)
+		");
+		$query->execute([
+			':uid' => $uid,
+			':vhost' => $vhost,
+			':rtype' => $rtype,
+			':rname' => $rname,
+			':permission' => $permission
+		]);
+	}
+
+	private function addAmqpVhTopic($uid, $vhost, $rtype, $rname, $permission, $rkey)
+	{
+		$query = $this->conn->prepare("
+			INSERT INTO  amqpvhrt  (
+				`uid`,
+				`vhost`,
+				`rtype`,
+				`rname`,
+				`permission`,
+				`rkey`
+			)  VALUES (
+				:uid,
+				:vhost,
+				:rtype,
+				:rname,
+				:permission,
+				:rkey
+			)
+		");
+		$query->execute([
+			':uid' => $uid,
+			':vhost' => $vhost,
+			':rtype' => $rtype,
+			':rname' => $rname,
+			':permission' => $permission,
+			':rkey' => $rkey
+		]);
 	}
 
 	public	function generateKey($length = 30){
@@ -614,6 +884,6 @@ class Admin{
 
 $Core  = new Core();
 $Admin = new Admin($Core);
-$Admin->create($argv[1], $argv[2], $argv[3], $argv[4], $argv[5], $argv[6], $argv[7], $argv[8], $argv[9], $argv[10]);
+$Admin->create($argv[1], $argv[2], $argv[3], $argv[4], $argv[5], $argv[6], $argv[7], $argv[8], $argv[9], $argv[10], $argv[11]);
 
 ?>

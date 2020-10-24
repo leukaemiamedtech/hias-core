@@ -1,7 +1,6 @@
 var Staff = {
     Create: function() {
         $.post(window.location.href, $("#staff_create").serialize(), function(resp) {
-            console.log(resp)
             var resp = jQuery.parseJSON(resp);
             switch (resp.Response) {
                 case "OK":
@@ -40,9 +39,8 @@ var Staff = {
         });
     },
     ResetPass: function() {
-        $.post(window.location.href, { "reset_u_pass": 1, "id": $("#id").val(), "user": $("#username").val() },
+        $.post(window.location.href, { "reset_u_pass": 1 },
             function(resp) {
-                console.log(resp)
                 var resp = jQuery.parseJSON(resp);
                 switch (resp.Response) {
                     case "OK":
@@ -59,9 +57,8 @@ var Staff = {
             });
     },
     ResetMqtt: function() {
-        $.post(window.location.href, { "reset_mqtt_staff": 1, "id": $("#aid").val(), "uid": $("#id").val() },
+        $.post(window.location.href, { "reset_mqtt_staff": 1 },
             function(resp) {
-                console.log
                 var resp = jQuery.parseJSON(resp);
                 switch (resp.Response) {
                     case "OK":
@@ -80,10 +77,33 @@ var Staff = {
                 }
             });
     },
-    ResetAppKey: function() {
-        $.post(window.location.href, { "reset_appkey_staff": 1, "id": $("#aid").val(), "uid": $("#id").val() },
+    ResetAppAMQP: function() {
+        $.post(window.location.href, { "reset_user_amqp": 1 },
             function(resp) {
-                console.log
+                var resp = jQuery.parseJSON(resp);
+                switch (resp.Response) {
+                    case "OK":
+                        Staff.amqpa = resp.P;
+                        Staff.amqpae = resp.P.replace(/\S/gi, '*');
+                        $("#appamqpp").text(Staff.amqpae)
+                        Logging.logMessage("Core", "Forms", "Reset OK");
+                        $('.modal-title').text('Reset App AMQP Key');
+                        $('.modal-body').text("This user's new application AMQP key is: " + resp.P);
+                        $('#responsive-modal').modal('show');
+                        break;
+                    default:
+                        msg = "Reset failed: " + resp.Message
+                        Logging.logMessage("Core", "Forms", msg);
+                        $('.modal-title').text('Reset App AMQP Key');
+                        $('.modal-body').text(msg);
+                        $('#responsive-modal').modal('show');
+                        break;
+                }
+            });
+    },
+    ResetAppKey: function() {
+        $.post(window.location.href, { "reset_appkey_staff": 1 },
+            function(resp) {
                 var resp = jQuery.parseJSON(resp);
                 switch (resp.Response) {
                     case "OK":
@@ -100,6 +120,10 @@ var Staff = {
             });
     },
     HideInputs: function() {
+        Staff.amqpua = $("#appamqpu").text();
+        Staff.amqpuae = $("#appamqpu").text().replace(/\S/gi, '*');
+        Staff.amqpa = $("#appamqpp").text();
+        Staff.amqpae = $("#appamqpp").text().replace(/\S/gi, '*');
         Staff.mqttua = $("#usrmqttu").text();
         Staff.mqttuae = $("#usrmqttu").text().replace(/\S/gi, '*');
         Staff.mqttpa = $("#usrmqttp").text();
@@ -111,6 +135,8 @@ var Staff = {
         Staff.usrbcid = $("#usrbcid").text();
         Staff.usrbcide = $("#usrbcid").text().replace(/\S/gi, '*');
 
+        $("#appamqpu").text(Staff.amqpuae);
+        $("#appamqpp").text(Staff.amqpae);
         $("#usrmqttu").text(Staff.mqttuae);
         $("#usrmqttp").text(Staff.mqttpae);
         $("#usrappid").text(Staff.usrappide);
@@ -146,6 +172,23 @@ $(document).ready(function() {
     $("#GeniSysAI").on("click", "#reset_staff_apriv", function(e) {
         e.preventDefault();
         Staff.ResetAppKey();
+    });
+
+    $("#GeniSysAI").on("click", "#reset_user_amqp", function(e) {
+        e.preventDefault();
+        Staff.ResetAppAMQP();
+    });
+
+    $('#appamqpu').hover(function() {
+        $("#appamqpu").text(Staff.amqpua);
+    }, function() {
+        $("#appamqpu").text(Staff.amqpuae);
+    });
+
+    $('#appamqpp').hover(function() {
+        $("#appamqpp").text(Staff.amqpa);
+    }, function() {
+        $("#appamqpp").text(Staff.amqpae);
     });
 
     $('#usrmqttu').hover(function() {

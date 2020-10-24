@@ -12,9 +12,12 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
     sudo ufw allow 22
     sudo ufw allow 80
     sudo ufw allow 443
+    sudo ufw allow 3524
+    sudo ufw allow 5671
     sudo ufw allow 8883
     sudo ufw allow 8545
     sudo ufw allow 9001
+    sudo ufw allow 15671
     sudo ufw allow 27017
     sudo ufw allow 30303/udp
     sudo ufw allow 30303/tcp

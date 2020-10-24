@@ -12,16 +12,14 @@ if [ "$cmsg" = "Y" -o "$cmsg" = "y" ]; then
     read -p "! Enter your desired username (No spaces or special characters): " username
     read -p "! Enter your personal HIAS Blockchain account address: " paddress
     read -p "! Enter your personal HIAS Blockchain account password: " ppass
+    read -p "! Enter your HIAS Location Identfier: " identifier
     read -p "! Enter local IP address of the device that the application will run on (IE: 192.168.1.98): " ip
     read -p "! Enter MAC address of the device that the application will run on: " mac
     sudo touch /etc/nginx/security/patients
     sudo touch /etc/nginx/security/beds
-    sudo chmod -R 777 /etc/nginx/security
-    php Scripts/Installation/PHP/Admin.php "$name" "$email" "$username" "$paddress" "$ppass" "$ip" "$mac" "$domain" "$haddress" "$hpass"
-    read -p "! Enter your new HIAS username: " username
-    read -p "! Enter your new HIAS password: " password
-    sudo sed -i 's/\"user\":.*/\"user\": \"'$username'\",/g' "confs.json"
-    sudo sed -i "s/\"pass\":.*/\"pass\": \"${password//&/\\&}\",/g" "confs.json"
+    sudo chown -R $USER:$USER /etc/nginx/security
+    php Scripts/Installation/PHP/Admin.php "$name" "$email" "$username" "$paddress" "$ppass" "$ip" "$mac" "$domain" "$haddress" "$hpass" "$identifier"
+    echo "Your account has been set up!";
 else
     echo "- HIAS Server admin user creation terminated";
     exit

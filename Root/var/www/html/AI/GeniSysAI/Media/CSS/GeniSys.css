@@ -1,0 +1,25 @@
+.iotJumpWayText {
+    font-size: 10px !important;
+    color: white !important;
+}
+
+.iotJumpWayTextTitle {
+    font-size: 10px !important;
+    color: #3b8dda !important;
+}
+
+input:read-only {
+    background-color: #333 !important;
+}
+
+select:read-only {
+    background-color: #333 !important;
+}
+
+input:disabled {
+    background-color: #333 !important;
+}
+
+select:disabled {
+    background-color: #333 !important;
+}

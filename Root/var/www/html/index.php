@@ -1,11 +1,12 @@
 <?php session_start();
 
 $pageDetails = [
-    "PageID" => "Restricted"
+	"PageID" => "Restricted"
 ];
 
 include dirname(__FILE__) . '/../Classes/Core/init.php';
 include dirname(__FILE__) . '/../Classes/Core/GeniSys.php';
+
 ?>
 
 <!DOCTYPE html>
@@ -94,7 +95,7 @@ include dirname(__FILE__) . '/../Classes/Core/GeniSys.php';
 
 		</div>
 
-        <?php  include dirname(__FILE__) . '/Includes/JS.php'; ?>
+		<?php  include dirname(__FILE__) . '/Includes/JS.php'; ?>
 
 	</body>
 </html>

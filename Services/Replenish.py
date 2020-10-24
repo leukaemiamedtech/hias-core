@@ -10,15 +10,19 @@
 # Description:   The replenish module is used to replenish HIAS Smart Contracts with Ether so that they
 #                can function.
 # License:       MIT License
-# Last Modified: 2020-09-27
+# Last Modified: 2020-10-18
 #
 ######################################################################################################
 
 import time
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath(
+	os.path.join(os.path.dirname(__file__), '..')))
 
 from Classes.Helpers import Helpers
 from Classes.Blockchain import Blockchain
-from Classes.MySQL import MySQL
 
 class Replenish():
 	""" Replenish Class
@@ -31,9 +35,6 @@ class Replenish():
 		""" Initializes the class. """
 
 		self.Helpers = Helpers("Replenish")
-
-		self.MySQL = MySQL()
-		self.MySQL.startMySQL()
 
 		self.Blockchain = Blockchain()
 		self.Blockchain.startBlockchain()

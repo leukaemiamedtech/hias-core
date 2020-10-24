@@ -17,7 +17,6 @@ use Web3\Utils;
 				$this->bcc = $this->getBlockchainConf();
 				$this->web3 = $this->blockchainConnection();
 				$this->contract = new Contract($this->web3->provider, $this->bcc["abi"]);
-				$this->checkBlockchainPermissions();
 			endif;
 
 			$this->country = filter_input(INPUT_GET, "country", FILTER_SANITIZE_STRING) ?
@@ -67,39 +66,6 @@ urldecode(filter_input(INPUT_GET, "country", FILTER_SANITIZE_STRING)) : "Spain";
 			if($allowed != "true"):
 				header('Location: /Logout');
 			endif;
-		}
-
-		private function unlockBlockchainAccount()
-		{
-			$response = "";
-			$personal = $this->web3->personal;
-			$personal->unlockAccount($_SESSION["GeniSysAI"]["BC"]["BCUser"], $this->_GeniSys->_helpers->oDecrypt($_SESSION["GeniSysAI"]["BC"]["BCPass"]), function ($err, $unlocked) use (&$response) {
-				if ($err !== null) {
-					$response = "FAILED! " . $err;
-					return;
-				}
-				if ($unlocked) {
-					$response = "OK";
-				} else {
-					$response = "FAILED";
-				}
-			});
-
-			return $response;
-		}
-
-		private function getBlockchainBalance()
-		{
-			$nbalance = "";
-			$this->web3->eth->getBalance($_SESSION["GeniSysAI"]["BC"]["BCUser"], function ($err, $balance) use (&$nbalance) {
-				if ($err !== null) {
-					$response = "FAILED! " . $err;
-					return;
-				}
-				$nbalance = $balance->toString();
-			});
-
-			return Utils::fromWei($nbalance, 'ether')[0];
 		}
 
 		private function storeUserHistory($action)

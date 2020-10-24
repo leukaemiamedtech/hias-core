@@ -33,7 +33,7 @@ $_GeniSysAi->checkSession();
 
 		<link href="<?=$domain; ?>/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 		<link href="<?=$domain; ?>/dist/css/style.css" rel="stylesheet" type="text/css">
-		<link href="<?=$domain; ?>/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
+		<link href="<?=$domain; ?>/AI/GeniSysAI/Media/CSS/GeniSys.css" rel="stylesheet" type="text/css">
 	</head>
 
 	<body id="GeniSysAI">
@@ -82,6 +82,32 @@ $_GeniSysAi->checkSession();
 							<div class="panel-heading">
 								<div class="pull-left">
 									<h6 class="panel-title txt-dark">HIAS Blockchain Smart Contracts</h6>
+								</div>
+								<div class="pull-right"></div>
+								<div class="clearfix"></div>
+							</div>
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
+									<div class="form-wrap">
+										<form data-toggle="validator" role="form" id="bc_config">
+											<div class="row">
+												<div class="col-lg-12col-md-12 col-sm-12 col-xs-12">
+													<div class="form-group">
+
+														<p>The HIAS Blockchain Smart Contracts handle the core permissions for staff,device, applications and patients connected to the HIAS network, and also handle data integrity for the data published and stored on the network. In addition to the core HIAS Smart Contracts, you can create and deploy your own custom Smart Contracts for integration with the network.</p>
+
+													</div>
+												</div>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="panel panel-default card-view panel-refresh">
+							<div class="panel-heading">
+								<div class="pull-left">
+									<h6 class="panel-title txt-dark">Smart Contracts</h6>
 								</div>
 								<div class="pull-right"><a href="<?=$domain; ?>/Blockchain/Contracts/Create"><i class="fa fa-plus"></i></a></div>
 								<div class="clearfix"></div>
@@ -150,7 +176,7 @@ $_GeniSysAi->checkSession();
 		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/mqttws31.js"></script>
 		<script type="text/javascript" src="<?=$domain; ?>/iotJumpWay/Classes/iotJumpWay.js"></script>
 		<script type="text/javascript" src="<?=$domain; ?>/Blockchain/Classes/Blockchain.js"></script>
-		<script type="text/javascript" src="<?=$domain; ?>/Blockchain/Classes/web3.js"></script>
+		<script src="<?=$domain; ?>/Blockchain/Classes/web3.js"></script>
 		<script type="text/javascript">
 			window.addEventListener('load', function () {
 				Blockchain.connect("<?=$domain; ?>/Blockchain/API/");
