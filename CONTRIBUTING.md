@@ -1,284 +1,441 @@
-# Peter Moss Leukemia AI Research
-## Contributing to the Hospital Intelligent Automation System project
+# Contributing to Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss projects
 
-We encourage bug fixes and enhancements submitted by the community and there are a number of ways you can contribute towards this repository.
+Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss encourages and welcomes code contributions, bug fixes and enhancements from the Github community.
+
+## Ground rules & expectations
+
+Before we get started, here are a few things we expect from you (and that you should expect from others):
+
+-   Be kind and thoughtful in your conversations around this project. We all come from different backgrounds and projects, which means we likely have different perspectives on "how open source is done." Try to listen to others rather than convince them that your way is correct.
+-   This project is released with a [Contributor Code of Conduct](CODE-OF-CONDUCT.md). By participating in this project, you agree to abide by its terms.
+-   Please ensure that your contribution complies with this document. If it does not, you will need to address and fix all issues before we can merge your contribution.
+-   When adding content, please consider if it is widely valuable.
+
+## Overview
+
+Being an Open Source project, everyone can contribute, provided that you respect the following points:
+
+-   Before contributing any code, the author must make sure all the tests work (see below how to launch the tests).
+-   Developed code must adhere to the syntax guidelines enforced by the linters.
+-   Code must be developed following the [SemVer (Semantic Versioning 2.0.0)](https://semver.org/) branching model.
+-   For any new feature added, unit tests must be provided, following the example of the ones already created.
+
+## How to contribute
+
+If you'd like to contribute, start by searching through the issues and pull requests to see whether someone else has raised a similar idea or question.
+
+If you don't see your idea listed, and you think it fits into the goals of this guide, do one of the following:
+
+- Bug Report
+- Feature Proposal
+- Feature Request
+
+### Repository Issues
 
 The first step is to head to our repository issues tab and decide how you would like to contribute.
 
-![Repository Issues](Media/Images/repo-issues.png)
+![Repository Issues](assets/images/repo-issues.jpg)
 
-# Bug reports
-![Bug Reports](Media/Images/bug-report.png)
+### Bug reports
 
-If you would like to contribute bug fixes or make the team aware of bugs you have identified in the project, please raise a **Bug report** issue in the [Issues](issues/new/choose) section. A template is provided that will allow you to provide your suggestions for your bug report / bug fix(es) which will be reviewed by the team who will communicate with you through your issue.
+![Bug Reports](assets/images/bug-report.jpg)
+
+If you would like to contribute bug fixes or make the team aware of bugs you have identified in the project, please raise a **Bug report** issue in the [issues section](issues/new/choose) section. A template is provided that will allow you to provide your suggestions for your bug report / bug fix(es) which will be reviewed by the team.
 
 Bug fix issues are the first step to creating a pull request for bug fixes, once you have created your issue and it has been approved you can proceed with your bug fixes.
 
-&nbsp;
+### Feature proposals
 
-# Feature requests
-![Bug Reports](Media/Images/feature-request.png)
+![Feature Proposals](assets/images/feature-proposals.jpg)
 
-If you would like to suggest a new feature/ new features for this project, please raise a **Feature request** issue in the [HIAS - Hospital Intelligent Automation System](issues/new) section. A template is provided that will allow you to provide your suggestions for your feature request which will be reviewed by the team who will communicate through your issue.
+If you would like to contribute new features to the project, please raise a **Feature proposal** issue in the [issues section](issues/new/choose) section. A template is provided that will allow you to provide your suggestions for your feature proposal.
 
-&nbsp;
+Feature proposal issues are the first step to creating a pull request for feature proposals, once you have created your issue and it has been approved you can proceed with your feature proposal.
 
-# Feature proposals
-![Feature proposals](Media/Images/feature-proposal.png)
+### Feature requests
 
-If you would like to contribute new features to the project, please raise a **Feature proposal** issue in the [HIAS - Hospital Intelligent Automation System](issues/new) section. A template is provided that will allow you to provide your suggestions for your feature proposal which will be reviewed by the team who will communicate through your issue.
+![Feature requests](assets/images/feature-request.jpg)
 
-Feature proposals are the first step to creating a pull request for new features, once you have created your issue and it has been approved you can proceed with your feature proposal.
+If you would like to suggest a new feature/new features for this project, please raise a **Feature request** issue in the [issues section](issues/new/choose) section. A template is provided that will allow you to provide your suggestions for your feature request.
 
-&nbsp;
+### Community
 
-# Creating a fork of the repository
+Discussions about the Open Source Guides take place on this repository's
+[Issues](issues) and [Pull Requests](pulls) sections, or the [discussions](discussions). Anybody is welcome to join these conversations.
 
-![Creating a fork of the repository](Media/Images/fork.png)
-If you are going to be contributing code or documentation to the repository you will need to make a fork of the current development branch. The current development branch will always be the highest branch or master. Once you have created a fork of the repository, you will be able to clone the repository to a location on your development machine using terminal and Git or Github Desktop if using Windows.
+Wherever possible, do not take these conversations to private channels, including contacting the maintainers directly. Keeping communication public means everybody can benefit and learn from the conversation.
 
-&nbsp;
+### Getting Started
 
-# Repository Structures
+In order to start contributing:
 
-We have two main types of repository layouts: single projects and multiple project repositories.
+![Fork](assets/images/fork.jpg)
 
-In a multiple project repository the file structure for AI projects is as follows:
+1. Fork this repository clicking on the "Fork" button on the upper-right area of the page.
+
+2. Clone your just forked repository:
+
+```bash
+git clone https://github.com/YourAccount/HIAS.git
+```
+
+3. Add the main HIAS repository as a remote to your forked repository:
+
+```bash
+git remote add HIAS https://github.com/AIIAL/HIAS.git
+```
+
+Before starting your contribution, remember to synchronize the latest `dev` branch in your forked repository with the `dev` branch in the main HIAS repository as specified by the **CURRENT DEV BRANCH** badge in the repository [README](README.md). To do this, use following these steps
+
+1. Change to your local `dev` branch (in case you are not in it already):
+
+```bash
+git checkout 1.0.0
+```
+
+2. Fetch the remote changes:
+
+```bash
+git fetch HIAS
+```
+
+3. Merge them:
+
+```bash
+git rebase HIAS/1.0.0
+```
+
+Contributions following these guidelines will be added to the `dev` branch, and released in the next version. The release process is explained in the _Releasing_ section below.
+
+### Documentation
+
+Changes you make to the code in the repository or new projects that you make should be supported with documentation added to the **docs** directory.
+
+It is the contributor's responsibility to ensure that the documentation is up to date. If you are contributing to an existing repository you will ensure that these documents are updated and/or added to to reflect your changes.
+
+We use [MKDocs](https://www.mkdocs.org/) along with [Read the Docs](https://docs.readthedocs.io/en/stable/index.html). Use the [Getting Started with MkDocs](https://docs.readthedocs.io/en/stable/intro/getting-started-with-mkdocs.html) guide to find out how to update/create documentation for the project.
+
+### Repository structure
+
+Repository structures for HIAS **must be followed exactly** for all contributions. Pull Requests that do not follow this structure will be rejected and closed with no further discussion.
 
 ```
 - Project Root (Directory)
-    - Project README (File)
-    - Projects (Directory)
-        - Project 1 (Directory)
-            - Classes (Directory)
-                - Helpers (File)
-                - Data (File)
-                - Model (File)
-            - Documentation (Directory)
-                - Installation
-            - Logs (Directory)
-                - Logfiles
-            - Media
-                - Images (Directory)
-                - Videos (Directory)
-            - Model
-                - Model (File)
-                - Weights (File)
-            - Scripts
-                - Installation (File)
-            - Project README (File)
-        - Project 2 (Directory)
-            - Classes (Directory)
-                - Helpers (File)
-                - Data (File)
-                - Model (File)
-            - Documentation (Directory)
-                - Installation
-            - Logs (Directory)
-                - Logfiles
-            - Media
-                - Images (Directory)
-                - Videos (Directory)
-            - Model
-                - Model (File)
-                - Weights (File)
-            - Scripts
-                - Installation (File)
-            - Project README (File)
+    - assets (Directory)
+        - images (Directory)
+            - project-banner.jpg (Image)
+            - bug-report.jpg (Image)
+            - feature-proposal.jpg (Image)
+            - feature-request.jpg (Image)
+            - fork.jpg (Image)
+            - repo-issues.jpg (Image)
+    - configuration (Directory)
+        - config.json (File)
+        - credentials.json (File)
+    - docs (Directory)
+        - img (Directory)
+            - project-banner.jpg (image)
+        - installation (Directory)
+            - ubuntu.md (File)
+        - usage (Directory)
+            - ubuntu.md (File)
+        - index.md (File)
+    - logs (Directory)
+        - HIAS logs
+    - modules (Directory)
+        - helpers.py (File)
+    - scripts
+        - install.sh (File)
+        - services.sh (File)
+    - CODE-OF-CONDUCT.md (File)
+    - CONTRIBUTING.md (File)
+    - LICENSE (File)
+    - mkdocs.yml (File)
+    - README.md (File)
 ```
 
-In a single project repository the file structure for AI projects is as follows:
+**Directories and files may be added to the above structure as required, but none must be removed.**
+
+### Installation Scripts
+
+The default installation script is [install.sh](scripts/install.sh) found in the [scripts](scripts) directory.
+
+You must include the installation commands for all libraries for the project using apt/pip/make etc. Replace **# DEVELOPER TO ADD INSTALLATION COMMANDS FOR ALL REQUIRED LIBRARIES (apt/pip etc)** with the relevant installation commands. If you are contributing an existing repository you will ensure that these scripts are updated to reflect your changes.
+
+### Configuration
+
+The project configuration file [config.json](configuration/config.json) can be found in the [configuration](configuration) directory.
+
+All configurable variables should be held within this file and used wherever relevant throughout the project.
+
+The [helpers file](modules/helpers.py) loads the configuration and makes it available as `helpers.confs`.
+
+You may remove redundent objects/arrays/values. from the configuration and/or add new ones.
+
+### Project Images
+
+Images used in the project must be **jpg**. You must own rights to images you upload to the project, or include attribution. Contributors are solely responsible for any images they publish to our Github.
+
+### Naming Scheme
+
+The following naming scheme must be used:
+
+- **Directories:** Snake case (snake_case)
+- **Abstract Files:** Spinal case (spinal-case)
+- **Files:** Spinal case (spinal-case)
+- **Images:** Spinal case (spinal-case)
+
+Please use descriptive but short names, and make sure to not use spaces in directory and file names.
+
+### Headers
+
+All Python files must include the following header, replacing **Module Title** with a short but descriptive title for the module, and **Module Description** with a paragraph explaining what the module is for.
 
 ```
-- Project Root (Directory)
-    - Classes (Directory)
-        - Helpers (File)
-        - Data (File)
-        - Model (File)
-    - Documentation (Directory)
-        - Installation
-    - Logs (Directory)
-        - Logfiles
-    - Media
-        - Images (Directory)
-        - Videos (Directory)
-    - Model
-        - Model (File)
-        - Weights (File)
-    - Scripts
-        - Installation (File)
-    - Project README (File)
+#!/usr/bin/env python3
+""" Module Title.
+
+Module Description.
+
+MIT License
+
+Copyright (c) 2021 Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files(the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Contributors:
+
+"""
 ```
 
-# Documentation
+#### Attribution
 
-All projects should have documentation, changes you make to the code in the repository or new projects that you make should also have documentation. In the structures above you can see the **Documentation** directories, and the **Installation** file. This installation file should contain a step by step guide to how to install your project, while directions of use will be a high level tutorial in your project README. If you are contributing an existing repository you will ensure that these documents are updated to reflect your changes.
+- When you create a new module you should add your name to the **Contributors** section.
+- When you make a change to an existing module you should add your name to the **Contributors** section below existing contributors. You must not remove existing contributors from a header.
 
-# Installation Scripts
+### Footers
 
-You will notice the **Scripts** directory above, this is home to any scripts that make it easier for the end use to set up and / or use your project. By default every project must have an installation script when installations are required. If you are contributing an existing repository you will ensure that these scripts are updated to reflect your changes.
-
-# Naming
-
-We use CamelCase for our directory and file names (except images), we would like this to stay uniform across all of our projects. Please use descriptive but short names where possible, and make sure you do not use spaces in directory and file names.
-
-# Attribution
-
-Whenever relevant you should add yourself to the contributors section of the READMEs. If you have a public profile on the Peter Moss Leukemia AI Research website, you should use this in your link. Please see the contributing section of any of our READMEs for examples.
-
-# .md Files
-
-Each .md file in the repository should use the same header. An example of this is as follows:
+All READMEs and documentation should include the following footer:
 
 ```
-# Peter Moss Acute Myeloid & Lymphoblastic Leukemia AI Research Project
-## Acute Lymphoblastic Leukemia Detection System 2019
-
-![Peter Moss Acute Myeloid & Lymphoblastic Leukemia AI Research Project](Media/Images/Peter-Moss-Acute-Myeloid-Lymphoblastic-Leukemia-Research-Project.png)
-```
-
-Each .md file in the repository should also use the same footer, with the excpetions of the contributors. If you contribute directly to the code or documentation you should update this area with your details. Below is an example of how the contributing list should be.
-
-```
-&nbsp;
-
 # Contributing
+Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss encourages and welcomes code contributions, bug fixes and enhancements from the Github community.
 
-The Peter Moss Acute Myeloid & Lymphoblastic Leukemia AI Research project encourages and welcomes code contributions, bug fixes and enhancements from the Github.
-
-Please read the [CONTRIBUTING](CONTRIBUTING.md "CONTRIBUTING") document for a full guide to forking our repositories and submitting your pull requests. You will also find information about our code of conduct on this page.
+Please read the [CONTRIBUTING](CONTRIBUTING.md "CONTRIBUTING") document for a full guide to forking our repositories and submitting your pull requests. You will also find our code of conduct in the [Code of Conduct](CODE-OF-CONDUCT.md) document.
 
 ## Contributors
-
-- [Adam Milton-Barker](https://www.leukemiaairesearch.com/team/adam-milton-barker "Adam Milton-Barker") - [Asociacion De Investigation En Inteligencia Artificial Para La Leucemia Peter Moss](https://www.leukemiaairesearch.com "Asociacion De Investigation En Inteligencia Artificial Para La Leucemia Peter Moss") President & Lead Developer, Sabadell, Spain
+- [Adam Milton-Barker](https://www.leukemiaairesearch.com/association/volunteers/adam-milton-barker "Adam Milton-Barker") - [Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss](https://www.leukemiaresearchassociation.ai "Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss") President/Founder & Lead Developer, Sabadell, Spain
 
 &nbsp;
 
 # Versioning
-
-We use SemVer for versioning. For the versions available, see [Releases](releases "Releases").
+We use [SemVer](https://semver.org/) for versioning.
 
 &nbsp;
 
 # License
-
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE "LICENSE") file for details.
 
 &nbsp;
 
 # Bugs/Issues
-
-We use the [repo issues](issues "repo issues") to track bugs and general requests related to using this project.
+We use the [repo issues](issues "repo issues") to track bugs and general requests related to using this project. See [CONTRIBUTING](CONTRIBUTING.md "CONTRIBUTING") for more info on how to submit bugs, feature requests and proposals.
 ```
 
-The project README contributors should contain a list of all contributors in the entire repository.
+Remember to use **relative URLs**, and in the case of footers in the [docs](docs) folder, you must us **absolute URLs**.
 
-&nbsp;
+The contributors section should include a list of contributors that have contributed to the related document. In the case of the README footer, the Contributors section should include a list of contributors that have contributed to **any** part of the project.
 
-# Push changes to forked repository
+You should add your details below existing contributors. Details should include:
 
-![Push changes to forked repository](https://www.leukemiaairesearch.com/github/media/images/Contributing-Commit-Push.jpg)
+- Name
+- Company/University etc
+- Position
+- City
+- Country
 
-When you have made your changes, you need to push them to your forked repository. This process requires a commit with a message about what your commit is, and then finally a push to the repository which will place your changes or created files to your forked repository.
+### Branching model
 
-Show the status of all changed/added files.
+There are one special branch in the repository:
+
+-   `main`: contains the tagged and released version
+-   `1.0.0`: is the current `dev` branch and contains the latest development code. New features and bugfixes are always merged to current `dev` branch.
+
+In order to start developing a new feature or refactoring, a new branch will be created following the SemVer scheme:
+
+Given a version number MAJOR.MINOR.PATCH, increment the:
+
+- `MAJOR` version when you make incompatible code changes,
+- `MINOR` version when you add functionality in a backwards compatible manner, and
+- `PATCH` version when you make backwards compatible bug fixes.
+
+- If `MAJOR` is 0, then Minor could mean the version is not backwards compatible
+- If `MINOR` is 1, this means the release is stable.
+
+The branch will be created by our team depending on the nature of your issue. Once the new functionality has been completed, a Pull Request will be created from the feature branch to the relevant branch. Remember to check both the linters, and
+the tests before creating the Pull Request.
+
+In order to contribute to the repository, the same scheme should be replicated in the forked repositories, so the new features or fixes should all come from the current version of `dev` branch and end up in the current `dev` branch again.
+
+### PEP 8 -- Style Guide for Python Code
+
+All Python projects must align with the [PEP 8 -- Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/).
+
+### CII Best Practices
+
+All projects must align with the [CII Best Practice](https://www.construction-institute.org/resources/knowledgebase/best-practices).
+
+### Changelog
+
+The project contains a changelog that is automatically created from the description of the Pull Requests that have been merged into develop, thanks to the [Release Drafter GitHub action](https://github.com/marketplace/actions/release-drafter).
+
+### Releasing
+
+The process of making a release simply consists of creating the release in Github and providing the new tag name, this task is carried out by our team.
+
+### Version numbers
+
+The version number will change for each release, following the SemVer scheme described previously.
+
+### Bugfix in releases
+
+When a bug is found affecting a release, a branch will be created from the `main` branch. As a part of the patch, the release version will be increased in it's last number (Z). The patch then will be merged (via pull request (PR)) to the `main` branch, and a new version will be released.
+
+### Commits
+
+Commits should be [atomic](https://en.wikipedia.org/wiki/Atomic_commit), make commits to your fork until you have resolved/completed the work specified in your issue before submitting your PR, this keeps an easy to follow history of what work has been carried out and makes the review process easier and quicker
+
+When making a commit, the subjects of each commit should be as follows, where XXX represents the issue number:
+
+#### Commit Title
+
+##### Bug Fixes
+
+- fix #xxx Issue Name
+- fixes #xxx Issue Name
+- fixed #xxx Issue Name
+
+##### Partial Resolutions
+
+- partially resolves #xxx Issue Name
+- partially resolved #xxx Issue Name
+
+##### Resolution
+
+- resolves #xxx Issue Name
+- resolved #xxx Issue Name
+
+##### Alignment
+
+- aligns with #xxx Issue Name
+
+##### Closure
+
+- close #xxx Issue Name
+- closes #xxx Issue Name
+- closed #xxx Issue Name
+
+#### Commit Description
+
+Your commit description should include a detailed description of the changes that have been made.
+
+#### Committing
+
+When you are ready to commit, you should do the following:
+
+##### Show The Status Of All Changed/Added/Deleted files
 
 ```
 git status
 ```
 
-You may want to do check the differences between changed files, you can do this using the following command.
+##### Diff
+
+You may want to check the differences between changed files, you can do this using the following command.
 
 ```
 git diff
 ```
 
-Add all changes ready to commit. (You may not want to add all changed files, in this case please follow instructions to add single files to commit that you were shown using git status). To repeat, the following will add all changes shown by using git status to your commit.
+##### Add All Changes
+
+The following will add all changes shown by git status to your commit.
 
 ```
 git add .
 ```
 
-Commit your changes.
+##### Add One Or More Changes
 
 ```
-git commit -m "Your descriptive commit message"
+git add file1 file2 file5
 ```
 
-Push changes to your fork.
+##### Commit Added Changes
+
+Commit your added changes to your local repository, remember to follow the [Commit Title](#commit-title) & [Commit Description](#commit-description) guides above.
+
+To create your commit with both a title and description, use the following command which states the commit fixes issue ID 1 and provides a detailed description:
+
+```
+git commit -m "fixes #1" -m "Fixes the documentation typos described in issue #1"
+```
+
+### Push Your Changes
+
+When you have made your changes, ensured you have aligned with the procedures in this document, and made your commits to your local repository aligning with the guide above, you need to push your changes to your forked repository.
+
+Push changes to your fork by using the following command:
 
 ```
 git push
 ```
 
-You can also Github Desktop if on Windows as shown in the image above.
+### Pull Request protocol
 
+Contributions to the HIAS repository are done using a PR. The detailed "protocol" used in such PR is described below:
 
-&nbsp;
+* Direct commits to main or develop branches (even single-line modifications) are not allowed. Every modification has to come as a PR to the latest `dev branch`
+* PRs implement/fix submitted issues, the issue number has to be referenced in the subject of the relevant commit and PR
+* Anybody is welcome to provide comments to the PR (either direct comments or using the review feature offered by Github)
+* Use *code line comments* instead of *general comments*, for traceability reasons (see comments lifecycle below)
+* Comments lifecycle
+    * Comment is created, initiating a *comment thread*
+    * New comments can be added as responses to the original one, starting a discussion
+    * After discussion, the comment thread ends in one of the following ways:
+        * `Fixed in <commit hash>` in case the discussion involves a fix in the PR branch (which commit hash is included as reference)
+        * `NTC`, if finally nothing needs to be done (NTC = Nothing To Change)
+* PR can be merged when the following conditions are met:
+    * All comment threads are closed
+    * All the participants in the discussion have provided a `LGTM` general comment (LGTM = Looks good to me)
+    * All documentation has been updated to reflect your changes.
+    * No proprietory software or images have been added.
 
-# Pull requests
+* Self-merging is not allowed (except in rare and justified circumstances)
 
-![Pull requests](Media/Images/Contributing-Pull-Requests.jpg)
-When you are satisfied with your changes you can submit a pull request that will request that your changes be pulled into the latest development branch.
+Some additional remarks to take into account when contributing with new PRs:
 
-## Pull Request Process
-
-1. Ensure all documentation has been updated and matches the style of our repository layouts, including repository directory structures etc.
-2. Ensure any install or build dependencies are removed before the end of the layer when doing a build.
-3. Add new README.md files for new directories / __ init __.py files for empty directories.
-4. Ensure that your READMEs, documentation and code match the format/design of the rest of the repoistory.
-5. Include the project header banner on all documentation pages / READMEs.
-6. Incude the Contributing, Versioning, Licensing, Bugs/Issues information in all READMEs and documentation.
-7. Submit your Pull Request with an accurate descrription of the changes you have made.
-8. Your Pull Request will be reviewed by the team.
-
-&nbsp;
-
-# Code of conduct
-
-Please note we have a code of conduct, please follow it in all your interactions with the project.
-
-## Our Pledge
-
-In the interest of fostering an open and welcoming environment, we as contributors and maintainers pledge to making participation in our project and our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion, or sexual identity and orientation.
-
-## Our Standards
-
-Examples of behavior that contributes to creating a positive environment include:
-
-- Using welcoming and inclusive language
-- Being respectful of differing viewpoints and experiences
-- Gracefully accepting constructive criticism
-- Focusing on what is best for the community
-- Showing empathy towards other community members
-
-Examples of unacceptable behavior by participants include:
-
-- The use of sexualized language or imagery and unwelcome sexual attention or advances
-- Trolling, insulting/derogatory comments, and personal or political attacks
-- Public or private harassment
-- Publishing others' private information, such as a physical or electronic address, without explicit permission
-- Other conduct which could reasonably be considered inappropriate in a professional setting
-
-## Our Responsibilities
-
-Project maintainers are responsible for clarifying the standards of acceptable behavior and are expected to take appropriate and fair corrective action in response to any instances of unacceptable behavior.
-
-Project maintainers have the right and responsibility to remove, edit, or reject comments, commits, code, wiki edits, issues, and other contributions that are not aligned to this Code of Conduct, or to ban temporarily or
-permanently any contributor for other behaviors that they deem inappropriate, threatening, offensive, or harmful.
-
-## Scope
-
-This Code of Conduct applies both within project spaces and in public spaces when an individual is representing the project or its community. Examples of representing a project or community include using an official project e-mail address, posting via an official social media account, or acting as an appointed representative at an online or offline event. Representation of a project may be further defined and clarified by project maintainers.
-
-## Enforcement
-
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project team at github@leukemiaairesearch.com All complaints will be reviewed and investigated and will result in a response that is deemed necessary and appropriate to the circumstances. The project team is obligated to maintain confidentiality with regard to the reporter of an incident. Further details of specific enforcement policies may be posted separately.
-
-Project maintainers who do not follow or enforce the Code of Conduct in good faith may face temporary or permanent repercussions as determined by other members of the project's leadership.
-
-&nbsp;
-
-# Attribution
-
-This Code of Conduct is adapted from the [Contributor Covenant](http://contributor-covenant.org/version/1/4), version 1.4.
+* PR must include not only code contributions, but their corresponding pieces of documentation (new or modifications to existing one) and tests
+* Documentation must be added to the **docs** folder
+* In the case empty directories need to be uploaded, add a `.gitkeep` file inside.
+* The project banner is included in all documentation
+* Contributing, Versioning, Licensing, Bugs/Issues footer is included in all information
+* Contributors have been added to all Contributors footers
+* PR modifications must pass full regression based on existing tests in addition to whichever new test added due to the new functionality
+* PR should be of an appropriated size that makes review achievable. Too large PRs could be closed with a "please, redo the work in smaller pieces" without any further discussion
