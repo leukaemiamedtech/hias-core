@@ -1,306 +1,94 @@
-# Peter Moss Leukemia AI Research
-## HIAS - Hospital Intelligent Automation System
-[![HIAS - Hospital Intelligent Automation System](Media/Images/HIAS-Hospital-Intelligent-Automation-System.png)](https://github.com/LeukemiaAiResearch/HIAS)
+# Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss
+# HIAS - Hospital Intelligent Automation Server
 
-[![VERSION](https://img.shields.io/badge/VERSION-2.0.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/2.0.0) [![DEV BRANCH](https://img.shields.io/badge/DEV%20BRANCH-2.1.0-blue.svg)](https://github.com/LeukemiaAiResearch/HIAS/tree/1.1.0) [![Contributions Welcome!](https://img.shields.io/badge/Contributions-Welcome-lightgrey.svg)](CONTRIBUTING.md)  [![Issues](https://img.shields.io/badge/Issues-Welcome-lightgrey.svg)](issues) [![LICENSE](https://img.shields.io/badge/LICENSE-MIT-blue.svg)](LICENSE)
+[![HIAS - Hospital Intelligent Automation System](assets/images/project-banner.jpg)](https://github.com/AIIAL/HIAS-Core)
 
-&nbsp;
+[![CURRENT RELEASE](https://img.shields.io/badge/CURRENT%20RELEASE-2.1.1-blue.svg)](https://github.com/AIIAL/HIASCDI/tree/2.1.1)
+[![UPCOMING RELEASE](https://img.shields.io/badge/CURRENT%20DEV%20BRANCH-3.0.0-blue.svg)](https://github.com/AIIAL/HIASCDI/tree/3.0.0)  [![LICENSE](https://img.shields.io/badge/LICENSE-MIT-blue.svg)](LICENSE) ![SemVer](https://img.shields.io/badge/semver-2.0.0-blue)
 
-# Table Of Contents
+[![PEP8](https://img.shields.io/badge/code%20style-pep8-orange.svg)](https://www.python.org/dev/peps/pep-0008/)
 
-- [Introduction](#introduction)
-- [Key Features](#key-features)
-- [HIAS Network](#hias-network)
-- [HIAS UI](#hias-ui)
-- [HIAS Blockchain](#hias-blockchain)
-- [HIAS Data Systems Interface](#hias-data-systems-interface)
-    - [HDSI IoT Agents](#hdsi-iot-agents)
-        - [MQTT](#mqtt)
-        - [AMQP](#AMQP)
-- [HIAS iotJumpWay Network](#hias-iotjumpway-network)
-    - [HIAS IoT Data Smart Contract](#hias-iot-data-smart-contract)
-    - [HIAS IoT Zones](#hias-iot-zones)
-    - [HIAS IoT Devices](#hias-iot-devices)
-    - [HIAS IoT Sensors/Actuators](#hias-iot-sensorsactuators)
-    - [HIAS IoT Applications](#hias-iot-applications)
-    - [HIAS IoT Data](#hias-iot-data)
-- [HIAS Artificial Intelligence](#hias-artificial-intelligence)
-    - [HDSI AI Model Schemas](#hdsi-ai-model-schemas)
-    - [HIAS Acute Lymphoblastic Leukemia Detection System (CNN)](#hias-acute-lymphoblastic-leukemia-detection-system-cnn)
-    - [HIAS COVID-19 Detection System (CNN)](#hias-covid-19-detection-system-cnn)
-    - [HIAS Facial Recognition API](#hias-facial-recognition-api)
-    - [HIAS Natural Language Understanding Engines](#hias-natural-language-understanding-engines)
-- [Installation](#installation)
-- [HIAS Data Analysis](#hias-data-analysis)
-    - [HIAS COVID-19 Data Analysis](#hias-covid-19-data-analysis)
-- [EMAR / EMAR Mini](#emar--emar-mini)
-- [Modular Addons](#modular-addons)
-- [Acknowledgement](#acknowledgement)
-- [Contributing](#contributing)
-    - [Contributors](#contributors)
-- [Versioning](#versioning)
-- [License](#license)
-- [Bugs/Issues](#bugs-issues)
+![Compliance Tests](https://img.shields.io/badge/Compliance%20Tests-TODO-red)
+![Unit Tests](https://img.shields.io/badge/Unit%20Tests-TODO-red)
+![Functional Tests](https://img.shields.io/badge/Functional%20Tests-TODO-red)
 
-&nbsp;
-
-![HIAS Network Map](Media/Images/HIAS-Station.png)
+[![Contributions Welcome!](https://img.shields.io/badge/Contributions-Welcome-lightgrey.svg)](CONTRIBUTING.md) [![Issues](https://img.shields.io/badge/Issues-Welcome-lightgrey.svg)](issues) [![Bug Reports](https://img.shields.io/badge/Bug%20Reports-Welcome-lightgrey.svg)](https://github.com/AIIAL/HIAS-Core/issues/new?assignees=&labels=&template=bug_report.md&title=)
 
 &nbsp;
 
 # Introduction
-The **Peter Moss Leukemia AI Research HIAS Network** is an open-source Hospital Intelligent Automation System. The HIAS server powers an intelligent network providing secure access to devices on the network via a proxy. These devices/applications and databases all run and communicate on the local network. This means that premises have more control and security when it comes to their hardware, data and storage.
 
-Devices and applications on the HIAS network communicate with the server and each other using a local MQTT broker.
+HIAS Core is an open-source Hospital Automation Server designed to control and manage a network of intelligent IoT connected devices and applications. The server hosts a secure UI allowing the provisioning of HIAS devices and applications, managing and controlling the connected devices and applications, and reviewing/utilizing data collected from the network for automation.
 
-The server hosts a private Ethereum blockchain which is integrated with the UI and provides upholds network access permissions, provides data integrity and accountability.
+![HIAS Network](assets/images/hias-network.jpg)
 
-__This project is a proof of concept, and is still a work in progress.__
+Included in HIAS Core is a local MQTT and a local AMQP Broker providing secure machine to machine/application communication. The server also hosts a private Ethereum Blockchain used for permissions and data integrity, a private Context Broker (HIASCDI) based on the NGSI V2 specifications, and a private Historical Broker (HIASHDI). Network data is stored in the Historical and Context Brokers which utilize a private MongoDB database. This means that premises have more control and security when it comes to their hardware, data and storage.
 
-&nbsp;
+HIAS Core also homes a facial recognition server and Natural Language Understanding Engine that act as a Intelligent Assistant, able to monitor and control devices in the location the server is installed in.
 
-# Key Features
+All HIAS network devices run on the local network and are accessible via the internet through the HIAS Core secure reverse proxy or the secure m2m communication brokers. Network devices include AI Agents (Diagnostics, Facial Recognition/Identification, Natural Language Understanding etc), IoT devices (environment monitors, smart electronics etc), Virtual & Mixed Reality devices (Oculus Rift/Magic Leap) and Brain Computer Interfaces. All of these devices produce and consume historical and contextual data which is stored in HIAS Core and used to train AI models used to automate the management and control of HIAS network devices.
 
-![HIAS Network Map](Media/Images/HIAS-Network.png)
+HIAS network devices and applications are a range of open-source, modular devices that can be provisioned via the HIAS UI, these devices are completely free, and include:
 
-- **Local Web Server**
-    - Locally hosted webserver using NGINX.
-- **High Grade SSL Encryption**
-    - High grade (A+) encryption for the web server, proxy and network.
-- **Proxy**
-    - Secure access to local devices from the outside world.
-- **HIAS Blockchain**
-    - Private Ethereum blockchain for access permissions, and providing data integrity & accountability.
-- **HDSI Context Broker**
-    - Context Broker handles contextual data for iotJumpWay IoT Agents, AI Models, Devices, Applications, Staff & Patients.
-- **HDSI IoT Agents**
-    - MQTT, AMQP & CoAP IoT Agents translate and push data coming from iotJumpWay Devices and Applications to the HDSI Context Broker.
-- **System Database**
-    - MySQL database powering the HIAS UI.
-- **IoT Database**
-    - The network IoT database is a Mongo database that stores all data from the HIAS network devices and applications, as well as iotJumpWay IoT Agents, AI Models, Devices, Applications, Staff & Patients contextual data.
-- **Local Samba Server**
-    - A local Samba file server allowing controlled individual and group access to files on your local network.
-- **Local IoT Broker**
-    - Local and private MQTT/Websockets broker based on the  [iotJumpway Broker](https://github.com/iotJumpway/Broker "iotJumpway Broker").
-- **Server UI**
-    - A control panel to monitor and manage your HIAS network.
-- **Facial Identification Systems**
-    - Facial identification systems based on [TassAI](https://github.com/TassAI/ "TassAI").
-- **Natural Language Understanding (NLU) Server**
-    - Natural Language Understanding server based on [GeniSysAI](https://github.com/GeniSysAI/ "GeniSysAI").
-- **COVID Data Analysis System**
-    - A data anaysis system for monitoring the COVID 19 pandemic. This system collects data from the [Johns Hopkins University COVID-19 Daily Reports](https://github.com/CSSEGISandData/COVID-19/) on Github.
-- **AI Detection Systems**
-    - Detection systems for classsifying Acute Lymphoblastic Leukemia and COVID-19.
-- **HIS/HMS**
-    - Hospital management system providing online tools for managing and running day to day activities and resources for the hospital.
+- Medical diagnostics systems.
+- Data analysis systems.
+- Computer Vision and Natural Language Understanding systems.
+- Virtual and Mixed Reality systems
+- Robotics.
+- Brain Computer Interfaces.
+- Users can also program their own devices and applications and connect them to the network.
 
 &nbsp;
 
-# HIAS Network
-![HIAS Network](Media/Images/HIAS-Network-Devices.png)
+# HIAS 3.0.0 Backware Incompatible
 
-The HIAS Network consists of a range of open-source IoT devices and applications including data analysis systems, diagnosis systems, robots, facial recognition security systems and natural language understanding engines. The network devices are designed and optimized to run on low resource devices. Devices and applications can communicate autonomously using rules and the iotJumpWay MQTT broker.
+**HIAS 3.0.0 is backward incompatible and requires a completely fresh installation.**
 
-&nbsp;
-
-# HIAS UI
-![HIAS UI](Media/Images/dashboard.png)
-
-The HIAS UI is the central control panel for the server, and all of the modular devices and applications that can be installed on it. The server UI provides the capabalities to manage the network of open-soruce intelligent devices and applications.
+You can download and install the [current version (2.1.0)](https://github.com/AIIAL/HIAS-Core/tree/2.1.0) but please be aware that **3.0.0 requires a completely fresh installation.**.
 
 &nbsp;
 
-# HIAS Blockchain
-The HIAS Blockchain is a private Ethereum blockchain network that provides an immutable history of everything that happens on the HIAS network. Every user/device and application has a HIAS Blockchain address, meaning their actions can be recorded on the blockchain. Smart contracts provide additional security when it comes to verifying permissions, data hashes are stored on the blockchain providing data integrity. and each action made by staff members in the UI is recorded. The HIAS Blockchain network can be extended by installing additional full miner nodes which help to create blocks, seal transaction blocks, and also have a full copy of the entire HIAS Blockchain which remain synchronized.
+# HIAS 3.0.0 Sneak Preview
 
-&nbsp;
+![HIAS 3.0.0 Sneak Preview](assets/images/hias-3.0.0-dashboard.jpg)
 
-# HIAS Data Systems Interface
-![HIAS Data Systems Interface](Media/Images/HDSI-Context-Broker.jpg)
-
-The HIAS Data Services Interface is a context broker that handles contextual information for the HIAS network. The broker implements the HDSI V1 API and allows easy management of HIAS iotJumpWay IoT Agents, AI Models, Devices, Applications, and HIAS Staff & Patient accounts and their related contextual data. HDSI is based on [Open Mobile Alliance](http://www.openmobilealliance.org/)'s [NGSI](http://www.openmobilealliance.org/release/NGSI/V1_0-20120529-A/OMA-TS-NGSI_Context_Management-V1_0-20120529-A.pdf), and has been customized to meet the requirements of the HIAS network.
-
-All iotJumpWay IoT Agents, AI Models, Devices, Applications, and HIAS Staff & Patient accounts have unique schemas that standardize their information and setup, these schemas are stored in the context broker.
-
-## HDSI IoT Agents
-![HDSI IoT Agents](Media/Images/HDSI-IoT-Agents.jpg)
-
-The HDSI IoT Agents translate and push data sent from iotJumpWay Devices & Applications to the HDSI Context Broker. Each IoT Agent is responsible for it's own communication protocol, or transport. Current supported IoT protocols include HTTP, MQTT, Websockets & AMQP, with a CoAP broker and IoT Agent in development. The IoT Agents listen to data being sent on using their protocol and sends contextual data to the context broker, and historical data is stored in directly in the Mongo database.
-
-### MQTT
-The MQTT (Message Queuing Telemetry Transport) protocol is one of the most well known and popular machine to machine communication protocols. Developed by IBM's Dr. Andy Stanford-Clark, the protocol is a lightweight publish and subscribe protocol designed for constrained devices. MQTT is primary communciation on the HIAS network.
-
-### AMQP
-The AMQP (Advanced Message Queuing Protocol) is another popular machine to machine communication protocol. Although different to MQTT, it has the same function, allowing constrained devices and applications to communicate with each other.
-
-&nbsp;
-
-# HIAS iotJumpWay Network
-![HIAS IoT](Media/Images/HIAS-IoT-Dashboard.png)
-
-The HIAS IoT network is powered by a new, fully open-source version of the [iotJumpWay](https://www.iotJumpWay.com "iotJumpWay"). The HIAS iotJumpway dashboard is your control panel for managing all of your network iotJumpWay zones, devices, sensors/actuators and applications.
-
-The iotJumpWay devices and applications that make up the HIAS network are connected to the HIAS network via the iotJumpWay. Each device and application has a unique identifier and credentials that allow communication with the server and devices behind the firewall and proxy.
-
-A HIAS network is represented by an iotJumpWay location. Within each location you can have multiple zones, devices and applications.
-
-## HIAS IoT Zones
-![HIAS IoT Zones](Media/Images/HIAS-IoT-Zones.png)
-
-iotJumpWay Zones represent a room or area within a location. For instance, in a hospital you may have zones such as *Reception*, *Waiting Room*, *Operating Room 1* etc.
-
-![HIAS IoT Zones](Media/Images/HIAS-IoT-Zones-Edit.png)
-
-## HIAS IoT Devices
-![HIAS IoT Devices](Media/Images/HIAS-IoT-Devices.png)
-
-iotJumpWay Devices represent physical devices on the network. Each device is attached to a location and zone, allowing staff to know where each of their devices are, all devices publish their location to the network allowing for real-time tracking within the network.
-
-![HIAS IoT Devices](Media/Images/HIAS-IoT-Devices-Edit.png)
-
-## HIAS IoT Sensors/Actuators
-![HIAS IoT Sensors/Actuators](Media/Images/HIAS-IoT-Sensors.png)
-
-iotJumpWay Sensors & Actuators represent physical sensors and actuators included on network devices and allows direct communication with each sensor/actuator.
-
-**This feature is still in development**
-
-## HIAS IoT Applications
-![HIAS IoT Applications](Media/Images/HIAS-IoT-Applications.png)
-
-iotJumpWay Devices represent applications that can communicate with the  network. Each application is attached to a location, soon all applications will publish their location to the system allowing for real-time tracking.
-
-![HIAS IoT Applications](Media/Images/HIAS-IoT-Applications-Edit.png)
-
-## HIAS IoT Data
-![HIAS IoT Data](Media/Images/HIAS-IoT-Data.png)
-
-All data sent from devices and applications connected to the HIAS network is stored locally in a Mongo database (NoSQL). This means that staff can monitor all data on their network, and kall data stays on the network giving organizations total control of their data.
-
-## HIAS IoT Data Smart Contract
-![HIAS IoT Data Smart Contract](Media/Images/HIAS-IoT-Data-Smart-Contract.png)
-
-The HIAS Blockchain hosts an iotJumpWay smart contract responsible for veryifing read and write access for iotJumpWay devices and applications, and storing immutable records of hashes of the data that is stored in the IoT database. The hashes provide the ability to verify data integrity by comparing the data in the database with the hash on the blockchain. The HIAS IoT Data Dashboard provides the functionality for checking the existing data against the hash on the blockchain.
-
-&nbsp;
-
-# HIAS Artificial Intelligence
-The HIAS network is made up of multiple open-source AI models, these models are provided through our official Github organization, as well as our research project Githubs. Current models available for the HIAS network include Leukemia and COVID classifiers, facial recognition and natural language understanding.
-
-## HDSI AI Model Schemas
-![HDSI AI Model Schemas](Media/Images/HDSI-AI-Model-Schemas.jpg)
-The HDSI schemas provide an easy way to manage and use the HIAS AI models. The schemas provide a standardization that allows you to not only use our models, but easily create your own and use them with the HIAS network.
-
- ## HIAS Acute Lymphoblastic Leukemia Detection System (CNN)
-![HIAS COVID-19 Diagnosis (CNN)](Media/Images/HIAS-ALL-Detection-System.png)
-
-The HIAS Acute Lymphoblastic Leukemia Detection System (CNN) used the [oneAPI Acute Lymphoblastic Leukemia Classifier](https://github.com/AMLResearchProject/oneAPI-ALL-Classifier), based on the proposed architecture in the [Acute Leukemia Classification Using Convolution Neural Network In Clinical Decision Support System](https://airccj.org/CSCP/vol7/csit77505.pdf) paper and using the [Acute Lymphoblastic Leukemia Image Database for Image Processing dataset](https://homes.di.unimi.it/scotti/all). The classifier achieves 98% accuracy at detecting Acute Lymphoblastic Leukemia in unseen data.
-
-## HIAS COVID-19 Detection System (CNN)
-![HIAS COVID-19 Diagnosis (CNN)](Media/Images/HIAS-COVID-19-Detection-System.png)
-
- The HIAS COVID-19 Detection System (CNN) system uses the [COVID-19 Tensorflow DenseNet Classifier](https://github.com/COVID-19-AI-Research-Project/AI-Classification/tree/master/Projects/2 "COVID-19 Tensorflow DenseNet Classifier") project, a Tensorflow 2 DenseNet implementation using the [SARS-COV-2 Ct-Scan Dataset](https://www.kaggle.com/plameneduardo/sarscov2-ctscan-dataset "SARS-COV-2 Ct-Scan Dataset") by our collaborators, Plamenlancaster: [Professor Plamen Angelov](https://www.lancaster.ac.uk/lira/people/#d.en.397371) from [Lancaster University](https://www.lancaster.ac.uk/)/ Centre Director @ [Lira](https://www.lancaster.ac.uk/lira/), & his researcher, [Eduardo Soares PhD](https://www.lancaster.ac.uk/sci-tech/about-us/people/eduardo-almeida-soares). The classifier achieves 92% accuracy at detecting COVID-19 in unseen data.
-
-## HIAS Facial Recognition API
-![HIAS Facial Recognition](Media/Images/HIAS-Facial-Recognition.png)
-
-The HIAS facial recognition API is based on [TassAI](https://www.facebook.com/TassAI/ "TassAI"). The API allows for facial identification using authenticated HTTP requests from devices and applications that are authorized to communicate with the HIAS network.
-
-A range of open-source facial recognition systems can be attached to the network and use web and IP cameras attached to devices that process frames from the cameras in real-time, before streaming the processed framed to a local server endpoint.
-
-Multiple TassAI facial recognition devices can be configured. The cameras track known and unknown users and can communicate with the Natural Language Understanding Engines allowing conversations to be triggered based on facial recognition identifications.
-
-![HIAS Facial Recognition](Media/Images/HIAS-Facial-Recognition-Edit.png)
-
-&nbsp;
-
-## HIAS Natural Language Understanding Engines
-![HIAS Natural Language Understanding Engines](Media/Images/HIAS-NLU.jpg)
-
-The HIAS UI allows Natural Language Understanding Engines to be connected to the network. These NLUs can be communicated with via the network allowing applications and devices to have realtime spoken interactions with known and unknown users.
-
-&nbsp;
-
-# Installation
-Installation scripts and tutorials for setting up your HIAS - Hospital Intelligent Automation System & UI are provided. To get started, please follow the installation guides provided below in the order they are given:
-
-| ORDER | GUIDE | INFORMATION | AUTHOR |
-| ----- | ----- | ----------- | ------ |
-| 1 | [Main Installation Guide](Documentation/Installation.md "Main Installation Guide") | Primary installation guide covering most of the information needed to do the core installation |  [Adam Milton-Barker](https://www.leukemiaairesearch.com/team/adam-milton-barker "Adam Milton-Barker") |
-
-&nbsp;
-
-# HIAS Data Analysis
-The HIAS network hosts a number of AI models that monitor data from local and external sources to make predictions based on the raw data. You can monitor real-time data using the HIAS UI.
-
-## HIAS COVID-19 Data Analysis
-![HIAS COVID-19 Data Analysis](Media/Images/HIAS-Data-Analysis-COVID-19.png)
-
-Functionality is now available to set up a basic COVID-19 tracker that powers graphs in the HIAS UI. This system pulls data from the [COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19 "COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University") and displays the stats in the UI.
-
-&nbsp;
-
-# EMAR / EMAR Mini
-![EMAR](Media/Images/HIAS-Robotics-EMAR.png)
-Functionality to update, monitor and control [EMAR](https://github.com/COVID-19-AI-Research-Project/EMAR "EMAR")/[EMAR Mini](https://github.com/COVID-19-AI-Research-Project/EMAR-Mini "EMAR Mini"). These features allow you to create EMAR/EMAR Mini devices, update the settings, monitor the camera streams and send commands to the robotic arm to move it.
-
-![EMAR](Media/Images/HIAS-Robotics-EMAR-Edit.png)
-
-![EMAR](Media/Images/HIAS-Robotics-EMAR-Edit-2.png)
-
-![EMAR](Media/Images/HIAS-Robotics-EMAR-Edit-3.png)
-
-&nbsp;
-
-# Modular Addons
-The HIAS network is made up of modular, intelligent devices. Below are some of the completed tutorials that can be used with the HIAS UI. Each project provides the details on how to connect them to the HIAS network, allowing them to controlled and monitored via the UI.
-
-| GITHUB | README | INFORMATION | AUTHOR |
-| ----- | ----- | ----------- | ------ |
-| [Acute Myeloid & Lymphoblastic Leukemia AI Research Project](https://github.com/AMLResearchProject "Acute Myeloid & Lymphoblastic Leukemia AI Research Project") | [oneAPI Acute Lymphoblastic Leukemia Classifier](https://github.com/AMLResearchProject/oneAPI-ALL-Classifier) |  Uses an Acute Lymphoblastic Leukemia CNN based on the proposed architecture in the [Acute Leukemia Classification Using Convolution Neural Network In Clinical Decision Support System](https://airccj.org/CSCP/vol7/csit77505.pdf) paper, using the [Acute Lymphoblastic Leukemia Image Database for Image Processing dataset](https://homes.di.unimi.it/scotti/all). |  [Adam Milton-Barker](https://www.leukemiaairesearch.com/team/adam-milton-barker "Adam Milton-Barker") |
-| [Acute Myeloid & Lymphoblastic Leukemia AI Research Project](https://github.com/AMLResearchProject "Acute Myeloid & Lymphoblastic Leukemia AI Research Project") | [Magic Leap 1 Acute Lymphoblastic Leukemia Detection System](https://github.com/AMLResearchProject/Magic-Leap-1-ALL-Detection-System-2020) | The Acute Lymphoblastic Leukemia Detection System 2020 uses Tensorflow 2 & Magic Leap to provide a mixed reality detection system. Uses the [oneAPI Acute Lymphoblastic Leukemia Classifier](https://github.com/AMLResearchProject/oneAPI-ALL-Classifier). |  [Adam Milton-Barker](https://www.leukemiaairesearch.com/team/adam-milton-barker "Adam Milton-Barker") |
-| [COVID-19 AI Research Project](https://github.com/COVID-19-AI-Research-Project "COVID-19 AI Research Project") | [COVID-19 Tensorflow DenseNet Classifier For Raspberry Pi 4](https://github.com/COVID-19-AI-Research-Project/AI-Classification/tree/master/Projects/3 "COVID-19 Tensorflow DenseNet Classifier For Raspberry Pi 4") |  Uses DenseNet and [SARS-COV-2 Ct-Scan Dataset](https://www.kaggle.com/plameneduardo/sarscov2-ctscan-dataset "SARS-COV-2 Ct-Scan Dataset"), a large dataset of CT scans for SARS-CoV-2 (COVID-19) identification created by our collaborators, Plamenlancaster: [Professor Plamen Angelov](https://www.lancaster.ac.uk/lira/people/#d.en.397371) from [Lancaster University](https://www.lancaster.ac.uk/)/ Centre Director @ [Lira](https://www.lancaster.ac.uk/lira/), & his researcher, [Eduardo Soares PhD](https://www.lancaster.ac.uk/sci-tech/about-us/people/eduardo-almeida-soares) |  [Adam Milton-Barker](https://www.leukemiaairesearch.com/team/adam-milton-barker "Adam Milton-Barker") |
-| [COVID-19 AI Research Project](https://github.com/COVID-19-AI-Research-Project "COVID-19 AI Research Project") | [Magic Leap 1 COVID-19 Detection System](https://github.com/COVID-19-AI-Research-Project/Magic-Leap-1-Detection-System "Magic Leap 1 COVID-19 Detection System") | The Magic Leap 1 COVID-19 Detection System 2020 uses Tensorflow 2, Raspberry Pi 4 & Magic Leap 1 to provide a spatial computing detection system. Uses the [COVID-19 Tensorflow DenseNet Classifier For Raspberry Pi 4](https://github.com/COVID-19-AI-Research-Project/AI-Classification/tree/master/Projects/3 "COVID-19 Tensorflow DenseNet Classifier For Raspberry Pi 4") |  [Adam Milton-Barker](https://www.leukemiaairesearch.com/team/adam-milton-barker "Adam Milton-Barker") |
-| [COVID-19 AI Research Project](https://github.com/COVID-19-AI-Research-Project "COVID-19 AI Research Project") | [COVID-19 Detection System For Oculus Rift](https://github.com/COVID-19-AI-Research-Project/Oculus-Rift-Detection-System "COVID-19 Detection System For Oculus Rift") | The Oculus Rift COVID-19 Detection System 2020 uses Tensorflow 2, Raspberry Pi 4 & Oculus Rift to provide a virtual detection system. Uses the [COVID-19 Tensorflow DenseNet Classifier For Raspberry Pi 4](https://github.com/COVID-19-AI-Research-Project/AI-Classification/tree/master/Projects/3 "COVID-19 Tensorflow DenseNet Classifier For Raspberry Pi 4") |  [Adam Milton-Barker](https://www.leukemiaairesearch.com/team/adam-milton-barker "Adam Milton-Barker") |
-| [COVID-19 AI Research Project](https://github.com/COVID-19-AI-Research-Project "COVID-19 AI Research Project") | [EMAR Mini](https://github.com/COVID-19-AI-Research-Project/EMAR-Mini "EMAR Mini") | EMAR Mini is a minature version of [EMAR](https://github.com/COVID-19-AI-Research-Project/EMAR "EMAR"), an open-source Emergency Robot Assistant to assist doctors, nurses and hospital staff during the COVID-19 pandemic, and similar situations we may face in the future. |  [Adam Milton-Barker](https://www.leukemiaairesearch.com/team/adam-milton-barker "Adam Milton-Barker") |
-| [Peter Moss Leukemia AI Research](https://github.com/LeukemiaAiResearch "Peter Moss Leukemia AI Research") | [GeniSysAI](https://github.com/LeukemiaAiResearch/GeniSysAI "GeniSysAI") |  HIAS GeniSysAI provides Natural Language Understanding. The projects provided in this repository are based on the original GeniSysAI projects. |  [Adam Milton-Barker](https://www.leukemiaairesearch.com/team/adam-milton-barker "Adam Milton-Barker") |
-| [Peter Moss Leukemia AI Research](https://github.com/LeukemiaAiResearch "Peter Moss Leukemia AI Research") | [TassAI](https://github.com/LeukemiaAiResearch/TassAI "TassAI") |  HIAS TassAI provides Facial Recognition security applications for the HIAS network. The projects provided in this repository are based on the original TassAI projects. |  [Adam Milton-Barker](https://www.leukemiaairesearch.com/team/adam-milton-barker "Adam Milton-Barker") |
-| [Peter Moss Leukemia AI Research](https://github.com/LeukemiaAiResearch "Peter Moss Leukemia AI Research") | [HIAS NFC Authorization System](https://github.com/LeukemiaAiResearch/HIAS-NFC "HIAS NFC Authorization System") | The HIAS NFC Authorization System is an IoT connected NFC reader that can scan NFC implants, cards and fobs to identify users on the HIAS network. |  [Adam Milton-Barker](https://www.leukemiaairesearch.com/team/adam-milton-barker "Adam Milton-Barker") |
-| [Peter Moss Leukemia AI Research](https://github.com/LeukemiaAiResearch "Peter Moss Leukemia AI Research") | [HIAS Miner Node](https://github.com/LeukemiaAiResearch/HIAS-Miner-Node "HIAS Miner Node") | The HIAS Blockchain Miner Nodes are additional nodes for the HIAS Blockchain. These nodes help to create blocks, seal transaction blocks, and also have a full copy of the entire HIAS Blockchain which remain synchronized. |  [Adam Milton-Barker](https://www.leukemiaairesearch.com/team/adam-milton-barker "Adam Milton-Barker") |
-
-&nbsp;
-
-# Acknowledgement
-The template used for the UI in this project is a commercial template by  [Hencework](https://hencework.com/ "Hencework"). We have been granted permission from Hencework to use their template in this project and would to thank them for doing so. Please check out their [Portfolio](https://themeforest.net/user/hencework/portfolio "Portfolio") for more examples of their work.
+![HIAS 3.0.0 Sneak Preview](assets/images/hias-3.0.0-dashboard-2.jpg)
 
 &nbsp;
 
 # Contributing
+The Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss encourages and welcomes code contributions, bug fixes and enhancements from the Github community.
 
-Peter Moss Leukemia AI Research encourages and welcomes code contributions, bug fixes and enhancements from the Github community.
+## Ways to contribute
+
+The following are ways that you can contribute to this project:
+
+- [Bug Report](https://github.com/AIIAL/HIASCDI/issues/new?assignees=&labels=&template=bug_report.md&title=)
+- [Feature Request](https://github.com/AIIAL/HIASCDI/issues/new?assignees=&labels=&template=feature_request.md&title=)
+- [Feature Proposal](https://github.com/AIIAL/HIASCDI/issues/new?assignees=&labels=&template=feature-proposal.md&title=)
+- [Report Vulnerabillity](https://github.com/AIIAL/HIASCDI/issues/new?assignees=&labels=&template=report-a-vulnerability.md&title=)
 
 Please read the [CONTRIBUTING](CONTRIBUTING.md "CONTRIBUTING") document for a full guide to forking our repositories and submitting your pull requests. You will also find information about our code of conduct on this page.
 
+You can also join in with, or create, a discussion in our [Github Discussions](https://github.com/AIIAL/HIASCDI/discussions) area.
+
 ## Contributors
 
-- [Adam Milton-Barker](https://www.leukemiaairesearch.com/team/adam-milton-barker "Adam Milton-Barker") - [Peter Moss Leukemia AI Research](https://www.leukemiaairesearch.com "Peter Moss Leukemia AI Research") Founder & Intel Software Innovator, Sabadell, Spain
+All contributors to this project are listed below.
+
+- [Adam Milton-Barker](https://www.leukemiaairesearch.com/association/volunteers/adam-milton-barker "Adam Milton-Barker") - [Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss](https://www.leukemiaresearchassociation.ai "Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss") President/Founder & Lead Developer, Sabadell, Spain
 
 &nbsp;
 
 # Versioning
-
-We use SemVer for versioning. For the versions available, see [Releases](releases "Releases").
+We use [SemVer](https://semver.org/) for versioning.
 
 &nbsp;
 
 # License
-
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE "LICENSE") file for details.
 
 &nbsp;
 
 # Bugs/Issues
-
 We use the [repo issues](issues "repo issues") to track bugs and general requests related to using this project. See [CONTRIBUTING](CONTRIBUTING.md "CONTRIBUTING") for more info on how to submit bugs, feature requests and proposals.
