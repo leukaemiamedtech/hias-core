@@ -47,6 +47,33 @@ Now complete the Ubuntu installation to continue.
 
 &nbsp;
 
+# Install OpenSSH Server
+
+Use the following command to install OpenSSH Server:
+
+``` bash
+sudo apt install openssh-server
+```
+
+&nbsp;
+
+# Install net-tools
+
+Use the following command to install net-tools which will allow you to find the IP address of the virtual machine.
+
+``` bash
+sudo apt install net-tools
+```
+Once installed run the following command to find your IP address:
+
+``` bash
+ifconfig
+```
+
+From the results you are looking for the `inet` address in `eth0`. Using this address you can SSH into the virtual machine.
+
+&nbsp;
+
 # Continue
 
 Now you are ready to continue to the [Ubuntu installation guide](ubuntu.md).
