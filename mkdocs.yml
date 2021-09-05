@@ -1,2 +1,11 @@
-site_name: HIAS
+site_name: HIAS Core
 site_url: https://www.leukemiaairesearch.com/research/project/peter-moss-medtech-research-project/hias-hospital-intelligent-automation-server
+
+nav:
+    - Home: 'index.md'
+    - Installation:
+      - Hyper-V Installation: 'installation/hyperv.md'
+      - VirtualBox Installation: 'installation/virtualbox.md'
+      - Ubuntu Installation: 'installation/ubuntu.md'
+    - Usage:
+      - Ubuntu Usage: 'usage/ubuntu.md'
