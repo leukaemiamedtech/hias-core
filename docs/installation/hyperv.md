@@ -74,6 +74,25 @@ From the results you are looking for the `inet` address in `eth0`. Using this ad
 
 &nbsp;
 
+# Increase Disk Size
+![Hyper-V VM](../img/hyper-v-edit-disk-size.jpg)
+
+Shutdown the virtual machine and then increase the disk size by right clicking on the VM in the `Virtual Machines` section of Hyper-V Manager and then click on `Settings` -> `SCSI Controller` -> `Hard Drive` -> `Edit`.
+
+![Hyper-V VM](../img/hyper-v-edit-disk-size-expand.jpg)
+
+Click on `next` to continue, then click `expand` and `next` to continue. Enter the amount you would like to increase the disk size by and click `finish` to finish.
+
+Now log back in to the virtual machine and run the following commands to expand the disk to the new size:
+
+```
+sudo apt install cloud-guest-utils
+sudo growpart /dev/sda 1
+sudo resize2fs /dev/sda1
+```
+
+&nbsp;
+
 # Continue
 
 Now you are ready to continue to the [Ubuntu installation guide](ubuntu.md).
