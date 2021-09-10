@@ -6,7 +6,11 @@ The HIAS Dashboard provides an overview of the core components, AI Diagnostics A
 
 ![HIAS UI - Dashboard](../../img/hias-ui-dashboard.jpg)
 
-At the top of the dashboard you will find the current vital statistics of the machine HIAS is installed on including current CPU, memory and hard drive usage; and machine temperature. This feature is only available once you have a running [HIAS MQTT IoT Agent](https://github.com/aiial/hias-mqtt-iot-agent " HIAS MQTT IoT Agent").
+At the top of the dashboard you will find the current vital statistics of the machine HIAS is installed on including current CPU, memory and hard drive usage; and machine temperature. This feature is only available once you have a running [HIAS MQTT IoT Agent](https://github.com/aiial/hias-mqtt-iot-agent " HIAS MQTT IoT Agent"). This feature is located at the top of every page in the UI.
+
+The weather chart is provided by [WeatherWidget.io](https://weatherwidget.io/ " WeatherWidget.io"), you can generate your own weather widget by following the [WeatherWidget.io](https://weatherwidget.io/ " WeatherWidget.io") guide.
+
+The iotJumpWay console window shows all HIAS network data flowing through the MQTT broker.
 
 You will also find an overview of data from network environment monitors. This feature is only available once you have a running [HIAS MQTT IoT Agent](https://github.com/aiial/hias-mqtt-iot-agent " HIAS MQTT IoT Agent") and a running [HIAS ESP32 Environment Monitor](https://github.com/aiial/hias-esp32-environment-monitor).
 
