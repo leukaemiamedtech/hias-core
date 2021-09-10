@@ -18,6 +18,10 @@
 # Introduction
 HIAS Core is an open-source server designed to control and manage a network of intelligent IoT connected devices and applications.
 
+The goal is to create an open-source platform that can be used by hospitals, clinics, and other medical organizations to control and manage their devices and applications.
+
+The project is a work in progress and remains under development.
+
 ![HIAS Network](assets/images/hias-network-v3.jpg)
 
 HIAS Core is made up of the following primary components:
