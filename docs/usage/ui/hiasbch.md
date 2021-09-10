@@ -67,6 +67,8 @@ The smart contract management page allows you to interact with a particular smar
 
 HIAS Ether powers the entire HIAS network. As HIASBCH is a private Ethereum blockchain the Ether is worthless in the real world, however it is invaluable in the HIAS ecosystem. Staff accounts, applications, and blockchain agents require HIAS Ether to function, they each have their own unique HIASBCH address and as such are capable of holding their own HIAS Ether. The HIAS smart contracts are designed to reward entities that interact with them with HIAS Ether so that they can continue to function, however there may be times where transfers are required. The HIASBCH Transfer UI provides a way to transfer HIAS Ether from the primary account.
 
+&nbsp;
+
 # HIASBCH Console
 ![HIAS UI - HIASBCH Management](../../img/hias-ui-hiasbch-console.jpg)
 
