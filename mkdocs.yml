@@ -11,3 +11,4 @@ nav:
       - Usage (Ubuntu): 'usage/ubuntu.md'
       - UI Dashboard: 'usage/ui/dashboard.md'
       - Server Management: 'usage/ui/server.md'
+      - HIASBCH Management: 'usage/ui/hiasbch.md'
