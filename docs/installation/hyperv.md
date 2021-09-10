@@ -1,4 +1,4 @@
-# Hyper-V Installation
+# Installation Guide (Hyper-V)
 
 This guide will help you set up [Hyper-V](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v) on Wndows 10 so that you can run HIAS Core on a Virtual Machine.
 
@@ -64,6 +64,7 @@ Use the following command to install net-tools which will allow you to find the 
 ``` bash
 sudo apt install net-tools
 ```
+
 Once installed run the following command to find your IP address:
 
 ``` bash
@@ -90,6 +91,18 @@ sudo apt install cloud-guest-utils
 sudo growpart /dev/sda 1
 sudo resize2fs /dev/sda1
 ```
+
+&nbsp;
+
+# Virtual Switch
+![Hyper-V VM](../img/hyper-v-virtual-switch-manager.jpg)
+
+You need to create a virtual switch to allow it to be accessed from the outside world. To do so, right click on the host and select `Virtual Switch Manager` then click on `Create Virtual Switch`.
+
+![Hyper-V VM](../img/hyper-v-virtual-switch.jpg)
+
+Finally choose your network adapter and click `apply`. You could likely have issues with this part however it is a requirement to be able to install HIAS Core on Hyper-V. Unfortunately if you do have issues creating the virtual switch the only solution is trial and error with multiple possible solutions available online, some of which can leave your machine in an usable state.
+
 
 &nbsp;
 
