@@ -8,4 +8,6 @@ nav:
       - VirtualBox Installation: 'installation/virtualbox.md'
       - Ubuntu Installation: 'installation/ubuntu.md'
     - Usage:
-      - Ubuntu Usage: 'usage/ubuntu.md'
+      - Usage (Ubuntu): 'usage/ubuntu.md'
+      - UI Dashboard: 'usage/ui/dashboard.md'
+      - Server Management: 'usage/ui/server.md'
