@@ -12,3 +12,4 @@ nav:
       - UI Dashboard: 'usage/ui/dashboard.md'
       - Server Management: 'usage/ui/server.md'
       - HIASBCH Management: 'usage/ui/hiasbch.md'
+      - HIASCDI Management: 'usage/ui/hiascdi.md'
