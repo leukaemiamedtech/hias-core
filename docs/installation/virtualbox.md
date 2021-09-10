@@ -1,38 +1,73 @@
-# VirtualBox Installation
-
+# Installation Guide (VirtualBox)
 This guide will help you set up [VirtualBox](https://www.virtualbox.org/) so that you can run HIAS Core on a Virtual Machine.
+
+&nbsp;
 
 # Download
 - Before you begin you should [download VirtualBox](https://www.virtualbox.org/wiki/Downloads).
-
 - You will also need to download [Ubuntu Server 20.04 LTS 64 bit](https://releases.ubuntu.com/20.04/).
 
-# Setup
-This guide will help you set up VirtualBox for the HIAS Server.
+&nbsp;
 
-## New VM
-![HIAS VM](../img/hias-vm.jpg)
+# New VM
+![VirtualBox VM](../img/hias-vm.jpg)
 Open VirtualBox and click on the **New** button, name your VM and chose Linux and Ubuntu 64 bit in the options.
 
-## New VM Memory
-![HIAS VM](../img/hias-vm-memory.jpg)
+&nbsp;
+
+# New VM Memory
+![VirtualBox VM](../img/hias-vm-memory.jpg)
 Next chose your memory.
 
-## New VM Disk
+&nbsp;
 
-![HIAS VM](../img/hias-vm-disk.jpg)
+# New VM Disk
+
+![VirtualBox VM](../img/hias-vm-disk.jpg)
 
 Continue through with the default options until you come to **File location and size**. At this point you need to select at least 20GB for your virtual hard disk, then click create.
 
-## New VM Network
-![HIAS VM](../img/hias-vm-bridged-adapter.jpg)
+&nbsp;
+
+# New VM Network
+![VirtualBox VM](../img/hias-vm-bridged-adapter.jpg)
 
 Click **Settings** and select **Network**, from here you should select **Bridged Adapter**.
 
-## New VM Image
-![HIAS VM](../img/hias-vm-image.jpg)
+&nbsp;
+
+# New VM Image
+![VirtualBox VM](../img/hias-vm-image.jpg)
 
 Click start and you will see the above Window. Choose your Ubuntu iso and click start. From here you will be taken through the Ubuntu install process. Once your VM has started, you can connect to it via SHH for easy management.
+
+&nbsp;
+
+# Install OpenSSH Server
+
+Use the following command to install OpenSSH Server:
+
+``` bash
+sudo apt install openssh-server
+```
+
+&nbsp;
+
+# Install net-tools
+
+Use the following command to install net-tools which will allow you to find the IP address of the virtual machine.
+
+``` bash
+sudo apt install net-tools
+```
+
+Once installed run the following command to find your IP address:
+
+``` bash
+ifconfig
+```
+
+From the results you are looking for the `inet` address in `eth0`. Using this address you can SSH into the virtual machine.
 
 &nbsp;
 
