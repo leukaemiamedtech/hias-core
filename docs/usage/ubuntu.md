@@ -20,6 +20,14 @@ The following guides will take you through using your [HIAS Core](https://github
 
 &nbsp;
 
+# Password Reset
+
+If you get locked out of the UI or you forget your password, you can reset your password by using the `Password.php` file in the `HTML` directory.
+
+**MAKE SURE YOU REMOVE THIS FILE UNLESS YOU ARE USING IT! IF YOU LEAVE THS FILE IN PLACE ANYONE THAT FINDS IT WILL BE ABLE TO RESET YOUR PASSWORD AND ACCESS YOUR NETWORK**
+
+&nbsp;
+
 # Contributing
 The Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss encourages and welcomes code contributions, bug fixes and enhancements from the Github community.
 
