@@ -1,22 +1,26 @@
-# Usage Guide (Ubuntu)
+# Staff Usage Guide
 
-The following guides will take you through using your [HIAS Core](https://github.com/aiial/hias-core " HIAS Core") server.
+The following guide will introduce the [HIAS Core](https://github.com/aiial/hias-core " HIAS Core") Staff management features.
 
-&nbsp;
+# Active Staff
+![HIAS UI - Staff Management](../../img/hias-ui-staff-active.jpg)
 
-# Guides
+The active staff list provides a list of staff members that currently have permission to access the HIAS UI.
 
-- HIAS UI
-    - [Dashboard](ui/dashboard.md)
-    - [Server management](ui/server.md)
-    - [HIASBCH management](ui/hiasbch.md)
-    - [HIASCDI management](ui/hiascdi.md)
-    - [HIASHDI management](ui/hiashdi.md)
-    - [iotJumpWay management](ui/iotjumpway.md)
-    - [AI management](ui/ai.md)
-    - [Robotics management](ui/robotics.md)
-    - [Data Analysis management](ui/data-analysis.md)
-    - [Staff management](ui/staff.md)
+# Cancelled Staff
+![HIAS UI - Staff Management](../../img/hias-ui-staff-cancelled.jpg)
+
+The active staff list provides a list of staff members that no longer have permission to access the HIAS UI. When a staff member account is cancelled, all of the credentials for accessing the HIAS network are deleted. If you need to reactivate a cancelled account you need to create a new account.
+
+# Create Staff Member
+![HIAS UI - Staff Management](../../img/hias-ui-staff-create.jpg)
+
+To create a staff member click on the `Create Staff Member` button on either the Active or Cancelled staff page.
+
+# Edit Staff Member
+![HIAS UI - Staff Management](../../img/hias-ui-staff-edit.jpg)
+
+To edit a staff member click on the `Edit` button on either the Active or Cancelled staff page.
 
 &nbsp;
 
@@ -34,7 +38,7 @@ The following are ways that you can contribute to this project:
 
 Please read the [CONTRIBUTING](https://github.com/aiial/hias-core/blob/master/CONTRIBUTING.md "CONTRIBUTING") document for a full guide to forking our repositories and submitting your pull requests. You will find information about our code of conduct on the [Code of Conduct page](https://github.com/aiial/hias-core/blob/master/CODE-OF-CONDUCT.md "Code of Conduct page").
 
-You can also join in with, or create, a discussion in our [Github Discussions](https://github.com/aiial/HIASCDI/discussions) area.
+You can also join in with, or create, a discussion in our [Github Discussions](https://github.com/aiial/HIASHDI/discussions) area.
 
 ## Contributors
 

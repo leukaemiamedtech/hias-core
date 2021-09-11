@@ -1,22 +1,31 @@
-# Usage Guide (Ubuntu)
+# HIASHDI Usage Guide
 
-The following guides will take you through using your [HIAS Core](https://github.com/aiial/hias-core " HIAS Core") server.
+The following guide will introduce the [HIAS Core](https://github.com/aiial/hias-core " HIAS Core") HIASHDI management features.
 
 &nbsp;
 
-# Guides
+# Configuration
+![HIAS UI - HIASHDI Management](../../img/hias-ui-hiashdi-configuration.jpg)
 
-- HIAS UI
-    - [Dashboard](ui/dashboard.md)
-    - [Server management](ui/server.md)
-    - [HIASBCH management](ui/hiasbch.md)
-    - [HIASCDI management](ui/hiascdi.md)
-    - [HIASHDI management](ui/hiashdi.md)
-    - [iotJumpWay management](ui/iotjumpway.md)
-    - [AI management](ui/ai.md)
-    - [Robotics management](ui/robotics.md)
-    - [Data Analysis management](ui/data-analysis.md)
-    - [Staff management](ui/staff.md)
+The HIASHDI configuration manager allows you to update the core configuration for the HIASHDI Historical Data Interface. You will find information about the HIASHDI service along with a form that allows you to update the configuration.
+
+&nbsp;
+
+# Entity Management
+![HIAS UI - HIASHDI Management](../../img/hias-ui-hiashdi-entity-management.jpg)
+
+The HIASHDI entity page allows you to manage the HIASHDI entity settings. The HIASHDI entity is a JSON representation of the contextual data for HIASHDI. On the left of the page you will find a human readable format of the contextual data for HIASHDI. On the right of the page you will find a JSON format of the contextual data. You can download the HIASHDI credentials file by clicking on the `HIASHDI Configuration` button.
+
+![HIAS UI - HIASHDI Management](../../img/hias-ui-hiashdi-hiashdi-entity-2.jpg)
+
+Further down the page to the right you will find easy access to the credentials for HIASHDI. You can reset these credentials using the relevant reset button.
+
+&nbsp;
+
+# HIASHDI Console
+![HIAS UI - HIASHDI Management](../../img/hias-ui-hiashdi-console.jpg)
+
+The HIASHDI console allows you to interact with the HIASHDI Historical Data Interface. You can use the console to send requests to HIASHDI and receive responses.
 
 &nbsp;
 
@@ -34,7 +43,7 @@ The following are ways that you can contribute to this project:
 
 Please read the [CONTRIBUTING](https://github.com/aiial/hias-core/blob/master/CONTRIBUTING.md "CONTRIBUTING") document for a full guide to forking our repositories and submitting your pull requests. You will find information about our code of conduct on the [Code of Conduct page](https://github.com/aiial/hias-core/blob/master/CODE-OF-CONDUCT.md "Code of Conduct page").
 
-You can also join in with, or create, a discussion in our [Github Discussions](https://github.com/aiial/HIASCDI/discussions) area.
+You can also join in with, or create, a discussion in our [Github Discussions](https://github.com/aiial/HIASHDI/discussions) area.
 
 ## Contributors
 
@@ -56,3 +65,5 @@ This project is licensed under the **MIT License** - see the [LICENSE](https://g
 
 # Bugs/Issues
 We use the [repo issues](https://github.com/aiial/hias-core/issues "repo issues") to track bugs and general requests related to using this project. See [CONTRIBUTING](https://github.com/aiial/hias-core/blob/master/CONTRIBUTING.md "CONTRIBUTING") for more info on how to submit bugs, feature requests and proposals.
+
+
