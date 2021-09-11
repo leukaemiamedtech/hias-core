@@ -1,22 +1,6 @@
-# Usage Guide (Ubuntu)
+# Data Analysis Usage Guide
 
-The following guides will take you through using your [HIAS Core](https://github.com/aiial/hias-core " HIAS Core") server.
-
-&nbsp;
-
-# Guides
-
-- HIAS UI
-    - [Dashboard](ui/dashboard.md)
-    - [Server management](ui/server.md)
-    - [HIASBCH management](ui/hiasbch.md)
-    - [HIASCDI management](ui/hiascdi.md)
-    - [HIASHDI management](ui/hiashdi.md)
-    - [iotJumpWay management](ui/iotjumpway.md)
-    - [AI management](ui/ai.md)
-    - [Robotics management](ui/robotics.md)
-    - [Data Analysis management](ui/data-analysis.md)
-    - [Staff management](ui/staff.md)
+The data analysis guide is coming soon.
 
 &nbsp;
 
@@ -34,7 +18,7 @@ The following are ways that you can contribute to this project:
 
 Please read the [CONTRIBUTING](https://github.com/aiial/hias-core/blob/master/CONTRIBUTING.md "CONTRIBUTING") document for a full guide to forking our repositories and submitting your pull requests. You will find information about our code of conduct on the [Code of Conduct page](https://github.com/aiial/hias-core/blob/master/CODE-OF-CONDUCT.md "Code of Conduct page").
 
-You can also join in with, or create, a discussion in our [Github Discussions](https://github.com/aiial/HIASCDI/discussions) area.
+You can also join in with, or create, a discussion in our [Github Discussions](https://github.com/aiial/HIASHDI/discussions) area.
 
 ## Contributors
 

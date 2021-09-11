@@ -1,2 +1,21 @@
-site_name: HIAS
+site_name: HIAS Core
 site_url: https://www.leukemiaairesearch.com/research/project/peter-moss-medtech-research-project/hias-hospital-intelligent-automation-server
+
+nav:
+    - Home: 'index.md'
+    - Installation:
+      - Hyper-V Installation: 'installation/hyperv.md'
+      - VirtualBox Installation: 'installation/virtualbox.md'
+      - Ubuntu Installation: 'installation/ubuntu.md'
+    - Usage:
+      - Usage (Ubuntu): 'usage/ubuntu.md'
+      - UI Dashboard: 'usage/ui/dashboard.md'
+      - Server Management: 'usage/ui/server.md'
+      - HIASBCH Management: 'usage/ui/hiasbch.md'
+      - HIASCDI Management: 'usage/ui/hiascdi.md'
+      - HIASHDI Management: 'usage/ui/hiashdi.md'
+      - iotJumpWay Management: 'usage/ui/iotjumpway.md'
+      - AI Management: 'usage/ui/ai.md'
+      - Robotics Management: 'usage/ui/robotics.md'
+      - Data Analysis Management: 'usage/ui/data-analysis.md'
+      - Staff Management: 'usage/ui/staff.md'

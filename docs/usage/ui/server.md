@@ -1,22 +1,40 @@
-# Usage Guide (Ubuntu)
+# Server Management Usage Guide
 
-The following guides will take you through using your [HIAS Core](https://github.com/aiial/hias-core " HIAS Core") server.
+The following guide will introduce the [HIAS Core](https://github.com/aiial/hias-core " HIAS Core") server management features.
+
+The HIAS server management area provides the ability to modify some of the core server settings.
+
+![HIAS UI - Server Management](../../img/hias-ui-server-settings.jpg)
+
+At the top of the page you will find the usual current vital statistics of the machine HIAS is installed on, the weather chart and the iotJumpWay console window; the server resource monitor that provides a historical feed of the HIAS machine vital statistics and along with the current server stats.
 
 &nbsp;
 
-# Guides
+# Settings
+![HIAS UI - Server Management](../../img/hias-ui-server-settings-1.jpg)
 
-- HIAS UI
-    - [Dashboard](ui/dashboard.md)
-    - [Server management](ui/server.md)
-    - [HIASBCH management](ui/hiasbch.md)
-    - [HIASCDI management](ui/hiascdi.md)
-    - [HIASHDI management](ui/hiashdi.md)
-    - [iotJumpWay management](ui/iotjumpway.md)
-    - [AI management](ui/ai.md)
-    - [Robotics management](ui/robotics.md)
-    - [Data Analysis management](ui/data-analysis.md)
-    - [Staff management](ui/staff.md)
+The settings area provides the ability to modify core server settings including the domain name, the endpoint for phpMyAdmin, the default latitude and longitude, the Google Maps API key and the Recapthca API keys.
+
+&nbsp;
+
+# LDAP UI
+![HIAS UI - Server Management](../../img/hias-ui-server-phpldapadmin.jpg)
+
+The LDAP UI nagivation link takes you to the [phpldapadmin](https://github.com/leenooks/phpLDAPadmin) UI and allows you to manage your LDAP server.
+
+&nbsp;
+
+# MySQL UI
+![HIAS UI - Server Management](../../img/hias-ui-server-phpmyadmin.jpg)
+
+The MySQL UI nagivation link takes you to the [phpMyAdmin](https://www.phpmyadmin.net/) UI and allows you to manage your MySQL server.
+
+&nbsp;
+
+# MongoDB UI
+![HIAS UI - Server Management](../../img/hias-ui-server-mongodb.jpg)
+
+The MongoDB UI nagivation link takes you to the [phpMyAdmin](https://www.phpmyadmin.net/) UI and allows you to monitor your MongoDB server. To use this feature you need to update the URL in the **Includes/LeftNav.php** file to point to the MongoDB UI.
 
 &nbsp;
 

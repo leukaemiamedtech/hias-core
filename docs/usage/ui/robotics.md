@@ -1,22 +1,29 @@
-# Usage Guide (Ubuntu)
+# Robotics Usage Guide
 
-The following guides will take you through using your [HIAS Core](https://github.com/aiial/hias-core " HIAS Core") server.
+The following guide will introduce the [HIAS Core](https://github.com/aiial/hias-core " HIAS Core") Robotics management features.
 
 &nbsp;
 
-# Guides
+# Robotics
+![HIAS UI - Robotics Management](../../img/hias-ui-robotics.jpg)
 
-- HIAS UI
-    - [Dashboard](ui/dashboard.md)
-    - [Server management](ui/server.md)
-    - [HIASBCH management](ui/hiasbch.md)
-    - [HIASCDI management](ui/hiascdi.md)
-    - [HIASHDI management](ui/hiashdi.md)
-    - [iotJumpWay management](ui/iotjumpway.md)
-    - [AI management](ui/ai.md)
-    - [Robotics management](ui/robotics.md)
-    - [Data Analysis management](ui/data-analysis.md)
-    - [Staff management](ui/staff.md)
+The HIAS Robotics UI allows you to add your robotics projects to HIAS Core. Currently supported robotics projects are [EMAR Mini](https://github.com/aiial/emar-mini "EMAR Mini") however you are free to create your own robotics projects and modify the UI accordingly.
+
+From the Robotics page you can access all robotics projects that are set up on your HIAS network. You can access an interface that allows you to interact with the agent. AI Agents currently supported are Diagnostics, Facial Recognition and Natual Language Understanding.
+
+&nbsp;
+
+# Create Robotics Unit
+![HIAS UI - Robotics Management](../../img/hias-ui-robotics-create.jpg)
+
+To create a robotics project, click on the `Create Robot` button on the Robotics page. This will take you to the create robot page where you can create a new robot by filling out the form.
+
+&nbsp;
+
+# Manage Robotics Unit
+![HIAS UI - Robotics Management](../../img/hias-ui-robitics-manage.jpg)
+
+To manage a robotics project, click on the `Manage` button in the relevant robotics card on the Robotics page. This will take you to the manage robot page where you can manage the robot by editing the form. For EMAR Mini robots you will also find access to the streams coming from the robot.
 
 &nbsp;
 
@@ -34,7 +41,7 @@ The following are ways that you can contribute to this project:
 
 Please read the [CONTRIBUTING](https://github.com/aiial/hias-core/blob/master/CONTRIBUTING.md "CONTRIBUTING") document for a full guide to forking our repositories and submitting your pull requests. You will find information about our code of conduct on the [Code of Conduct page](https://github.com/aiial/hias-core/blob/master/CODE-OF-CONDUCT.md "Code of Conduct page").
 
-You can also join in with, or create, a discussion in our [Github Discussions](https://github.com/aiial/HIASCDI/discussions) area.
+You can also join in with, or create, a discussion in our [Github Discussions](https://github.com/aiial/HIASHDI/discussions) area.
 
 ## Contributors
 

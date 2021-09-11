@@ -1,22 +1,31 @@
-# Usage Guide (Ubuntu)
+# HIASCDI Usage Guide
 
-The following guides will take you through using your [HIAS Core](https://github.com/aiial/hias-core " HIAS Core") server.
+The following guide will introduce the [HIAS Core](https://github.com/aiial/hias-core " HIAS Core") HIASCDI management features.
 
 &nbsp;
 
-# Guides
+# Configuration
+![HIAS UI - HIASCDI Management](../../img/hias-ui-hiascdi-configuration.jpg)
 
-- HIAS UI
-    - [Dashboard](ui/dashboard.md)
-    - [Server management](ui/server.md)
-    - [HIASBCH management](ui/hiasbch.md)
-    - [HIASCDI management](ui/hiascdi.md)
-    - [HIASHDI management](ui/hiashdi.md)
-    - [iotJumpWay management](ui/iotjumpway.md)
-    - [AI management](ui/ai.md)
-    - [Robotics management](ui/robotics.md)
-    - [Data Analysis management](ui/data-analysis.md)
-    - [Staff management](ui/staff.md)
+The HIASCDI configuration manager allows you to update the core configuration for the HIASCDI Contextual Data Interface. You will find information about the HIASCDI service along with a form that allows you to update the configuration.
+
+&nbsp;
+
+# Entity Management
+![HIAS UI - HIASCDI Management](../../img/hias-ui-hiascdi-entity-management.jpg)
+
+The HIASCDI entity page allows you to manage the HIASCDI entity settings. The HIASCDI entity is a JSON representation of the contextual data for HIASCDI. On the left of the page you will find a human readable format of the contextual data for HIASCDI. On the right of the page you will find a JSON format of the contextual data. You can download the HIASCDI credentials file by clicking on the `HIASCDI Configuration` button.
+
+![HIAS UI - HIASCDI Management](../../img/hias-ui-hiascdi-hiascdi-entity-2.jpg)
+
+Further down the page to the right you will find easy access to the credentials for HIASCDI. You can reset these credentials using the relevant reset button.
+
+&nbsp;
+
+# HIASCDI Console
+![HIAS UI - HIASCDI Management](../../img/hias-ui-hiascdi-console.jpg)
+
+The HIASCDI console allows you to interact with the HIASCDI Contextual Data Interface. You can use the console to send requests to HIASCDI and receive responses. The console allows you to interact with HIASCDI aligning with the NGSI v2 specification.
 
 &nbsp;
 
@@ -56,3 +65,5 @@ This project is licensed under the **MIT License** - see the [LICENSE](https://g
 
 # Bugs/Issues
 We use the [repo issues](https://github.com/aiial/hias-core/issues "repo issues") to track bugs and general requests related to using this project. See [CONTRIBUTING](https://github.com/aiial/hias-core/blob/master/CONTRIBUTING.md "CONTRIBUTING") for more info on how to submit bugs, feature requests and proposals.
+
+
