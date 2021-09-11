@@ -17,3 +17,4 @@ nav:
       - iotJumpWay Management: 'usage/ui/iotjumpway.md'
       - AI Management: 'usage/ui/ai.md'
       - Robotics Management: 'usage/ui/robotics.md'
+      - Data Analysis Management: 'usage/ui/data-analysis.md'
