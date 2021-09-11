@@ -1,0 +1,22 @@
+{
+  "tags": {
+    "allowUnknownTags": true
+  },
+  "source": {
+    "include": ["./src/js","README.md"],
+    "includePattern": ".+\\.js(doc)?$",
+    "excludePattern": "docs|lib"
+  },
+  "templates": {
+    "applicationName": "FooTable V3",
+    "default":{
+      "outputSourceFiles": false
+    },
+    "cleverLinks": false,
+    "monospaceLinks": true
+  },
+  "opts": {
+    "recurse": true,
+    "private": true
+  }
+}

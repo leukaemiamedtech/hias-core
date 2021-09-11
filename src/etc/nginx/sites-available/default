@@ -1,0 +1,262 @@
+upstream php-handler {
+     server unix:/var/run/php/php7.4-fpm.sock;
+}
+
+server {
+
+    root /hias/var/www/html;
+    server_name YourHiasDomainName;
+    client_max_body_size 512M;
+
+    proxy_connect_timeout 600;
+    proxy_send_timeout 600;
+    proxy_read_timeout 600;
+    send_timeout 600;
+
+    add_header X-Content-Type-Options nosniff;
+    add_header X-XSS-Protection "1; mode=block";
+    add_header X-Robots-Tag none;
+    add_header X-Download-Options noopen;
+    add_header X-Permitted-Cross-Domain-Policies none;
+    add_header Referrer-Policy no-referrer;
+
+    # Remove X-Powered-By, which is an information leak
+    fastcgi_hide_header X-Powered-By;
+
+    location /phpldapadmin {
+        alias /usr/share/phpldapadmin/htdocs;
+        index index.php index.html index.htm;
+
+        location ~ ^/phpldapadmin/(.+\.php)$ {
+        try_files $uri =404;
+        root /usr/share/;
+
+        if ($request_filename !~* htdocs) {
+            rewrite ^/phpldapadmin(/.*)?$ /phpldapadmin/htdocs$1;
+        }
+
+        fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include /etc/nginx/fastcgi_params;
+        }
+    }
+
+    # HIASBCH Core Component
+
+    location /hiasbch/api/ {
+        auth_basic "Restricted";
+        auth_basic_user_file /etc/nginx/security/htpasswd;
+        proxy_pass http://YourHiasServerIp:8545/;
+    }
+
+    # HIASCDI Core Component
+
+    location /hiascdi/v1/ {
+        auth_basic "Restricted";
+        auth_basic_user_file /etc/nginx/security/htpasswd;
+        proxy_pass http://YourHiasServerIp:3524/;
+    }
+
+    location /hiascdi/v1/entities {
+        auth_basic "Restricted";
+        auth_basic_user_file /etc/nginx/security/htpasswd;
+        proxy_pass http://YourHiasServerIp:3524/entities;
+    }
+
+    location /hiascdi/v1/entities/(.*)$ {
+        auth_basic "Restricted";
+        auth_basic_user_file /etc/nginx/security/htpasswd;
+        proxy_pass http://YourHiasServerIp:3524/entities/$1$is_args$args;
+    }
+
+    location /hiascdi/v1/entities/(.*)/attrs/(.*)/value$ {
+        auth_basic "Restricted";
+        auth_basic_user_file /etc/nginx/security/htpasswd;
+        proxy_pass http://YourHiasServerIp:3524/entities/$1/attrs/$2/value$is_args$args;
+    }
+
+    location /hiascdi/v1/entities/(.*)/attrs/(.*)$ {
+        auth_basic "Restricted";
+        auth_basic_user_file /etc/nginx/security/htpasswd;
+        proxy_pass http://YourHiasServerIp:3524/entities/$1/attrs/$2$is_args$args;
+    }
+
+    location /hiascdi/v1/entities/(.*)/attrs$ {
+        auth_basic "Restricted";
+        auth_basic_user_file /etc/nginx/security/htpasswd;
+        proxy_pass http://YourHiasServerIp:3524/entities/$1/attrs$is_args$args;
+    }
+
+    location /hiascdi/v1/types/(.*)$ {
+        auth_basic "Restricted";
+        auth_basic_user_file /etc/nginx/security/htpasswd;
+        proxy_pass http://YourHiasServerIp:3524/types/$1$is_args$args;
+    }
+
+    location /hiascdi/v1/subscriptions/(.*)$ {
+        auth_basic "Restricted";
+        auth_basic_user_file /etc/nginx/security/htpasswd;
+        proxy_pass http://YourHiasServerIp:3524/subscriptions/$1$is_args$args;
+    }
+
+    location /hiascdi/v1/comands/(.*)$ {
+        auth_basic "Restricted";
+        auth_basic_user_file /etc/nginx/security/htpasswd;
+        proxy_pass http://YourHiasServerIp:3524/commands/$1$is_args$args;
+    }
+
+    # HIASHDI Core Component
+
+    location /hiashdi/v1/ {
+        auth_basic "Restricted";
+        auth_basic_user_file /etc/nginx/security/htpasswd;
+        proxy_pass http://YourHiasServerIp:3525/;
+    }
+
+    location /hiashdi/v1/data/(.*)$ {
+        auth_basic "Restricted";
+        auth_basic_user_file /etc/nginx/security/htpasswd;
+        proxy_pass http://YourHiasServerIp:3525/data/$1$is_args$args;
+    }
+
+    location /hiashdi/v1/data/(.*)/attrs/(.*)/value$ {
+        auth_basic "Restricted";
+        auth_basic_user_file /etc/nginx/security/htpasswd;
+        proxy_pass http://YourHiasServerIp:3525/data/$1/attrs/$2/value$is_args$args;
+    }
+
+    location /hiashdi/v1/data/(.*)/attrs/(.*)$ {
+        auth_basic "Restricted";
+        auth_basic_user_file /etc/nginx/security/htpasswd;
+        proxy_pass http://YourHiasServerIp:3525/data/$1/attrs/$2$is_args$args;
+    }
+
+    location /hiashdi/v1/data/(.*)/attrs$ {
+        auth_basic "Restricted";
+        auth_basic_user_file /etc/nginx/security/htpasswd;
+        proxy_pass http://YourHiasServerIp:3525/data/$1/attrs$is_args$args;
+    }
+
+    # HIAS IoT Agents
+
+    # End HIAS IoT Agents
+
+    # HIAS AI Agents
+
+    # End HIAS AI Agents
+
+    # HIAS Robotics
+
+    # End HIAS Robotics
+
+    location ~ \.php$ {
+        include fastcgi_params;
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php7.4-fpm.sock;
+        fastcgi_read_timeout 86400;
+    }
+
+    location @extensionless-php {
+        rewrite ^(.*)$ $1.php last;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+
+    location / {
+
+        # HIASBCH (Blockchain)
+        rewrite ^/HIASBCH/Contracts/Create$ /HIASBCH/Create.php last;
+        rewrite ^/HIASBCH/Contracts/Contract/([A-Za-z0-9-]+)/([0-9]+)$ /HIASBCH/Contract.php?contract=$1&index=$2 last;
+        rewrite ^/HIASBCH/Explorer/Address/([A-Za-z0-9-]+)$ /HIASBCH/Address.php?address=$1 last;
+        rewrite ^/HIASBCH/Explorer/Block/([A-Za-z0-9-]+)$ /HIASBCH/Block.php?block=$1 last;
+        rewrite ^/HIASBCH/Explorer/Transaction/([A-Za-z0-9-]+)$ /HIASBCH/Transaction.php?transaction=$1 last;
+
+        # iotJumpWay Zones
+        rewrite ^/iotJumpWay/Zones/Create$ /iotJumpWay/CreateZone.php last;
+        rewrite ^/iotJumpWay/([A-Za-z0-9-]+)/Zones/([A-Za-z0-9-]+)$ /iotJumpWay/Zone.php?location=$1&zone=$2 last;
+
+        # iotJumpWay Agents
+        rewrite ^/iotJumpWay/Agents/Create$ /iotJumpWay/AgentCreate.php last;
+        rewrite ^/iotJumpWay/Agents/Agent/([A-Za-z0-9-]+)$ /iotJumpWay/Agent.php?agent=$1 last;
+        rewrite ^/iotJumpWay/Agents/Agent/([A-Za-z0-9-]+)/Configuration$ /iotJumpWay/AgentConfiguration.php?agent=$1 last;
+        rewrite ^/iotJumpWay/Agents/([0-9]+)/Transaction/([0-9]+)$ /iotJumpWay/AgentTransaction.php?agent=$1&transaction=$2 last;
+
+        # iotJumpWay Applications
+        rewrite ^/iotJumpWay/Applications/Create$ /iotJumpWay/CreateApp.php last;
+        rewrite ^/iotJumpWay/([A-Za-z0-9-]+)/Applications/([A-Za-z0-9-]+)/Transaction/([0-9]+)$ /iotJumpWay/ApplicationTransaction.php?location=$1&application=$2&transaction=$3 last;
+        rewrite ^/iotJumpWay/([A-Za-z0-9-]+)/Applications/([A-Za-z0-9-]+)$ /iotJumpWay/Application.php?location=$1&application=$2 last;
+        rewrite ^/iotJumpWay/([A-Za-z0-9-]+)/Applications/([A-Za-z0-9-]+)/Credentials$ /iotJumpWay/ApplicationCredentials.php?location=$1&application=$2 last;
+
+        # iotJumpWay Devices
+        rewrite ^/iotJumpWay/Devices/Create$ /iotJumpWay/CreateDevice.php last;
+        rewrite ^/iotJumpWay/([A-Za-z0-9-]+)/Zones/([A-Za-z0-9-]+)/Devices/([A-Za-z0-9-]+)/Transaction/([0-9]+)$ /iotJumpWay/DeviceTransaction.php?location=$1&zone=$2&device=$3&transaction=$4 last;
+        rewrite ^/iotJumpWay/([A-Za-z0-9-]+)/Zones/([A-Za-z0-9-]+)/Devices/([A-Za-z0-9-]+)$ /iotJumpWay/Device.php?location=$1&zone=$2&device=$3 last;
+        rewrite ^/iotJumpWay/([A-Za-z0-9-]+)/Zones/([A-Za-z0-9-]+)/Devices/([A-Za-z0-9-]+)/Configuration$ /iotJumpWay/DeviceConfiguration.php?location=$1&zone=$2&device=$3 last;
+
+        # iotJumpWay Things
+
+        rewrite ^/iotJumpWay/Things/Update$ /iotJumpWay/ThingUpdate.php last;
+        rewrite ^/iotJumpWay/Things/Upload$ /iotJumpWay/ThingUpload.php last;
+        rewrite ^/iotJumpWay/Things/Create$ /iotJumpWay/CreateThing.php last;
+        rewrite ^/iotJumpWay/Things/([A-Za-z0-9-]+)$ /iotJumpWay/Thing.php?thing=$1 last;
+
+
+        # iotJumpWay Data
+        rewrite ^/iotJumpWay/Data/Statuses$ /iotJumpWay/DataStatuses.php last;
+        rewrite ^/iotJumpWay/Data/Life$ /iotJumpWay/DataLife.php last;
+        rewrite ^/iotJumpWay/Data/Sensors$ /iotJumpWay/DataSensors.php last;
+        rewrite ^/iotJumpWay/Data/Actuators$ /iotJumpWay/DataActuators.php last;
+        rewrite ^/iotJumpWay/Data/Commands$ /iotJumpWay/DataCommands.php last;
+
+        # HIASAI (AI)
+
+        rewrite ^/AI/Agents/Create$ /AI/AgentCreate.php last;
+        rewrite ^/AI/Agents/([A-Za-z0-9-]+)$ /AI/Agent.php?agent=$1 last;
+        rewrite ^/AI/Agents/([A-Za-z0-9-]+)/([A-Za-z0-9-]+)/Inference$ /AI/$2.php?agent=$1 last;
+        rewrite ^/AI/Agents/([A-Za-z0-9-]+)/Inference$ /AI/Inference.php?agent=$1 last;
+        rewrite ^/AI/Agents/([A-Za-z0-9-]+)/Credentials$ /AI/AgentCredentials.php?agent=$1 last;
+        rewrite ^/AI/Model/([A-Za-z0-9-]+)$ /AI/Model.php?model=$1 last;
+
+        # API
+
+        rewrite ^/API/Android/Zone/NLU/([A-Za-z]+)$ /API/Android/Zone/NLU/index.php?params=$1 last;
+
+        # Users
+
+        rewrite ^/Users/Staff/Cancelled$ /Users/Staff/Cancelled.php last;
+        rewrite ^/Users/Staff/Create$ /Users/Staff/Create.php last;
+        rewrite ^/Users/Staff/([A-Za-z0-9-]+)$ /Users/Staff/Staff.php?staff=$1 last;
+
+        # Robotics
+        rewrite ^/Robotics/EMAR-Mini/Unit/([A-Za-z0-9-]+)/Credentials$ /Robotics/EMAR-Mini-Credentials.php?unit=$1 last;
+        rewrite ^/Robotics/EMAR-Mini/Unit/([A-Za-z0-9-]+)$ /Robotics/EMAR-Mini.php?unit=$1 last;
+
+        try_files $uri $uri.html $uri/ @extensionless-php;
+        index index.php index.html index.htm index.nginx-debian.html;
+    }
+
+    listen [::]:443 ssl ipv6only=on; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/YourHiasDomainName/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/YourHiasDomainName/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+}
+
+server {
+
+    if ($host = YourHiasDomainName){
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    server_name YourHiasDomainName;
+    return 404; # managed by Certbot
+}
+
