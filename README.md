@@ -67,10 +67,10 @@ The UI provides the functionality to provision, manage, and monitor the HIAS net
 # Get Started
 To get started follow the official HIAS Core documentation:
 
-- [Installation Guide (Hyper-V)](https://hias.readthedocs.io/en/latest/installation/hyperv/)
-- [Installation Guide (Virtual Box)](https://hias.readthedocs.io/en/latest/installation/virtualbox/)
-- [Installation Guide (UBUNTU)](https://hias.readthedocs.io/en/latest/installation/ubuntu/)
-- [Usage Guide (UBUNTU)](https://hias.readthedocs.io/en/latest/usage/ubuntu/)
+- [Installation Guide (Hyper-V)](https://hias-core.readthedocs.io/en/latest/installation/hyperv/)
+- [Installation Guide (Virtual Box)](https://hias-core.readthedocs.io/en/latest/installation/virtualbox/)
+- [Installation Guide (UBUNTU)](https://hias-core.readthedocs.io/en/latest/installation/ubuntu/)
+- [Usage Guide (UBUNTU)](https://hias-core.readthedocs.io/en/latest/usage/ubuntu/)
 
 &nbsp;
 
