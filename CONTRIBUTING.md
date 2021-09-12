@@ -115,47 +115,6 @@ It is the contributor's responsibility to ensure that the documentation is up to
 
 We use [MKDocs](https://www.mkdocs.org/) along with [Read the Docs](https://docs.readthedocs.io/en/stable/index.html). Use the [Getting Started with MkDocs](https://docs.readthedocs.io/en/stable/intro/getting-started-with-mkdocs.html) guide to find out how to update/create documentation for the project.
 
-### Repository structure
-
-Repository structures for HIAS **must be followed exactly** for all contributions. Pull Requests that do not follow this structure will be rejected and closed with no further discussion.
-
-```
-- Project Root (Directory)
-    - assets (Directory)
-        - images (Directory)
-            - project-banner.jpg (Image)
-            - bug-report.jpg (Image)
-            - feature-proposal.jpg (Image)
-            - feature-request.jpg (Image)
-            - fork.jpg (Image)
-            - repo-issues.jpg (Image)
-    - configuration (Directory)
-        - config.json (File)
-        - credentials.json (File)
-    - docs (Directory)
-        - img (Directory)
-            - project-banner.jpg (image)
-        - installation (Directory)
-            - ubuntu.md (File)
-        - usage (Directory)
-            - ubuntu.md (File)
-        - index.md (File)
-    - logs (Directory)
-        - HIAS logs
-    - modules (Directory)
-        - helpers.py (File)
-    - scripts
-        - install.sh (File)
-        - services.sh (File)
-    - CODE-OF-CONDUCT.md (File)
-    - CONTRIBUTING.md (File)
-    - LICENSE (File)
-    - mkdocs.yml (File)
-    - README.md (File)
-```
-
-**Directories and files may be added to the above structure as required, but none must be removed.**
-
 ### Installation Scripts
 
 The default installation script is [install.sh](scripts/install.sh) found in the [scripts](scripts) directory.

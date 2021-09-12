@@ -1,0 +1,16 @@
+{
+    "ldapdc1": "",
+    "ldapdc2": "",
+    "ldapdc3": "",
+    "ldapport": 389,
+    "ldaps": "",
+    "dbname": "",
+    "dbusername": "",
+    "dbpassword": "",
+    "mdbname": "",
+    "mdbusername": "",
+    "mdbpassword": "",
+    "hiasbchun": "",
+    "hiasbchup": "",
+    "key": ""
+}
