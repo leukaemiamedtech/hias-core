@@ -77,7 +77,7 @@ include dirname(__FILE__) . '/../Classes/Core/Install.php';
 											<div class="form-wrap">
 												<div class="form-group">
 													<label class="control-label mb-10" for="username">Location Name</label>
-													<input type="text" class="form-control" required="" id="location" name="location" placeholder="Location Name" value="Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss">
+													<input type="text" class="form-control" required="" id="location" name="location" placeholder="Location Name" value="">
 													<span class="help-block"> Name of location</span>
 												</div>
 												<div class="form-group">
@@ -110,7 +110,7 @@ include dirname(__FILE__) . '/../Classes/Core/Install.php';
 											<div class="form-wrap">
 												<div class="form-group">
 													<label for="name" class="control-label mb-10">Zone Name</label>
-													<input type="text" class="form-control" id="zone" name="zone" placeholder="Zone Name" required value="Office">
+													<input type="text" class="form-control" id="zone" name="zone" placeholder="Zone Name" required value="">
 													<span class="help-block"> Name of zone</span>
 												</div>
 												<div class="form-group">
@@ -143,7 +143,7 @@ include dirname(__FILE__) . '/../Classes/Core/Install.php';
 											<div class="form-wrap">
 												<div class="form-group">
 													<label for="name" class="control-label mb-10">Location Latitude</label>
-													<input type="text" class="form-control" id="lat" name="lat" placeholder="Location Latitude" required value="41.5463">
+													<input type="text" class="form-control" id="lat" name="lat" placeholder="Location Latitude" required value="">
 													<span class="help-block">Location Latitude</span>
 												</div>
 												<div class="form-group">
@@ -153,22 +153,22 @@ include dirname(__FILE__) . '/../Classes/Core/Install.php';
 												</div>
 												<div class="form-group">
 													<label for="name" class="control-label mb-10">Recaptcha Public Key</label>
-													<input type="text" class="form-control" id="recaptcha" name="recaptcha" placeholder="Your Public Recaptcha Key" required value="6LdDJAQcAAAAANvK0YHTr7i_Dv5gedBVjaJDkGwq">
+													<input type="text" class="form-control" id="recaptcha" name="recaptcha" placeholder="Your Public Recaptcha Key" required value="">
 													<span class="help-block">Your Public Recaptcha Key</span>
 												</div>
 												<div class="form-group">
 													<label for="name" class="control-label mb-10">Recaptcha Private Key</label>
-													<input type="text" class="form-control" id="recaptchas" name="recaptchas" placeholder="Your Public Recaptcha Key" required value="6LdDJAQcAAAAACFdJSGTqpF9ldA6bwce25904kJj">
+													<input type="text" class="form-control" id="recaptchas" name="recaptchas" placeholder="Your Public Recaptcha Key" required value="">
 													<span class="help-block">Your Public Recaptcha Key</span>
 												</div>
 												<div class="form-group">
 													<label for="name" class="control-label mb-10">Google Maps Key</label>
-													<input type="text" class="form-control" id="gmaps" name="gmaps" placeholder="Your Google Maps Key" required value="AIzaSyB3YK3iaNY5naaZKsyPJClAmRIb-qaQat8">
+													<input type="text" class="form-control" id="gmaps" name="gmaps" placeholder="Your Google Maps Key" required value="">
 													<span class="help-block">Your Google Maps Key</span>
 												</div>
 												<div class="form-group">
 													<label for="name" class="control-label mb-10">IP Info Key</label>
-													<input type="text" class="form-control" id="ipinfo" name="ipinfo" placeholder="IP Info Key" required value="15062dec38bfc3">
+													<input type="text" class="form-control" id="ipinfo" name="ipinfo" placeholder="IP Info Key" required value="">
 													<span class="help-block">IP Info Key</span>
 												</div>
 											</div>
@@ -177,22 +177,22 @@ include dirname(__FILE__) . '/../Classes/Core/Install.php';
 											<div class="form-wrap">
 												<div class="form-group">
 													<label for="name" class="control-label mb-10">Your Name</label>
-													<input type="text" class="form-control" id="first_name" name="first_name" placeholder="Your First Name" required value="Adam">
+													<input type="text" class="form-control" id="first_name" name="first_name" placeholder="Your First Name" required value="">
 													<span class="help-block"> Your first name</span>
 												</div>
 												<div class="form-group">
 													<label for="name" class="control-label mb-10">Your Surname</label>
-													<input type="text" class="form-control" id="second_name" name="second_name" placeholder="Your Surname" required value="Milton-Barker">
+													<input type="text" class="form-control" id="second_name" name="second_name" placeholder="Your Surname" required value="">
 													<span class="help-block"> Your surname</span>
 												</div>
 												<div class="form-group">
 													<label for="name" class="control-label mb-10">Your Username</label>
-													<input type="text" class="form-control" id="username" name="username" placeholder="Your Username" required value="AdamMiltonBarker">
+													<input type="text" class="form-control" id="username" name="username" placeholder="Your Username" required value="">
 													<span class="help-block"> Your username</span>
 												</div>
 												<div class="form-group">
 													<label for="name" class="control-label mb-10">Your Email</label>
-													<input type="email" class="form-control" id="your_email" name="your_email" placeholder="Your Email" required value="adammiltonbarker@leukemiaairesearch.com">
+													<input type="email" class="form-control" id="your_email" name="your_email" placeholder="Your Email" required value="">
 													<span class="help-block"> Your email</span>
 												</div>
 												<div class="form-group mb-0">
