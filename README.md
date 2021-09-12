@@ -5,7 +5,8 @@
 
 [![CURRENT RELEASE](https://img.shields.io/badge/CURRENT%20RELEASE-3.0.0-blue.svg)](https://github.com/aiial/hias-core/tree/release-3.0.0) [![UPCOMING RELEASE](https://img.shields.io/badge/DEV%20BRANCH-develop-blue.svg)](https://github.com/aiial/hias-core/tree/release-3.0.0) [![Issues](https://img.shields.io/badge/Issues-Welcome-lightgrey.svg)](issues) [![Bug Reports](https://img.shields.io/badge/Bug%20Reports-Welcome-lightgrey.svg)](https://github.com/aiial/hias-core/issues/new?assignees=&labels=&template=bug_report.md&title=) [![Contributions Welcome!](https://img.shields.io/badge/Contributions-Welcome-lightgrey.svg)](CONTRIBUTING.md)
 
-[![Documentation Status](https://readthedocs.org/projects/hias/badge/?version=latest)](https://hias.readthedocs.io/en/latest/?badge=latest) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/5140/badge)](https://bestpractices.coreinfrastructure.org/projects/5140)
+[![Documentation Status](https://readthedocs.org/projects/hias-core/badge/?version=latest)](https://hias-core.readthedocs.io/en/latest/?badge=latest)
+ [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/5140/badge)](https://bestpractices.coreinfrastructure.org/projects/5140)
 
 ![Compliance Tests](https://img.shields.io/badge/Compliance%20Tests-TODO-red)
 ![Unit Tests](https://img.shields.io/badge/Unit%20Tests-TODO-red)
